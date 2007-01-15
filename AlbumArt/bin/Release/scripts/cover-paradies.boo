@@ -12,8 +12,8 @@ class CoverParadies:
 
 	static SourceName as string:
 		get: return "Cover-Paradies"
-	static SourceVersion as decimal:
-		get: return 0.1
+	static SourceVersion as string:
+		get: return "0.1"
 	static def GetThumbs(coverart,artist,album):
 		query as string = artist + " " + album
 		query.Replace(' ','+')
@@ -43,7 +43,8 @@ class CoverParadies:
 				else:
 					imageTitle = title
 					
-				large = System.Drawing.Bitmap.FromStream(GetPageStream(String.Format("http://www.cover-paradies.to{0}", imageMatch.Groups["thumb"].Value)))
+				//large = System.Drawing.Bitmap.FromStream(GetPageStream(String.Format("http://www.cover-paradies.to{0}", imageMatch.Groups["thumb"].Value)))
+				large = System.Drawing.Bitmap.FromStream(GetPageStream(String.Format("http://www.cover-paradies.to/res/exe/DLElement.exe.php?ID={0}", imageMatch.Groups["fullSizeID"].Value)))
 				thumb = ResizeBitmap(large, ThumbSize.Width, ThumbSize.Height)
 				large.Dispose()
 

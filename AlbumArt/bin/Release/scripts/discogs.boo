@@ -7,12 +7,19 @@ import System.Text.RegularExpressions
 import util
 
 class Discogs:
+
 	static ThumbSize = Size(150, 150)
+
 	static SourceName as string:
 		get: return "Discogs"
-	static SourceVersion as decimal:
-		get: return 0.1
-	static def GetThumbs(coverart,artist,album):
+
+	static SourceCreator as string:
+		get: return "Someone"
+
+	static SourceVersion as string:
+		get: return "0.1"
+
+	static def GetThumbs(coverart,artist,album,size):
 		query as string = artist + " " + album
 		query.Replace(' ','+')
 		obidResults = GetPage(String.Format("http://www.discogs.com/search?type=all&q={0}", EncodeUrl(query)))
