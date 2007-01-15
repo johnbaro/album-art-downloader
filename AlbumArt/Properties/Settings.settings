@@ -65,7 +65,10 @@
     <Setting Name="SaveFormat" Type="System.String" Scope="User">
       <Value Profile="(Default)">jpg</Value>
     </Setting>
-    <Setting Name="BrowserCols" Type="System.String" Scope="User">
+    <Setting Name="BrowserColsCOM" Type="System.String" Scope="User">
+      <Value Profile="(Default)">85;85;50</Value>
+    </Setting>
+    <Setting Name="BrowserColsPath" Type="System.String" Scope="User">
       <Value Profile="(Default)">85;85;50</Value>
     </Setting>
     <Setting Name="ShowBrowser" Type="System.Boolean" Scope="User">
@@ -94,6 +97,12 @@
     </Setting>
     <Setting Name="SelectedBrowserTab" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">0</Value>
+    </Setting>
+    <Setting Name="ShowSizeOverlay" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ShowFolderPictures" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>
 </SettingsFile>

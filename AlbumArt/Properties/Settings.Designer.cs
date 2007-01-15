@@ -285,18 +285,15 @@ namespace AlbumArtDownloader.Properties {
                 this["BrowserColsCOM"] = value;
             }
         }
-
+        
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("85;85;50")]
-        public string BrowserColsPath
-        {
-            get
-            {
+        public string BrowserColsPath {
+            get {
                 return ((string)(this["BrowserColsPath"]));
             }
-            set
-            {
+            set {
                 this["BrowserColsPath"] = value;
             }
         }
@@ -406,6 +403,30 @@ namespace AlbumArtDownloader.Properties {
             }
             set {
                 this["SelectedBrowserTab"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowSizeOverlay {
+            get {
+                return ((bool)(this["ShowSizeOverlay"]));
+            }
+            set {
+                this["ShowSizeOverlay"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowFolderPictures {
+            get {
+                return ((bool)(this["ShowFolderPictures"]));
+            }
+            set {
+                this["ShowFolderPictures"] = value;
             }
         }
     }

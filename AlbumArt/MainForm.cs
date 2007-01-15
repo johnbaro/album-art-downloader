@@ -161,6 +161,12 @@ namespace AlbumArtDownloader
                 }
                 else preview = null;
 
+            }
+            else preview = null;
+
+            if (Properties.Settings.Default.ShowFolderPictures)
+            {
+
                 string albumPath = System.IO.Path.GetDirectoryName(selectedtask.FileSave);
 
                 DirectoryInfo dirinfo = new DirectoryInfo(albumPath);
@@ -171,9 +177,9 @@ namespace AlbumArtDownloader
                     {
                         if (fileInfo.Extension == ".bmp" || fileInfo.Extension == ".jpg" || fileInfo.Extension == ".jpeg" || fileInfo.Extension == ".png" || fileInfo.Extension == ".gif")
                         {
-                            r = new ArtDownloader.ThumbRes();
-                            width = new Int32();
-                            height = new Int32();
+                            ArtDownloader.ThumbRes r = new ArtDownloader.ThumbRes();
+                            Int32 width = new Int32();
+                            Int32 height = new Int32();
                             r.Thumb = UpdateThumbFolder(fileInfo.FullName, ref width, ref height);
                             if (r.Thumb != null)
                             {
@@ -297,17 +303,20 @@ namespace AlbumArtDownloader
         {
             int i = imageListTile.Images.Count;
 
-            if (res.Width > 0 && res.Height > 0)
+            if (Properties.Settings.Default.ShowSizeOverlay)
             {
-                string caption = System.String.Format("{0} x {1}", res.Width, res.Height);
+                if (res.Width > 0 && res.Height > 0)
+                {
+                    string caption = System.String.Format("{0} x {1}", res.Width, res.Height);
 
-                Graphics g = Graphics.FromImage(res.Thumb);
-                g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
-                Font f = new Font(SystemFonts.DefaultFont, FontStyle.Bold);
-                g.DrawString(caption, f, Brushes.White, 1,1 );
-                g.DrawString(caption, f, Brushes.Black, 0,0 );
-                f.Dispose();
-                g.Dispose();
+                    Graphics g = Graphics.FromImage(res.Thumb);
+                    g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+                    Font f = new Font(SystemFonts.DefaultFont, FontStyle.Bold);
+                    g.DrawString(caption, f, Brushes.White, 1, 1);
+                    g.DrawString(caption, f, Brushes.Black, 0, 0);
+                    f.Dispose();
+                    g.Dispose();
+                }
             }
 
             imageListTile.Images.Add(res.Thumb);
