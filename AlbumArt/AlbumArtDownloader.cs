@@ -170,7 +170,7 @@ namespace AlbumArtDownloader
                 {
                     try
                     {
-                        t.script.GetThumbs(t, t.task.Artist, t.task.Album);
+                        t.script.GetThumbs(t, t.task.Artist, t.task.Album, artdownloader.form1.ThumbNailSize);
                         lock (t.task.results)
                         {
                             string s = string.Format("{0}/{1}", t.rescount, t.rescount);
@@ -461,25 +461,11 @@ namespace AlbumArtDownloader
 
         }
 
-        internal void GetThumbs(ScriptTask t, string artist, string album)
-        {
-            try
-            {
-                getThumbs.Invoke(null, new object[] { t, artist, album });
-            }
-            catch (Exception e)
-            {
-                if (e.GetType() == typeof(System.Reflection.TargetInvocationException))
-                {
-                    throw e.InnerException;
-                }
-            }
-        }
         internal void GetThumbs(ScriptTask t, string artist, string album, Size size)
         {
             try
             {
-                getThumbs.Invoke(null, new object[] { t, artist, album, size });
+                getThumbs.Invoke(null, new object[] { t, artist, album, size});
             }
             catch (Exception e)
             {
@@ -528,7 +514,6 @@ namespace AlbumArtDownloader
                 set { _CallbackData = value; }
             }
 
-            private Int32 _Width;
             private Task _OwnerTask;
             public Task OwnerTask
             {
@@ -536,6 +521,7 @@ namespace AlbumArtDownloader
                 set { _OwnerTask = value; }
             }
 
+            private Int32 _Width;
             public Int32 Width
             {
                 get { return _Width; }
@@ -610,6 +596,7 @@ namespace AlbumArtDownloader
         private System.Collections.Generic.List<TaskThread> threads;
         public List<Script> scripts;
         public List<Thread> otherthreads;
+
         public void AddTask(Task t)
         {
             lock (scripts)
@@ -732,6 +719,7 @@ namespace AlbumArtDownloader
         {
 
         }
+
         public ArtDownloader(MainForm form)
         {
             threads = new System.Collections.Generic.List<TaskThread>();

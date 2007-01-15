@@ -8,8 +8,6 @@ import util
 
 class Discogs:
 
-	static ThumbSize = Size(150, 150)
-
 	static SourceName as string:
 		get: return "Discogs"
 
@@ -19,9 +17,11 @@ class Discogs:
 	static SourceVersion as string:
 		get: return "0.1"
 
-	static def GetThumbs(coverart,artist,album,size):
+	static def GetThumbs(coverart,artist,album,size as Size):
 		query as string = artist + " " + album
 		query.Replace(' ','+')
+		ThumbSize as Size = size
+
 		obidResults = GetPage(String.Format("http://www.discogs.com/search?type=all&q={0}", EncodeUrl(query)))
 
 		//Get obids

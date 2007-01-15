@@ -58,6 +58,8 @@ namespace AlbumArtDownloader
         public DelegateThreadsEnded threadended;
         private SaveWithPreset savedlg;
 
+        public Size ThumbNailSize = new Size((int)Properties.Settings.Default.ThumbnailWidth, (int)Properties.Settings.Default.ThumbnailHeight);
+
         private ATL.AudioReaders.AudioFileReader ATLReader;
 
         string[] args;
@@ -1289,6 +1291,9 @@ namespace AlbumArtDownloader
         {
             SettingsForm d = new SettingsForm(this);
             d.ShowDialog(this);
+
+            ThumbNailSize = new Size((int)Properties.Settings.Default.ThumbnailWidth, (int)Properties.Settings.Default.ThumbnailHeight);
+            UpdateSize(true);
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)

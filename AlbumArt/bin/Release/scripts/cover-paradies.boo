@@ -7,16 +7,16 @@ import util
 import Hacks
 
 class CoverParadies:
-	static ThumbSize = Size(150, 150)
 	static DescriptiveImageTitles = true //Set this to False to prevent the type of image (Front, Back, CD, etc.) from being appended to the image titles
 
 	static SourceName as string:
 		get: return "Cover-Paradies"
 	static SourceVersion as string:
 		get: return "0.1"
-	static def GetThumbs(coverart,artist,album):
+	static def GetThumbs(coverart,artist,album,size as Size):
 		query as string = artist + " " + album
 		query.Replace(' ','+')
+		ThumbSize as Size = size
 		
 		searchResults = Post("http://www.cover-paradies.to/?Module=ExtendedSearch", String.Format("StartSearch=true&PagePos=0&SearchString={0}&StringMode=Wild&DisplayStyle=Text&HideDetails=Yes&PageLimit=1000&SektionID-2=Yes", EncodeUrl(query)))
 		

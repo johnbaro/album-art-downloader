@@ -6,7 +6,6 @@ import System.Text.RegularExpressions
 import util
 
 class GoogleImage:
-	static ThumbSize = Size(150, 150)
 	static def GetPageSecret(url as string):
 		request as System.Net.HttpWebRequest = System.Net.HttpWebRequest.Create(url)
 		request.UserAgent="Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1; .NET CLR 2.0.50727)"
@@ -16,7 +15,8 @@ class GoogleImage:
 		get: return "GoogleImage"
 	static SourceVersion as string:
 		get: return "0.2"
-	static def GetThumbs(coverart,artist,album):
+	static def GetThumbs(coverart,artist,album,size):
+		ThumbSize as Size = size
 		query = artist+" "+album
 		params = EncodeUrl(query)
 		params.Replace('%20','+')

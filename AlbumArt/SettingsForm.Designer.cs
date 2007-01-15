@@ -64,11 +64,11 @@ namespace AlbumArtDownloader
             this.checkBoxShowSizeOverlay = new System.Windows.Forms.CheckBox();
             this.checkBoxShowFolderPictures = new System.Windows.Forms.CheckBox();
             this.checkBoxBold = new System.Windows.Forms.CheckBox();
-            this.numericUpDown2 = new System.Windows.Forms.NumericUpDown();
+            this.numericUpDownThumbnailHeight = new System.Windows.Forms.NumericUpDown();
             this.checkBoxShowExistingArt = new System.Windows.Forms.CheckBox();
             this.checkBoxClose = new System.Windows.Forms.CheckBox();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
+            this.numericUpDownThumbnailWidth = new System.Windows.Forms.NumericUpDown();
             this.numericUpDown3 = new System.Windows.Forms.NumericUpDown();
             this.tabControlSettings.SuspendLayout();
             this.tabPageGeneral.SuspendLayout();
@@ -78,8 +78,8 @@ namespace AlbumArtDownloader
             this.splitContainerScriptManager.SuspendLayout();
             this.panelScriptManager.SuspendLayout();
             this.panelButtons.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownThumbnailHeight)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownThumbnailWidth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).BeginInit();
             this.SuspendLayout();
             // 
@@ -169,7 +169,7 @@ namespace AlbumArtDownloader
             this.tabPageGeneral.Controls.Add(this.checkBoxShowSizeOverlay);
             this.tabPageGeneral.Controls.Add(this.checkBoxShowFolderPictures);
             this.tabPageGeneral.Controls.Add(this.checkBoxBold);
-            this.tabPageGeneral.Controls.Add(this.numericUpDown2);
+            this.tabPageGeneral.Controls.Add(this.numericUpDownThumbnailHeight);
             this.tabPageGeneral.Controls.Add(this.label7);
             this.tabPageGeneral.Controls.Add(this.label4);
             this.tabPageGeneral.Controls.Add(this.label3);
@@ -177,7 +177,7 @@ namespace AlbumArtDownloader
             this.tabPageGeneral.Controls.Add(this.label2);
             this.tabPageGeneral.Controls.Add(this.checkBoxClose);
             this.tabPageGeneral.Controls.Add(this.textBox1);
-            this.tabPageGeneral.Controls.Add(this.numericUpDown1);
+            this.tabPageGeneral.Controls.Add(this.numericUpDownThumbnailWidth);
             this.tabPageGeneral.Controls.Add(this.label1);
             this.tabPageGeneral.Controls.Add(this.numericUpDown3);
             this.tabPageGeneral.Location = new System.Drawing.Point(4, 22);
@@ -326,24 +326,24 @@ namespace AlbumArtDownloader
             this.checkBoxBold.Text = "Show exact matches in Bold";
             this.checkBoxBold.UseVisualStyleBackColor = true;
             // 
-            // numericUpDown2
+            // numericUpDownThumbnailHeight
             // 
-            this.numericUpDown2.DataBindings.Add(new System.Windows.Forms.Binding("Value", global::AlbumArtDownloader.Properties.Settings.Default, "ThumbnailHeight", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.numericUpDown2.Increment = new decimal(new int[] {
+            this.numericUpDownThumbnailHeight.DataBindings.Add(new System.Windows.Forms.Binding("Value", global::AlbumArtDownloader.Properties.Settings.Default, "ThumbnailHeight", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.numericUpDownThumbnailHeight.Increment = new decimal(new int[] {
             10,
             0,
             0,
             0});
-            this.numericUpDown2.Location = new System.Drawing.Point(156, 144);
-            this.numericUpDown2.Maximum = new decimal(new int[] {
+            this.numericUpDownThumbnailHeight.Location = new System.Drawing.Point(156, 144);
+            this.numericUpDownThumbnailHeight.Maximum = new decimal(new int[] {
             1000,
             0,
             0,
             0});
-            this.numericUpDown2.Name = "numericUpDown2";
-            this.numericUpDown2.Size = new System.Drawing.Size(47, 20);
-            this.numericUpDown2.TabIndex = 7;
-            this.numericUpDown2.Value = global::AlbumArtDownloader.Properties.Settings.Default.ThumbnailHeight;
+            this.numericUpDownThumbnailHeight.Name = "numericUpDownThumbnailHeight";
+            this.numericUpDownThumbnailHeight.Size = new System.Drawing.Size(47, 20);
+            this.numericUpDownThumbnailHeight.TabIndex = 7;
+            this.numericUpDownThumbnailHeight.Value = global::AlbumArtDownloader.Properties.Settings.Default.ThumbnailHeight;
             // 
             // checkBoxShowExistingArt
             // 
@@ -379,24 +379,24 @@ namespace AlbumArtDownloader
             this.textBox1.TabIndex = 16;
             this.textBox1.Text = global::AlbumArtDownloader.Properties.Settings.Default.SaveFileName;
             // 
-            // numericUpDown1
+            // numericUpDownThumbnailWidth
             // 
-            this.numericUpDown1.DataBindings.Add(new System.Windows.Forms.Binding("Value", global::AlbumArtDownloader.Properties.Settings.Default, "ThumbnailWidth", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.numericUpDown1.Increment = new decimal(new int[] {
+            this.numericUpDownThumbnailWidth.DataBindings.Add(new System.Windows.Forms.Binding("Value", global::AlbumArtDownloader.Properties.Settings.Default, "ThumbnailWidth", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.numericUpDownThumbnailWidth.Increment = new decimal(new int[] {
             10,
             0,
             0,
             0});
-            this.numericUpDown1.Location = new System.Drawing.Point(85, 144);
-            this.numericUpDown1.Maximum = new decimal(new int[] {
+            this.numericUpDownThumbnailWidth.Location = new System.Drawing.Point(85, 144);
+            this.numericUpDownThumbnailWidth.Maximum = new decimal(new int[] {
             1000,
             0,
             0,
             0});
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(47, 20);
-            this.numericUpDown1.TabIndex = 5;
-            this.numericUpDown1.Value = global::AlbumArtDownloader.Properties.Settings.Default.ThumbnailWidth;
+            this.numericUpDownThumbnailWidth.Name = "numericUpDownThumbnailWidth";
+            this.numericUpDownThumbnailWidth.Size = new System.Drawing.Size(47, 20);
+            this.numericUpDownThumbnailWidth.TabIndex = 5;
+            this.numericUpDownThumbnailWidth.Value = global::AlbumArtDownloader.Properties.Settings.Default.ThumbnailWidth;
             // 
             // numericUpDown3
             // 
@@ -441,8 +441,8 @@ namespace AlbumArtDownloader
             this.panelScriptManager.PerformLayout();
             this.panelButtons.ResumeLayout(false);
             this.panelButtons.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownThumbnailHeight)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownThumbnailWidth)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).EndInit();
             this.ResumeLayout(false);
 
@@ -452,9 +452,9 @@ namespace AlbumArtDownloader
 
         private System.Windows.Forms.CheckBox checkBoxShowExistingArt;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.NumericUpDown numericUpDownThumbnailWidth;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.NumericUpDown numericUpDown2;
+        private System.Windows.Forms.NumericUpDown numericUpDownThumbnailHeight;
         private System.Windows.Forms.CheckBox checkBoxClose;
         private System.Windows.Forms.NumericUpDown numericUpDown3;
         private System.Windows.Forms.Label label3;
