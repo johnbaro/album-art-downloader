@@ -429,5 +429,17 @@ namespace AlbumArtDownloader.Properties {
                 this["ShowFolderPictures"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool AutoDownloadFullImage {
+            get {
+                return ((bool)(this["AutoDownloadFullImage"]));
+            }
+            set {
+                this["AutoDownloadFullImage"] = value;
+            }
+        }
     }
 }

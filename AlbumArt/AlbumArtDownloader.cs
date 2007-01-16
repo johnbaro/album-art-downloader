@@ -174,7 +174,7 @@ namespace AlbumArtDownloader
                         lock (t.task.results)
                         {
                             string s = string.Format("{0}/{1}", t.rescount, t.rescount);
-                            artdownloader.form1.BeginInvoke(artdownloader.form1.taskupdate, t.task, t.script, s);
+							artdownloader.form1.BeginInvoke(artdownloader.form1.taskupdate, t.task, t.script, s);
                         }
                     }
                     catch (AbortedException)
@@ -791,46 +791,7 @@ namespace AlbumArtDownloader
                 thumb = s.indexn;
                 lock (thumb)
                 {
-                    if (thumb.FullSize == null)
-                    {
-                        form1.CoolInvoke(form1.statupdate, "Retrieving image...", null, false, Thread.CurrentThread);
-                        form1.CoolInvoke(form1.produpdate, (int)(0));
-                        object output = thumb.ScriptOwner.GetResult(thumb.CallbackData);
-                        if (output is System.IO.Stream)
-                        {
-                            long length = new long();
-
-                            Stream ss = output as Stream;
-                            
-                            if (ss.CanSeek)
-                                length = ss.Length;
-                            else
-                                length = 0;
-
-                            if (length > 50 * 1024 * 1024)
-                            {
-                                throw new Exception("Script returned preposterous Stream (greater than 50MB.)");
-                            }
-                            thumb.FullSize = new MemoryStream((int)(length));
-                            GetStreamToStream(thumb.FullSize, ss, length, true);
-                        }
-                        else if (output is String)
-                        {
-                            long size = new long();
-
-                            Stream ss = GetHTTPStream(output as String, ref size);
-
-                            if (!ss.CanSeek)
-                                size = 0;
-
-                            if (size > 50 * 1024 * 1024)
-                            {
-                                throw new Exception("Server returned preposterous Content-Length (greater than 50MB.)");
-                            }
-                            thumb.FullSize = new MemoryStream((int)(size));
-                            GetStreamToStream(thumb.FullSize, ss, size, true);
-                        }
-                    }
+					PopupateFullSizeStream(thumb);
                     if (s.filetargetn != null)
                         f = File.Create(s.filetargetn);
                     Image i = ProcessStream(ref f, s, thumb);
@@ -928,6 +889,50 @@ namespace AlbumArtDownloader
 #endif
             ThreadEnded(System.Threading.Thread.CurrentThread);
         }
+
+		public void PopupateFullSizeStream(ThumbRes thumb)
+		{
+			if (thumb.FullSize == null)
+			{
+				form1.CoolInvoke(form1.statupdate, "Retrieving image...", null, false, Thread.CurrentThread);
+				form1.CoolInvoke(form1.produpdate, (int)(0));
+				object output = thumb.ScriptOwner.GetResult(thumb.CallbackData);
+				if (output is System.IO.Stream)
+				{
+					long length = new long();
+
+					Stream ss = output as Stream;
+
+					if (ss.CanSeek)
+						length = ss.Length;
+					else
+						length = 0;
+
+					if (length > 50 * 1024 * 1024)
+					{
+						throw new Exception("Script returned preposterous Stream (greater than 50MB.)");
+					}
+					thumb.FullSize = new MemoryStream((int)(length));
+					GetStreamToStream(thumb.FullSize, ss, length, true);
+				}
+				else if (output is String)
+				{
+					long size = new long();
+
+					Stream ss = GetHTTPStream(output as String, ref size);
+
+					if (!ss.CanSeek)
+						size = 0;
+
+					if (size > 50 * 1024 * 1024)
+					{
+						throw new Exception("Server returned preposterous Content-Length (greater than 50MB.)");
+					}
+					thumb.FullSize = new MemoryStream((int)(size));
+					GetStreamToStream(thumb.FullSize, ss, size, true);
+				}
+			}
+		}
 
         private System.Drawing.Image ProcessStream(ref FileStream f, SaveData s, ThumbRes thumb)
         {

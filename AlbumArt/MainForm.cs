@@ -166,39 +166,34 @@ namespace AlbumArtDownloader
             }
             else preview = null;
 
-            if (Properties.Settings.Default.ShowFolderPictures)
+            if (Properties.Settings.Default.ShowFolderPictures && !String.IsNullOrEmpty(selectedtask.FileSave))
             {
-                if (selectedtask.FileSave != "")
+                string albumPath = System.IO.Path.GetDirectoryName(selectedtask.FileSave);
+
+                DirectoryInfo dirinfo = new DirectoryInfo(albumPath);
+
+                foreach (FileInfo fileInfo in dirinfo.GetFiles("*", SearchOption.AllDirectories))
                 {
-                    string albumPath = System.IO.Path.GetDirectoryName(selectedtask.FileSave);
-
-                    DirectoryInfo dirinfo = new DirectoryInfo(albumPath);
-
-                    foreach (FileInfo fileInfo in dirinfo.GetFiles("*", SearchOption.AllDirectories))
+                    if (fileInfo.FullName != selectedtask.FileSave)
                     {
-                        if (fileInfo.FullName != selectedtask.FileSave)
+                        if (fileInfo.Extension == ".bmp" || fileInfo.Extension == ".jpg" || fileInfo.Extension == ".jpeg" || fileInfo.Extension == ".png" || fileInfo.Extension == ".gif")
                         {
-                            if (fileInfo.Extension == ".bmp" || fileInfo.Extension == ".jpg" || fileInfo.Extension == ".jpeg" || fileInfo.Extension == ".png" || fileInfo.Extension == ".gif")
+                            ArtDownloader.ThumbRes r = new ArtDownloader.ThumbRes();
+                            Int32 width = new Int32();
+                            Int32 height = new Int32();
+                            r.Thumb = UpdateThumbFolder(fileInfo.FullName, ref width, ref height);
+                            if (r.Thumb != null)
                             {
-                                ArtDownloader.ThumbRes r = new ArtDownloader.ThumbRes();
-                                Int32 width = new Int32();
-                                Int32 height = new Int32();
-                                r.Thumb = UpdateThumbFolder(fileInfo.FullName, ref width, ref height);
-                                if (r.Thumb != null)
-                                {
-                                    r.Width = width;
-                                    r.Height = height;
-                                    r.Name = "---LocalFolder---" + fileInfo.FullName;
-                                    r.ScriptOwner = null;
-                                    preview = AddThumb(r);
-                                }
-                                else preview = null;
+                                r.Width = width;
+                                r.Height = height;
+                                r.Name = "---LocalFolder---" + fileInfo.FullName;
+                                r.ScriptOwner = null;
+                                preview = AddThumb(r);
                             }
+                            else preview = null;
                         }
                     }
-
                 }
-
             }
             else preview = null;
 
@@ -308,10 +303,26 @@ namespace AlbumArtDownloader
         {
             int i = imageListTile.Images.Count;
 
-            if (Properties.Settings.Default.ShowSizeOverlay)
+			if (Properties.Settings.Default.ShowSizeOverlay)
             {
-                if (res.Width > 0 && res.Height > 0)
+				//TODO: This is hacky. Size should have its own field to be displayed, not involve modifying the thumb bitmap.
+				res.Thumb = ResizeBitmap(res.Thumb, ThumbNailSize.Width, ThumbNailSize.Height);
+				if (!(res.Width > 0 && res.Height > 0))
                 {
+					if(Properties.Settings.Default.AutoDownloadFullImage)
+					{
+						a.PopupateFullSizeStream(res);
+					}
+					if(res.FullSize != null)
+					{
+						Image fullSize = Image.FromStream(res.FullSize);
+						res.Width = fullSize.Width;
+						res.Height = fullSize.Height;
+					}
+				}
+
+				if (res.Width > 0 && res.Height > 0)
+				{
                     string caption = System.String.Format("{0} x {1}", res.Width, res.Height);
 
                     Graphics g = Graphics.FromImage(res.Thumb);
@@ -1237,7 +1248,7 @@ namespace AlbumArtDownloader
             a.AddTask(new Task(a, b.artist, b.album, b.path, false));
         }
 
-        static Bitmap ResizeBitmap(Bitmap source, int Width, int Height)
+        static Bitmap ResizeBitmap(Image source, int Width, int Height)
         {
             int sourceWidth = source.Width;
             int sourceHeight = source.Height;

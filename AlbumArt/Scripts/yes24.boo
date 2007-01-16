@@ -7,9 +7,11 @@ import System.Web
 class Yes24:
 	static SourceName as string:
 		get: return "Yes24"
+	static SourceCreator as string:
+		get: return "Alex Vallat"
 	static SourceVersion as decimal:
-		get: return 0.1
-	static def GetThumbs(coverart,artist,album):
+		get: return 0.2
+	static def GetThumbs(coverart,artist,album,size):
 		encoding = Encoding.GetEncoding("euc-kr")
 		url = String.Format("http://www.yes24.com/searchCenter/searchresultDetail.aspx?qtitle={0}&qauthor={1}", HttpUtility.UrlEncode(album, encoding), HttpUtility.UrlEncode(artist, encoding))
 		
@@ -35,7 +37,7 @@ class Yes24:
 			else:
 				fullImage = thumbnail
 			
-			coverart.AddThumb(thumbnail, title, 0, 0, fullImage)
+			coverart.AddThumb(thumbnail, title, -1, -1, fullImage)
 	
 	static def GetPage(url as string, encoding as Encoding):
 			request = System.Net.HttpWebRequest.Create(url)

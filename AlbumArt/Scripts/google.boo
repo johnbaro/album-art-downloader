@@ -1,5 +1,4 @@
 namespace CoverSources
-import System
 import System.Xml
 import System.Drawing
 import System.Text.RegularExpressions
@@ -13,10 +12,9 @@ class GoogleImage:
 		return response.GetResponseStream()
 	static SourceName as string:
 		get: return "GoogleImage"
-	static SourceVersion as string:
-		get: return "0.2"
+	static SourceVersion as decimal:
+		get: return 0.3
 	static def GetThumbs(coverart,artist,album,size):
-		ThumbSize as Size = size
 		query = artist+" "+album
 		params = EncodeUrl(query)
 		params.Replace('%20','+')
@@ -26,19 +24,12 @@ class GoogleImage:
 		iterator = r.Matches(text)
 		coverart.SetCountEstimate(iterator.Count)
 		for result as Match in iterator:
-			size = result.Groups[10].Value
-			size = size.Remove(size.IndexOf("pixels"))
-
-			large = System.Drawing.Bitmap.FromStream(GetPageStream("http://images.google.com/images?q=tbn:"+result.Groups[3].Value+result.Groups[4].Value))
-			thumb = ResizeBitmap(large, ThumbSize.Width, ThumbSize.Height)
-			large.Dispose()
-
-			name = (result.Groups[7].Value.Replace("<b>","").Replace("</b>",""))
-
-			Width = Int32.Parse(size.Remove(size.IndexOf(" x ")))
-			Hight = Int32.Parse(size.Remove(1, size.IndexOf(" x ") + 3))
-			if (Width >= 300):
-				coverart.AddThumb(thumb,name,Width,Hight,result.Groups[4].Value)
+			name=(result.Groups[7].Value.Replace("<b>","").Replace("</b>",""))
+			sizeString = result.Groups[10].Value
+			sizeRegex = Regex("(?<width>\\d+) x (?<height>\\d+)")
+			match = sizeRegex.Matches(sizeString)[0]
+			width = System.Int32.Parse(match.Groups["width"].Value)
+			height = System.Int32.Parse(match.Groups["height"].Value)
+			coverart.AddThumb("http://images.google.com/images?q=tbn:"+result.Groups[3].Value+result.Groups[4].Value,name,width,height,result.Groups[4].Value)
 	static def GetResult(param):
 		return param
-

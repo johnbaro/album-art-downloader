@@ -8,13 +8,16 @@ import util
 class CoverIsland:
 	static SourceName as string:
 		get: return "CoverIsland"
+	static SourceCreator as string:
+		get: return "Alex Vallat"
 	static SourceVersion as decimal:
-		get: return 0.1
-	static def GetThumbs(coverart,artist,album):
+		get: return 0.2
+	static def GetThumbs(coverart,artist,album,size):
 		query as string = artist + " " + album
 		query.Replace(' ','+')
 		searchResults = GetPage(String.Format("http://www.coverforum.net/modules.php?name=CoverSearch&tipo=audio&keywords={0}", EncodeUrl(query)))
-
+		System.Diagnostics.Debug.WriteLine(searchResults)
+		
 		//Get results
 		resultsRegex = Regex("<a href=\"http\\://www\\.coverisland\\.net/copertine/Audio/.\\.asp\">(?<title>.+?)(?<type>-(?:front|back|cd|cd2|inlay|inside))", RegexOptions.Multiline)
 		resultMatches = resultsRegex.Matches(searchResults)
@@ -33,7 +36,7 @@ class CoverIsland:
 					request = System.Net.HttpWebRequest.Create(url)
 					response = request.GetResponse()
 					if response.ContentType.StartsWith("image/"):
-						coverart.AddThumb(response.GetResponseStream(), resultMatch.Groups["title"].Value, 0, 0, null)
+						coverart.AddThumb(response.GetResponseStream(), resultMatch.Groups["title"].Value, -1, -1, null)
 
 	static def Post(url as String, content as String):
 		request = System.Net.HttpWebRequest.Create(url)

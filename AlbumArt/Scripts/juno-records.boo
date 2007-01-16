@@ -17,7 +17,6 @@ class JunoRecords:
 	static def GetThumbs(coverart,artist,album,size as Size):
 		query as string = artist + " " + album
 		query.Replace(' ','%20')
-		ThumbSize as Size = size
 		
 		searchResults = GetPage(String.Format("http://classic.juno.co.uk/search/?q={0}&precision=any&column=all&genre_id=0000&released=&sdate=&edate=", query))
 
@@ -44,17 +43,8 @@ class JunoRecords:
 				else:
 					imageTitle = title
 
-				large = System.Drawing.Bitmap.FromStream(GetPageStream(String.Format("http://images.juno.co.uk/full/CS{0}-BIG.jpg", imageMatch.Groups["fullSizeID"].Value)))
-				
-				width = large.Width
-				height = large.Height
-				
-				thumb = ResizeBitmap(large, ThumbSize.Width, ThumbSize.Height)
-				large.Dispose()
-
-				coverart.AddThumb(thumb, imageTitle, width, height, imageMatch.Groups["fullSizeID"].Value)		
+				coverart.AddThumb(String.Format("http://images.juno.co.uk/full/CS{0}-BIG.jpg", imageMatch.Groups["fullSizeID"].Value), imageTitle, -1, -1, null)		
 
 	static def GetResult(param):
-		url = String.Format("http://images.juno.co.uk/full/CS{0}-BIG.jpg", param)
-		return url
+		return null
 

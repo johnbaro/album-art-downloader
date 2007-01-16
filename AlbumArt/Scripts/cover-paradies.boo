@@ -4,19 +4,19 @@ import System.Drawing
 import System.Text
 import System.Text.RegularExpressions
 import util
-import Hacks
 
 class CoverParadies:
 	static DescriptiveImageTitles = true //Set this to False to prevent the type of image (Front, Back, CD, etc.) from being appended to the image titles
-
+	
 	static SourceName as string:
 		get: return "Cover-Paradies"
-	static SourceVersion as string:
-		get: return "0.1"
-	static def GetThumbs(coverart,artist,album,size as Size):
+	static SourceCreator as string:
+		get: return "Alex Vallat"
+	static SourceVersion as decimal:
+		get: return 0.3
+	static def GetThumbs(coverart,artist,album,size):
 		query as string = artist + " " + album
 		query.Replace(' ','+')
-		ThumbSize as Size = size
 		
 		searchResults = Post("http://www.cover-paradies.to/?Module=ExtendedSearch", String.Format("StartSearch=true&PagePos=0&SearchString={0}&StringMode=Wild&DisplayStyle=Text&HideDetails=Yes&PageLimit=1000&SektionID-2=Yes", EncodeUrl(query)))
 		
@@ -43,12 +43,7 @@ class CoverParadies:
 				else:
 					imageTitle = title
 					
-				//large = System.Drawing.Bitmap.FromStream(GetPageStream(String.Format("http://www.cover-paradies.to{0}", imageMatch.Groups["thumb"].Value)))
-				large = System.Drawing.Bitmap.FromStream(GetPageStream(String.Format("http://www.cover-paradies.to/res/exe/DLElement.exe.php?ID={0}", imageMatch.Groups["fullSizeID"].Value)))
-				thumb = ResizeBitmap(large, ThumbSize.Width, ThumbSize.Height)
-				large.Dispose()
-
-				coverart.AddThumb(thumb, imageTitle, Int32.Parse(imageMatch.Groups["width"].Value), Int32.Parse(imageMatch.Groups["height"].Value), imageMatch.Groups["fullSizeID"].Value)		
+				coverart.AddThumb(String.Format("http://www.cover-paradies.to{0}", imageMatch.Groups["thumb"].Value), imageTitle, Int32.Parse(imageMatch.Groups["width"].Value), Int32.Parse(imageMatch.Groups["height"].Value), imageMatch.Groups["fullSizeID"].Value)		
 
 	static def Post(url as String, content as String):
 		request = System.Net.HttpWebRequest.Create(url)
@@ -63,9 +58,5 @@ class CoverParadies:
 		return System.IO.StreamReader(streamresponse).ReadToEnd()
 			
 	static def GetResult(param):
-		url = String.Format("http://www.cover-paradies.to/res/exe/DLElement.exe.php?ID={0}", param)
-		//If the cover downloader app is fixed to download unknown-length streams, then just return the url string from here directly.
-		//For the moment, use a slimey hack to prevent an exception, and return that stream.
-		//stream = HackStream(GetPageStream(url))
-		return url
+		return String.Format("http://www.cover-paradies.to/res/exe/DLElement.exe.php?ID={0}", param)
 

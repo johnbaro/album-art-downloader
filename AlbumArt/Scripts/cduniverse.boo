@@ -8,9 +8,11 @@ import util
 class CdUniverse:
 	static SourceName as string:
 		get: return "CD Universe"
+	static SourceCreator as string:
+		get: return "Alex Vallat"		
 	static SourceVersion as decimal:
-		get: return 0.1
-	static def GetThumbs(coverart,artist,album):
+		get: return 0.2
+	static def GetThumbs(coverart,artist,album,size):
 		albumResults = GetPage(String.Format("http://www.cduniverse.com/sresult.asp?HT_Search_Info={0}&HT_Search=TITLE", EncodeUrl(album)))
 
 		//Get results
@@ -41,9 +43,7 @@ class CdUniverse:
 			imageMatches = imageRegex.Matches(imagePage)
 			for imageMatch as Match in imageMatches:
 				url = imageMatch.Groups["url"].Value
-			
-			
-				coverart.AddThumb(url, title, 0, 0, null)
+				coverart.AddThumb(url, title, -1, -1, null)
 		
 
 	static def GetResult(param):
