@@ -311,7 +311,7 @@ namespace AlbumArtDownloader
                 {
 					if(Properties.Settings.Default.AutoDownloadFullImage)
 					{
-						a.PopupateFullSizeStream(res);
+                        a.PopupateFullSizeStream(res);
 					}
 					if(res.FullSize != null)
 					{
@@ -492,6 +492,45 @@ namespace AlbumArtDownloader
             }
         }
 
+        public void UpdateScriptOrder(List<Script> scripts)
+        {
+
+            scripts.Sort(CompareSortOrder);
+
+            megaListTiles.BeginUpdate();
+            megaListTiles.Groups.Clear();
+
+            megaListTiles.Groups.Add(existing = new ListViewGroup("Existing"));
+            megaListTiles.Groups.Add(folder_existing = new ListViewGroup("Pictures in folder"));
+
+            for (int i = 0; i < scripts.Count; i++)
+            {
+                listViewQueue.Columns[scripts[i].Name].DisplayIndex = scripts[i].SortPosition + 2;
+
+                scripts[i].group = AddGroup(scripts[i]);
+            }
+
+
+
+            if (selectedtask != null)
+            {
+                SwitchToTask(selectedtask);
+            }
+
+            megaListTiles.EndUpdate();
+        }
+
+        private int CompareSortOrder(Script x, Script y)
+        {
+
+            if (x.SortPosition == y.SortPosition)
+                return 0;
+            else if (x.SortPosition > y.SortPosition)
+                return 1;
+            else
+                return -1;
+
+        }
 
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -535,8 +574,71 @@ namespace AlbumArtDownloader
                 Properties.Settings.Default.QueueCols = SaveListViewSizeToString(listViewQueue);
                 Properties.Settings.Default.BrowserColsCOM = SaveListViewSizeToString(megaListBrowserCOM);
                 Properties.Settings.Default.BrowserColsPath = SaveListViewSizeToString(megaListBrowserPath);
+                Properties.Settings.Default.ScriptOrder = SaveScriptOrderToString(a.scripts);
+                Properties.Settings.Default.ScriptEnabled = SaveScriptEnabledToString(a.scripts);
                 Properties.Settings.Default.Save();
             }
+        }
+        internal void OrderScriptsFromString(string str, List<Script> scripts)
+        {
+            string[] scriptsorder = str.Split('|');
+
+            foreach (string scriptorder in scriptsorder)
+            {
+                string[] scriptdata = scriptorder.Split(';');
+
+                foreach (Script s in scripts)
+                {
+                    if (s.Name == scriptdata[0])
+                    {
+                        s.SortPosition = int.Parse(scriptdata[1]);
+                    }
+                }
+            }
+            
+        }
+
+        internal string SaveScriptOrderToString(List<Script> scripts)
+        {
+            string[] scriptsorder = new string[scripts.Count];
+
+            for (int i = 0; i < scripts.Count; i++)
+            {
+                scriptsorder[i] = scripts[i].Name + ";" + scripts[i].SortPosition;
+            }
+
+            return string.Join("|", scriptsorder);
+        }
+
+        internal void EnableScriptsFromString(string str, List<Script> scripts)
+        {
+            string[] enabledscripts = str.Split('|');
+
+            foreach (string anabledscript in enabledscripts)
+            {
+                string[] scriptdata = anabledscript.Split(';');
+
+                foreach (Script s in scripts)
+                {
+                    if (s.Name == scriptdata[0])
+                    {
+                        s.Enabled = scriptdata[1] == "1" ? true : false;
+                    }
+                }
+            }
+
+        }
+
+        internal string SaveScriptEnabledToString(List<Script> scripts)
+        {
+            string[] enabledscripts = new string[scripts.Count];
+
+            for (int i = 0; i < scripts.Count; i++)
+            {
+                enabledscripts[i] = scripts[i].Name + ";" + (scripts[i].Enabled == true ? "1" : "0");
+            }
+
+            return string.Join("|", enabledscripts);
         }
 
         internal void SizeListViewFromString(string str, ListView list)
@@ -582,6 +684,9 @@ namespace AlbumArtDownloader
             SizeListViewFromString(Properties.Settings.Default.QueueCols, listViewQueue);
             SizeListViewFromString(Properties.Settings.Default.BrowserColsCOM, megaListBrowserCOM);
             SizeListViewFromString(Properties.Settings.Default.BrowserColsPath, megaListBrowserPath);
+            OrderScriptsFromString(Properties.Settings.Default.ScriptOrder, a.scripts);
+            EnableScriptsFromString(Properties.Settings.Default.ScriptEnabled, a.scripts);
+            UpdateScriptOrder(a.scripts);
             a.SetThreads();
             forceminimise = ProcessArgs(args, true);
             if (Properties.Settings.Default.MainPosX != 0 || Properties.Settings.Default.MainPosY != 0 || Properties.Settings.Default.MainPosW != 0 || Properties.Settings.Default.MainPosH != 0)
@@ -835,7 +940,7 @@ namespace AlbumArtDownloader
 
         internal ColumnHeader AddCol(Script script)
         {
-            return listViewQueue.Columns.Add(script.Name, 50);
+            return listViewQueue.Columns.Add(script.Name, script.Name, 50);
         }
 
         private void queue_ItemActivate(object sender, EventArgs e)

@@ -36,11 +36,6 @@ namespace AlbumArtDownloader
             InitializeComponent();
         }
 
-        private void splitContainer1_Panel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
         private void ScriptCompiler_Load(object sender, EventArgs e)
         {
             this.CenterToParent();
@@ -92,6 +87,7 @@ namespace AlbumArtDownloader
                 c.Parameters.LibPaths.Add(Application.StartupPath);
                 c.Parameters.Ducky = true;
                 c.Parameters.OutputType = CompilerOutputType.Library;
+                c.Parameters.Debug = false;
                 CompilerContext z = null;
                 c.Parameters.Pipeline = new CompileToFile();
                 c.Parameters.OutputAssembly = target;

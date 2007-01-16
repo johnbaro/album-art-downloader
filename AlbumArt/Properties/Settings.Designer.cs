@@ -441,5 +441,29 @@ namespace AlbumArtDownloader.Properties {
                 this["AutoDownloadFullImage"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ScriptOrder {
+            get {
+                return ((string)(this["ScriptOrder"]));
+            }
+            set {
+                this["ScriptOrder"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ScriptEnabled {
+            get {
+                return ((string)(this["ScriptEnabled"]));
+            }
+            set {
+                this["ScriptEnabled"] = value;
+            }
+        }
     }
 }

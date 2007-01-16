@@ -71,7 +71,7 @@ namespace AlbumArtDownloader
             result.Name = name;
             task.AddResult(result);
             ++rescount;
-            artdownloader.form1.BeginInvoke(artdownloader.form1.taskupdate, task, script, estimate == 0 ? string.Format("{0}", rescount) : string.Format("{0}/{1}", rescount, estimate));
+            artdownloader.mainForm.BeginInvoke(artdownloader.mainForm.taskupdate, task, script, estimate == 0 ? string.Format("{0}", rescount) : string.Format("{0}/{1}", rescount, estimate));
         }
         public void AddThumb(Stream thumb, string name, int width, int height, object callback)
         {
@@ -95,7 +95,7 @@ namespace AlbumArtDownloader
             result.Name = name;
             task.AddResult(result);
             ++rescount;
-            artdownloader.form1.BeginInvoke(artdownloader.form1.taskupdate, task, script, estimate == 0 ? string.Format("{0}", rescount) : string.Format("{0}/{1}", rescount, estimate));
+            artdownloader.mainForm.BeginInvoke(artdownloader.mainForm.taskupdate, task, script, estimate == 0 ? string.Format("{0}", rescount) : string.Format("{0}/{1}", rescount, estimate));
         }
         public void AddThumb(System.Drawing.Image thumb, string name, int width, int height, object callback)
         {
@@ -111,20 +111,20 @@ namespace AlbumArtDownloader
             result.Name = name;
             task.AddResult(result);
             ++rescount;
-            artdownloader.form1.BeginInvoke(artdownloader.form1.taskupdate, task, script, estimate == 0 ? string.Format("{0}", rescount) : string.Format("{0}/{1}", rescount, estimate));
+            artdownloader.mainForm.BeginInvoke(artdownloader.mainForm.taskupdate, task, script, estimate == 0 ? string.Format("{0}", rescount) : string.Format("{0}/{1}", rescount, estimate));
         }
         public void DebugHTML(string html)
         {
             if (IsDebug)
             {
-                artdownloader.form1.BeginInvoke(artdownloader.form1.dohtml, false, html);
+                artdownloader.mainForm.BeginInvoke(artdownloader.mainForm.dohtml, false, html);
             }
         }
         public void DebugURL(string html)
         {
             if (IsDebug)
             {
-                artdownloader.form1.BeginInvoke(artdownloader.form1.dohtml, true, html);
+                artdownloader.mainForm.BeginInvoke(artdownloader.mainForm.dohtml, true, html);
             }
         }
         public void SetCountEstimate(int count)
@@ -170,11 +170,18 @@ namespace AlbumArtDownloader
                 {
                     try
                     {
-                        t.script.GetThumbs(t, t.task.Artist, t.task.Album);
-                        lock (t.task.results)
+                        if (t.script.Enabled)
                         {
-                            string s = string.Format("{0}/{1}", t.rescount, t.rescount);
-							artdownloader.form1.BeginInvoke(artdownloader.form1.taskupdate, t.task, t.script, s);
+                            t.script.GetThumbs(t, t.task.Artist, t.task.Album);
+                            lock (t.task.results)
+                            {
+                                string s = string.Format("{0}/{1}", t.rescount, t.rescount);
+                                artdownloader.mainForm.BeginInvoke(artdownloader.mainForm.taskupdate, t.task, t.script, s);
+                            }
+                        }
+                        else
+                        {
+                            artdownloader.mainForm.BeginInvoke(artdownloader.mainForm.taskupdate, t.task, t.script, "Script disabled");
                         }
                     }
                     catch (AbortedException)
@@ -183,7 +190,7 @@ namespace AlbumArtDownloader
                     }
                     catch (Exception e)
                     {
-                        artdownloader.form1.BeginInvoke(artdownloader.form1.taskupdate, t.task, t.script, e.Message);
+                        artdownloader.mainForm.BeginInvoke(artdownloader.mainForm.taskupdate, t.task, t.script, e.Message);
                     }
                     finally
                     {
@@ -285,7 +292,7 @@ namespace AlbumArtDownloader
                     _ScriptsToGo = value;
                     if (_ScriptsToGo == 0)
                     {
-                        artdownloader.form1.CoolBeginInvoke(artdownloader.form1.taskdone, this);
+                        artdownloader.mainForm.CoolBeginInvoke(artdownloader.mainForm.taskdone, this);
                     }
                 }
             }
@@ -398,6 +405,8 @@ namespace AlbumArtDownloader
         string _Name;
         string _Version;
         string _Creator;
+        bool _Enabled = true;
+        int _SortPosition;
 
         public string Name
         {
@@ -421,10 +430,32 @@ namespace AlbumArtDownloader
             }
         }
 
-        //IronPython.Runtime.PythonFunction getThumbs;
-        // IronPython.Runtime.PythonFunction getResult;
+        public bool Enabled
+        {
+            get
+            {
+                return _Enabled;
+            }
+            set
+            {
+                _Enabled = value;
+            }
+        }
+
+        public int SortPosition
+        {
+            get
+            {
+                return _SortPosition;
+            }
+            set
+            {
+                _SortPosition = value;
+            }
+        }
+
+
         MethodInfo getThumbs, getResult;
-        //object file;
         internal Script(ArtDownloader a, Type thetype)
         {
             lock (this)
@@ -455,8 +486,8 @@ namespace AlbumArtDownloader
                 if (getThumbs == null || getResult == null)
                     throw new Exception("Script must implement GetThumbs() And GetResult()");
 
-                group = a.form1.AddGroup(this);
-                listcol = a.form1.AddCol(this);
+                group = a.mainForm.AddGroup(this);
+                listcol = a.mainForm.AddCol(this);
             }
 
         }
@@ -584,10 +615,10 @@ namespace AlbumArtDownloader
 
         public void SendThumb(ThumbRes r)
         {
-            form1.BeginInvoke(form1.thumbupdate, r);
+            mainForm.BeginInvoke(mainForm.thumbupdate, r);
         }
 
-        public MainForm form1;
+        public MainForm mainForm;
         ManualResetEvent e_abort;
         List<Task> tasks;
         public event TaskEventHandler TaskAdded;
@@ -704,7 +735,7 @@ namespace AlbumArtDownloader
                      }
 
                  }*/
-            form1.ScriptsLoaded(scripts);
+            mainForm.ScriptsLoaded(scripts);
 
             lock (tasks)
             {
@@ -723,7 +754,7 @@ namespace AlbumArtDownloader
         public ArtDownloader(MainForm form)
         {
             threads = new System.Collections.Generic.List<TaskThread>();
-            form1 = form;
+            mainForm = form;
             e_abort = new ManualResetEvent(false);
             // artists=new string();
             // albums=new string();
@@ -797,12 +828,12 @@ namespace AlbumArtDownloader
                     Image i = ProcessStream(ref f, s, thumb);
                     if (i != null)
                     {
-                        form1.CoolBeginInvoke(form1.previewgot, i, thumb);
-                        form1.CoolBeginInvoke(form1.statupdate, "Complete", null, true, Thread.CurrentThread);
+                        mainForm.CoolBeginInvoke(mainForm.previewgot, i, thumb);
+                        mainForm.CoolBeginInvoke(mainForm.statupdate, "Complete", null, true, Thread.CurrentThread);
                     }
                     else
                     {
-                        form1.CoolBeginInvoke(form1.statupdate, "File Saved.", thumb.OwnerTask, true, Thread.CurrentThread);
+                        mainForm.CoolBeginInvoke(mainForm.statupdate, "File Saved.", thumb.OwnerTask, true, Thread.CurrentThread);
                     }
 
 
@@ -838,8 +869,8 @@ namespace AlbumArtDownloader
                     f = System.IO.File.Create(s.filetargetn);
                 try
                 {
-                    form1.CoolInvoke(form1.statupdate, "Retrieving image...", false, false, Thread.CurrentThread);
-                    form1.CoolInvoke(form1.produpdate, (int)(0));
+                    mainForm.CoolInvoke(mainForm.statupdate, "Retrieving image...", false, false, Thread.CurrentThread);
+                    mainForm.CoolInvoke(mainForm.produpdate, (int)(0));
                     object output = baseurl.script.GetResult(baseurl.callbackdata);
                     if (output is System.IO.Stream)
                     {
@@ -869,20 +900,20 @@ namespace AlbumArtDownloader
                 }
                 if (f != null)
                     f.Close();
-                form1.CoolInvoke(form1.produpdate, (int)(-1));
+                mainForm.CoolInvoke(mainForm.produpdate, (int)(-1));
                 if (i != null)
-                    form1.CoolBeginInvoke(form1.previewgot, i, baseurl.name);
-                form1.CoolBeginInvoke(form1.statupdate, f == null ? "Complete." : "File Saved.", false, true, Thread.CurrentThread); 
+                    mainForm.CoolBeginInvoke(mainForm.previewgot, i, baseurl.name);
+                mainForm.CoolBeginInvoke(mainForm.statupdate, f == null ? "Complete." : "File Saved.", false, true, Thread.CurrentThread); 
 
             }
             catch (AbortedException)
             {
-                form1.CoolNoThrowBeginInvoke(form1.statupdate, "Aborted.", false, true, Thread.CurrentThread);
+                mainForm.CoolNoThrowBeginInvoke(mainForm.statupdate, "Aborted.", false, true, Thread.CurrentThread);
             }
             catch (Exception e)
             {
                 System.Windows.Forms.MessageBox.Show(e.Message);
-                form1.CoolInvoke(form1.statupdate, "Failed with error.", false, true, Thread.CurrentThread);
+                mainForm.CoolInvoke(mainForm.statupdate, "Failed with error.", false, true, Thread.CurrentThread);
 
 
             }
@@ -890,12 +921,12 @@ namespace AlbumArtDownloader
             ThreadEnded(System.Threading.Thread.CurrentThread);
         }
 
-		public void PopupateFullSizeStream(ThumbRes thumb)
+        public void PopupateFullSizeStream(ThumbRes thumb)
 		{
 			if (thumb.FullSize == null)
 			{
-				form1.CoolInvoke(form1.statupdate, "Retrieving image...", null, false, Thread.CurrentThread);
-				form1.CoolInvoke(form1.produpdate, (int)(0));
+				mainForm.CoolInvoke(mainForm.statupdate, "Retrieving image...", null, false, Thread.CurrentThread);
+				mainForm.CoolInvoke(mainForm.produpdate, (int)(0));
 				object output = thumb.ScriptOwner.GetResult(thumb.CallbackData);
 				if (output is System.IO.Stream)
 				{
@@ -914,6 +945,7 @@ namespace AlbumArtDownloader
 					}
 					thumb.FullSize = new MemoryStream((int)(length));
 					GetStreamToStream(thumb.FullSize, ss, length, true);
+
 				}
 				else if (output is String)
 				{
@@ -930,6 +962,7 @@ namespace AlbumArtDownloader
 					}
 					thumb.FullSize = new MemoryStream((int)(size));
 					GetStreamToStream(thumb.FullSize, ss, size, true);
+
 				}
 			}
 		}
@@ -964,7 +997,7 @@ namespace AlbumArtDownloader
                     throw new Exception("Stream is ridiculously long (50MB read so far). Stopping before something bad happens.");
                 }
                 if (sendprogress && size != 0)
-                    form1.CoolInvoke(form1.produpdate, (int)(total * 100 / size));
+                    mainForm.CoolInvoke(mainForm.produpdate, (int)(total * 100 / size));
             }
         }
 
@@ -988,7 +1021,7 @@ namespace AlbumArtDownloader
                 //   System.Diagnostics.Debug.Assert(threads.Contains(from));
                 otherthreads.Remove(from);
                 if (e_abort.WaitOne(0, false) && !ThreadsActive())
-                    form1.BeginInvoke(form1.threadended);
+                    mainForm.BeginInvoke(mainForm.threadended);
             }
         }
 
@@ -1024,7 +1057,7 @@ namespace AlbumArtDownloader
                 newcount = threads.Count;
                 if (!ThreadsActive() && e_abort.WaitOne(0, false))
                 {
-                    form1.BeginInvoke(form1.threadended);
+                    mainForm.BeginInvoke(mainForm.threadended);
                 }
             }
         }

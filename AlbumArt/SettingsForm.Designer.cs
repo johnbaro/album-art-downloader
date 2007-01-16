@@ -70,6 +70,7 @@ namespace AlbumArtDownloader
             this.buttonDown = new System.Windows.Forms.Button();
             this.buttonUp = new System.Windows.Forms.Button();
             this.panelScriptManager = new System.Windows.Forms.Panel();
+            this.checkBoxScriptEnabled = new System.Windows.Forms.CheckBox();
             this.labelScriptCreator = new System.Windows.Forms.Label();
             this.labelScriptVersion = new System.Windows.Forms.Label();
             this.labelScriptName = new System.Windows.Forms.Label();
@@ -345,7 +346,7 @@ namespace AlbumArtDownloader
             this.tabPageScriptManager.Padding = new System.Windows.Forms.Padding(3);
             this.tabPageScriptManager.Size = new System.Drawing.Size(547, 395);
             this.tabPageScriptManager.TabIndex = 1;
-            this.tabPageScriptManager.Text = "Script Manager - NOT FUNCTIONAL";
+            this.tabPageScriptManager.Text = "Script Manager";
             this.tabPageScriptManager.UseVisualStyleBackColor = true;
             // 
             // splitContainerScriptManager
@@ -422,6 +423,7 @@ namespace AlbumArtDownloader
             // 
             // panelScriptManager
             // 
+            this.panelScriptManager.Controls.Add(this.checkBoxScriptEnabled);
             this.panelScriptManager.Controls.Add(this.labelScriptCreator);
             this.panelScriptManager.Controls.Add(this.labelScriptVersion);
             this.panelScriptManager.Controls.Add(this.labelScriptName);
@@ -430,11 +432,23 @@ namespace AlbumArtDownloader
             this.panelScriptManager.Name = "panelScriptManager";
             this.panelScriptManager.Size = new System.Drawing.Size(357, 389);
             this.panelScriptManager.TabIndex = 0;
+            this.panelScriptManager.Visible = false;
+            // 
+            // checkBoxScriptEnabled
+            // 
+            this.checkBoxScriptEnabled.AutoSize = true;
+            this.checkBoxScriptEnabled.Location = new System.Drawing.Point(6, 3);
+            this.checkBoxScriptEnabled.Name = "checkBoxScriptEnabled";
+            this.checkBoxScriptEnabled.Size = new System.Drawing.Size(89, 17);
+            this.checkBoxScriptEnabled.TabIndex = 3;
+            this.checkBoxScriptEnabled.Text = "Enable Script";
+            this.checkBoxScriptEnabled.UseVisualStyleBackColor = true;
+            this.checkBoxScriptEnabled.CheckedChanged += new System.EventHandler(this.checkBoxScriptEnabled_CheckedChanged);
             // 
             // labelScriptCreator
             // 
             this.labelScriptCreator.AutoSize = true;
-            this.labelScriptCreator.Location = new System.Drawing.Point(3, 41);
+            this.labelScriptCreator.Location = new System.Drawing.Point(3, 59);
             this.labelScriptCreator.Name = "labelScriptCreator";
             this.labelScriptCreator.Size = new System.Drawing.Size(44, 13);
             this.labelScriptCreator.TabIndex = 2;
@@ -443,7 +457,7 @@ namespace AlbumArtDownloader
             // labelScriptVersion
             // 
             this.labelScriptVersion.AutoSize = true;
-            this.labelScriptVersion.Location = new System.Drawing.Point(3, 23);
+            this.labelScriptVersion.Location = new System.Drawing.Point(3, 41);
             this.labelScriptVersion.Name = "labelScriptVersion";
             this.labelScriptVersion.Size = new System.Drawing.Size(45, 13);
             this.labelScriptVersion.TabIndex = 1;
@@ -452,7 +466,7 @@ namespace AlbumArtDownloader
             // labelScriptName
             // 
             this.labelScriptName.AutoSize = true;
-            this.labelScriptName.Location = new System.Drawing.Point(3, 5);
+            this.labelScriptName.Location = new System.Drawing.Point(3, 23);
             this.labelScriptName.Name = "labelScriptName";
             this.labelScriptName.Size = new System.Drawing.Size(38, 13);
             this.labelScriptName.TabIndex = 0;
@@ -533,5 +547,6 @@ namespace AlbumArtDownloader
         private System.Windows.Forms.Panel panelUpDown;
         private System.Windows.Forms.Button buttonDown;
         private System.Windows.Forms.Button buttonUp;
+        private System.Windows.Forms.CheckBox checkBoxScriptEnabled;
     }
 }

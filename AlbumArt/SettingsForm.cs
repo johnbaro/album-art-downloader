@@ -31,14 +31,16 @@ namespace AlbumArtDownloader
             theparent = parent;
             InitializeComponent();
 
+            ListViewItem listViewItem;
+
             lock (theparent.a.scripts)
             {
                 foreach (Script s in theparent.a.scripts)
                 {
-                    listViewScripts.Items.Add(s.Name);
+                    listViewItem = listViewScripts.Items.Add(s.Name);
+                    listViewItem.Tag = s;
                 }
             }
-
             listViewScripts.Columns[0].Width = listViewScripts.Width - 4;
         }
         
@@ -54,21 +56,17 @@ namespace AlbumArtDownloader
 
         private void listViewScripts_SelectedIndexChanged(object sender, EventArgs e)
         {
-
             if (listViewScripts.SelectedItems.Count > 0)
             {
-                lock (theparent.a.scripts)
-                {
-                    foreach (Script s in theparent.a.scripts)
-                    {
-                        if (listViewScripts.SelectedItems[0].Text == s.Name)
-                        {
-                            labelScriptName.Text = String.Format("Name: {0}", s.Name);
-                            labelScriptVersion.Text = String.Format("Version: {0}", s.Version);
-                            labelScriptCreator.Text = String.Format("Creator: {0}", s.Creator);
-                        }
-                    }
-                }
+                panelScriptManager.Visible = true;
+                labelScriptName.Text = String.Format("Name: {0}", ((Script)listViewScripts.SelectedItems[0].Tag).Name);
+                labelScriptVersion.Text = String.Format("Name: {0}", ((Script)listViewScripts.SelectedItems[0].Tag).Version);
+                labelScriptCreator.Text = String.Format("Name: {0}", ((Script)listViewScripts.SelectedItems[0].Tag).Creator);
+                checkBoxScriptEnabled.Checked = ((Script)listViewScripts.SelectedItems[0].Tag).Enabled;
+            }
+            else
+            {
+                panelScriptManager.Visible = false;
             }
         }
 
@@ -90,8 +88,8 @@ namespace AlbumArtDownloader
 
         private void MoveListViewItem(ref ListView lv, bool moveUp)
         {
-            string cache;
             int selIdx;
+            ListViewItem lvi;
 
             selIdx = lv.SelectedItems[0].Index;
             if (moveUp)
@@ -100,14 +98,10 @@ namespace AlbumArtDownloader
                 if (selIdx == 0)
                     return;
 
-                // move the subitems for the previous row
-                // to cache to make room for the selected row
-                for (int i = 0; i < lv.Items[selIdx].SubItems.Count; i++)
-                {
-                    cache = lv.Items[selIdx - 1].SubItems[i].Text;
-                    lv.Items[selIdx - 1].SubItems[i].Text = lv.Items[selIdx].SubItems[i].Text;
-                    lv.Items[selIdx].SubItems[i].Text = cache;
-                }
+                lvi = (ListViewItem)lv.SelectedItems[0].Clone();
+                lv.SelectedItems[0].Remove();
+                lv.Items.Insert(selIdx - 1, lvi);
+                
                 lv.Items[selIdx - 1].Selected = true;
                 lv.Refresh();
                 lv.Focus();
@@ -117,14 +111,11 @@ namespace AlbumArtDownloader
                 // ignore movedown of last item
                 if (selIdx == lv.Items.Count - 1)
                     return;
-                // move the subitems for the next row
-                // to cache so we can move the selected row down
-                for (int i = 0; i < lv.Items[selIdx].SubItems.Count; i++)
-                {
-                    cache = lv.Items[selIdx + 1].SubItems[i].Text;
-                    lv.Items[selIdx + 1].SubItems[i].Text = lv.Items[selIdx].SubItems[i].Text;
-                    lv.Items[selIdx].SubItems[i].Text = cache;
-                }
+
+                lvi = (ListViewItem)lv.SelectedItems[0].Clone();
+                lv.SelectedItems[0].Remove();
+                lv.Items.Insert(selIdx + 1, lvi);
+
                 lv.Items[selIdx + 1].Selected = true;
                 lv.Refresh();
                 lv.Focus();
@@ -133,22 +124,27 @@ namespace AlbumArtDownloader
 
         private void buttonOK_Click(object sender, EventArgs e)
         {
-
             lock (theparent.a.scripts)
             {
                 for (int i = 0; i < listViewScripts.Items.Count; i++)
                 {
-                    foreach (Script s in theparent.a.scripts)
-                    {
-                        if (listViewScripts.Items[0].Text == s.Name)
-                        {
-                            
-                        }
-                    }
+                    ((Script)listViewScripts.Items[i].Tag).SortPosition = i;
+                }
+
+                theparent.UpdateScriptOrder(theparent.a.scripts);
+            }
+        }
+
+        private void checkBoxScriptEnabled_CheckedChanged(object sender, EventArgs e)
+        {
+            if (listViewScripts.SelectedItems.Count > 0)
+            {
+                lock (theparent.a.scripts)
+                {
+                    ((Script)listViewScripts.SelectedItems[0].Tag).Enabled = checkBoxScriptEnabled.Checked;
                 }
 
             }
-
         }
 
     }

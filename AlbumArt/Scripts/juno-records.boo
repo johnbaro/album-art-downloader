@@ -14,7 +14,7 @@ class JunoRecords:
 	static SourceCreator as string:
 		get: return "Marc Landis"
 
-	static def GetThumbs(coverart,artist,album,size as Size):
+	static def GetThumbs(coverart,artist,album):
 		query as string = artist + " " + album
 		query.Replace(' ','%20')
 		
