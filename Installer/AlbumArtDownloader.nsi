@@ -67,6 +67,9 @@ SectionEnd
 Section "Yes24"
   File "..\AlbumArt\Scripts\yes24.boo"
 SectionEnd
+Section "Juno Records"
+  File "..\AlbumArt\Scripts\juno-records.boo"
+SectionEnd
 
 Section "-Other Scripts"
   File /nonfatal "..\AlbumArt\Scripts\*.boo"
