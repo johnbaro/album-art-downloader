@@ -31,7 +31,7 @@ namespace AlbumArtDownloader
 
         private void License_Load(object sender, EventArgs e)
         {
-            richTextBox1.Text = Properties.Resources.License;
+            richTextBoxLicense.Text = Properties.Resources.License;
         }
     }
 }

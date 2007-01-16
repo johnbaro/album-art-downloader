@@ -44,7 +44,7 @@ namespace AlbumArtDownloader
         private void ScriptCompiler_Load(object sender, EventArgs e)
         {
             this.CenterToParent();
-            backgroundWorker1.RunWorkerAsync();
+            backgroundWorkerScriptCompiler.RunWorkerAsync();
         }
         struct Result
         {
@@ -61,7 +61,7 @@ namespace AlbumArtDownloader
             try
             {
                 e.Result = new Result(true, false);
-                backgroundWorker1.ReportProgress(0, "Searching for scripts...");
+                backgroundWorkerScriptCompiler.ReportProgress(0, "Searching for scripts...");
                 string path = System.Windows.Forms.Application.StartupPath;
                 string[] files = System.IO.Directory.GetFiles(System.Windows.Forms.Application.StartupPath + "\\scripts", "*.boo");
                 List<FileInput> goodfiles = new List<FileInput>();
@@ -85,8 +85,8 @@ namespace AlbumArtDownloader
 
 
 
-                backgroundWorker1.ReportProgress(0, string.Format("Found {0} files, [{1}]...", goodfiles.Count, string.Join(", ", readablefiles.ToArray())));
-                backgroundWorker1.ReportProgress(0, string.Format("Loading references; [{0}]...", string.Join(", ", refs.ToArray())));
+                backgroundWorkerScriptCompiler.ReportProgress(0, string.Format("Found {0} files, [{1}]...", goodfiles.Count, string.Join(", ", readablefiles.ToArray())));
+                backgroundWorkerScriptCompiler.ReportProgress(0, string.Format("Loading references; [{0}]...", string.Join(", ", refs.ToArray())));
                 string target = System.Windows.Forms.Application.StartupPath + "\\scripts\\scriptcache.dll";
                 BooCompiler c = new BooCompiler();
                 c.Parameters.LibPaths.Add(Application.StartupPath);
@@ -103,7 +103,7 @@ namespace AlbumArtDownloader
                 {
                     c.Parameters.Input.Add(f);
                 }
-                backgroundWorker1.ReportProgress(0, "Compiling...");
+                backgroundWorkerScriptCompiler.ReportProgress(0, "Compiling...");
 
                 bool bWarnings = false;
                 //   c.Compile();
@@ -114,23 +114,23 @@ namespace AlbumArtDownloader
                     {
                         foreach (CompilerWarning cw in z.Warnings)
                         {
-                            backgroundWorker1.ReportProgress(0, string.Format("Warning: {0}", cw.Message));
+                            backgroundWorkerScriptCompiler.ReportProgress(0, string.Format("Warning: {0}", cw.Message));
                             bWarnings = true;
 
                         }
-                        backgroundWorker1.ReportProgress(0, "Complete");
+                        backgroundWorkerScriptCompiler.ReportProgress(0, "Complete");
                     }
                     else
                     {
                         foreach (CompilerWarning cw in z.Warnings)
                         {
                             bWarnings = true;
-                            backgroundWorker1.ReportProgress(0, string.Format("Warning: {0}", cw.Message));
+                            backgroundWorkerScriptCompiler.ReportProgress(0, string.Format("Warning: {0}", cw.Message));
 
                         }
                         foreach (CompilerError ce in z.Errors)
                         {
-                            backgroundWorker1.ReportProgress(0, string.Format("Error: {0} - {1}", ce.LexicalInfo, ce.Message));
+                            backgroundWorkerScriptCompiler.ReportProgress(0, string.Format("Error: {0} - {1}", ce.LexicalInfo, ce.Message));
                         }
                         throw new Exception("Failed.");
                     }
@@ -140,7 +140,7 @@ namespace AlbumArtDownloader
             }
             catch (Exception eee)
             {
-                backgroundWorker1.ReportProgress(0, string.Format("Error: {0}", eee.Message));
+                backgroundWorkerScriptCompiler.ReportProgress(0, string.Format("Error: {0}", eee.Message));
                 e.Result = new Result(false, true);
             }
 
@@ -148,7 +148,7 @@ namespace AlbumArtDownloader
 
         private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            textBox1.AppendText(((string)e.UserState) + "\r\n");
+            textBoxStatus.AppendText(((string)e.UserState) + "\r\n");
         }
 
         private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -161,28 +161,28 @@ namespace AlbumArtDownloader
                     this.Close();
                 else
                 {
-                    progressBar1.Style = ProgressBarStyle.Continuous;
-                    progressBar1.Value = 100;
-                    button1.Enabled = true;
-                    button2.Enabled = true;
+                    progressBarCompiler.Style = ProgressBarStyle.Continuous;
+                    progressBarCompiler.Value = 100;
+                    buttonClose.Enabled = true;
+                    buttonRetry.Enabled = true;
                 }
             }
             else
             {
-                button1.Enabled = false;
-                button2.Enabled = true;
-                progressBar1.Style = ProgressBarStyle.Continuous;
-                progressBar1.Value = 0;
+                buttonClose.Enabled = false;
+                buttonRetry.Enabled = true;
+                progressBarCompiler.Style = ProgressBarStyle.Continuous;
+                progressBarCompiler.Value = 0;
             }
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            textBox1.Clear();
-            button1.Enabled = false;
-            button2.Enabled = false;
-            progressBar1.Style = ProgressBarStyle.Marquee;
-            backgroundWorker1.RunWorkerAsync();
+            textBoxStatus.Clear();
+            buttonClose.Enabled = false;
+            buttonRetry.Enabled = false;
+            progressBarCompiler.Style = ProgressBarStyle.Marquee;
+            backgroundWorkerScriptCompiler.RunWorkerAsync();
         }
 
         private void button1_Click(object sender, EventArgs e)

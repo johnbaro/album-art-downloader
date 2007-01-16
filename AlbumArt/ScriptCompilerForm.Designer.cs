@@ -42,72 +42,72 @@ namespace AlbumArtDownloader
         /// </summary>
         private void InitializeComponent()
         {
-            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.backgroundWorkerScriptCompiler = new System.ComponentModel.BackgroundWorker();
+            this.buttonClose = new System.Windows.Forms.Button();
+            this.buttonRetry = new System.Windows.Forms.Button();
+            this.progressBarCompiler = new System.Windows.Forms.ProgressBar();
+            this.textBoxStatus = new System.Windows.Forms.TextBox();
             this.SuspendLayout();
             // 
-            // backgroundWorker1
+            // backgroundWorkerScriptCompiler
             // 
-            this.backgroundWorker1.WorkerReportsProgress = true;
-            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
-            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
-            this.backgroundWorker1.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker1_ProgressChanged);
+            this.backgroundWorkerScriptCompiler.WorkerReportsProgress = true;
+            this.backgroundWorkerScriptCompiler.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
+            this.backgroundWorkerScriptCompiler.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
+            this.backgroundWorkerScriptCompiler.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker1_ProgressChanged);
             // 
-            // button1
+            // buttonClose
             // 
-            this.button1.Enabled = false;
-            this.button1.Location = new System.Drawing.Point(377, 163);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "Close";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.buttonClose.Enabled = false;
+            this.buttonClose.Location = new System.Drawing.Point(377, 163);
+            this.buttonClose.Name = "buttonClose";
+            this.buttonClose.Size = new System.Drawing.Size(75, 23);
+            this.buttonClose.TabIndex = 0;
+            this.buttonClose.Text = "Close";
+            this.buttonClose.UseVisualStyleBackColor = true;
+            this.buttonClose.Click += new System.EventHandler(this.button1_Click);
             // 
-            // button2
+            // buttonRetry
             // 
-            this.button2.Enabled = false;
-            this.button2.Location = new System.Drawing.Point(296, 163);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "Retry";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.buttonRetry.Enabled = false;
+            this.buttonRetry.Location = new System.Drawing.Point(296, 163);
+            this.buttonRetry.Name = "buttonRetry";
+            this.buttonRetry.Size = new System.Drawing.Size(75, 23);
+            this.buttonRetry.TabIndex = 1;
+            this.buttonRetry.Text = "Retry";
+            this.buttonRetry.UseVisualStyleBackColor = true;
+            this.buttonRetry.Click += new System.EventHandler(this.button2_Click);
             // 
-            // progressBar1
+            // progressBarCompiler
             // 
-            this.progressBar1.Location = new System.Drawing.Point(12, 12);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(440, 23);
-            this.progressBar1.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
-            this.progressBar1.TabIndex = 2;
+            this.progressBarCompiler.Location = new System.Drawing.Point(12, 12);
+            this.progressBarCompiler.Name = "progressBarCompiler";
+            this.progressBarCompiler.Size = new System.Drawing.Size(440, 23);
+            this.progressBarCompiler.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
+            this.progressBarCompiler.TabIndex = 2;
             // 
-            // textBox1
+            // textBoxStatus
             // 
-            this.textBox1.Location = new System.Drawing.Point(12, 41);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox1.Size = new System.Drawing.Size(440, 116);
-            this.textBox1.TabIndex = 3;
+            this.textBoxStatus.Location = new System.Drawing.Point(12, 41);
+            this.textBoxStatus.Multiline = true;
+            this.textBoxStatus.Name = "textBoxStatus";
+            this.textBoxStatus.ReadOnly = true;
+            this.textBoxStatus.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textBoxStatus.Size = new System.Drawing.Size(440, 116);
+            this.textBoxStatus.TabIndex = 3;
             // 
-            // ScriptCompiler
+            // ScriptCompilerForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(464, 198);
-            this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.progressBar1);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.textBoxStatus);
+            this.Controls.Add(this.progressBarCompiler);
+            this.Controls.Add(this.buttonRetry);
+            this.Controls.Add(this.buttonClose);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
-            this.Name = "ScriptCompiler";
+            this.Name = "ScriptCompilerForm";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "Script Compiler";
             this.Load += new System.EventHandler(this.ScriptCompiler_Load);
@@ -118,10 +118,10 @@ namespace AlbumArtDownloader
 
         #endregion
 
-        private System.ComponentModel.BackgroundWorker backgroundWorker1;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.ProgressBar progressBar1;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.ComponentModel.BackgroundWorker backgroundWorkerScriptCompiler;
+        private System.Windows.Forms.Button buttonClose;
+        private System.Windows.Forms.Button buttonRetry;
+        private System.Windows.Forms.ProgressBar progressBarCompiler;
+        private System.Windows.Forms.TextBox textBoxStatus;
     }
 }

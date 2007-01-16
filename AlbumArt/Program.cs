@@ -69,7 +69,7 @@ namespace AlbumArtDownloader
         [STAThread]
         static void Main(string[] args)
         {
-            coolmutex = new System.Threading.Mutex(false, "CoverArtSingleInstance");
+            coolmutex = new System.Threading.Mutex(false, "AlbumArtSingleInstance");
             if (coolmutex.WaitOne(1, true))
             {
 
@@ -88,7 +88,7 @@ namespace AlbumArtDownloader
             else
             {
 
-                uint hwndInstance = FindWindow(null, "Cover Art Downloader");
+                uint hwndInstance = FindWindow(null, "Album Art Downloader");
                 if (hwndInstance != 0)
                 {
                     if (args.Length == 0)

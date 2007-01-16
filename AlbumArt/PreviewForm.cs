@@ -26,15 +26,15 @@ namespace AlbumArtDownloader
     public partial class PreviewForm : Form
     {
         Image b;
-        MainForm form1;
+        MainForm mainForm;
         AlbumArtDownloader.ArtDownloader.ThumbRes thumbres;
-        public PreviewForm(MainForm aForm1, Image show, AlbumArtDownloader.ArtDownloader.ThumbRes thethumb)
+        public PreviewForm(MainForm mainForm, Image show, AlbumArtDownloader.ArtDownloader.ThumbRes thethumb)
         {
             InitializeComponent();
-            pictureBox1.ClientSize = show.Size;
-            pictureBox1.Image = b = show;
+            pictureBoxPreview.ClientSize = show.Size;
+            pictureBoxPreview.Image = b = show;
             thumbres = thethumb;
-            form1 = aForm1;
+            this.mainForm = mainForm;
         }
 
         private void Preview_Load(object sender, EventArgs e)
@@ -54,7 +54,7 @@ namespace AlbumArtDownloader
                 Size s = new Size(r.Width, r.Height);
                 this.AutoSize = false;
                 this.Size = s;
-                pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+                pictureBoxPreview.SizeMode = PictureBoxSizeMode.Zoom;
                 this.WindowState = FormWindowState.Maximized;
             }
         }
@@ -73,7 +73,7 @@ namespace AlbumArtDownloader
         private void pictureBox1_DoubleClick(object sender, EventArgs e)
         {
             if (thumbres != null)
-                form1.ThumbClicked(thumbres, true);
+                mainForm.ThumbClicked(thumbres, true);
         }
 
     }
