@@ -1324,6 +1324,7 @@ namespace AlbumArtDownloader
         {
             UpdateBottomPanel();
         }
+
     }
 
 

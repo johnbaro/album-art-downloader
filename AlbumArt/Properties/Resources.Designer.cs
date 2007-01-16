@@ -60,6 +60,20 @@ namespace AlbumArtDownloader.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap arrMoveDown {
+            get {
+                object obj = ResourceManager.GetObject("arrMoveDown", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap arrMoveUp {
+            get {
+                object obj = ResourceManager.GetObject("arrMoveUp", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap BreakpointHS {
             get {
                 object obj = ResourceManager.GetObject("BreakpointHS", resourceCulture);

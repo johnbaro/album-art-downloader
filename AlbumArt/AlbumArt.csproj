@@ -245,5 +245,9 @@
       <Name>ATL</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\arrMoveDown.gif" />
+    <None Include="Resources\arrMoveUp.gif" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

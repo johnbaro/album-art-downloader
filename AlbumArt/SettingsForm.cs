@@ -72,6 +72,84 @@ namespace AlbumArtDownloader
             }
         }
 
+        private void buttonUp_Click(object sender, EventArgs e)
+        {
+            if (listViewScripts.SelectedIndices.Count > 0)
+            {
+                MoveListViewItem(ref listViewScripts, true);
+            }
+        }
+
+        private void buttonDown_Click(object sender, EventArgs e)
+        {
+            if (listViewScripts.SelectedIndices.Count > 0)
+            {
+                MoveListViewItem(ref listViewScripts, false);
+            }
+        }
+
+        private void MoveListViewItem(ref ListView lv, bool moveUp)
+        {
+            string cache;
+            int selIdx;
+
+            selIdx = lv.SelectedItems[0].Index;
+            if (moveUp)
+            {
+                // ignore moveup of row(0)
+                if (selIdx == 0)
+                    return;
+
+                // move the subitems for the previous row
+                // to cache to make room for the selected row
+                for (int i = 0; i < lv.Items[selIdx].SubItems.Count; i++)
+                {
+                    cache = lv.Items[selIdx - 1].SubItems[i].Text;
+                    lv.Items[selIdx - 1].SubItems[i].Text = lv.Items[selIdx].SubItems[i].Text;
+                    lv.Items[selIdx].SubItems[i].Text = cache;
+                }
+                lv.Items[selIdx - 1].Selected = true;
+                lv.Refresh();
+                lv.Focus();
+            }
+            else
+            {
+                // ignore movedown of last item
+                if (selIdx == lv.Items.Count - 1)
+                    return;
+                // move the subitems for the next row
+                // to cache so we can move the selected row down
+                for (int i = 0; i < lv.Items[selIdx].SubItems.Count; i++)
+                {
+                    cache = lv.Items[selIdx + 1].SubItems[i].Text;
+                    lv.Items[selIdx + 1].SubItems[i].Text = lv.Items[selIdx].SubItems[i].Text;
+                    lv.Items[selIdx].SubItems[i].Text = cache;
+                }
+                lv.Items[selIdx + 1].Selected = true;
+                lv.Refresh();
+                lv.Focus();
+            }
+        }
+
+        private void buttonOK_Click(object sender, EventArgs e)
+        {
+
+            lock (theparent.a.scripts)
+            {
+                for (int i = 0; i < listViewScripts.Items.Count; i++)
+                {
+                    foreach (Script s in theparent.a.scripts)
+                    {
+                        if (listViewScripts.Items[0].Text == s.Name)
+                        {
+                            
+                        }
+                    }
+                }
+
+            }
+
+        }
 
     }
 }

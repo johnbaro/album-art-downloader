@@ -68,11 +68,17 @@ namespace AlbumArtDownloader
             this.QueueImageList = new System.Windows.Forms.ImageList(this.components);
             this.splitContainerTileQueue_Browser = new System.Windows.Forms.SplitContainer();
             this.splitContainerTile_Queue = new System.Windows.Forms.SplitContainer();
+            this.megaListTiles = new AlbumArtDownloader.MegaList();
+            this.clhTiles = new System.Windows.Forms.ColumnHeader();
             this.listViewQueue = new System.Windows.Forms.ListView();
             this.clhQueueArtist = new System.Windows.Forms.ColumnHeader();
             this.clhQueueAlbum = new System.Windows.Forms.ColumnHeader();
             this.tabControlBrowser = new System.Windows.Forms.TabControl();
             this.tabPageBrowseFolder = new System.Windows.Forms.TabPage();
+            this.megaListBrowserPath = new AlbumArtDownloader.MegaList();
+            this.clhBrowserPathArtist = new System.Windows.Forms.ColumnHeader();
+            this.clhBrowserPathAlbum = new System.Windows.Forms.ColumnHeader();
+            this.clhBrowserPathArt = new System.Windows.Forms.ColumnHeader();
             this.imageListHasAlbumArt = new System.Windows.Forms.ImageList(this.components);
             this.toolStripBrowserPath = new System.Windows.Forms.ToolStrip();
             this.BrowserPathRefresh = new System.Windows.Forms.ToolStripButton();
@@ -80,6 +86,10 @@ namespace AlbumArtDownloader
             this.BrowserPathAddArtless = new System.Windows.Forms.ToolStripButton();
             this.BrowserPathProgress = new System.Windows.Forms.ToolStripProgressBar();
             this.tabPageCOMServer = new System.Windows.Forms.TabPage();
+            this.megaListBrowserCOM = new AlbumArtDownloader.MegaList();
+            this.clhBrowserCOMArtist = new System.Windows.Forms.ColumnHeader();
+            this.clhBrowserCOMAlbum = new System.Windows.Forms.ColumnHeader();
+            this.clhBrowserCOMArt = new System.Windows.Forms.ColumnHeader();
             this.toolStripBrowserCOM = new System.Windows.Forms.ToolStrip();
             this.BrowserCOMRefresh = new System.Windows.Forms.ToolStripButton();
             this.BrowserCOMCancel = new System.Windows.Forms.ToolStripButton();
@@ -99,16 +109,6 @@ namespace AlbumArtDownloader
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.panelSearchOutput = new System.Windows.Forms.Panel();
-            this.megaListTiles = new AlbumArtDownloader.MegaList();
-            this.clhTiles = new System.Windows.Forms.ColumnHeader();
-            this.megaListBrowserPath = new AlbumArtDownloader.MegaList();
-            this.clhBrowserPathArtist = new System.Windows.Forms.ColumnHeader();
-            this.clhBrowserPathAlbum = new System.Windows.Forms.ColumnHeader();
-            this.clhBrowserPathArt = new System.Windows.Forms.ColumnHeader();
-            this.megaListBrowserCOM = new AlbumArtDownloader.MegaList();
-            this.clhBrowserCOMArtist = new System.Windows.Forms.ColumnHeader();
-            this.clhBrowserCOMAlbum = new System.Windows.Forms.ColumnHeader();
-            this.clhBrowserCOMArt = new System.Windows.Forms.ColumnHeader();
             this.groupBoxSearch.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.groupBoxOutput.SuspendLayout();
@@ -357,6 +357,28 @@ namespace AlbumArtDownloader
             this.splitContainerTile_Queue.SplitterDistance = 249;
             this.splitContainerTile_Queue.TabIndex = 0;
             // 
+            // megaListTiles
+            // 
+            this.megaListTiles.CausesValidation = false;
+            this.megaListTiles.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.clhTiles});
+            this.megaListTiles.ContextMenuStrip = this.contextMenuStripPicture;
+            this.megaListTiles.Cursor = System.Windows.Forms.Cursors.Default;
+            this.megaListTiles.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.megaListTiles.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.megaListTiles.HideSelection = false;
+            this.megaListTiles.LargeImageList = this.imageListTile;
+            this.megaListTiles.Location = new System.Drawing.Point(0, 0);
+            this.megaListTiles.MultiSelect = false;
+            this.megaListTiles.Name = "megaListTiles";
+            this.megaListTiles.ShowItemToolTips = true;
+            this.megaListTiles.Size = new System.Drawing.Size(445, 249);
+            this.megaListTiles.SmallImageList = this.imageListTile;
+            this.megaListTiles.TabIndex = 0;
+            this.megaListTiles.UseCompatibleStateImageBehavior = false;
+            this.megaListTiles.ItemActivate += new System.EventHandler(this.megaListTiles_ItemActivate);
+            this.megaListTiles.MouseDown += new System.Windows.Forms.MouseEventHandler(this.megaListTiles_MouseDown);
+            // 
             // listViewQueue
             // 
             this.listViewQueue.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
@@ -408,6 +430,36 @@ namespace AlbumArtDownloader
             this.tabPageBrowseFolder.TabIndex = 1;
             this.tabPageBrowseFolder.Text = "Browse Folder";
             this.tabPageBrowseFolder.UseVisualStyleBackColor = true;
+            // 
+            // megaListBrowserPath
+            // 
+            this.megaListBrowserPath.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.clhBrowserPathArtist,
+            this.clhBrowserPathAlbum,
+            this.clhBrowserPathArt});
+            this.megaListBrowserPath.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.megaListBrowserPath.FullRowSelect = true;
+            this.megaListBrowserPath.Location = new System.Drawing.Point(3, 28);
+            this.megaListBrowserPath.Name = "megaListBrowserPath";
+            this.megaListBrowserPath.Size = new System.Drawing.Size(329, 395);
+            this.megaListBrowserPath.SmallImageList = this.imageListHasAlbumArt;
+            this.megaListBrowserPath.TabIndex = 2;
+            this.megaListBrowserPath.UseCompatibleStateImageBehavior = false;
+            this.megaListBrowserPath.View = System.Windows.Forms.View.Details;
+            this.megaListBrowserPath.ItemActivate += new System.EventHandler(this.megaListBrowserPath_ItemActivate);
+            this.megaListBrowserPath.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.megaListBrowserPath_ColumnClick);
+            // 
+            // clhBrowserPathArtist
+            // 
+            this.clhBrowserPathArtist.Text = "Artist";
+            // 
+            // clhBrowserPathAlbum
+            // 
+            this.clhBrowserPathAlbum.Text = "Album";
+            // 
+            // clhBrowserPathArt
+            // 
+            this.clhBrowserPathArt.Text = "Art";
             // 
             // imageListHasAlbumArt
             // 
@@ -480,6 +532,36 @@ namespace AlbumArtDownloader
             this.tabPageCOMServer.TabIndex = 0;
             this.tabPageCOMServer.Text = "Foobar2000 COM Server";
             this.tabPageCOMServer.UseVisualStyleBackColor = true;
+            // 
+            // megaListBrowserCOM
+            // 
+            this.megaListBrowserCOM.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.clhBrowserCOMArtist,
+            this.clhBrowserCOMAlbum,
+            this.clhBrowserCOMArt});
+            this.megaListBrowserCOM.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.megaListBrowserCOM.FullRowSelect = true;
+            this.megaListBrowserCOM.Location = new System.Drawing.Point(3, 28);
+            this.megaListBrowserCOM.Name = "megaListBrowserCOM";
+            this.megaListBrowserCOM.Size = new System.Drawing.Size(329, 395);
+            this.megaListBrowserCOM.SmallImageList = this.imageListHasAlbumArt;
+            this.megaListBrowserCOM.TabIndex = 0;
+            this.megaListBrowserCOM.UseCompatibleStateImageBehavior = false;
+            this.megaListBrowserCOM.View = System.Windows.Forms.View.Details;
+            this.megaListBrowserCOM.ItemActivate += new System.EventHandler(this.megaListBrowserCOM_ItemActivate);
+            this.megaListBrowserCOM.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.megaListBrowserCOM_ColumnClick);
+            // 
+            // clhBrowserCOMArtist
+            // 
+            this.clhBrowserCOMArtist.Text = "Artist";
+            // 
+            // clhBrowserCOMAlbum
+            // 
+            this.clhBrowserCOMAlbum.Text = "Album";
+            // 
+            // clhBrowserCOMArt
+            // 
+            this.clhBrowserCOMArt.Text = "Art";
             // 
             // toolStripBrowserCOM
             // 
@@ -635,88 +717,6 @@ namespace AlbumArtDownloader
             this.panelSearchOutput.Size = new System.Drawing.Size(792, 73);
             this.panelSearchOutput.TabIndex = 10;
             // 
-            // megaListTiles
-            // 
-            this.megaListTiles.CausesValidation = false;
-            this.megaListTiles.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.clhTiles});
-            this.megaListTiles.ContextMenuStrip = this.contextMenuStripPicture;
-            this.megaListTiles.Cursor = System.Windows.Forms.Cursors.Default;
-            this.megaListTiles.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.megaListTiles.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-            this.megaListTiles.HideSelection = false;
-            this.megaListTiles.LargeImageList = this.imageListTile;
-            this.megaListTiles.Location = new System.Drawing.Point(0, 0);
-            this.megaListTiles.MultiSelect = false;
-            this.megaListTiles.Name = "megaListTiles";
-            this.megaListTiles.ShowItemToolTips = true;
-            this.megaListTiles.Size = new System.Drawing.Size(445, 249);
-            this.megaListTiles.SmallImageList = this.imageListTile;
-            this.megaListTiles.TabIndex = 0;
-            this.megaListTiles.UseCompatibleStateImageBehavior = false;
-            this.megaListTiles.ItemActivate += new System.EventHandler(this.megaListTiles_ItemActivate);
-            this.megaListTiles.MouseDown += new System.Windows.Forms.MouseEventHandler(this.megaListTiles_MouseDown);
-            // 
-            // megaListBrowserPath
-            // 
-            this.megaListBrowserPath.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.clhBrowserPathArtist,
-            this.clhBrowserPathAlbum,
-            this.clhBrowserPathArt});
-            this.megaListBrowserPath.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.megaListBrowserPath.FullRowSelect = true;
-            this.megaListBrowserPath.Location = new System.Drawing.Point(3, 28);
-            this.megaListBrowserPath.Name = "megaListBrowserPath";
-            this.megaListBrowserPath.Size = new System.Drawing.Size(329, 395);
-            this.megaListBrowserPath.SmallImageList = this.imageListHasAlbumArt;
-            this.megaListBrowserPath.TabIndex = 2;
-            this.megaListBrowserPath.UseCompatibleStateImageBehavior = false;
-            this.megaListBrowserPath.View = System.Windows.Forms.View.Details;
-            this.megaListBrowserPath.ItemActivate += new System.EventHandler(this.megaListBrowserPath_ItemActivate);
-            this.megaListBrowserPath.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.megaListBrowserPath_ColumnClick);
-            // 
-            // clhBrowserPathArtist
-            // 
-            this.clhBrowserPathArtist.Text = "Artist";
-            // 
-            // clhBrowserPathAlbum
-            // 
-            this.clhBrowserPathAlbum.Text = "Album";
-            // 
-            // clhBrowserPathArt
-            // 
-            this.clhBrowserPathArt.Text = "Art";
-            // 
-            // megaListBrowserCOM
-            // 
-            this.megaListBrowserCOM.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.clhBrowserCOMArtist,
-            this.clhBrowserCOMAlbum,
-            this.clhBrowserCOMArt});
-            this.megaListBrowserCOM.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.megaListBrowserCOM.FullRowSelect = true;
-            this.megaListBrowserCOM.Location = new System.Drawing.Point(3, 28);
-            this.megaListBrowserCOM.Name = "megaListBrowserCOM";
-            this.megaListBrowserCOM.Size = new System.Drawing.Size(329, 395);
-            this.megaListBrowserCOM.SmallImageList = this.imageListHasAlbumArt;
-            this.megaListBrowserCOM.TabIndex = 0;
-            this.megaListBrowserCOM.UseCompatibleStateImageBehavior = false;
-            this.megaListBrowserCOM.View = System.Windows.Forms.View.Details;
-            this.megaListBrowserCOM.ItemActivate += new System.EventHandler(this.megaListBrowserCOM_ItemActivate);
-            this.megaListBrowserCOM.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.megaListBrowserCOM_ColumnClick);
-            // 
-            // clhBrowserCOMArtist
-            // 
-            this.clhBrowserCOMArtist.Text = "Artist";
-            // 
-            // clhBrowserCOMAlbum
-            // 
-            this.clhBrowserCOMAlbum.Text = "Album";
-            // 
-            // clhBrowserCOMArt
-            // 
-            this.clhBrowserCOMArt.Text = "Art";
-            // 
             // MainForm
             // 
             this.AcceptButton = this.buttonAddTask;
@@ -787,7 +787,6 @@ namespace AlbumArtDownloader
         private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemCancel;
         private MegaList megaListTiles;
         private System.Windows.Forms.ColumnHeader clhTiles;
-        private System.Windows.Forms.ListView listViewQueue;
         private System.Windows.Forms.ColumnHeader clhQueueArtist;
         private System.Windows.Forms.ColumnHeader clhQueueAlbum;
         private System.Windows.Forms.SplitContainer splitContainerTileQueue_Browser;
@@ -831,6 +830,7 @@ namespace AlbumArtDownloader
         private System.Windows.Forms.ToolStripMenuItem browserToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.Panel panelSearchOutput;
+        private System.Windows.Forms.ListView listViewQueue;
     }
 }
 
