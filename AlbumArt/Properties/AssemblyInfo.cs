@@ -22,9 +22,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Album Art Downloader")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Marc Landis")]
+[assembly: AssemblyCompany("Marc Landis, Alex Vallat")]
 [assembly: AssemblyProduct("Album Art Downloader")]
-[assembly: AssemblyCopyright("Copyright © Marc Landis 2007, Damage, Inc. 2005")]
+[assembly: AssemblyCopyright("Copyright © Marc Landis, Alex Vallat 2007 / Damage, Inc. 2005")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

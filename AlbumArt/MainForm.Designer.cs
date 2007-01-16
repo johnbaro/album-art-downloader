@@ -730,7 +730,7 @@ namespace AlbumArtDownloader
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStripMain;
             this.Name = "MainForm";
-            this.Text = "Cover Art Downloader";
+            this.Text = "Album Art Downloader";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.groupBoxSearch.ResumeLayout(false);
