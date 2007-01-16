@@ -493,6 +493,7 @@ namespace AlbumArtDownloader
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "SettingsForm";
             this.ShowInTaskbar = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Settings";
             this.Validated += new System.EventHandler(this.SettingsDlg_Validated);
             this.tabControlSettings.ResumeLayout(false);

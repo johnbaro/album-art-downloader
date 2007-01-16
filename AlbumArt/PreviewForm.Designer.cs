@@ -70,6 +70,7 @@ namespace AlbumArtDownloader
             this.MaximizeBox = false;
             this.Name = "PreviewForm";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Preview";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Preview_FormClosed);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Preview_KeyDown);
