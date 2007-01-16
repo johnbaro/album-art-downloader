@@ -15,7 +15,7 @@ namespace AlbumArtDownloader
 
         private int m_LabelHandle = 0;
         private int m_ComboHandle = 0;
-        private int m_ButtonHandle = 0;
+        //private int m_ButtonHandle = 0;
 
         private string m_Filter = "";
         private string m_DefaultExt = "";

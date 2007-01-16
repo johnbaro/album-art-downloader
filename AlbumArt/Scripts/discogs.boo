@@ -9,9 +9,9 @@ class Discogs:
 		get: return "Discogs"
 	static SourceCreator as string:
 		get: return "Alex Vallat"
-	static SourceVersion as decimal:
-		get: return 0.2
-	static def GetThumbs(coverart,artist,album,size):
+	static SourceVersion as string:
+		get: return "0.2"
+	static def GetThumbs(coverart,artist,album):
 		query as string = artist + " " + album
 		query.Replace(' ','+')
 		obidResults = GetPage(String.Format("http://www.discogs.com/search?type=all&q={0}", EncodeUrl(query)))

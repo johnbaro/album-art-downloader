@@ -256,7 +256,7 @@ namespace ATL.AudioReaders.BinaryLogic
 		//---------------------------------------------------------------
 		public void setTempo(int iTempo)
 		{
-			tempo = (int)Math.Round((double)iTempo);
+            this.tempo = (int)Math.Round((double)iTempo);
 			if ( this.tempoMsgNum != -1 ) 
 			{    
 				((ArrayList)this.tracks[0])[this.tempoMsgNum] = "0 Tempo "+iTempo;
@@ -270,7 +270,6 @@ namespace ATL.AudioReaders.BinaryLogic
 				this.tracks.Add(tempoTrack);
 				this.tempoMsgNum = 1;
 			}
-			this.tempo = tempo;
 		}
 
 		//---------------------------------------------------------------
@@ -1437,7 +1436,6 @@ namespace ATL.AudioReaders.BinaryLogic
 									track.Add(""+time+" Tempo "+tempo);
 									if (tn==0 && time==0) 
 									{
-										this.tempo = tempo;// ???
 										this.tempoMsgNum = track.Count - 1;
 									}
 									p+=6;

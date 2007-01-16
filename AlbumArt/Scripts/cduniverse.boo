@@ -10,9 +10,9 @@ class CdUniverse:
 		get: return "CD Universe"
 	static SourceCreator as string:
 		get: return "Alex Vallat"		
-	static SourceVersion as decimal:
-		get: return 0.2
-	static def GetThumbs(coverart,artist,album,size):
+	static SourceVersion as string:
+		get: return "0.2"
+	static def GetThumbs(coverart,artist,album):
 		albumResults = GetPage(String.Format("http://www.cduniverse.com/sresult.asp?HT_Search_Info={0}&HT_Search=TITLE", EncodeUrl(album)))
 
 		//Get results

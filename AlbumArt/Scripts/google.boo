@@ -12,9 +12,11 @@ class GoogleImage:
 		return response.GetResponseStream()
 	static SourceName as string:
 		get: return "GoogleImage"
-	static SourceVersion as decimal:
-		get: return 0.3
-	static def GetThumbs(coverart,artist,album,size):
+	static SourceCreator as string:
+		get: return "Alex Vallat"
+	static SourceVersion as string:
+		get: return "0.3"
+	static def GetThumbs(coverart,artist,album):
 		query = artist+" "+album
 		params = EncodeUrl(query)
 		params.Replace('%20','+')

@@ -170,7 +170,7 @@ namespace AlbumArtDownloader
                 {
                     try
                     {
-                        t.script.GetThumbs(t, t.task.Artist, t.task.Album, artdownloader.form1.ThumbNailSize);
+                        t.script.GetThumbs(t, t.task.Artist, t.task.Album);
                         lock (t.task.results)
                         {
                             string s = string.Format("{0}/{1}", t.rescount, t.rescount);
@@ -461,11 +461,11 @@ namespace AlbumArtDownloader
 
         }
 
-        internal void GetThumbs(ScriptTask t, string artist, string album, Size size)
+        internal void GetThumbs(ScriptTask t, string artist, string album)
         {
             try
             {
-                getThumbs.Invoke(null, new object[] { t, artist, album, size});
+                getThumbs.Invoke(null, new object[] { t, artist, album });
             }
             catch (Exception e)
             {
