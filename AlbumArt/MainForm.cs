@@ -168,32 +168,35 @@ namespace AlbumArtDownloader
 
             if (Properties.Settings.Default.ShowFolderPictures)
             {
-
-                string albumPath = System.IO.Path.GetDirectoryName(selectedtask.FileSave);
-
-                DirectoryInfo dirinfo = new DirectoryInfo(albumPath);
-
-                foreach (FileInfo fileInfo in dirinfo.GetFiles("*", SearchOption.AllDirectories))
+                if (selectedtask.FileSave != "")
                 {
-                    if (fileInfo.FullName != selectedtask.FileSave)
+                    string albumPath = System.IO.Path.GetDirectoryName(selectedtask.FileSave);
+
+                    DirectoryInfo dirinfo = new DirectoryInfo(albumPath);
+
+                    foreach (FileInfo fileInfo in dirinfo.GetFiles("*", SearchOption.AllDirectories))
                     {
-                        if (fileInfo.Extension == ".bmp" || fileInfo.Extension == ".jpg" || fileInfo.Extension == ".jpeg" || fileInfo.Extension == ".png" || fileInfo.Extension == ".gif")
+                        if (fileInfo.FullName != selectedtask.FileSave)
                         {
-                            ArtDownloader.ThumbRes r = new ArtDownloader.ThumbRes();
-                            Int32 width = new Int32();
-                            Int32 height = new Int32();
-                            r.Thumb = UpdateThumbFolder(fileInfo.FullName, ref width, ref height);
-                            if (r.Thumb != null)
+                            if (fileInfo.Extension == ".bmp" || fileInfo.Extension == ".jpg" || fileInfo.Extension == ".jpeg" || fileInfo.Extension == ".png" || fileInfo.Extension == ".gif")
                             {
-                                r.Width = width;
-                                r.Height = height;
-                                r.Name = "---LocalFolder---" + fileInfo.FullName;
-                                r.ScriptOwner = null;
-                                preview = AddThumb(r);
+                                ArtDownloader.ThumbRes r = new ArtDownloader.ThumbRes();
+                                Int32 width = new Int32();
+                                Int32 height = new Int32();
+                                r.Thumb = UpdateThumbFolder(fileInfo.FullName, ref width, ref height);
+                                if (r.Thumb != null)
+                                {
+                                    r.Width = width;
+                                    r.Height = height;
+                                    r.Name = "---LocalFolder---" + fileInfo.FullName;
+                                    r.ScriptOwner = null;
+                                    preview = AddThumb(r);
+                                }
+                                else preview = null;
                             }
-                            else preview = null;
                         }
                     }
+
                 }
 
             }
@@ -516,8 +519,8 @@ namespace AlbumArtDownloader
 
                 }
 
-                Properties.Settings.Default.SplitPos = splitContainer4.SplitterDistance;
-                Properties.Settings.Default.BrowseSplitPos = splitContainer3.SplitterDistance;
+                Properties.Settings.Default.SplitPos = splitContainerTile_Queue.SplitterDistance;
+                Properties.Settings.Default.BrowseSplitPos = splitContainerTileQueue_Browser.SplitterDistance;
                 Properties.Settings.Default.QueueCols = SaveListViewSizeToString(listViewQueue);
                 Properties.Settings.Default.BrowserColsCOM = SaveListViewSizeToString(megaListBrowserCOM);
                 Properties.Settings.Default.BrowserColsPath = SaveListViewSizeToString(megaListBrowserPath);
@@ -578,8 +581,8 @@ namespace AlbumArtDownloader
                 r.Width = Properties.Settings.Default.MainPosW;
                 r.Height = Properties.Settings.Default.MainPosH;
                 DesktopBounds = r;
-                splitContainer4.SplitterDistance = Properties.Settings.Default.SplitPos;
-                splitContainer3.SplitterDistance = Properties.Settings.Default.BrowseSplitPos;
+                splitContainerTile_Queue.SplitterDistance = Properties.Settings.Default.SplitPos;
+                splitContainerTileQueue_Browser.SplitterDistance = Properties.Settings.Default.BrowseSplitPos;
             }
             if (!forceminimise && WindowState != Properties.Settings.Default.MainWindowState)
                 WindowState = Properties.Settings.Default.MainWindowState;
@@ -787,8 +790,8 @@ namespace AlbumArtDownloader
 
         private void UpdateBottomPanel()
         {
-            splitContainer4.Panel2Collapsed = !queueToolStripMenuItem.Checked;
-            splitContainer3.Panel2Collapsed = !browserToolStripMenuItem.Checked;
+            splitContainerTile_Queue.Panel2Collapsed = !queueToolStripMenuItem.Checked;
+            splitContainerTileQueue_Browser.Panel2Collapsed = !browserToolStripMenuItem.Checked;
         }
 
         private void cancelToolStripMenuItem_Click(object sender, EventArgs e)

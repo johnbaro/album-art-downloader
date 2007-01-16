@@ -57,7 +57,6 @@ namespace AlbumArtDownloader
             this.MainProgress = new System.Windows.Forms.ToolStripProgressBar();
             this.groupBoxOutput = new System.Windows.Forms.GroupBox();
             this.buttonSaveToBrowse = new System.Windows.Forms.Button();
-            this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.contextMenuStripPicture = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.toolStripMenuItemSaveAs = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItemPreview = new System.Windows.Forms.ToolStripMenuItem();
@@ -67,20 +66,13 @@ namespace AlbumArtDownloader
             this.ToolStripMenuItemView = new System.Windows.Forms.ToolStripMenuItem();
             this.ToolStripMenuItemCancel = new System.Windows.Forms.ToolStripMenuItem();
             this.QueueImageList = new System.Windows.Forms.ImageList(this.components);
-            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.splitContainer3 = new System.Windows.Forms.SplitContainer();
-            this.splitContainer4 = new System.Windows.Forms.SplitContainer();
-            this.megaListTiles = new AlbumArtDownloader.MegaList();
-            this.clhTiles = new System.Windows.Forms.ColumnHeader();
+            this.splitContainerTileQueue_Browser = new System.Windows.Forms.SplitContainer();
+            this.splitContainerTile_Queue = new System.Windows.Forms.SplitContainer();
             this.listViewQueue = new System.Windows.Forms.ListView();
             this.clhQueueArtist = new System.Windows.Forms.ColumnHeader();
             this.clhQueueAlbum = new System.Windows.Forms.ColumnHeader();
             this.tabControlBrowser = new System.Windows.Forms.TabControl();
             this.tabPageBrowseFolder = new System.Windows.Forms.TabPage();
-            this.megaListBrowserPath = new AlbumArtDownloader.MegaList();
-            this.clhBrowserPathArtist = new System.Windows.Forms.ColumnHeader();
-            this.clhBrowserPathAlbum = new System.Windows.Forms.ColumnHeader();
-            this.clhBrowserPathArt = new System.Windows.Forms.ColumnHeader();
             this.imageListHasAlbumArt = new System.Windows.Forms.ImageList(this.components);
             this.toolStripBrowserPath = new System.Windows.Forms.ToolStrip();
             this.BrowserPathRefresh = new System.Windows.Forms.ToolStripButton();
@@ -88,10 +80,6 @@ namespace AlbumArtDownloader
             this.BrowserPathAddArtless = new System.Windows.Forms.ToolStripButton();
             this.BrowserPathProgress = new System.Windows.Forms.ToolStripProgressBar();
             this.tabPageCOMServer = new System.Windows.Forms.TabPage();
-            this.megaListBrowserCOM = new AlbumArtDownloader.MegaList();
-            this.clhBrowserCOMArtist = new System.Windows.Forms.ColumnHeader();
-            this.clhBrowserCOMAlbum = new System.Windows.Forms.ColumnHeader();
-            this.clhBrowserCOMArt = new System.Windows.Forms.ColumnHeader();
             this.toolStripBrowserCOM = new System.Windows.Forms.ToolStrip();
             this.BrowserCOMRefresh = new System.Windows.Forms.ToolStripButton();
             this.BrowserCOMCancel = new System.Windows.Forms.ToolStripButton();
@@ -110,34 +98,40 @@ namespace AlbumArtDownloader
             this.browserToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.panelSearchOutput = new System.Windows.Forms.Panel();
+            this.megaListTiles = new AlbumArtDownloader.MegaList();
+            this.clhTiles = new System.Windows.Forms.ColumnHeader();
+            this.megaListBrowserPath = new AlbumArtDownloader.MegaList();
+            this.clhBrowserPathArtist = new System.Windows.Forms.ColumnHeader();
+            this.clhBrowserPathAlbum = new System.Windows.Forms.ColumnHeader();
+            this.clhBrowserPathArt = new System.Windows.Forms.ColumnHeader();
+            this.megaListBrowserCOM = new AlbumArtDownloader.MegaList();
+            this.clhBrowserCOMArtist = new System.Windows.Forms.ColumnHeader();
+            this.clhBrowserCOMAlbum = new System.Windows.Forms.ColumnHeader();
+            this.clhBrowserCOMArt = new System.Windows.Forms.ColumnHeader();
             this.groupBoxSearch.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.groupBoxOutput.SuspendLayout();
-            this.splitContainer2.Panel1.SuspendLayout();
-            this.splitContainer2.Panel2.SuspendLayout();
-            this.splitContainer2.SuspendLayout();
             this.contextMenuStripPicture.SuspendLayout();
             this.contextMenuStripQueue.SuspendLayout();
-            this.splitContainer1.Panel1.SuspendLayout();
-            this.splitContainer1.Panel2.SuspendLayout();
-            this.splitContainer1.SuspendLayout();
-            this.splitContainer3.Panel1.SuspendLayout();
-            this.splitContainer3.Panel2.SuspendLayout();
-            this.splitContainer3.SuspendLayout();
-            this.splitContainer4.Panel1.SuspendLayout();
-            this.splitContainer4.Panel2.SuspendLayout();
-            this.splitContainer4.SuspendLayout();
+            this.splitContainerTileQueue_Browser.Panel1.SuspendLayout();
+            this.splitContainerTileQueue_Browser.Panel2.SuspendLayout();
+            this.splitContainerTileQueue_Browser.SuspendLayout();
+            this.splitContainerTile_Queue.Panel1.SuspendLayout();
+            this.splitContainerTile_Queue.Panel2.SuspendLayout();
+            this.splitContainerTile_Queue.SuspendLayout();
             this.tabControlBrowser.SuspendLayout();
             this.tabPageBrowseFolder.SuspendLayout();
             this.toolStripBrowserPath.SuspendLayout();
             this.tabPageCOMServer.SuspendLayout();
             this.toolStripBrowserCOM.SuspendLayout();
             this.menuStripMain.SuspendLayout();
+            this.panelSearchOutput.SuspendLayout();
             this.SuspendLayout();
             // 
             // textBoxArtist
             // 
-            this.textBoxArtist.Location = new System.Drawing.Point(45, 22);
+            this.textBoxArtist.Location = new System.Drawing.Point(45, 13);
             this.textBoxArtist.Name = "textBoxArtist";
             this.textBoxArtist.Size = new System.Drawing.Size(144, 20);
             this.textBoxArtist.TabIndex = 0;
@@ -145,7 +139,7 @@ namespace AlbumArtDownloader
             // 
             // textBoxAlbum
             // 
-            this.textBoxAlbum.Location = new System.Drawing.Point(45, 46);
+            this.textBoxAlbum.Location = new System.Drawing.Point(45, 39);
             this.textBoxAlbum.Name = "textBoxAlbum";
             this.textBoxAlbum.Size = new System.Drawing.Size(144, 20);
             this.textBoxAlbum.TabIndex = 1;
@@ -158,11 +152,10 @@ namespace AlbumArtDownloader
             this.groupBoxSearch.Controls.Add(this.buttonAddTask);
             this.groupBoxSearch.Controls.Add(this.textBoxAlbum);
             this.groupBoxSearch.Controls.Add(this.textBoxArtist);
-            this.groupBoxSearch.Dock = System.Windows.Forms.DockStyle.Fill;
             this.groupBoxSearch.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.groupBoxSearch.Location = new System.Drawing.Point(0, 0);
             this.groupBoxSearch.Name = "groupBoxSearch";
-            this.groupBoxSearch.Size = new System.Drawing.Size(284, 80);
+            this.groupBoxSearch.Size = new System.Drawing.Size(284, 68);
             this.groupBoxSearch.TabIndex = 3;
             this.groupBoxSearch.TabStop = false;
             this.groupBoxSearch.Text = "Search";
@@ -170,7 +163,7 @@ namespace AlbumArtDownloader
             // labelAlbum
             // 
             this.labelAlbum.AutoSize = true;
-            this.labelAlbum.Location = new System.Drawing.Point(6, 49);
+            this.labelAlbum.Location = new System.Drawing.Point(6, 42);
             this.labelAlbum.Name = "labelAlbum";
             this.labelAlbum.Size = new System.Drawing.Size(39, 13);
             this.labelAlbum.TabIndex = 10;
@@ -179,7 +172,7 @@ namespace AlbumArtDownloader
             // labelArtist
             // 
             this.labelArtist.AutoSize = true;
-            this.labelArtist.Location = new System.Drawing.Point(12, 25);
+            this.labelArtist.Location = new System.Drawing.Point(6, 16);
             this.labelArtist.Name = "labelArtist";
             this.labelArtist.Size = new System.Drawing.Size(33, 13);
             this.labelArtist.TabIndex = 9;
@@ -188,7 +181,7 @@ namespace AlbumArtDownloader
             // buttonAddTask
             // 
             this.buttonAddTask.Image = global::AlbumArtDownloader.Properties.Resources.test3;
-            this.buttonAddTask.Location = new System.Drawing.Point(195, 25);
+            this.buttonAddTask.Location = new System.Drawing.Point(195, 21);
             this.buttonAddTask.Name = "buttonAddTask";
             this.buttonAddTask.Size = new System.Drawing.Size(83, 31);
             this.buttonAddTask.TabIndex = 2;
@@ -201,16 +194,16 @@ namespace AlbumArtDownloader
             // 
             this.testBoxFileSave.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
-            this.testBoxFileSave.Location = new System.Drawing.Point(68, 31);
+            this.testBoxFileSave.Location = new System.Drawing.Point(63, 27);
             this.testBoxFileSave.Name = "testBoxFileSave";
-            this.testBoxFileSave.Size = new System.Drawing.Size(372, 20);
+            this.testBoxFileSave.Size = new System.Drawing.Size(383, 20);
             this.testBoxFileSave.TabIndex = 5;
             this.testBoxFileSave.TextChanged += new System.EventHandler(this.testBoxFileSave_TextChanged);
             // 
             // labelSaveTo
             // 
             this.labelSaveTo.AutoSize = true;
-            this.labelSaveTo.Location = new System.Drawing.Point(11, 34);
+            this.labelSaveTo.Location = new System.Drawing.Point(6, 30);
             this.labelSaveTo.Name = "labelSaveTo";
             this.labelSaveTo.Size = new System.Drawing.Size(51, 13);
             this.labelSaveTo.TabIndex = 6;
@@ -246,9 +239,9 @@ namespace AlbumArtDownloader
             this.groupBoxOutput.Controls.Add(this.buttonSaveToBrowse);
             this.groupBoxOutput.Controls.Add(this.labelSaveTo);
             this.groupBoxOutput.Controls.Add(this.testBoxFileSave);
-            this.groupBoxOutput.Location = new System.Drawing.Point(2, 0);
+            this.groupBoxOutput.Location = new System.Drawing.Point(290, 0);
             this.groupBoxOutput.Name = "groupBoxOutput";
-            this.groupBoxOutput.Size = new System.Drawing.Size(502, 82);
+            this.groupBoxOutput.Size = new System.Drawing.Size(502, 68);
             this.groupBoxOutput.TabIndex = 8;
             this.groupBoxOutput.TabStop = false;
             this.groupBoxOutput.Text = "Output";
@@ -257,7 +250,7 @@ namespace AlbumArtDownloader
             // 
             this.buttonSaveToBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonSaveToBrowse.Image = global::AlbumArtDownloader.Properties.Resources.saveHS1;
-            this.buttonSaveToBrowse.Location = new System.Drawing.Point(446, 25);
+            this.buttonSaveToBrowse.Location = new System.Drawing.Point(452, 21);
             this.buttonSaveToBrowse.Name = "buttonSaveToBrowse";
             this.buttonSaveToBrowse.Size = new System.Drawing.Size(44, 31);
             this.buttonSaveToBrowse.TabIndex = 7;
@@ -265,26 +258,6 @@ namespace AlbumArtDownloader
             this.buttonSaveToBrowse.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.buttonSaveToBrowse.UseVisualStyleBackColor = true;
             this.buttonSaveToBrowse.Click += new System.EventHandler(this.buttonSaveToBrowse_Click);
-            // 
-            // splitContainer2
-            // 
-            this.splitContainer2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer2.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
-            this.splitContainer2.IsSplitterFixed = true;
-            this.splitContainer2.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer2.MinimumSize = new System.Drawing.Size(0, 71);
-            this.splitContainer2.Name = "splitContainer2";
-            // 
-            // splitContainer2.Panel1
-            // 
-            this.splitContainer2.Panel1.Controls.Add(this.groupBoxSearch);
-            // 
-            // splitContainer2.Panel2
-            // 
-            this.splitContainer2.Panel2.Controls.Add(this.groupBoxOutput);
-            this.splitContainer2.Size = new System.Drawing.Size(792, 80);
-            this.splitContainer2.SplitterDistance = 284;
-            this.splitContainer2.TabIndex = 4;
             // 
             // contextMenuStripPicture
             // 
@@ -349,81 +322,40 @@ namespace AlbumArtDownloader
             this.QueueImageList.Images.SetKeyName(1, "test3.ico");
             this.QueueImageList.Images.SetKeyName(2, "test2.ico");
             // 
-            // splitContainer1
+            // splitContainerTileQueue_Browser
             // 
-            this.splitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer1.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
-            this.splitContainer1.Location = new System.Drawing.Point(0, 24);
-            this.splitContainer1.Name = "splitContainer1";
-            this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            this.splitContainerTileQueue_Browser.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainerTileQueue_Browser.Location = new System.Drawing.Point(0, 97);
+            this.splitContainerTileQueue_Browser.Name = "splitContainerTileQueue_Browser";
             // 
-            // splitContainer1.Panel1
+            // splitContainerTileQueue_Browser.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.splitContainer2);
+            this.splitContainerTileQueue_Browser.Panel1.Controls.Add(this.splitContainerTile_Queue);
             // 
-            // splitContainer1.Panel2
+            // splitContainerTileQueue_Browser.Panel2
             // 
-            this.splitContainer1.Panel2.Controls.Add(this.splitContainer3);
-            this.splitContainer1.Size = new System.Drawing.Size(792, 525);
-            this.splitContainer1.SplitterDistance = 80;
-            this.splitContainer1.TabIndex = 8;
+            this.splitContainerTileQueue_Browser.Panel2.Controls.Add(this.tabControlBrowser);
+            this.splitContainerTileQueue_Browser.Size = new System.Drawing.Size(792, 452);
+            this.splitContainerTileQueue_Browser.SplitterDistance = 445;
+            this.splitContainerTileQueue_Browser.TabIndex = 0;
             // 
-            // splitContainer3
+            // splitContainerTile_Queue
             // 
-            this.splitContainer3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer3.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer3.Name = "splitContainer3";
+            this.splitContainerTile_Queue.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainerTile_Queue.Location = new System.Drawing.Point(0, 0);
+            this.splitContainerTile_Queue.Name = "splitContainerTile_Queue";
+            this.splitContainerTile_Queue.Orientation = System.Windows.Forms.Orientation.Horizontal;
             // 
-            // splitContainer3.Panel1
+            // splitContainerTile_Queue.Panel1
             // 
-            this.splitContainer3.Panel1.Controls.Add(this.splitContainer4);
+            this.splitContainerTile_Queue.Panel1.Controls.Add(this.megaListTiles);
             // 
-            // splitContainer3.Panel2
+            // splitContainerTile_Queue.Panel2
             // 
-            this.splitContainer3.Panel2.Controls.Add(this.tabControlBrowser);
-            this.splitContainer3.Size = new System.Drawing.Size(792, 441);
-            this.splitContainer3.SplitterDistance = 445;
-            this.splitContainer3.TabIndex = 0;
-            // 
-            // splitContainer4
-            // 
-            this.splitContainer4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainer4.Location = new System.Drawing.Point(0, 0);
-            this.splitContainer4.Name = "splitContainer4";
-            this.splitContainer4.Orientation = System.Windows.Forms.Orientation.Horizontal;
-            // 
-            // splitContainer4.Panel1
-            // 
-            this.splitContainer4.Panel1.Controls.Add(this.megaListTiles);
-            // 
-            // splitContainer4.Panel2
-            // 
-            this.splitContainer4.Panel2.Controls.Add(this.listViewQueue);
-            this.splitContainer4.Size = new System.Drawing.Size(445, 441);
-            this.splitContainer4.SplitterDistance = 243;
-            this.splitContainer4.TabIndex = 0;
-            // 
-            // megaListTiles
-            // 
-            this.megaListTiles.CausesValidation = false;
-            this.megaListTiles.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.clhTiles});
-            this.megaListTiles.ContextMenuStrip = this.contextMenuStripPicture;
-            this.megaListTiles.Cursor = System.Windows.Forms.Cursors.Default;
-            this.megaListTiles.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.megaListTiles.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-            this.megaListTiles.HideSelection = false;
-            this.megaListTiles.LargeImageList = this.imageListTile;
-            this.megaListTiles.Location = new System.Drawing.Point(0, 0);
-            this.megaListTiles.MultiSelect = false;
-            this.megaListTiles.Name = "megaListTiles";
-            this.megaListTiles.ShowItemToolTips = true;
-            this.megaListTiles.Size = new System.Drawing.Size(445, 243);
-            this.megaListTiles.SmallImageList = this.imageListTile;
-            this.megaListTiles.TabIndex = 0;
-            this.megaListTiles.UseCompatibleStateImageBehavior = false;
-            this.megaListTiles.ItemActivate += new System.EventHandler(this.megaListTiles_ItemActivate);
-            this.megaListTiles.MouseDown += new System.Windows.Forms.MouseEventHandler(this.megaListTiles_MouseDown);
+            this.splitContainerTile_Queue.Panel2.Controls.Add(this.listViewQueue);
+            this.splitContainerTile_Queue.Size = new System.Drawing.Size(445, 452);
+            this.splitContainerTile_Queue.SplitterDistance = 249;
+            this.splitContainerTile_Queue.TabIndex = 0;
             // 
             // listViewQueue
             // 
@@ -435,7 +367,7 @@ namespace AlbumArtDownloader
             this.listViewQueue.FullRowSelect = true;
             this.listViewQueue.Location = new System.Drawing.Point(0, 0);
             this.listViewQueue.Name = "listViewQueue";
-            this.listViewQueue.Size = new System.Drawing.Size(445, 194);
+            this.listViewQueue.Size = new System.Drawing.Size(445, 199);
             this.listViewQueue.SmallImageList = this.QueueImageList;
             this.listViewQueue.TabIndex = 1;
             this.listViewQueue.UseCompatibleStateImageBehavior = false;
@@ -462,7 +394,7 @@ namespace AlbumArtDownloader
             this.tabControlBrowser.Location = new System.Drawing.Point(0, 0);
             this.tabControlBrowser.Name = "tabControlBrowser";
             this.tabControlBrowser.SelectedIndex = global::AlbumArtDownloader.Properties.Settings.Default.SelectedBrowserTab;
-            this.tabControlBrowser.Size = new System.Drawing.Size(343, 441);
+            this.tabControlBrowser.Size = new System.Drawing.Size(343, 452);
             this.tabControlBrowser.TabIndex = 2;
             // 
             // tabPageBrowseFolder
@@ -472,40 +404,10 @@ namespace AlbumArtDownloader
             this.tabPageBrowseFolder.Location = new System.Drawing.Point(4, 22);
             this.tabPageBrowseFolder.Name = "tabPageBrowseFolder";
             this.tabPageBrowseFolder.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageBrowseFolder.Size = new System.Drawing.Size(335, 415);
+            this.tabPageBrowseFolder.Size = new System.Drawing.Size(335, 426);
             this.tabPageBrowseFolder.TabIndex = 1;
             this.tabPageBrowseFolder.Text = "Browse Folder";
             this.tabPageBrowseFolder.UseVisualStyleBackColor = true;
-            // 
-            // megaListBrowserPath
-            // 
-            this.megaListBrowserPath.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.clhBrowserPathArtist,
-            this.clhBrowserPathAlbum,
-            this.clhBrowserPathArt});
-            this.megaListBrowserPath.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.megaListBrowserPath.FullRowSelect = true;
-            this.megaListBrowserPath.Location = new System.Drawing.Point(3, 28);
-            this.megaListBrowserPath.Name = "megaListBrowserPath";
-            this.megaListBrowserPath.Size = new System.Drawing.Size(329, 384);
-            this.megaListBrowserPath.SmallImageList = this.imageListHasAlbumArt;
-            this.megaListBrowserPath.TabIndex = 2;
-            this.megaListBrowserPath.UseCompatibleStateImageBehavior = false;
-            this.megaListBrowserPath.View = System.Windows.Forms.View.Details;
-            this.megaListBrowserPath.ItemActivate += new System.EventHandler(this.megaListBrowserPath_ItemActivate);
-            this.megaListBrowserPath.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.megaListBrowserPath_ColumnClick);
-            // 
-            // clhBrowserPathArtist
-            // 
-            this.clhBrowserPathArtist.Text = "Artist";
-            // 
-            // clhBrowserPathAlbum
-            // 
-            this.clhBrowserPathAlbum.Text = "Album";
-            // 
-            // clhBrowserPathArt
-            // 
-            this.clhBrowserPathArt.Text = "Art";
             // 
             // imageListHasAlbumArt
             // 
@@ -574,40 +476,10 @@ namespace AlbumArtDownloader
             this.tabPageCOMServer.Location = new System.Drawing.Point(4, 22);
             this.tabPageCOMServer.Name = "tabPageCOMServer";
             this.tabPageCOMServer.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageCOMServer.Size = new System.Drawing.Size(335, 415);
+            this.tabPageCOMServer.Size = new System.Drawing.Size(335, 426);
             this.tabPageCOMServer.TabIndex = 0;
             this.tabPageCOMServer.Text = "Foobar2000 COM Server";
             this.tabPageCOMServer.UseVisualStyleBackColor = true;
-            // 
-            // megaListBrowserCOM
-            // 
-            this.megaListBrowserCOM.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.clhBrowserCOMArtist,
-            this.clhBrowserCOMAlbum,
-            this.clhBrowserCOMArt});
-            this.megaListBrowserCOM.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.megaListBrowserCOM.FullRowSelect = true;
-            this.megaListBrowserCOM.Location = new System.Drawing.Point(3, 28);
-            this.megaListBrowserCOM.Name = "megaListBrowserCOM";
-            this.megaListBrowserCOM.Size = new System.Drawing.Size(329, 384);
-            this.megaListBrowserCOM.SmallImageList = this.imageListHasAlbumArt;
-            this.megaListBrowserCOM.TabIndex = 0;
-            this.megaListBrowserCOM.UseCompatibleStateImageBehavior = false;
-            this.megaListBrowserCOM.View = System.Windows.Forms.View.Details;
-            this.megaListBrowserCOM.ItemActivate += new System.EventHandler(this.megaListBrowserCOM_ItemActivate);
-            this.megaListBrowserCOM.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.megaListBrowserCOM_ColumnClick);
-            // 
-            // clhBrowserCOMArtist
-            // 
-            this.clhBrowserCOMArtist.Text = "Artist";
-            // 
-            // clhBrowserCOMAlbum
-            // 
-            this.clhBrowserCOMAlbum.Text = "Album";
-            // 
-            // clhBrowserCOMArt
-            // 
-            this.clhBrowserCOMArt.Text = "Art";
             // 
             // toolStripBrowserCOM
             // 
@@ -703,14 +575,14 @@ namespace AlbumArtDownloader
             // 
             this.settingsToolStripMenuItem.Image = global::AlbumArtDownloader.Properties.Resources.test;
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
             this.settingsToolStripMenuItem.Text = "Settings";
             this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -753,13 +625,106 @@ namespace AlbumArtDownloader
             this.aboutToolStripMenuItem1.Size = new System.Drawing.Size(103, 22);
             this.aboutToolStripMenuItem1.Text = "About";
             // 
+            // panelSearchOutput
+            // 
+            this.panelSearchOutput.Controls.Add(this.groupBoxOutput);
+            this.panelSearchOutput.Controls.Add(this.groupBoxSearch);
+            this.panelSearchOutput.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelSearchOutput.Location = new System.Drawing.Point(0, 24);
+            this.panelSearchOutput.Name = "panelSearchOutput";
+            this.panelSearchOutput.Size = new System.Drawing.Size(792, 73);
+            this.panelSearchOutput.TabIndex = 10;
+            // 
+            // megaListTiles
+            // 
+            this.megaListTiles.CausesValidation = false;
+            this.megaListTiles.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.clhTiles});
+            this.megaListTiles.ContextMenuStrip = this.contextMenuStripPicture;
+            this.megaListTiles.Cursor = System.Windows.Forms.Cursors.Default;
+            this.megaListTiles.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.megaListTiles.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.megaListTiles.HideSelection = false;
+            this.megaListTiles.LargeImageList = this.imageListTile;
+            this.megaListTiles.Location = new System.Drawing.Point(0, 0);
+            this.megaListTiles.MultiSelect = false;
+            this.megaListTiles.Name = "megaListTiles";
+            this.megaListTiles.ShowItemToolTips = true;
+            this.megaListTiles.Size = new System.Drawing.Size(445, 249);
+            this.megaListTiles.SmallImageList = this.imageListTile;
+            this.megaListTiles.TabIndex = 0;
+            this.megaListTiles.UseCompatibleStateImageBehavior = false;
+            this.megaListTiles.ItemActivate += new System.EventHandler(this.megaListTiles_ItemActivate);
+            this.megaListTiles.MouseDown += new System.Windows.Forms.MouseEventHandler(this.megaListTiles_MouseDown);
+            // 
+            // megaListBrowserPath
+            // 
+            this.megaListBrowserPath.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.clhBrowserPathArtist,
+            this.clhBrowserPathAlbum,
+            this.clhBrowserPathArt});
+            this.megaListBrowserPath.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.megaListBrowserPath.FullRowSelect = true;
+            this.megaListBrowserPath.Location = new System.Drawing.Point(3, 28);
+            this.megaListBrowserPath.Name = "megaListBrowserPath";
+            this.megaListBrowserPath.Size = new System.Drawing.Size(329, 395);
+            this.megaListBrowserPath.SmallImageList = this.imageListHasAlbumArt;
+            this.megaListBrowserPath.TabIndex = 2;
+            this.megaListBrowserPath.UseCompatibleStateImageBehavior = false;
+            this.megaListBrowserPath.View = System.Windows.Forms.View.Details;
+            this.megaListBrowserPath.ItemActivate += new System.EventHandler(this.megaListBrowserPath_ItemActivate);
+            this.megaListBrowserPath.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.megaListBrowserPath_ColumnClick);
+            // 
+            // clhBrowserPathArtist
+            // 
+            this.clhBrowserPathArtist.Text = "Artist";
+            // 
+            // clhBrowserPathAlbum
+            // 
+            this.clhBrowserPathAlbum.Text = "Album";
+            // 
+            // clhBrowserPathArt
+            // 
+            this.clhBrowserPathArt.Text = "Art";
+            // 
+            // megaListBrowserCOM
+            // 
+            this.megaListBrowserCOM.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.clhBrowserCOMArtist,
+            this.clhBrowserCOMAlbum,
+            this.clhBrowserCOMArt});
+            this.megaListBrowserCOM.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.megaListBrowserCOM.FullRowSelect = true;
+            this.megaListBrowserCOM.Location = new System.Drawing.Point(3, 28);
+            this.megaListBrowserCOM.Name = "megaListBrowserCOM";
+            this.megaListBrowserCOM.Size = new System.Drawing.Size(329, 395);
+            this.megaListBrowserCOM.SmallImageList = this.imageListHasAlbumArt;
+            this.megaListBrowserCOM.TabIndex = 0;
+            this.megaListBrowserCOM.UseCompatibleStateImageBehavior = false;
+            this.megaListBrowserCOM.View = System.Windows.Forms.View.Details;
+            this.megaListBrowserCOM.ItemActivate += new System.EventHandler(this.megaListBrowserCOM_ItemActivate);
+            this.megaListBrowserCOM.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.megaListBrowserCOM_ColumnClick);
+            // 
+            // clhBrowserCOMArtist
+            // 
+            this.clhBrowserCOMArtist.Text = "Artist";
+            // 
+            // clhBrowserCOMAlbum
+            // 
+            this.clhBrowserCOMAlbum.Text = "Album";
+            // 
+            // clhBrowserCOMArt
+            // 
+            this.clhBrowserCOMArt.Text = "Art";
+            // 
             // MainForm
             // 
             this.AcceptButton = this.buttonAddTask;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(792, 571);
-            this.Controls.Add(this.splitContainer1);
+            this.Controls.Add(this.splitContainerTileQueue_Browser);
+            this.Controls.Add(this.panelSearchOutput);
             this.Controls.Add(this.statusStrip);
             this.Controls.Add(this.menuStripMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -774,20 +739,14 @@ namespace AlbumArtDownloader
             this.statusStrip.PerformLayout();
             this.groupBoxOutput.ResumeLayout(false);
             this.groupBoxOutput.PerformLayout();
-            this.splitContainer2.Panel1.ResumeLayout(false);
-            this.splitContainer2.Panel2.ResumeLayout(false);
-            this.splitContainer2.ResumeLayout(false);
             this.contextMenuStripPicture.ResumeLayout(false);
             this.contextMenuStripQueue.ResumeLayout(false);
-            this.splitContainer1.Panel1.ResumeLayout(false);
-            this.splitContainer1.Panel2.ResumeLayout(false);
-            this.splitContainer1.ResumeLayout(false);
-            this.splitContainer3.Panel1.ResumeLayout(false);
-            this.splitContainer3.Panel2.ResumeLayout(false);
-            this.splitContainer3.ResumeLayout(false);
-            this.splitContainer4.Panel1.ResumeLayout(false);
-            this.splitContainer4.Panel2.ResumeLayout(false);
-            this.splitContainer4.ResumeLayout(false);
+            this.splitContainerTileQueue_Browser.Panel1.ResumeLayout(false);
+            this.splitContainerTileQueue_Browser.Panel2.ResumeLayout(false);
+            this.splitContainerTileQueue_Browser.ResumeLayout(false);
+            this.splitContainerTile_Queue.Panel1.ResumeLayout(false);
+            this.splitContainerTile_Queue.Panel2.ResumeLayout(false);
+            this.splitContainerTile_Queue.ResumeLayout(false);
             this.tabControlBrowser.ResumeLayout(false);
             this.tabPageBrowseFolder.ResumeLayout(false);
             this.tabPageBrowseFolder.PerformLayout();
@@ -799,6 +758,7 @@ namespace AlbumArtDownloader
             this.toolStripBrowserCOM.PerformLayout();
             this.menuStripMain.ResumeLayout(false);
             this.menuStripMain.PerformLayout();
+            this.panelSearchOutput.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -816,7 +776,6 @@ namespace AlbumArtDownloader
         private System.Windows.Forms.Label labelArtist;
         private System.Windows.Forms.Label labelAlbum;
         private System.Windows.Forms.GroupBox groupBoxOutput;
-        private System.Windows.Forms.SplitContainer splitContainer2;
         private System.Windows.Forms.Button buttonSaveToBrowse;
         private System.Windows.Forms.Timer timerClose;
         private System.Windows.Forms.ImageList imageListTile;
@@ -831,9 +790,8 @@ namespace AlbumArtDownloader
         private System.Windows.Forms.ListView listViewQueue;
         private System.Windows.Forms.ColumnHeader clhQueueArtist;
         private System.Windows.Forms.ColumnHeader clhQueueAlbum;
-        private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.SplitContainer splitContainer3;
-        private System.Windows.Forms.SplitContainer splitContainer4;
+        private System.Windows.Forms.SplitContainer splitContainerTileQueue_Browser;
+        private System.Windows.Forms.SplitContainer splitContainerTile_Queue;
         private MegaList megaListBrowserCOM;
         private System.Windows.Forms.ColumnHeader clhBrowserCOMArtist;
         private System.Windows.Forms.ColumnHeader clhBrowserCOMAlbum;
@@ -872,6 +830,7 @@ namespace AlbumArtDownloader
         private System.Windows.Forms.ToolStripMenuItem queueToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem browserToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
+        private System.Windows.Forms.Panel panelSearchOutput;
     }
 }
 
