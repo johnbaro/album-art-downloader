@@ -52,6 +52,7 @@ namespace AlbumArtDownloader
             this.buttonCancel = new System.Windows.Forms.Button();
             this.tabControlSettings = new System.Windows.Forms.TabControl();
             this.tabPageGeneral = new System.Windows.Forms.TabPage();
+            this.checkBoxAutoDownloadFullImage = new System.Windows.Forms.CheckBox();
             this.checkBoxShowSizeOverlay = new System.Windows.Forms.CheckBox();
             this.checkBoxShowFolderPictures = new System.Windows.Forms.CheckBox();
             this.checkBoxBold = new System.Windows.Forms.CheckBox();
@@ -90,7 +91,7 @@ namespace AlbumArtDownloader
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(5, 146);
+            this.label1.Location = new System.Drawing.Point(5, 169);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(79, 13);
             this.label1.TabIndex = 4;
@@ -99,7 +100,7 @@ namespace AlbumArtDownloader
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(138, 146);
+            this.label2.Location = new System.Drawing.Point(138, 169);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(12, 13);
             this.label2.TabIndex = 6;
@@ -108,7 +109,7 @@ namespace AlbumArtDownloader
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(5, 121);
+            this.label3.Location = new System.Drawing.Point(5, 144);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(26, 13);
             this.label3.TabIndex = 11;
@@ -117,7 +118,7 @@ namespace AlbumArtDownloader
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(90, 121);
+            this.label4.Location = new System.Drawing.Point(90, 144);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(42, 13);
             this.label4.TabIndex = 12;
@@ -126,7 +127,7 @@ namespace AlbumArtDownloader
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(5, 171);
+            this.label7.Location = new System.Drawing.Point(5, 194);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(102, 13);
             this.label7.TabIndex = 17;
@@ -171,6 +172,7 @@ namespace AlbumArtDownloader
             // 
             // tabPageGeneral
             // 
+            this.tabPageGeneral.Controls.Add(this.checkBoxAutoDownloadFullImage);
             this.tabPageGeneral.Controls.Add(this.checkBoxShowSizeOverlay);
             this.tabPageGeneral.Controls.Add(this.checkBoxShowFolderPictures);
             this.tabPageGeneral.Controls.Add(this.checkBoxBold);
@@ -192,6 +194,19 @@ namespace AlbumArtDownloader
             this.tabPageGeneral.TabIndex = 0;
             this.tabPageGeneral.Text = "General";
             this.tabPageGeneral.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxAutoDownloadFullImage
+            // 
+            this.checkBoxAutoDownloadFullImage.AutoSize = true;
+            this.checkBoxAutoDownloadFullImage.Checked = global::AlbumArtDownloader.Properties.Settings.Default.AutoDownloadFullImage;
+            this.checkBoxAutoDownloadFullImage.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxAutoDownloadFullImage.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::AlbumArtDownloader.Properties.Settings.Default, "AutoDownloadFullImage", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.checkBoxAutoDownloadFullImage.Location = new System.Drawing.Point(8, 98);
+            this.checkBoxAutoDownloadFullImage.Name = "checkBoxAutoDownloadFullImage";
+            this.checkBoxAutoDownloadFullImage.Size = new System.Drawing.Size(333, 17);
+            this.checkBoxAutoDownloadFullImage.TabIndex = 20;
+            this.checkBoxAutoDownloadFullImage.Text = "Automatically download the full image to determine size if required";
+            this.checkBoxAutoDownloadFullImage.UseVisualStyleBackColor = true;
             // 
             // checkBoxShowSizeOverlay
             // 
@@ -239,7 +254,7 @@ namespace AlbumArtDownloader
             0,
             0,
             0});
-            this.numericUpDownThumbnailHeight.Location = new System.Drawing.Point(156, 144);
+            this.numericUpDownThumbnailHeight.Location = new System.Drawing.Point(156, 167);
             this.numericUpDownThumbnailHeight.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -268,7 +283,7 @@ namespace AlbumArtDownloader
             this.checkBoxClose.AutoSize = true;
             this.checkBoxClose.Checked = global::AlbumArtDownloader.Properties.Settings.Default.CloseAfterSaving;
             this.checkBoxClose.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::AlbumArtDownloader.Properties.Settings.Default, "CloseAfterSaving", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBoxClose.Location = new System.Drawing.Point(8, 98);
+            this.checkBoxClose.Location = new System.Drawing.Point(8, 121);
             this.checkBoxClose.Name = "checkBoxClose";
             this.checkBoxClose.Size = new System.Drawing.Size(125, 17);
             this.checkBoxClose.TabIndex = 8;
@@ -278,7 +293,7 @@ namespace AlbumArtDownloader
             // textBox1
             // 
             this.textBox1.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AlbumArtDownloader.Properties.Settings.Default, "SaveFileName", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBox1.Location = new System.Drawing.Point(113, 168);
+            this.textBox1.Location = new System.Drawing.Point(113, 191);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(127, 20);
             this.textBox1.TabIndex = 16;
@@ -292,7 +307,7 @@ namespace AlbumArtDownloader
             0,
             0,
             0});
-            this.numericUpDownThumbnailWidth.Location = new System.Drawing.Point(85, 144);
+            this.numericUpDownThumbnailWidth.Location = new System.Drawing.Point(85, 167);
             this.numericUpDownThumbnailWidth.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -306,7 +321,7 @@ namespace AlbumArtDownloader
             // numericUpDown3
             // 
             this.numericUpDown3.DataBindings.Add(new System.Windows.Forms.Binding("Value", global::AlbumArtDownloader.Properties.Settings.Default, "ThreadCount", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.numericUpDown3.Location = new System.Drawing.Point(37, 119);
+            this.numericUpDown3.Location = new System.Drawing.Point(37, 142);
             this.numericUpDown3.Maximum = new decimal(new int[] {
             30,
             0,
@@ -514,6 +529,7 @@ namespace AlbumArtDownloader
         private System.Windows.Forms.Label labelScriptVersion;
         private System.Windows.Forms.Label labelScriptName;
         private System.Windows.Forms.CheckBox checkBoxShowSizeOverlay;
+        private System.Windows.Forms.CheckBox checkBoxAutoDownloadFullImage;
         private System.Windows.Forms.Panel panelUpDown;
         private System.Windows.Forms.Button buttonDown;
         private System.Windows.Forms.Button buttonUp;
