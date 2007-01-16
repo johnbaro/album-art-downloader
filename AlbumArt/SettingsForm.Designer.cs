@@ -138,7 +138,7 @@ namespace AlbumArtDownloader
             this.buttonOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonOK.AutoSize = true;
             this.buttonOK.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.buttonOK.Location = new System.Drawing.Point(469, 3);
+            this.buttonOK.Location = new System.Drawing.Point(381, 3);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(82, 27);
             this.buttonOK.TabIndex = 20;
@@ -152,7 +152,7 @@ namespace AlbumArtDownloader
             this.buttonCancel.AutoSize = true;
             this.buttonCancel.CausesValidation = false;
             this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.buttonCancel.Location = new System.Drawing.Point(381, 3);
+            this.buttonCancel.Location = new System.Drawing.Point(469, 3);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(82, 27);
             this.buttonCancel.TabIndex = 19;
