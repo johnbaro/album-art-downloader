@@ -521,6 +521,11 @@ namespace AlbumArtDownloader
             }
             return null;
         }
+
+		public override string ToString()
+		{
+			return Name;
+		}
     }
     public class ArtDownloader
     {
