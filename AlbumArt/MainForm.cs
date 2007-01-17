@@ -979,6 +979,7 @@ namespace AlbumArtDownloader
             public string album;
             public string path;
             public bool hasart;
+            public string artsize;
         }
 
         private void BrowserWorkerCOM_DoWork(object sender, DoWorkEventArgs e)
@@ -1003,7 +1004,7 @@ namespace AlbumArtDownloader
                 foreach (Foobar2000.Track07 track in tracks)
                 {
                     if (BrowserWorkerCOM.CancellationPending) break;
-                    BrowserItem sp;
+                    BrowserItem sp = new BrowserItem();
                     sp.artist = track.FormatTitle("%artist%");
                     sp.album = track.FormatTitle("%album%");
                     sp.path = System.IO.Path.GetDirectoryName(track.FormatTitle("%path%").ToLowerInvariant()) + ext;
@@ -1012,8 +1013,16 @@ namespace AlbumArtDownloader
                     if (!albarts.Contains(sp))
                     {
                         albarts.Add(sp);
-                        bool b = System.IO.File.Exists(sp.path);
-                        sp.hasart = b;
+                        sp.hasart = System.IO.File.Exists(sp.path);
+                        if (sp.hasart)
+                        {
+                            Bitmap art = new Bitmap(sp.path);
+                            sp.artsize = System.String.Format("{0} x {1}", art.Width, art.Height);
+                        }
+                        else
+                        {
+                            sp.artsize = "";
+                        }
                         lock (itemstoadd)
                         {
                             itemstoadd.Add(sp);
@@ -1060,7 +1069,7 @@ namespace AlbumArtDownloader
 
                 if (ATLReader.Artist != "" && ATLReader.Album != "")
                 {
-                    BrowserItem sp;
+                    BrowserItem sp = new BrowserItem();
                     sp.artist = ATLReader.Artist;
                     sp.album = ATLReader.Album;
                     sp.path = fileInfo.DirectoryName + ext;
@@ -1069,8 +1078,16 @@ namespace AlbumArtDownloader
                     if (!albarts.Contains(sp))
                     {
                         albarts.Add(sp);
-                        bool b = System.IO.File.Exists(sp.path);
-                        sp.hasart = b;
+                        sp.hasart = System.IO.File.Exists(sp.path);
+                        if (sp.hasart)
+                        {
+                            Bitmap art = new Bitmap(sp.path);
+                            sp.artsize = System.String.Format("{0} x {1}", art.Width, art.Height);
+                        }
+                        else
+                        {
+                            sp.artsize = "";
+                        }
                         lock (itemstoadd)
                         {
                             itemstoadd.Add(sp);
@@ -1150,6 +1167,7 @@ namespace AlbumArtDownloader
                     ListViewItem i = megaListBrowserPath.Items.Add(b.artist);
                     i.SubItems.Add(b.album);
                     i.SubItems.Add(b.hasart ? "Yes" : "No");
+                    i.SubItems.Add(b.artsize);
                     i.ImageIndex = b.hasart ? 0 : 1;
                     i.Tag = b;
                     itemsadded.Add(b);

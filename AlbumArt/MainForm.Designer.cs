@@ -105,10 +105,12 @@ namespace AlbumArtDownloader
             this.clhBrowserPathArtist = new System.Windows.Forms.ColumnHeader();
             this.clhBrowserPathAlbum = new System.Windows.Forms.ColumnHeader();
             this.clhBrowserPathArt = new System.Windows.Forms.ColumnHeader();
+            this.clhBrowserPathSize = new System.Windows.Forms.ColumnHeader();
             this.megaListBrowserCOM = new AlbumArtDownloader.MegaList();
             this.clhBrowserCOMArtist = new System.Windows.Forms.ColumnHeader();
             this.clhBrowserCOMAlbum = new System.Windows.Forms.ColumnHeader();
             this.clhBrowserCOMArt = new System.Windows.Forms.ColumnHeader();
+            this.clhBrowserCOMSize = new System.Windows.Forms.ColumnHeader();
             this.groupBoxSearch.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.groupBoxOutput.SuspendLayout();
@@ -265,19 +267,19 @@ namespace AlbumArtDownloader
             this.toolStripMenuItemSaveAs,
             this.toolStripMenuItemPreview});
             this.contextMenuStripPicture.Name = "contextMenuStrip1";
-            this.contextMenuStripPicture.Size = new System.Drawing.Size(137, 48);
+            this.contextMenuStripPicture.Size = new System.Drawing.Size(126, 48);
             // 
             // toolStripMenuItemSaveAs
             // 
             this.toolStripMenuItemSaveAs.Name = "toolStripMenuItemSaveAs";
-            this.toolStripMenuItemSaveAs.Size = new System.Drawing.Size(136, 22);
+            this.toolStripMenuItemSaveAs.Size = new System.Drawing.Size(125, 22);
             this.toolStripMenuItemSaveAs.Text = "&Save As...";
             this.toolStripMenuItemSaveAs.Click += new System.EventHandler(this.toolStripMenuItem1_Click);
             // 
             // toolStripMenuItemPreview
             // 
             this.toolStripMenuItemPreview.Name = "toolStripMenuItemPreview";
-            this.toolStripMenuItemPreview.Size = new System.Drawing.Size(136, 22);
+            this.toolStripMenuItemPreview.Size = new System.Drawing.Size(125, 22);
             this.toolStripMenuItemPreview.Text = "&Preview...";
             this.toolStripMenuItemPreview.Click += new System.EventHandler(this.toolStripMenuItem2_Click);
             // 
@@ -297,20 +299,20 @@ namespace AlbumArtDownloader
             this.ToolStripMenuItemView,
             this.ToolStripMenuItemCancel});
             this.contextMenuStripQueue.Name = "contextMenuStrip2";
-            this.contextMenuStripQueue.Size = new System.Drawing.Size(118, 48);
+            this.contextMenuStripQueue.Size = new System.Drawing.Size(107, 48);
             // 
             // ToolStripMenuItemView
             // 
             this.ToolStripMenuItemView.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ToolStripMenuItemView.Name = "ToolStripMenuItemView";
-            this.ToolStripMenuItemView.Size = new System.Drawing.Size(117, 22);
+            this.ToolStripMenuItemView.Size = new System.Drawing.Size(106, 22);
             this.ToolStripMenuItemView.Text = "&View";
             this.ToolStripMenuItemView.Click += new System.EventHandler(this.cancelToolStripMenuItem_Click);
             // 
             // ToolStripMenuItemCancel
             // 
             this.ToolStripMenuItemCancel.Name = "ToolStripMenuItemCancel";
-            this.ToolStripMenuItemCancel.Size = new System.Drawing.Size(117, 22);
+            this.ToolStripMenuItemCancel.Size = new System.Drawing.Size(106, 22);
             this.ToolStripMenuItemCancel.Text = "&Cancel";
             this.ToolStripMenuItemCancel.Click += new System.EventHandler(this.cancelToolStripMenuItem1_Click);
             // 
@@ -365,6 +367,7 @@ namespace AlbumArtDownloader
             this.listViewQueue.ContextMenuStrip = this.contextMenuStripQueue;
             this.listViewQueue.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listViewQueue.FullRowSelect = true;
+            this.listViewQueue.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.listViewQueue.Location = new System.Drawing.Point(0, 0);
             this.listViewQueue.Name = "listViewQueue";
             this.listViewQueue.Size = new System.Drawing.Size(445, 199);
@@ -575,14 +578,14 @@ namespace AlbumArtDownloader
             // 
             this.settingsToolStripMenuItem.Image = global::AlbumArtDownloader.Properties.Resources.test;
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
-            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.settingsToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
             this.settingsToolStripMenuItem.Text = "Settings";
             this.settingsToolStripMenuItem.Click += new System.EventHandler(this.settingsToolStripMenuItem_Click);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.exitToolStripMenuItem_Click);
             // 
@@ -599,7 +602,7 @@ namespace AlbumArtDownloader
             // 
             this.queueToolStripMenuItem.CheckOnClick = true;
             this.queueToolStripMenuItem.Name = "queueToolStripMenuItem";
-            this.queueToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.queueToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
             this.queueToolStripMenuItem.Text = "Queue";
             this.queueToolStripMenuItem.CheckedChanged += new System.EventHandler(this.queueToolStripMenuItem_CheckedChanged);
             // 
@@ -607,7 +610,7 @@ namespace AlbumArtDownloader
             // 
             this.browserToolStripMenuItem.CheckOnClick = true;
             this.browserToolStripMenuItem.Name = "browserToolStripMenuItem";
-            this.browserToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.browserToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
             this.browserToolStripMenuItem.Text = "Browser";
             this.browserToolStripMenuItem.CheckedChanged += new System.EventHandler(this.browserToolStripMenuItem_CheckedChanged);
             // 
@@ -622,7 +625,7 @@ namespace AlbumArtDownloader
             // aboutToolStripMenuItem1
             // 
             this.aboutToolStripMenuItem1.Name = "aboutToolStripMenuItem1";
-            this.aboutToolStripMenuItem1.Size = new System.Drawing.Size(114, 22);
+            this.aboutToolStripMenuItem1.Size = new System.Drawing.Size(103, 22);
             this.aboutToolStripMenuItem1.Text = "About";
             // 
             // panelSearchOutput
@@ -663,7 +666,8 @@ namespace AlbumArtDownloader
             this.megaListBrowserPath.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.clhBrowserPathArtist,
             this.clhBrowserPathAlbum,
-            this.clhBrowserPathArt});
+            this.clhBrowserPathArt,
+            this.clhBrowserPathSize});
             this.megaListBrowserPath.Dock = System.Windows.Forms.DockStyle.Fill;
             this.megaListBrowserPath.FullRowSelect = true;
             this.megaListBrowserPath.Location = new System.Drawing.Point(3, 28);
@@ -688,12 +692,17 @@ namespace AlbumArtDownloader
             // 
             this.clhBrowserPathArt.Text = "Art";
             // 
+            // clhBrowserPathSize
+            // 
+            this.clhBrowserPathSize.Text = "Size";
+            // 
             // megaListBrowserCOM
             // 
             this.megaListBrowserCOM.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.clhBrowserCOMArtist,
             this.clhBrowserCOMAlbum,
-            this.clhBrowserCOMArt});
+            this.clhBrowserCOMArt,
+            this.clhBrowserCOMSize});
             this.megaListBrowserCOM.Dock = System.Windows.Forms.DockStyle.Fill;
             this.megaListBrowserCOM.FullRowSelect = true;
             this.megaListBrowserCOM.Location = new System.Drawing.Point(3, 28);
@@ -717,6 +726,10 @@ namespace AlbumArtDownloader
             // clhBrowserCOMArt
             // 
             this.clhBrowserCOMArt.Text = "Art";
+            // 
+            // clhBrowserCOMSize
+            // 
+            this.clhBrowserCOMSize.Text = "Size";
             // 
             // MainForm
             // 
@@ -832,6 +845,8 @@ namespace AlbumArtDownloader
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
         private System.Windows.Forms.Panel panelSearchOutput;
         private System.Windows.Forms.ListView listViewQueue;
+        private System.Windows.Forms.ColumnHeader clhBrowserPathSize;
+        private System.Windows.Forms.ColumnHeader clhBrowserCOMSize;
     }
 }
 
