@@ -32,7 +32,7 @@ class Discogs:
 			//Get the image results
 			imageResults = GetPage(String.Format("http://www.discogs.com/viewimages?what=R&obid={0}&showpending=1", obidMatch.Groups["obid"].Value))
 			
-			imageRegex = Regex("<img src=\"(?<url>http://www\\.discogs\\.com/image/R-\\d+-\\d+.(?:jpe?g|gif))\" width=\"(?<width>\\d+)\" height=\"(?<height>\\d+)\"")
+			imageRegex = Regex("<img src=\"(?<url>http://www\\.discogs\\.com/image/R-\\d+-\\d+.(?:jpe?g|gif|png))\" width=\"(?<width>\\d+)\" height=\"(?<height>\\d+)\"")
 			imageMatches = imageRegex.Matches(imageResults)
 			for imageMatch as Match in imageMatches:
 				coverart.AddThumb(imageMatch.Groups["url"].Value, releaseName, Int32.Parse(imageMatch.Groups["width"].Value), Int32.Parse(imageMatch.Groups["height"].Value), imageMatch.Groups["url"].Value)
