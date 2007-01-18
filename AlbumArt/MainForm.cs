@@ -1048,31 +1048,27 @@ namespace AlbumArtDownloader
             }
         }
 
-        private void getFileCount(string Path)
-        {
-            DirectoryInfo dirinfo = new DirectoryInfo(Path);
-
-            FileInfo[] fileInfo = dirinfo.GetFiles("*", SearchOption.AllDirectories);
-
-            trackcount = fileInfo.Length;
-        }
-
         private void checkFolder(string FolderName)
         {
             DirectoryInfo dirinfo = new DirectoryInfo(FolderName);
 
-            foreach (FileInfo fileInfo in dirinfo.GetFiles("*", SearchOption.AllDirectories))
+            FileInfo[] filesInfo = dirinfo.GetFiles("*", SearchOption.AllDirectories);
+
+            trackcount = filesInfo.Length;
+
+            for (long i = filesInfo.LongLength -1; i >= 0 ; i--)
             {
+            
                 if (BrowserWorkerPath.CancellationPending) break;
 
-                ATLReader = new ATL.AudioReaders.AudioFileReader(fileInfo.FullName);
+                ATLReader = new ATL.AudioReaders.AudioFileReader(filesInfo[i].FullName);
 
                 if (ATLReader.Artist != "" && ATLReader.Album != "")
                 {
                     BrowserItem sp = new BrowserItem();
                     sp.artist = ATLReader.Artist;
                     sp.album = ATLReader.Album;
-                    sp.path = fileInfo.DirectoryName + ext;
+                    sp.path = filesInfo[i].DirectoryName + ext;
                     sp.hasart = false;
                     ++processed;
                     if (!albarts.Contains(sp))
@@ -1113,8 +1109,6 @@ namespace AlbumArtDownloader
                 ext = "\\" + ((string[])e.Argument)[0];
                 processed = 0;
                 trackcount = 0;
-
-                getFileCount(((string[])e.Argument)[1]);
 
                 checkFolder(((string[])e.Argument)[1]);
 
