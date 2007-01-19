@@ -70,6 +70,9 @@ SectionEnd
 Section "Juno Records"
   File "..\AlbumArt\Scripts\juno-records.boo"
 SectionEnd
+Section "Artists.Trivialbeing (artist images)"
+  File "..\AlbumArt\Scripts\artists.trivialbeing.boo"
+SectionEnd
 
 Section "-Other Scripts"
   File /nonfatal "..\AlbumArt\Scripts\*.boo"
