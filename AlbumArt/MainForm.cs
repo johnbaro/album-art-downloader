@@ -506,6 +506,7 @@ namespace AlbumArtDownloader
             for (int i = 0; i < scripts.Count; i++)
             {
                 listViewQueue.Columns[scripts[i].Name].DisplayIndex = scripts[i].SortPosition + 2;
+                listViewQueue.Columns[scripts[i].Name].Width = scripts[i].Enabled == true ? -2 : 0;
 
                 scripts[i].group = AddGroup(scripts[i]);
             }
