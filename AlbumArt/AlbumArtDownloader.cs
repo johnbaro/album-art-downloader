@@ -234,11 +234,13 @@ namespace AlbumArtDownloader
                 return isdebug;
             }
         }
-        public Task(ArtDownloader a, string artist, string album, string filesave, bool bDebug)
+        public Task(ArtDownloader a, string artist, string album, string filesave, bool showExisting, bool showFolder, bool bDebug)
         {
             e_abort = new ManualResetEvent(false);
             _Artist = artist;
             _Album = album;
+            _showExisting = showExisting;
+            _showFolder = showFolder;
             status = State.Waiting;
             artdownloader = a;
             savestr = filesave;
@@ -257,12 +259,14 @@ namespace AlbumArtDownloader
         };
         string savestr;
         State status;
-        public Task(ArtDownloader a, string artist, string album, string filesave, ListViewItem item)
+        public Task(ArtDownloader a, string artist, string album, string filesave, bool showExisting, bool showFolder, ListViewItem item)
         {
             e_abort = new ManualResetEvent(false);
             _Artist = artist;
             artdownloader = a;
             _Album = album;
+            _showExisting = showExisting;
+            _showFolder = showFolder;
             listviewitem = item;
             status = State.Waiting;
             savestr = filesave;
@@ -272,6 +276,8 @@ namespace AlbumArtDownloader
         }
         string _Artist;
         string _Album;
+        bool _showExisting;
+        bool _showFolder;
         public List<Script> scripts;
         public void Abort()
         {
@@ -344,6 +350,20 @@ namespace AlbumArtDownloader
             get
             {
                 return _Album;
+            }
+        }
+        public bool ShowExisting
+        {
+            get
+            {
+                return _showExisting;
+            }
+        }
+        public bool ShowFolder
+        {
+            get
+            {
+                return _showFolder;
             }
         }
         bool _Done;

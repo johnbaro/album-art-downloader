@@ -470,7 +470,7 @@ namespace AlbumArtDownloader
             string fz = testBoxFileSave.Text;
             textBoxArtist.Focus();
             Task t;
-            a.AddTask(t = new Task(a, art, alb, fz, (Control.ModifierKeys == Keys.Control)));
+            a.AddTask(t = new Task(a, art, alb, fz,Properties.Settings.Default.PreviewSavedArt, Properties.Settings.Default.ShowFolderPictures,(Control.ModifierKeys == Keys.Control)));
             SwitchToTask(t);
         }
        
@@ -720,29 +720,42 @@ namespace AlbumArtDownloader
             bool forceminimise = false;
             if (theargs.Length > 0)
             {
-                if (theargs.Length != 3)
+                Arguments arguments = new Arguments(theargs);
+
+                if (arguments["?"] == "true")
                 {
-                    MessageBox.Show("Usage: albumart.exe \"<artist>\" \"<album>\" \"<path to save image>\"\r\nExample: albumart.exe \"Iron Maiden\" \"Powerslave\" \"D:\\Music\\Iron Maiden\\Powerslave\\folder.jpg\"");
+                    Console.WriteLine("Syntax:\r\nalbumart.exe [-ae on|off] [-pf on|off] [-ar \"Artist\"] [-al \"Album\"] [-p \"Path\"]\r\n\r\nOptions:\r\n-ae on|off\tShow already existing Album Art\r\n-pf on|off\t\tShow pictures in folder\r\n-ar \"Artist\"\tArtist to search\r\n-al \"Album\"\tAlbum to search\r\n-p \"Path\"\t\tPath to save image");
+                    MessageBox.Show("Syntax:\r\nalbumart.exe [-ae on|off] [-pf on|off] [-ar \"Artist\"] [-al \"Album\"] [-p \"Path\"]\r\n\r\nOptions:\r\n-ae on|off\tShow already existing Album Art\r\n-pf on|off\t\tShow pictures in folder\r\n-ar \"Artist\"\tArtist to search\r\n-al \"Album\"\tAlbum to search\r\n-p \"Path\"\t\tPath to save image");
                     if (fromself)
                         Close();
                 }
                 else
                 {
-                    /*if (Properties.Settings.Default.CmdLineHideTillDone && fromself)
-                    {
-                        WindowState = FormWindowState.Minimized;
-                        forceminimise = true;
-                    }*/
                     if (fromself)
                     {
-                        textBoxArtist.Text = theargs[0];
-                        textBoxAlbum.Text = theargs[1];
-                        testBoxFileSave.Text = theargs[2];
+                        if (arguments["ar"] != null)
+                            textBoxArtist.Text = arguments["ar"];
+                        if (arguments["al"] != null)
+                            textBoxAlbum.Text = arguments["al"];
+                        if (arguments["p"] != null)
+                            testBoxFileSave.Text = arguments["p"];
+                        if (arguments["ae"] != null)
+                            Properties.Settings.Default.PreviewSavedArt = arguments["ae"] == "on" ? true : false;
+                        if (arguments["ae"] != null)
+                            Properties.Settings.Default.ShowFolderPictures = arguments["pf"] == "on" ? true : false;
+
                         this.buttonAddTask_Click(this, new EventArgs());
                     }
                     else
                     {
-                        a.AddTask(new Task(a, theargs[0], theargs[1], theargs[2], false));
+                        if (arguments["ae"] == null && arguments["pf"] == null)
+                            a.AddTask(new Task(a, (arguments["ar"] != null ? arguments["ar"] : ""), (arguments["al"] != null ? arguments["al"] : ""), (arguments["p"] != null ? arguments["p"] : ""), Properties.Settings.Default.PreviewSavedArt, Properties.Settings.Default.ShowFolderPictures, false));
+                        else if (arguments["ae"] == null && arguments["pf"] != null)
+                            a.AddTask(new Task(a, (arguments["ar"] != null ? arguments["ar"] : ""), (arguments["al"] != null ? arguments["al"] : ""), (arguments["p"] != null ? arguments["p"] : ""), Properties.Settings.Default.PreviewSavedArt, arguments["pf"] == "on" ? true : false, false));
+                        else if (arguments["ae"] != null && arguments["pf"] == null)
+                            a.AddTask(new Task(a, (arguments["ar"] != null ? arguments["ar"] : ""), (arguments["al"] != null ? arguments["al"] : ""), (arguments["p"] != null ? arguments["p"] : ""), arguments["ae"] == "on" ? true : false, Properties.Settings.Default.ShowFolderPictures, false));
+                        else
+                            a.AddTask(new Task(a, (arguments["ar"] != null ? arguments["ar"] : ""), (arguments["al"] != null ? arguments["al"] : ""), (arguments["p"] != null ? arguments["p"] : ""), arguments["ae"] == "on" ? true : false, arguments["pf"] == "on" ? true : false, false));
                     }
                 }
             }
@@ -929,6 +942,8 @@ namespace AlbumArtDownloader
             textBoxArtist.Text = task.Artist;
             textBoxAlbum.Text = task.Album;
             testBoxFileSave.Text = task.FileSave;
+            Properties.Settings.Default.PreviewSavedArt = task.ShowExisting;
+            Properties.Settings.Default.ShowFolderPictures = task.ShowFolder;
             RemoveThumbs();
             a.SelectedTask = task;
         }
@@ -1216,7 +1231,7 @@ namespace AlbumArtDownloader
         private void megaListBrowserCOM_ItemActivate(object sender, EventArgs e)
         {
             BrowserItem b = (BrowserItem)megaListBrowserCOM.SelectedItems[0].Tag;
-            a.AddTask(new Task(a, b.artist, b.album, b.path, false));
+            a.AddTask(new Task(a, b.artist, b.album, b.path, Properties.Settings.Default.PreviewSavedArt, Properties.Settings.Default.ShowFolderPictures, false));
         }
 
         private void BrowserCOMRefresh_Click(object sender, EventArgs e)
@@ -1251,7 +1266,7 @@ namespace AlbumArtDownloader
             {
                 if (!b.hasart)
                 {
-                    a.AddTask(new Task(a, b.artist, b.album, b.path, false));
+                    a.AddTask(new Task(a, b.artist, b.album, b.path, Properties.Settings.Default.PreviewSavedArt, Properties.Settings.Default.ShowFolderPictures, false));
                 }
             }
         }
@@ -1325,7 +1340,7 @@ namespace AlbumArtDownloader
             {
                 if (!b.hasart)
                 {
-                    a.AddTask(new Task(a, b.artist, b.album, b.path, false));
+                    a.AddTask(new Task(a, b.artist, b.album, b.path, Properties.Settings.Default.PreviewSavedArt, Properties.Settings.Default.ShowFolderPictures, false));
                 }
             }
         }
@@ -1362,7 +1377,7 @@ namespace AlbumArtDownloader
         private void megaListBrowserPath_ItemActivate(object sender, EventArgs e)
         {
             BrowserItem b = (BrowserItem)megaListBrowserPath.SelectedItems[0].Tag;
-            a.AddTask(new Task(a, b.artist, b.album, b.path, false));
+            a.AddTask(new Task(a, b.artist, b.album, b.path, Properties.Settings.Default.PreviewSavedArt, Properties.Settings.Default.ShowFolderPictures, false));
         }
 
         static Bitmap ResizeBitmap(Image source, int Width, int Height)
