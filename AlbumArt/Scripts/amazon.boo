@@ -9,7 +9,7 @@ class Amazon:
 	static SourceVersion as string:
 		get: return "0.3"
 	static SourceCreator as string:
-		get: return "Alex Vallat"
+		get: return "Unknown"
 	static def GetThumbs(coverart,artist,album):
 		x=System.Xml.XmlDocument()
 		x.Load("http://xml.amazon.com/onca/xml3?f=xml&t=webservices-20&dev-t=1MV23E34ARMVYMBDZB02&type=lite&page=1&mode=music&KeywordSearch="+EncodeUrl(artist+" "+album))

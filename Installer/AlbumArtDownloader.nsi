@@ -19,7 +19,7 @@ Icon "${NSISDIR}\Contrib\Graphics\Icons\modern-install.ico"
 UninstallIcon "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall.ico"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 LicenseData "..\AlbumArt\Resources\License.txt"
-ShowInstDetails show
+ShowInstDetails hide
 ShowUnInstDetails show
 XPStyle on
 
@@ -136,5 +136,5 @@ Section Uninstall
 
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
-#  SetAutoClose true
+  SetAutoClose true
 SectionEnd
