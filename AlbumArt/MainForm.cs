@@ -162,7 +162,10 @@ namespace AlbumArtDownloader
                     r.Height = height;
                     r.Name = "---Existing---" + testBoxFileSave.Text;
                     r.ScriptOwner = null;
-                    preview = AddThumb(r);
+                    lock (r)
+                    {
+                        preview = AddThumb(r);
+                    }
                 }
                 else preview = null;
 
@@ -191,7 +194,10 @@ namespace AlbumArtDownloader
                                 r.Height = height;
                                 r.Name = "---LocalFolder---" + fileInfo.FullName;
                                 r.ScriptOwner = null;
-                                preview = AddThumb(r);
+                                lock (r)
+                                {
+                                    preview = AddThumb(r);
+                                }
                             }
                             else preview = null;
                         }
@@ -300,7 +306,10 @@ namespace AlbumArtDownloader
         }
         public void callbackAddThumb(ArtDownloader.ThumbRes r)
         {
-            AddThumb(r);
+            lock (r)
+            {
+                AddThumb(r);
+            }
         }
         public ListViewItem AddThumb(AlbumArtDownloader.ArtDownloader.ThumbRes res)
         {
@@ -308,27 +317,27 @@ namespace AlbumArtDownloader
 
             Bitmap thumbnail = ResizeBitmap(res.Thumb, ThumbNailSize.Width, ThumbNailSize.Height);
 
-			if (Properties.Settings.Default.ShowSizeOverlay)
+		    if (Properties.Settings.Default.ShowSizeOverlay)
             {
-				res.Thumb = ResizeBitmap(res.Thumb, ThumbNailSize.Width, ThumbNailSize.Height);
-				if (!(res.Width > 0 && res.Height > 0))
+			    res.Thumb = ResizeBitmap(res.Thumb, ThumbNailSize.Width, ThumbNailSize.Height);
+			    if (!(res.Width > 0 && res.Height > 0))
                 {
-					if(Properties.Settings.Default.AutoDownloadFullImage)
-					{
+				    if(Properties.Settings.Default.AutoDownloadFullImage)
+				    {
                         a.PopupateFullSizeStream(res);
-					}
-					if(res.FullSize != null)
-					{
-						Image fullSize = Image.FromStream(res.FullSize);
-						res.Width = fullSize.Width;
-						res.Height = fullSize.Height;
-					}
+				    }
+				    if(res.FullSize != null)
+				    {
+					    Image fullSize = Image.FromStream(res.FullSize);
+					    res.Width = fullSize.Width;
+					    res.Height = fullSize.Height;
+				    }
 
                     thumbnail = ResizeBitmap(res.Thumb, ThumbNailSize.Width, ThumbNailSize.Height);
-				}
+			    }
 
                 if (thumbnail.Width > 0 && thumbnail.Height > 0)
-				{
+			    {
                     string caption = System.String.Format("{0} x {1}", res.Width, res.Height);
 
                     Bitmap b = new Bitmap(thumbnail.Width,thumbnail.Height + SystemFonts.DefaultFont.Height + 1);
