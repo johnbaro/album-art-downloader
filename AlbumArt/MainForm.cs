@@ -289,7 +289,15 @@ namespace AlbumArtDownloader
              
         public void UpdateSize(bool refresh)
         {
-            Size s = new Size((int)Properties.Settings.Default.ThumbnailWidth, (int)Properties.Settings.Default.ThumbnailHeight);
+            Size s;
+            if (Properties.Settings.Default.ShowSizeOverlay)
+            {
+                s = new Size((int)Properties.Settings.Default.ThumbnailWidth, (int)Properties.Settings.Default.ThumbnailHeight + SystemFonts.DefaultFont.Height + 1);
+            }
+            else
+            {
+                s = new Size((int)Properties.Settings.Default.ThumbnailWidth, (int)Properties.Settings.Default.ThumbnailHeight);
+            }
             if (imageListTile.ImageSize != s)
             {
                 imageListTile.ImageSize = s;
@@ -1463,8 +1471,15 @@ namespace AlbumArtDownloader
         {
             SettingsForm d = new SettingsForm(this);
             d.ShowDialog(this);
+            if (Properties.Settings.Default.ShowSizeOverlay)
+            {
+                ThumbNailSize = new Size((int)Properties.Settings.Default.ThumbnailWidth, (int)Properties.Settings.Default.ThumbnailHeight + SystemFonts.DefaultFont.Height + 1);
+            }
+            else
+            {
+                ThumbNailSize = new Size((int)Properties.Settings.Default.ThumbnailWidth, (int)Properties.Settings.Default.ThumbnailHeight);
+            }
 
-            ThumbNailSize = new Size((int)Properties.Settings.Default.ThumbnailWidth, (int)Properties.Settings.Default.ThumbnailHeight);
             UpdateSize(true);
         }
 
