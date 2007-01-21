@@ -256,34 +256,18 @@ namespace AlbumArtDownloader
             textBoxSizeOverlayColorForeground.Text = ColorToHexString(colorDialogSizeOverlay.Color);
         }
 
-        private void buttonSizeOverlayColorBackground_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                colorDialogSizeOverlay.Color = HexStringToColor(textBoxSizeOverlayColorBackground.Text);
-            }
-            catch
-            {
-            }
-
-            colorDialogSizeOverlay.ShowDialog(this);
-
-            textBoxSizeOverlayColorBackground.Text = ColorToHexString(colorDialogSizeOverlay.Color);
-        }
-
         private void drawSizeOverlayPreview()
         {
-            Bitmap b = new Bitmap(90, 48);
+            Bitmap b = new Bitmap(pictureBoxPreviewSizeOverlayColor.Width, pictureBoxPreviewSizeOverlayColor.Height);
 
             Graphics g = Graphics.FromImage(b);
-            g.Clear(HexStringToColor((string)pictureBoxPreviewSizeOverlayColor.Tag));
+            g.Clear(Color.White);
             g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
             Font f = new Font(SystemFonts.DefaultFont, FontStyle.Bold);
-            if (checkBoxUseSizeOverlayColor2.Checked)
-                g.DrawString("500 x 500", f, new SolidBrush(HexStringToColor(textBoxSizeOverlayColorBackground.Text)), 1, 1);
-            g.DrawString("500 x 500", f, new SolidBrush(HexStringToColor(textBoxSizeOverlayColorForeground.Text)), 0, 0);
-            g.Flush();
+            g.DrawString("500 x 500", f, new SolidBrush(HexStringToColor(textBoxSizeOverlayColorForeground.Text)), 1, 1);
 
+            g.Flush();
+            
             pictureBoxPreviewSizeOverlayColor.Image = b;
 
             f.Dispose();
@@ -294,27 +278,14 @@ namespace AlbumArtDownloader
         {
             drawSizeOverlayPreview();
         }
-
-        private void pictureBoxPreviewSizeOverlayColor_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                colorDialogSizeOverlay.Color = HexStringToColor((string)pictureBoxPreviewSizeOverlayColor.Tag);
-            }
-            catch
-            {
-            }
-
-            colorDialogSizeOverlay.ShowDialog(this);
-
-            pictureBoxPreviewSizeOverlayColor.Tag = ColorToHexString(colorDialogSizeOverlay.Color);
-
-            drawSizeOverlayPreview();
-        }
-
         private void checkBoxUseSizeOverlayColor2_CheckedChanged(object sender, EventArgs e)
         {
             drawSizeOverlayPreview();
+        }
+
+        private void checkBoxShowSizeOverlay_CheckedChanged(object sender, EventArgs e)
+        {
+            panelSizeOverlaySettings.Enabled = checkBoxShowSizeOverlay.Checked;
         }
 
     }

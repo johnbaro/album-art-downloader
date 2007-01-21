@@ -116,14 +116,5 @@
     <Setting Name="SizeOverlayColorForeground" Type="System.String" Scope="User">
       <Value Profile="(Default)">000000</Value>
     </Setting>
-    <Setting Name="UseSizeOverlayColor2" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
-    </Setting>
-    <Setting Name="SizeOverlayPreviewColor" Type="System.String" Scope="User">
-      <Value Profile="(Default)">FFFFFF</Value>
-    </Setting>
-    <Setting Name="SizeOverlayColorBackground" Type="System.String" Scope="User">
-      <Value Profile="(Default)">FFFFFF</Value>
-    </Setting>
   </Settings>
 </SettingsFile>

@@ -51,11 +51,24 @@ namespace AlbumArtDownloader
             this.buttonClose = new System.Windows.Forms.Button();
             this.tabControlSettings = new System.Windows.Forms.TabControl();
             this.tabPageGeneral = new System.Windows.Forms.TabPage();
-            this.buttonSizeOverlayColorBackground = new System.Windows.Forms.Button();
-            this.labelSizeOverlayColorBackground = new System.Windows.Forms.Label();
+            this.groupBoxGeneralSettings = new System.Windows.Forms.GroupBox();
+            this.checkBoxBold = new System.Windows.Forms.CheckBox();
+            this.numericUpDown3 = new System.Windows.Forms.NumericUpDown();
+            this.checkBoxAutoDownloadFullImage = new System.Windows.Forms.CheckBox();
+            this.checkBoxShowFolderPictures = new System.Windows.Forms.CheckBox();
+            this.numericUpDownThumbnailWidth = new System.Windows.Forms.NumericUpDown();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.numericUpDownThumbnailHeight = new System.Windows.Forms.NumericUpDown();
+            this.checkBoxClose = new System.Windows.Forms.CheckBox();
+            this.checkBoxShowExistingArt = new System.Windows.Forms.CheckBox();
+            this.groupBoxSizeOverlay = new System.Windows.Forms.GroupBox();
+            this.panelSizeOverlaySettings = new System.Windows.Forms.Panel();
             this.pictureBoxPreviewSizeOverlayColor = new System.Windows.Forms.PictureBox();
-            this.buttonSizeOverlayColorForeground = new System.Windows.Forms.Button();
             this.labelSizeOverlayColorForeground = new System.Windows.Forms.Label();
+            this.labelSizeOverlayPreview = new System.Windows.Forms.Label();
+            this.buttonSizeOverlayColorForeground = new System.Windows.Forms.Button();
+            this.textBoxSizeOverlayColorForeground = new System.Windows.Forms.TextBox();
+            this.checkBoxShowSizeOverlay = new System.Windows.Forms.CheckBox();
             this.tabPageScriptManager = new System.Windows.Forms.TabPage();
             this.splitContainerScriptManager = new System.Windows.Forms.SplitContainer();
             this.listScripts = new System.Windows.Forms.CheckedListBox();
@@ -69,23 +82,14 @@ namespace AlbumArtDownloader
             this.clhScriptName = new System.Windows.Forms.ColumnHeader();
             this.panelButtons = new System.Windows.Forms.Panel();
             this.colorDialogSizeOverlay = new System.Windows.Forms.ColorDialog();
-            this.groupBoxSizeOverlay = new System.Windows.Forms.GroupBox();
-            this.groupBoxGeneralSettings = new System.Windows.Forms.GroupBox();
-            this.checkBoxBold = new System.Windows.Forms.CheckBox();
-            this.numericUpDown3 = new System.Windows.Forms.NumericUpDown();
-            this.checkBoxAutoDownloadFullImage = new System.Windows.Forms.CheckBox();
-            this.checkBoxShowFolderPictures = new System.Windows.Forms.CheckBox();
-            this.numericUpDownThumbnailWidth = new System.Windows.Forms.NumericUpDown();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.numericUpDownThumbnailHeight = new System.Windows.Forms.NumericUpDown();
-            this.checkBoxClose = new System.Windows.Forms.CheckBox();
-            this.checkBoxShowExistingArt = new System.Windows.Forms.CheckBox();
-            this.checkBoxUseSizeOverlayColor2 = new System.Windows.Forms.CheckBox();
-            this.checkBoxShowSizeOverlay = new System.Windows.Forms.CheckBox();
-            this.textBoxSizeOverlayColorBackground = new System.Windows.Forms.TextBox();
-            this.textBoxSizeOverlayColorForeground = new System.Windows.Forms.TextBox();
             this.tabControlSettings.SuspendLayout();
             this.tabPageGeneral.SuspendLayout();
+            this.groupBoxGeneralSettings.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownThumbnailWidth)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownThumbnailHeight)).BeginInit();
+            this.groupBoxSizeOverlay.SuspendLayout();
+            this.panelSizeOverlaySettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPreviewSizeOverlayColor)).BeginInit();
             this.tabPageScriptManager.SuspendLayout();
             this.splitContainerScriptManager.Panel1.SuspendLayout();
@@ -94,11 +98,6 @@ namespace AlbumArtDownloader
             this.panelUpDown.SuspendLayout();
             this.panelScriptManager.SuspendLayout();
             this.panelButtons.SuspendLayout();
-            this.groupBoxSizeOverlay.SuspendLayout();
-            this.groupBoxGeneralSettings.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownThumbnailWidth)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownThumbnailHeight)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -151,7 +150,7 @@ namespace AlbumArtDownloader
             this.buttonClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonClose.AutoSize = true;
             this.buttonClose.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.buttonClose.Location = new System.Drawing.Point(469, 3);
+            this.buttonClose.Location = new System.Drawing.Point(465, 3);
             this.buttonClose.Name = "buttonClose";
             this.buttonClose.Size = new System.Drawing.Size(82, 27);
             this.buttonClose.TabIndex = 20;
@@ -167,7 +166,7 @@ namespace AlbumArtDownloader
             this.tabControlSettings.Location = new System.Drawing.Point(0, 0);
             this.tabControlSettings.Name = "tabControlSettings";
             this.tabControlSettings.SelectedIndex = 0;
-            this.tabControlSettings.Size = new System.Drawing.Size(555, 421);
+            this.tabControlSettings.Size = new System.Drawing.Size(551, 417);
             this.tabControlSettings.TabIndex = 21;
             // 
             // tabPageGeneral
@@ -177,210 +176,10 @@ namespace AlbumArtDownloader
             this.tabPageGeneral.Location = new System.Drawing.Point(4, 22);
             this.tabPageGeneral.Name = "tabPageGeneral";
             this.tabPageGeneral.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageGeneral.Size = new System.Drawing.Size(547, 395);
+            this.tabPageGeneral.Size = new System.Drawing.Size(543, 391);
             this.tabPageGeneral.TabIndex = 0;
             this.tabPageGeneral.Text = "General";
             this.tabPageGeneral.UseVisualStyleBackColor = true;
-            // 
-            // buttonSizeOverlayColorBackground
-            // 
-            this.buttonSizeOverlayColorBackground.Location = new System.Drawing.Point(161, 60);
-            this.buttonSizeOverlayColorBackground.Name = "buttonSizeOverlayColorBackground";
-            this.buttonSizeOverlayColorBackground.Size = new System.Drawing.Size(29, 23);
-            this.buttonSizeOverlayColorBackground.TabIndex = 27;
-            this.buttonSizeOverlayColorBackground.Text = "...";
-            this.buttonSizeOverlayColorBackground.UseVisualStyleBackColor = true;
-            this.buttonSizeOverlayColorBackground.Click += new System.EventHandler(this.buttonSizeOverlayColorBackground_Click);
-            // 
-            // labelSizeOverlayColorBackground
-            // 
-            this.labelSizeOverlayColorBackground.AutoSize = true;
-            this.labelSizeOverlayColorBackground.Location = new System.Drawing.Point(3, 65);
-            this.labelSizeOverlayColorBackground.Name = "labelSizeOverlayColorBackground";
-            this.labelSizeOverlayColorBackground.Size = new System.Drawing.Size(102, 13);
-            this.labelSizeOverlayColorBackground.TabIndex = 25;
-            this.labelSizeOverlayColorBackground.Text = "Size Overlay Color 2";
-            // 
-            // pictureBoxPreviewSizeOverlayColor
-            // 
-            this.pictureBoxPreviewSizeOverlayColor.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.pictureBoxPreviewSizeOverlayColor.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.pictureBoxPreviewSizeOverlayColor.DataBindings.Add(new System.Windows.Forms.Binding("Tag", global::AlbumArtDownloader.Properties.Settings.Default, "SizeOverlayPreviewColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.pictureBoxPreviewSizeOverlayColor.Location = new System.Drawing.Point(196, 34);
-            this.pictureBoxPreviewSizeOverlayColor.Name = "pictureBoxPreviewSizeOverlayColor";
-            this.pictureBoxPreviewSizeOverlayColor.Size = new System.Drawing.Size(90, 48);
-            this.pictureBoxPreviewSizeOverlayColor.TabIndex = 24;
-            this.pictureBoxPreviewSizeOverlayColor.TabStop = false;
-            this.pictureBoxPreviewSizeOverlayColor.Tag = global::AlbumArtDownloader.Properties.Settings.Default.SizeOverlayPreviewColor;
-            this.pictureBoxPreviewSizeOverlayColor.Click += new System.EventHandler(this.pictureBoxPreviewSizeOverlayColor_Click);
-            // 
-            // buttonSizeOverlayColorForeground
-            // 
-            this.buttonSizeOverlayColorForeground.Location = new System.Drawing.Point(161, 34);
-            this.buttonSizeOverlayColorForeground.Name = "buttonSizeOverlayColorForeground";
-            this.buttonSizeOverlayColorForeground.Size = new System.Drawing.Size(29, 23);
-            this.buttonSizeOverlayColorForeground.TabIndex = 23;
-            this.buttonSizeOverlayColorForeground.Text = "...";
-            this.buttonSizeOverlayColorForeground.UseVisualStyleBackColor = true;
-            this.buttonSizeOverlayColorForeground.Click += new System.EventHandler(this.buttonSizeOverlayColorForeground_Click);
-            // 
-            // labelSizeOverlayColorForeground
-            // 
-            this.labelSizeOverlayColorForeground.AutoSize = true;
-            this.labelSizeOverlayColorForeground.Location = new System.Drawing.Point(3, 39);
-            this.labelSizeOverlayColorForeground.Name = "labelSizeOverlayColorForeground";
-            this.labelSizeOverlayColorForeground.Size = new System.Drawing.Size(102, 13);
-            this.labelSizeOverlayColorForeground.TabIndex = 21;
-            this.labelSizeOverlayColorForeground.Text = "Size Overlay Color 1";
-            // 
-            // tabPageScriptManager
-            // 
-            this.tabPageScriptManager.Controls.Add(this.splitContainerScriptManager);
-            this.tabPageScriptManager.Location = new System.Drawing.Point(4, 22);
-            this.tabPageScriptManager.Name = "tabPageScriptManager";
-            this.tabPageScriptManager.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageScriptManager.Size = new System.Drawing.Size(547, 395);
-            this.tabPageScriptManager.TabIndex = 1;
-            this.tabPageScriptManager.Text = "Script Manager";
-            this.tabPageScriptManager.UseVisualStyleBackColor = true;
-            // 
-            // splitContainerScriptManager
-            // 
-            this.splitContainerScriptManager.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.splitContainerScriptManager.Location = new System.Drawing.Point(3, 3);
-            this.splitContainerScriptManager.Name = "splitContainerScriptManager";
-            // 
-            // splitContainerScriptManager.Panel1
-            // 
-            this.splitContainerScriptManager.Panel1.Controls.Add(this.listScripts);
-            this.splitContainerScriptManager.Panel1.Controls.Add(this.panelUpDown);
-            // 
-            // splitContainerScriptManager.Panel2
-            // 
-            this.splitContainerScriptManager.Panel2.Controls.Add(this.panelScriptManager);
-            this.splitContainerScriptManager.Size = new System.Drawing.Size(541, 389);
-            this.splitContainerScriptManager.SplitterDistance = 180;
-            this.splitContainerScriptManager.TabIndex = 1;
-            // 
-            // listScripts
-            // 
-            this.listScripts.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.listScripts.Location = new System.Drawing.Point(0, 0);
-            this.listScripts.Name = "listScripts";
-            this.listScripts.Size = new System.Drawing.Size(145, 379);
-            this.listScripts.TabIndex = 0;
-            this.listScripts.SelectedIndexChanged += new System.EventHandler(this.listScripts_SelectedIndexChanged);
-            this.listScripts.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.listScripts_ItemCheck);
-            this.listScripts.MouseDown += new System.Windows.Forms.MouseEventHandler(this.listScripts_MouseDown);
-            this.listScripts.KeyUp += new System.Windows.Forms.KeyEventHandler(this.listScripts_KeyUp);
-            this.listScripts.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listScripts_KeyDown);
-            // 
-            // panelUpDown
-            // 
-            this.panelUpDown.Controls.Add(this.buttonDown);
-            this.panelUpDown.Controls.Add(this.buttonUp);
-            this.panelUpDown.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panelUpDown.Location = new System.Drawing.Point(145, 0);
-            this.panelUpDown.Name = "panelUpDown";
-            this.panelUpDown.Size = new System.Drawing.Size(35, 389);
-            this.panelUpDown.TabIndex = 6;
-            // 
-            // buttonDown
-            // 
-            this.buttonDown.Image = global::AlbumArtDownloader.Properties.Resources.arrMoveDown;
-            this.buttonDown.Location = new System.Drawing.Point(3, 74);
-            this.buttonDown.Name = "buttonDown";
-            this.buttonDown.Size = new System.Drawing.Size(29, 65);
-            this.buttonDown.TabIndex = 1;
-            this.buttonDown.UseVisualStyleBackColor = true;
-            this.buttonDown.Click += new System.EventHandler(this.buttonDown_Click);
-            // 
-            // buttonUp
-            // 
-            this.buttonUp.Image = global::AlbumArtDownloader.Properties.Resources.arrMoveUp;
-            this.buttonUp.Location = new System.Drawing.Point(3, 3);
-            this.buttonUp.Name = "buttonUp";
-            this.buttonUp.Size = new System.Drawing.Size(29, 65);
-            this.buttonUp.TabIndex = 0;
-            this.buttonUp.UseVisualStyleBackColor = true;
-            this.buttonUp.Click += new System.EventHandler(this.buttonUp_Click);
-            // 
-            // panelScriptManager
-            // 
-            this.panelScriptManager.Controls.Add(this.labelScriptCreator);
-            this.panelScriptManager.Controls.Add(this.labelScriptVersion);
-            this.panelScriptManager.Controls.Add(this.labelScriptName);
-            this.panelScriptManager.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelScriptManager.Location = new System.Drawing.Point(0, 0);
-            this.panelScriptManager.Name = "panelScriptManager";
-            this.panelScriptManager.Size = new System.Drawing.Size(357, 389);
-            this.panelScriptManager.TabIndex = 0;
-            this.panelScriptManager.Visible = false;
-            // 
-            // labelScriptCreator
-            // 
-            this.labelScriptCreator.AutoSize = true;
-            this.labelScriptCreator.Location = new System.Drawing.Point(3, 39);
-            this.labelScriptCreator.Name = "labelScriptCreator";
-            this.labelScriptCreator.Size = new System.Drawing.Size(44, 13);
-            this.labelScriptCreator.TabIndex = 2;
-            this.labelScriptCreator.Text = "Creator:";
-            // 
-            // labelScriptVersion
-            // 
-            this.labelScriptVersion.AutoSize = true;
-            this.labelScriptVersion.Location = new System.Drawing.Point(3, 21);
-            this.labelScriptVersion.Name = "labelScriptVersion";
-            this.labelScriptVersion.Size = new System.Drawing.Size(45, 13);
-            this.labelScriptVersion.TabIndex = 1;
-            this.labelScriptVersion.Text = "Version:";
-            // 
-            // labelScriptName
-            // 
-            this.labelScriptName.AutoSize = true;
-            this.labelScriptName.Location = new System.Drawing.Point(3, 3);
-            this.labelScriptName.Name = "labelScriptName";
-            this.labelScriptName.Size = new System.Drawing.Size(38, 13);
-            this.labelScriptName.TabIndex = 0;
-            this.labelScriptName.Text = "Name:";
-            // 
-            // clhScriptName
-            // 
-            this.clhScriptName.Text = "Name";
-            this.clhScriptName.Width = 100;
-            // 
-            // panelButtons
-            // 
-            this.panelButtons.Controls.Add(this.buttonClose);
-            this.panelButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelButtons.Location = new System.Drawing.Point(0, 421);
-            this.panelButtons.Name = "panelButtons";
-            this.panelButtons.Size = new System.Drawing.Size(555, 35);
-            this.panelButtons.TabIndex = 22;
-            // 
-            // colorDialogSizeOverlay
-            // 
-            this.colorDialogSizeOverlay.AnyColor = true;
-            // 
-            // groupBoxSizeOverlay
-            // 
-            this.groupBoxSizeOverlay.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBoxSizeOverlay.Controls.Add(this.checkBoxUseSizeOverlayColor2);
-            this.groupBoxSizeOverlay.Controls.Add(this.checkBoxShowSizeOverlay);
-            this.groupBoxSizeOverlay.Controls.Add(this.buttonSizeOverlayColorBackground);
-            this.groupBoxSizeOverlay.Controls.Add(this.labelSizeOverlayColorForeground);
-            this.groupBoxSizeOverlay.Controls.Add(this.textBoxSizeOverlayColorBackground);
-            this.groupBoxSizeOverlay.Controls.Add(this.textBoxSizeOverlayColorForeground);
-            this.groupBoxSizeOverlay.Controls.Add(this.labelSizeOverlayColorBackground);
-            this.groupBoxSizeOverlay.Controls.Add(this.buttonSizeOverlayColorForeground);
-            this.groupBoxSizeOverlay.Controls.Add(this.pictureBoxPreviewSizeOverlayColor);
-            this.groupBoxSizeOverlay.Location = new System.Drawing.Point(6, 225);
-            this.groupBoxSizeOverlay.Name = "groupBoxSizeOverlay";
-            this.groupBoxSizeOverlay.Size = new System.Drawing.Size(535, 110);
-            this.groupBoxSizeOverlay.TabIndex = 28;
-            this.groupBoxSizeOverlay.TabStop = false;
-            this.groupBoxSizeOverlay.Text = "Size Overlay";
             // 
             // groupBoxGeneralSettings
             // 
@@ -402,7 +201,7 @@ namespace AlbumArtDownloader
             this.groupBoxGeneralSettings.Controls.Add(this.label3);
             this.groupBoxGeneralSettings.Location = new System.Drawing.Point(6, 6);
             this.groupBoxGeneralSettings.Name = "groupBoxGeneralSettings";
-            this.groupBoxGeneralSettings.Size = new System.Drawing.Size(535, 213);
+            this.groupBoxGeneralSettings.Size = new System.Drawing.Size(531, 213);
             this.groupBoxGeneralSettings.TabIndex = 29;
             this.groupBoxGeneralSettings.TabStop = false;
             this.groupBoxGeneralSettings.Text = "General Settings";
@@ -536,19 +335,82 @@ namespace AlbumArtDownloader
             this.checkBoxShowExistingArt.Text = "Show existing art";
             this.checkBoxShowExistingArt.UseVisualStyleBackColor = true;
             // 
-            // checkBoxUseSizeOverlayColor2
+            // groupBoxSizeOverlay
             // 
-            this.checkBoxUseSizeOverlayColor2.AutoSize = true;
-            this.checkBoxUseSizeOverlayColor2.Checked = global::AlbumArtDownloader.Properties.Settings.Default.UseSizeOverlayColor2;
-            this.checkBoxUseSizeOverlayColor2.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxUseSizeOverlayColor2.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::AlbumArtDownloader.Properties.Settings.Default, "UseSizeOverlayColor2", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBoxUseSizeOverlayColor2.Location = new System.Drawing.Point(6, 88);
-            this.checkBoxUseSizeOverlayColor2.Name = "checkBoxUseSizeOverlayColor2";
-            this.checkBoxUseSizeOverlayColor2.Size = new System.Drawing.Size(143, 17);
-            this.checkBoxUseSizeOverlayColor2.TabIndex = 28;
-            this.checkBoxUseSizeOverlayColor2.Text = "Use Size Overlay Color 2";
-            this.checkBoxUseSizeOverlayColor2.UseVisualStyleBackColor = true;
-            this.checkBoxUseSizeOverlayColor2.CheckedChanged += new System.EventHandler(this.checkBoxUseSizeOverlayColor2_CheckedChanged);
+            this.groupBoxSizeOverlay.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxSizeOverlay.Controls.Add(this.panelSizeOverlaySettings);
+            this.groupBoxSizeOverlay.Controls.Add(this.checkBoxShowSizeOverlay);
+            this.groupBoxSizeOverlay.Location = new System.Drawing.Point(6, 225);
+            this.groupBoxSizeOverlay.Name = "groupBoxSizeOverlay";
+            this.groupBoxSizeOverlay.Size = new System.Drawing.Size(531, 64);
+            this.groupBoxSizeOverlay.TabIndex = 28;
+            this.groupBoxSizeOverlay.TabStop = false;
+            this.groupBoxSizeOverlay.Text = "Size Overlay";
+            // 
+            // panelSizeOverlaySettings
+            // 
+            this.panelSizeOverlaySettings.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelSizeOverlaySettings.Controls.Add(this.pictureBoxPreviewSizeOverlayColor);
+            this.panelSizeOverlaySettings.Controls.Add(this.labelSizeOverlayColorForeground);
+            this.panelSizeOverlaySettings.Controls.Add(this.labelSizeOverlayPreview);
+            this.panelSizeOverlaySettings.Controls.Add(this.buttonSizeOverlayColorForeground);
+            this.panelSizeOverlaySettings.Controls.Add(this.textBoxSizeOverlayColorForeground);
+            this.panelSizeOverlaySettings.Location = new System.Drawing.Point(0, 38);
+            this.panelSizeOverlaySettings.Name = "panelSizeOverlaySettings";
+            this.panelSizeOverlaySettings.Size = new System.Drawing.Size(529, 21);
+            this.panelSizeOverlaySettings.TabIndex = 30;
+            // 
+            // pictureBoxPreviewSizeOverlayColor
+            // 
+            this.pictureBoxPreviewSizeOverlayColor.BackColor = System.Drawing.Color.White;
+            this.pictureBoxPreviewSizeOverlayColor.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
+            this.pictureBoxPreviewSizeOverlayColor.Location = new System.Drawing.Point(234, 0);
+            this.pictureBoxPreviewSizeOverlayColor.Name = "pictureBoxPreviewSizeOverlayColor";
+            this.pictureBoxPreviewSizeOverlayColor.Size = new System.Drawing.Size(90, 21);
+            this.pictureBoxPreviewSizeOverlayColor.TabIndex = 24;
+            this.pictureBoxPreviewSizeOverlayColor.TabStop = false;
+            this.pictureBoxPreviewSizeOverlayColor.Tag = "FFFFFF";
+            // 
+            // labelSizeOverlayColorForeground
+            // 
+            this.labelSizeOverlayColorForeground.AutoSize = true;
+            this.labelSizeOverlayColorForeground.Location = new System.Drawing.Point(3, 4);
+            this.labelSizeOverlayColorForeground.Name = "labelSizeOverlayColorForeground";
+            this.labelSizeOverlayColorForeground.Size = new System.Drawing.Size(93, 13);
+            this.labelSizeOverlayColorForeground.TabIndex = 21;
+            this.labelSizeOverlayColorForeground.Text = "Size Overlay Color";
+            // 
+            // labelSizeOverlayPreview
+            // 
+            this.labelSizeOverlayPreview.AutoSize = true;
+            this.labelSizeOverlayPreview.Location = new System.Drawing.Point(189, 4);
+            this.labelSizeOverlayPreview.Name = "labelSizeOverlayPreview";
+            this.labelSizeOverlayPreview.Size = new System.Drawing.Size(48, 13);
+            this.labelSizeOverlayPreview.TabIndex = 29;
+            this.labelSizeOverlayPreview.Text = "Preview:";
+            // 
+            // buttonSizeOverlayColorForeground
+            // 
+            this.buttonSizeOverlayColorForeground.Location = new System.Drawing.Point(154, -1);
+            this.buttonSizeOverlayColorForeground.Name = "buttonSizeOverlayColorForeground";
+            this.buttonSizeOverlayColorForeground.Size = new System.Drawing.Size(29, 23);
+            this.buttonSizeOverlayColorForeground.TabIndex = 23;
+            this.buttonSizeOverlayColorForeground.Text = "...";
+            this.buttonSizeOverlayColorForeground.UseVisualStyleBackColor = true;
+            this.buttonSizeOverlayColorForeground.Click += new System.EventHandler(this.buttonSizeOverlayColorForeground_Click);
+            // 
+            // textBoxSizeOverlayColorForeground
+            // 
+            this.textBoxSizeOverlayColorForeground.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AlbumArtDownloader.Properties.Settings.Default, "SizeOverlayColorForeground", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.textBoxSizeOverlayColorForeground.Location = new System.Drawing.Point(103, 1);
+            this.textBoxSizeOverlayColorForeground.Name = "textBoxSizeOverlayColorForeground";
+            this.textBoxSizeOverlayColorForeground.Size = new System.Drawing.Size(45, 20);
+            this.textBoxSizeOverlayColorForeground.TabIndex = 22;
+            this.textBoxSizeOverlayColorForeground.Text = global::AlbumArtDownloader.Properties.Settings.Default.SizeOverlayColorForeground;
+            this.textBoxSizeOverlayColorForeground.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.textBoxSizeOverlayColorForeground.TextChanged += new System.EventHandler(this.textBoxSizeOverlayColor_TextChanged);
             // 
             // checkBoxShowSizeOverlay
             // 
@@ -562,28 +424,136 @@ namespace AlbumArtDownloader
             this.checkBoxShowSizeOverlay.TabIndex = 19;
             this.checkBoxShowSizeOverlay.Text = "Show Size Overlay";
             this.checkBoxShowSizeOverlay.UseVisualStyleBackColor = true;
+            this.checkBoxShowSizeOverlay.CheckedChanged += new System.EventHandler(this.checkBoxShowSizeOverlay_CheckedChanged);
             // 
-            // textBoxSizeOverlayColorBackground
+            // tabPageScriptManager
             // 
-            this.textBoxSizeOverlayColorBackground.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AlbumArtDownloader.Properties.Settings.Default, "SizeOverlayColorBackground", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBoxSizeOverlayColorBackground.Location = new System.Drawing.Point(110, 62);
-            this.textBoxSizeOverlayColorBackground.Name = "textBoxSizeOverlayColorBackground";
-            this.textBoxSizeOverlayColorBackground.Size = new System.Drawing.Size(45, 20);
-            this.textBoxSizeOverlayColorBackground.TabIndex = 26;
-            this.textBoxSizeOverlayColorBackground.Text = global::AlbumArtDownloader.Properties.Settings.Default.SizeOverlayColorBackground;
-            this.textBoxSizeOverlayColorBackground.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textBoxSizeOverlayColorBackground.TextChanged += new System.EventHandler(this.textBoxSizeOverlayColor_TextChanged);
+            this.tabPageScriptManager.Controls.Add(this.splitContainerScriptManager);
+            this.tabPageScriptManager.Location = new System.Drawing.Point(4, 22);
+            this.tabPageScriptManager.Name = "tabPageScriptManager";
+            this.tabPageScriptManager.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageScriptManager.Size = new System.Drawing.Size(547, 395);
+            this.tabPageScriptManager.TabIndex = 1;
+            this.tabPageScriptManager.Text = "Script Manager";
+            this.tabPageScriptManager.UseVisualStyleBackColor = true;
             // 
-            // textBoxSizeOverlayColorForeground
+            // splitContainerScriptManager
             // 
-            this.textBoxSizeOverlayColorForeground.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::AlbumArtDownloader.Properties.Settings.Default, "SizeOverlayColorForeground", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBoxSizeOverlayColorForeground.Location = new System.Drawing.Point(110, 36);
-            this.textBoxSizeOverlayColorForeground.Name = "textBoxSizeOverlayColorForeground";
-            this.textBoxSizeOverlayColorForeground.Size = new System.Drawing.Size(45, 20);
-            this.textBoxSizeOverlayColorForeground.TabIndex = 22;
-            this.textBoxSizeOverlayColorForeground.Text = global::AlbumArtDownloader.Properties.Settings.Default.SizeOverlayColorForeground;
-            this.textBoxSizeOverlayColorForeground.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textBoxSizeOverlayColorForeground.TextChanged += new System.EventHandler(this.textBoxSizeOverlayColor_TextChanged);
+            this.splitContainerScriptManager.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainerScriptManager.Location = new System.Drawing.Point(3, 3);
+            this.splitContainerScriptManager.Name = "splitContainerScriptManager";
+            // 
+            // splitContainerScriptManager.Panel1
+            // 
+            this.splitContainerScriptManager.Panel1.Controls.Add(this.listScripts);
+            this.splitContainerScriptManager.Panel1.Controls.Add(this.panelUpDown);
+            // 
+            // splitContainerScriptManager.Panel2
+            // 
+            this.splitContainerScriptManager.Panel2.Controls.Add(this.panelScriptManager);
+            this.splitContainerScriptManager.Size = new System.Drawing.Size(541, 389);
+            this.splitContainerScriptManager.SplitterDistance = 180;
+            this.splitContainerScriptManager.TabIndex = 1;
+            // 
+            // listScripts
+            // 
+            this.listScripts.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listScripts.Location = new System.Drawing.Point(0, 0);
+            this.listScripts.Name = "listScripts";
+            this.listScripts.Size = new System.Drawing.Size(145, 379);
+            this.listScripts.TabIndex = 0;
+            this.listScripts.SelectedIndexChanged += new System.EventHandler(this.listScripts_SelectedIndexChanged);
+            this.listScripts.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.listScripts_ItemCheck);
+            this.listScripts.MouseDown += new System.Windows.Forms.MouseEventHandler(this.listScripts_MouseDown);
+            this.listScripts.KeyUp += new System.Windows.Forms.KeyEventHandler(this.listScripts_KeyUp);
+            this.listScripts.KeyDown += new System.Windows.Forms.KeyEventHandler(this.listScripts_KeyDown);
+            // 
+            // panelUpDown
+            // 
+            this.panelUpDown.Controls.Add(this.buttonDown);
+            this.panelUpDown.Controls.Add(this.buttonUp);
+            this.panelUpDown.Dock = System.Windows.Forms.DockStyle.Right;
+            this.panelUpDown.Location = new System.Drawing.Point(145, 0);
+            this.panelUpDown.Name = "panelUpDown";
+            this.panelUpDown.Size = new System.Drawing.Size(35, 389);
+            this.panelUpDown.TabIndex = 6;
+            // 
+            // buttonDown
+            // 
+            this.buttonDown.Image = global::AlbumArtDownloader.Properties.Resources.arrMoveDown;
+            this.buttonDown.Location = new System.Drawing.Point(3, 74);
+            this.buttonDown.Name = "buttonDown";
+            this.buttonDown.Size = new System.Drawing.Size(29, 65);
+            this.buttonDown.TabIndex = 1;
+            this.buttonDown.UseVisualStyleBackColor = true;
+            this.buttonDown.Click += new System.EventHandler(this.buttonDown_Click);
+            // 
+            // buttonUp
+            // 
+            this.buttonUp.Image = global::AlbumArtDownloader.Properties.Resources.arrMoveUp;
+            this.buttonUp.Location = new System.Drawing.Point(3, 3);
+            this.buttonUp.Name = "buttonUp";
+            this.buttonUp.Size = new System.Drawing.Size(29, 65);
+            this.buttonUp.TabIndex = 0;
+            this.buttonUp.UseVisualStyleBackColor = true;
+            this.buttonUp.Click += new System.EventHandler(this.buttonUp_Click);
+            // 
+            // panelScriptManager
+            // 
+            this.panelScriptManager.Controls.Add(this.labelScriptCreator);
+            this.panelScriptManager.Controls.Add(this.labelScriptVersion);
+            this.panelScriptManager.Controls.Add(this.labelScriptName);
+            this.panelScriptManager.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelScriptManager.Location = new System.Drawing.Point(0, 0);
+            this.panelScriptManager.Name = "panelScriptManager";
+            this.panelScriptManager.Size = new System.Drawing.Size(357, 389);
+            this.panelScriptManager.TabIndex = 0;
+            this.panelScriptManager.Visible = false;
+            // 
+            // labelScriptCreator
+            // 
+            this.labelScriptCreator.AutoSize = true;
+            this.labelScriptCreator.Location = new System.Drawing.Point(3, 39);
+            this.labelScriptCreator.Name = "labelScriptCreator";
+            this.labelScriptCreator.Size = new System.Drawing.Size(44, 13);
+            this.labelScriptCreator.TabIndex = 2;
+            this.labelScriptCreator.Text = "Creator:";
+            // 
+            // labelScriptVersion
+            // 
+            this.labelScriptVersion.AutoSize = true;
+            this.labelScriptVersion.Location = new System.Drawing.Point(3, 21);
+            this.labelScriptVersion.Name = "labelScriptVersion";
+            this.labelScriptVersion.Size = new System.Drawing.Size(45, 13);
+            this.labelScriptVersion.TabIndex = 1;
+            this.labelScriptVersion.Text = "Version:";
+            // 
+            // labelScriptName
+            // 
+            this.labelScriptName.AutoSize = true;
+            this.labelScriptName.Location = new System.Drawing.Point(3, 3);
+            this.labelScriptName.Name = "labelScriptName";
+            this.labelScriptName.Size = new System.Drawing.Size(38, 13);
+            this.labelScriptName.TabIndex = 0;
+            this.labelScriptName.Text = "Name:";
+            // 
+            // clhScriptName
+            // 
+            this.clhScriptName.Text = "Name";
+            this.clhScriptName.Width = 100;
+            // 
+            // panelButtons
+            // 
+            this.panelButtons.Controls.Add(this.buttonClose);
+            this.panelButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panelButtons.Location = new System.Drawing.Point(0, 417);
+            this.panelButtons.Name = "panelButtons";
+            this.panelButtons.Size = new System.Drawing.Size(551, 35);
+            this.panelButtons.TabIndex = 22;
+            // 
+            // colorDialogSizeOverlay
+            // 
+            this.colorDialogSizeOverlay.AnyColor = true;
             // 
             // SettingsForm
             // 
@@ -591,7 +561,7 @@ namespace AlbumArtDownloader
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(555, 456);
+            this.ClientSize = new System.Drawing.Size(551, 452);
             this.Controls.Add(this.tabControlSettings);
             this.Controls.Add(this.panelButtons);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -602,6 +572,15 @@ namespace AlbumArtDownloader
             this.Validated += new System.EventHandler(this.SettingsDlg_Validated);
             this.tabControlSettings.ResumeLayout(false);
             this.tabPageGeneral.ResumeLayout(false);
+            this.groupBoxGeneralSettings.ResumeLayout(false);
+            this.groupBoxGeneralSettings.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownThumbnailWidth)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownThumbnailHeight)).EndInit();
+            this.groupBoxSizeOverlay.ResumeLayout(false);
+            this.groupBoxSizeOverlay.PerformLayout();
+            this.panelSizeOverlaySettings.ResumeLayout(false);
+            this.panelSizeOverlaySettings.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxPreviewSizeOverlayColor)).EndInit();
             this.tabPageScriptManager.ResumeLayout(false);
             this.splitContainerScriptManager.Panel1.ResumeLayout(false);
@@ -612,13 +591,6 @@ namespace AlbumArtDownloader
             this.panelScriptManager.PerformLayout();
             this.panelButtons.ResumeLayout(false);
             this.panelButtons.PerformLayout();
-            this.groupBoxSizeOverlay.ResumeLayout(false);
-            this.groupBoxSizeOverlay.PerformLayout();
-            this.groupBoxGeneralSettings.ResumeLayout(false);
-            this.groupBoxGeneralSettings.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownThumbnailWidth)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownThumbnailHeight)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -660,11 +632,9 @@ namespace AlbumArtDownloader
         private System.Windows.Forms.Button buttonSizeOverlayColorForeground;
         private System.Windows.Forms.TextBox textBoxSizeOverlayColorForeground;
         private System.Windows.Forms.PictureBox pictureBoxPreviewSizeOverlayColor;
-        private System.Windows.Forms.Button buttonSizeOverlayColorBackground;
-        private System.Windows.Forms.TextBox textBoxSizeOverlayColorBackground;
-        private System.Windows.Forms.Label labelSizeOverlayColorBackground;
         private System.Windows.Forms.GroupBox groupBoxSizeOverlay;
-        private System.Windows.Forms.CheckBox checkBoxUseSizeOverlayColor2;
         private System.Windows.Forms.GroupBox groupBoxGeneralSettings;
+        private System.Windows.Forms.Label labelSizeOverlayPreview;
+        private System.Windows.Forms.Panel panelSizeOverlaySettings;
     }
 }

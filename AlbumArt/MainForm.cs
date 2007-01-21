@@ -306,9 +306,10 @@ namespace AlbumArtDownloader
         {
             int i = imageListTile.Images.Count;
 
+            Bitmap thumbnail = ResizeBitmap(res.Thumb, ThumbNailSize.Width, ThumbNailSize.Height);
+
 			if (Properties.Settings.Default.ShowSizeOverlay)
             {
-				//TODO: This is hacky. Size should have its own field to be displayed, not involve modifying the thumb bitmap.
 				res.Thumb = ResizeBitmap(res.Thumb, ThumbNailSize.Width, ThumbNailSize.Height);
 				if (!(res.Width > 0 && res.Height > 0))
                 {
@@ -322,24 +323,35 @@ namespace AlbumArtDownloader
 						res.Width = fullSize.Width;
 						res.Height = fullSize.Height;
 					}
+
+                    thumbnail = ResizeBitmap(res.Thumb, ThumbNailSize.Width, ThumbNailSize.Height);
 				}
 
-				if (res.Width > 0 && res.Height > 0)
+                if (thumbnail.Width > 0 && thumbnail.Height > 0)
 				{
                     string caption = System.String.Format("{0} x {1}", res.Width, res.Height);
 
-                    Graphics g = Graphics.FromImage(res.Thumb);
+                    Bitmap b = new Bitmap(thumbnail.Width,thumbnail.Height + SystemFonts.DefaultFont.Height + 1);
+
+                    Graphics g = Graphics.FromImage(b);
+                    g.Clear(Color.White);
+                    
+                    g.DrawImage(thumbnail, 0, SystemFonts.DefaultFont.Height + 1);
+
+                    g.DrawLine(new Pen(new SolidBrush(this.BackColor)), 0, SystemFonts.DefaultFont.Height, thumbnail.Width, SystemFonts.DefaultFont.Height);
+
                     g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
                     Font f = new Font(SystemFonts.DefaultFont, FontStyle.Bold);
-                    if (Properties.Settings.Default.UseSizeOverlayColor2)
-                        g.DrawString(caption, f, new SolidBrush(HexStringToColor(Properties.Settings.Default.SizeOverlayColorBackground)), 1, 1);
-                    g.DrawString(caption, f, new SolidBrush(HexStringToColor(Properties.Settings.Default.SizeOverlayColorForeground)), 0, 0);
+                    g.DrawString(caption, f, new SolidBrush(HexStringToColor(Properties.Settings.Default.SizeOverlayColorForeground)), 1, 1);
+
+                    thumbnail = b;
+
                     f.Dispose();
                     g.Dispose();
                 }
             }
 
-            imageListTile.Images.Add(res.Thumb);
+            imageListTile.Images.Add(thumbnail);
             
             ListViewItem x;
             
