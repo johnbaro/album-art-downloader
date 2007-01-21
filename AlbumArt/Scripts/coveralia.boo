@@ -10,7 +10,7 @@ class Coveralia:
 	static SourceCreator as string:
 		get: return "Alex Vallat"
 	static SourceVersion as string:
-		get: return "0.3"
+		get: return "0.4"
 	static def GetThumbs(coverart,artist,album):
 		query as string = artist + " " + album
 		query.Replace(' ','+')
@@ -30,10 +30,12 @@ class Coveralia:
 			for imagePageMatch as Match in imagePageMatches:
 				//Find Full Size image
 				fullSizeImagePage = GetPage(String.Format("http://www.coveralia.com/caratula.php/{0}", imagePageMatch.Groups["imageName"].Value))
-				fullSizeImageRegex = Regex("<img width=\"(?<width>\\d+)\" height=\"(?<height>\\d+)\" src=\"(?<url>http://www\\.coveralia\\.com/audio/[^\"]+)\"")
-				fullSizeImageMatch = fullSizeImageRegex.Matches(fullSizeImagePage)[0] //Expecting only one match
 				
-				coverart.AddThumb(String.Format("http://www.coveralia.com/audio/thumbs/{0}", imagePageMatch.Groups["thumbID"].Value), resultMatch.Groups["name"].Value, Int32.Parse(fullSizeImageMatch.Groups["width"].Value), Int32.Parse(fullSizeImageMatch.Groups["height"].Value), fullSizeImageMatch.Groups["url"].Value)
+				fullSizeImageRegex = Regex("<img width=\"(?<width>\\d+)\" height=\"(?<height>\\d+)\" alt=\"[^\"]+\" src=\"(?<url>http://www\\.coveralia\\.com/audio/[^\"]+)\"")
+				fullSizeImageMatch = fullSizeImageRegex.Match(fullSizeImagePage) //Expecting only one match
+				
+				if fullSizeImageMatch.Success:
+					coverart.AddThumb(String.Format("http://www.coveralia.com/audio/thumbs/{0}", imagePageMatch.Groups["thumbID"].Value), resultMatch.Groups["name"].Value, Int32.Parse(fullSizeImageMatch.Groups["width"].Value), Int32.Parse(fullSizeImageMatch.Groups["height"].Value), fullSizeImageMatch.Groups["url"].Value)
 		
 	static def GetResult(param):
 		return param
