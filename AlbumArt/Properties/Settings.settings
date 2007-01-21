@@ -116,5 +116,8 @@
     <Setting Name="SizeOverlayColorForeground" Type="System.String" Scope="User">
       <Value Profile="(Default)">000000</Value>
     </Setting>
+    <Setting Name="ShowFolderPicturesRecursiv" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

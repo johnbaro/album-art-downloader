@@ -178,7 +178,18 @@ namespace AlbumArtDownloader
 
                 DirectoryInfo dirinfo = new DirectoryInfo(albumPath);
 
-                foreach (FileInfo fileInfo in dirinfo.GetFiles("*", SearchOption.AllDirectories))
+                FileInfo[] filesInfo;
+
+                if (Properties.Settings.Default.ShowFolderPicturesRecursiv)
+                {
+                    filesInfo = dirinfo.GetFiles("*", SearchOption.AllDirectories);
+                }
+                else
+                {
+                    filesInfo = dirinfo.GetFiles("*");
+                }
+
+                foreach (FileInfo fileInfo in filesInfo)
                 {
                     if (fileInfo.FullName != selectedtask.FileSave)
                     {

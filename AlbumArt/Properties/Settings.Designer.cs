@@ -477,5 +477,17 @@ namespace AlbumArtDownloader.Properties {
                 this["SizeOverlayColorForeground"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowFolderPicturesRecursiv {
+            get {
+                return ((bool)(this["ShowFolderPicturesRecursiv"]));
+            }
+            set {
+                this["ShowFolderPicturesRecursiv"] = value;
+            }
+        }
     }
 }
