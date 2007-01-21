@@ -20,6 +20,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using System.Threading;
 using System.Configuration;
@@ -61,6 +62,8 @@ namespace AlbumArtDownloader
         public Size ThumbNailSize = new Size((int)Properties.Settings.Default.ThumbnailWidth, (int)Properties.Settings.Default.ThumbnailHeight);
 
         private ATL.AudioReaders.AudioFileReader ATLReader;
+
+        static char[] hexDigits = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
         string[] args;
         ListViewItem preview;
@@ -328,8 +331,9 @@ namespace AlbumArtDownloader
                     Graphics g = Graphics.FromImage(res.Thumb);
                     g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
                     Font f = new Font(SystemFonts.DefaultFont, FontStyle.Bold);
-                    g.DrawString(caption, f, Brushes.White, 1, 1);
-                    g.DrawString(caption, f, Brushes.Black, 0, 0);
+                    if (Properties.Settings.Default.UseSizeOverlayColor2)
+                        g.DrawString(caption, f, new SolidBrush(HexStringToColor(Properties.Settings.Default.SizeOverlayColorBackground)), 1, 1);
+                    g.DrawString(caption, f, new SolidBrush(HexStringToColor(Properties.Settings.Default.SizeOverlayColorForeground)), 0, 0);
                     f.Dispose();
                     g.Dispose();
                 }
@@ -1457,6 +1461,69 @@ namespace AlbumArtDownloader
         {
             UpdateBottomPanel();
         }
+
+        private Color HexStringToColor(string hexColor)
+        {
+            string hc = ExtractHexDigits(hexColor);
+            if (hc.Length != 6)
+            {
+                // you can choose whether to throw an exception
+                //throw new ArgumentException("hexColor is not exactly 6 digits.");
+                return Color.Empty;
+            }
+            string r = hc.Substring(0, 2);
+            string g = hc.Substring(2, 2);
+            string b = hc.Substring(4, 2);
+            Color color = Color.Empty;
+            try
+            {
+                int ri
+                   = Int32.Parse(r, System.Globalization.NumberStyles.HexNumber);
+                int gi
+                   = Int32.Parse(g, System.Globalization.NumberStyles.HexNumber);
+                int bi
+                   = Int32.Parse(b, System.Globalization.NumberStyles.HexNumber);
+                color = Color.FromArgb(ri, gi, bi);
+            }
+            catch
+            {
+                // you can choose whether to throw an exception
+                //throw new ArgumentException("Conversion failed.");
+                return Color.Empty;
+            }
+            return color;
+        }
+
+        private string ColorToHexString(Color color)
+        {
+            byte[] bytes = new byte[3];
+            bytes[0] = color.R;
+            bytes[1] = color.G;
+            bytes[2] = color.B;
+            char[] chars = new char[bytes.Length * 2];
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                int b = bytes[i];
+                chars[i * 2] = hexDigits[b >> 4];
+                chars[i * 2 + 1] = hexDigits[b & 0xF];
+            }
+            return new string(chars);
+        }
+
+        private string ExtractHexDigits(string input)
+        {
+            // remove any characters that are not digits (like #)
+            Regex isHexDigit
+               = new Regex("[abcdefABCDEF\\d]+", RegexOptions.Compiled);
+            string newnum = "";
+            foreach (char c in input)
+            {
+                if (isHexDigit.IsMatch(c.ToString()))
+                    newnum += c.ToString();
+            }
+            return newnum;
+        }
+
 
     }
 

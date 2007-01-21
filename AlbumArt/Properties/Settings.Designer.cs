@@ -465,5 +465,53 @@ namespace AlbumArtDownloader.Properties {
                 this["ScriptEnabled"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("000000")]
+        public string SizeOverlayColorForeground {
+            get {
+                return ((string)(this["SizeOverlayColorForeground"]));
+            }
+            set {
+                this["SizeOverlayColorForeground"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool UseSizeOverlayColor2 {
+            get {
+                return ((bool)(this["UseSizeOverlayColor2"]));
+            }
+            set {
+                this["UseSizeOverlayColor2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("FFFFFF")]
+        public string SizeOverlayPreviewColor {
+            get {
+                return ((string)(this["SizeOverlayPreviewColor"]));
+            }
+            set {
+                this["SizeOverlayPreviewColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("FFFFFF")]
+        public string SizeOverlayColorBackground {
+            get {
+                return ((string)(this["SizeOverlayColorBackground"]));
+            }
+            set {
+                this["SizeOverlayColorBackground"] = value;
+            }
+        }
     }
 }

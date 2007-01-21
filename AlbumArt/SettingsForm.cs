@@ -18,6 +18,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace AlbumArtDownloader
@@ -25,6 +26,7 @@ namespace AlbumArtDownloader
     public partial class SettingsForm : Form
     {
         MainForm theparent;
+        static char[] hexDigits = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
         public SettingsForm(MainForm parent)
         {
@@ -42,6 +44,8 @@ namespace AlbumArtDownloader
             }
 
 			listScripts_SelectedIndexChanged(null, EventArgs.Empty); //Set up panel visibility and button enabling appropriately
+
+            drawSizeOverlayPreview();
         }
         
         private void SettingsDlg_Validated(object sender, EventArgs e)
@@ -174,5 +178,144 @@ namespace AlbumArtDownloader
 		{
 			mAllowCheck = false; //Reset allow checking after keypress
 		}
+
+        private Color HexStringToColor(string hexColor)
+        {
+            string hc = ExtractHexDigits(hexColor);
+            if (hc.Length != 6)
+            {
+                // you can choose whether to throw an exception
+                //throw new ArgumentException("hexColor is not exactly 6 digits.");
+                return Color.Empty;
+            }
+            string r = hc.Substring(0, 2);
+            string g = hc.Substring(2, 2);
+            string b = hc.Substring(4, 2);
+            Color color = Color.Empty;
+            try
+            {
+                int ri
+                   = Int32.Parse(r, System.Globalization.NumberStyles.HexNumber);
+                int gi
+                   = Int32.Parse(g, System.Globalization.NumberStyles.HexNumber);
+                int bi
+                   = Int32.Parse(b, System.Globalization.NumberStyles.HexNumber);
+                color = Color.FromArgb(ri, gi, bi);
+            }
+            catch
+            {
+                // you can choose whether to throw an exception
+                //throw new ArgumentException("Conversion failed.");
+                return Color.Empty;
+            }
+            return color;
+        }
+
+        private string ColorToHexString(Color color)
+        {
+            byte[] bytes = new byte[3];
+            bytes[0] = color.R;
+            bytes[1] = color.G;
+            bytes[2] = color.B;
+            char[] chars = new char[bytes.Length * 2];
+            for (int i = 0; i < bytes.Length; i++)
+            {
+                int b = bytes[i];
+                chars[i * 2] = hexDigits[b >> 4];
+                chars[i * 2 + 1] = hexDigits[b & 0xF];
+            }
+            return new string(chars);
+        }
+
+        private string ExtractHexDigits(string input)
+        {
+            // remove any characters that are not digits (like #)
+            Regex isHexDigit
+               = new Regex("[abcdefABCDEF\\d]+", RegexOptions.Compiled);
+            string newnum = "";
+            foreach (char c in input)
+            {
+                if (isHexDigit.IsMatch(c.ToString()))
+                    newnum += c.ToString();
+            }
+            return newnum;
+        }
+
+        private void buttonSizeOverlayColorForeground_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                colorDialogSizeOverlay.Color = HexStringToColor(textBoxSizeOverlayColorForeground.Text);
+            }
+            catch
+            {
+            }
+
+            colorDialogSizeOverlay.ShowDialog(this);
+
+            textBoxSizeOverlayColorForeground.Text = ColorToHexString(colorDialogSizeOverlay.Color);
+        }
+
+        private void buttonSizeOverlayColorBackground_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                colorDialogSizeOverlay.Color = HexStringToColor(textBoxSizeOverlayColorBackground.Text);
+            }
+            catch
+            {
+            }
+
+            colorDialogSizeOverlay.ShowDialog(this);
+
+            textBoxSizeOverlayColorBackground.Text = ColorToHexString(colorDialogSizeOverlay.Color);
+        }
+
+        private void drawSizeOverlayPreview()
+        {
+            Bitmap b = new Bitmap(90, 48);
+
+            Graphics g = Graphics.FromImage(b);
+            g.Clear(HexStringToColor((string)pictureBoxPreviewSizeOverlayColor.Tag));
+            g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+            Font f = new Font(SystemFonts.DefaultFont, FontStyle.Bold);
+            if (checkBoxUseSizeOverlayColor2.Checked)
+                g.DrawString("500 x 500", f, new SolidBrush(HexStringToColor(textBoxSizeOverlayColorBackground.Text)), 1, 1);
+            g.DrawString("500 x 500", f, new SolidBrush(HexStringToColor(textBoxSizeOverlayColorForeground.Text)), 0, 0);
+            g.Flush();
+
+            pictureBoxPreviewSizeOverlayColor.Image = b;
+
+            f.Dispose();
+            g.Dispose();
+        }
+
+        private void textBoxSizeOverlayColor_TextChanged(object sender, EventArgs e)
+        {
+            drawSizeOverlayPreview();
+        }
+
+        private void pictureBoxPreviewSizeOverlayColor_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                colorDialogSizeOverlay.Color = HexStringToColor((string)pictureBoxPreviewSizeOverlayColor.Tag);
+            }
+            catch
+            {
+            }
+
+            colorDialogSizeOverlay.ShowDialog(this);
+
+            pictureBoxPreviewSizeOverlayColor.Tag = ColorToHexString(colorDialogSizeOverlay.Color);
+
+            drawSizeOverlayPreview();
+        }
+
+        private void checkBoxUseSizeOverlayColor2_CheckedChanged(object sender, EventArgs e)
+        {
+            drawSizeOverlayPreview();
+        }
+
     }
 }
