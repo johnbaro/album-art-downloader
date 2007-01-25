@@ -160,7 +160,7 @@ namespace AlbumArtDownloader
                 {
                     r.Width = width;
                     r.Height = height;
-                    r.Name = "---Existing---" + testBoxFileSave.Text;
+                    r.Name = "---Existing---" + textBoxFileSave.Text;
                     r.ScriptOwner = null;
                     lock (r)
                     {
@@ -257,7 +257,7 @@ namespace AlbumArtDownloader
                 return null;
             try
             {
-                Bitmap b = new Bitmap(testBoxFileSave.Text);
+                Bitmap b = new Bitmap(textBoxFileSave.Text);
                 if (b != null)
                 {
                     Bitmap b2 = ResizeBitmap(b, (int)Properties.Settings.Default.ThumbnailWidth, (int)Properties.Settings.Default.ThumbnailHeight);
@@ -424,18 +424,18 @@ namespace AlbumArtDownloader
         }
         public void ThumbClicked(AlbumArtDownloader.ArtDownloader.ThumbRes res, bool usedefsave)
         {
-            if (testBoxFileSave.Text.Length == 0 || !usedefsave)
+            if (textBoxFileSave.Text.Length == 0 || !usedefsave)
             {
                 if (getFileName())
                 {
                     if (res.ScriptOwner != null)
                     {
-                        a.SaveArt(res, testBoxFileSave.Text);
+                        a.SaveArt(res, textBoxFileSave.Text);
                     }
                     else
                     {
-                        if (res.Name != testBoxFileSave.Text)
-                            File.Copy(res.Name, testBoxFileSave.Text, true);
+                        if (res.Name != textBoxFileSave.Text)
+                            File.Copy(res.Name, textBoxFileSave.Text, true);
                     }
                 }
             }
@@ -443,12 +443,12 @@ namespace AlbumArtDownloader
             {
                 if (res.ScriptOwner != null)
                 {
-                    a.SaveArt(res, testBoxFileSave.Text);
+                    a.SaveArt(res, textBoxFileSave.Text);
                 }
                 else
                 {
-                    if (res.Name != testBoxFileSave.Text)
-                        File.Copy(res.Name, testBoxFileSave.Text, true);
+                    if (res.Name != textBoxFileSave.Text)
+                        File.Copy(res.Name, textBoxFileSave.Text, true);
                 }
             }
         }
@@ -511,7 +511,7 @@ namespace AlbumArtDownloader
         {
             String art = textBoxArtist.Text;
             String alb = textBoxAlbum.Text;
-            string fz = testBoxFileSave.Text;
+            string fz = textBoxFileSave.Text;
             textBoxArtist.Focus();
             Task t;
             a.AddTask(t = new Task(a, art, alb, fz,Properties.Settings.Default.PreviewSavedArt, Properties.Settings.Default.ShowFolderPictures,(Control.ModifierKeys == Keys.Control)));
@@ -783,7 +783,7 @@ namespace AlbumArtDownloader
                         if (arguments["al"] != null)
                             textBoxAlbum.Text = arguments["al"];
                         if (arguments["p"] != null)
-                            testBoxFileSave.Text = arguments["p"];
+                            textBoxFileSave.Text = arguments["p"];
                         if (arguments["ae"] != null)
                             Properties.Settings.Default.PreviewSavedArt = arguments["ae"] == "on" ? true : false;
                         if (arguments["ae"] != null)
@@ -869,7 +869,7 @@ namespace AlbumArtDownloader
                     else return false;*/
             if (savedlg.ShowDialog() == DialogResult.OK)
             {
-                testBoxFileSave.Text = savedlg.FileName;
+                textBoxFileSave.Text = savedlg.FileName;
                 return true;
             }
             return false;
@@ -986,7 +986,7 @@ namespace AlbumArtDownloader
             selectedtask.listviewitem.Font = new Font(selectedtask.listviewitem.Font, FontStyle.Bold);
             textBoxArtist.Text = task.Artist;
             textBoxAlbum.Text = task.Album;
-            testBoxFileSave.Text = task.FileSave;
+            textBoxFileSave.Text = task.FileSave;
             Properties.Settings.Default.PreviewSavedArt = task.ShowExisting;
             Properties.Settings.Default.ShowFolderPictures = task.ShowFolder;
             RemoveThumbs();
@@ -1475,7 +1475,7 @@ namespace AlbumArtDownloader
 
         private void testBoxFileSave_TextChanged(object sender, EventArgs e)
         {
-            this.toolTip.SetToolTip(this.testBoxFileSave, this.testBoxFileSave.Text);
+            this.toolTip.SetToolTip(this.textBoxFileSave, this.textBoxFileSave.Text);
         }
 
         private void settingsToolStripMenuItem_Click(object sender, EventArgs e)
