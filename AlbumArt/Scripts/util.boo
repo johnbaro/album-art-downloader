@@ -9,4 +9,4 @@ def GetPage(url as string):
             s=System.IO.StreamReader(GetPageStream(url))
             return s.ReadToEnd()
 def EncodeUrl(url as string):
-	return System.Web.HttpUtility.UrlEncode(url);
+	return System.Web.HttpUtility.UrlEncode(url.Replace("&","%26").Replace("?","%3F"));
