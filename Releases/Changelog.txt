@@ -12,6 +12,10 @@ Legend:
 
 Revision history: ---------------------------------------------------------
 
+Album Art Downloader 0.6 Alpha 1
+
++ changed the way how the size overlay is displayed - now it is over the image
+
 Album Art Downloader 0.5
 
 ! Changed command line switches - use "albumart.exe -?" to get help
