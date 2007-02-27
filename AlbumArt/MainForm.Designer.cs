@@ -99,7 +99,7 @@ namespace AlbumArtDownloader
             this.BrowserCOMProgress = new System.Windows.Forms.ToolStripProgressBar();
             this.BrowserWorkerCOM = new System.ComponentModel.BackgroundWorker();
             this.BrowserWorkerPath = new System.ComponentModel.BackgroundWorker();
-            this.folderBrowserDialog = new System.Windows.Forms.FolderBrowserDialog();
+            this.folderBrowserDialogFolder = new System.Windows.Forms.FolderBrowserDialog();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.menuStripMain = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -108,12 +108,15 @@ namespace AlbumArtDownloader
             this.viewToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.queueToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.browserToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveToolbarToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.aboutToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.panelSearchOutput = new System.Windows.Forms.Panel();
             this.toolStripContainerMain = new System.Windows.Forms.ToolStripContainer();
-            this.toolStripSaveAs = new System.Windows.Forms.ToolStrip();
+            this.toolStripSave = new System.Windows.Forms.ToolStrip();
             this.toolStripButtonSaveAs = new System.Windows.Forms.ToolStripButton();
+            this.saveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.folderBrowserDialogSaveTo = new System.Windows.Forms.FolderBrowserDialog();
             this.groupBoxSearch.SuspendLayout();
             this.statusStrip.SuspendLayout();
             this.groupBoxOutput.SuspendLayout();
@@ -134,10 +137,9 @@ namespace AlbumArtDownloader
             this.panelSearchOutput.SuspendLayout();
             this.toolStripContainerMain.BottomToolStripPanel.SuspendLayout();
             this.toolStripContainerMain.ContentPanel.SuspendLayout();
-            this.toolStripContainerMain.LeftToolStripPanel.SuspendLayout();
             this.toolStripContainerMain.TopToolStripPanel.SuspendLayout();
             this.toolStripContainerMain.SuspendLayout();
-            this.toolStripSaveAs.SuspendLayout();
+            this.toolStripSave.SuspendLayout();
             this.SuspendLayout();
             // 
             // textBoxArtist
@@ -207,7 +209,7 @@ namespace AlbumArtDownloader
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.textBoxFileSave.Location = new System.Drawing.Point(63, 27);
             this.textBoxFileSave.Name = "textBoxFileSave";
-            this.textBoxFileSave.Size = new System.Drawing.Size(379, 20);
+            this.textBoxFileSave.Size = new System.Drawing.Size(397, 20);
             this.textBoxFileSave.TabIndex = 5;
             this.textBoxFileSave.TextChanged += new System.EventHandler(this.testBoxFileSave_TextChanged);
             // 
@@ -261,13 +263,11 @@ namespace AlbumArtDownloader
             // buttonSaveToBrowse
             // 
             this.buttonSaveToBrowse.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonSaveToBrowse.Image = global::AlbumArtDownloader.Properties.Resources.saveHS1;
-            this.buttonSaveToBrowse.Location = new System.Drawing.Point(448, 21);
+            this.buttonSaveToBrowse.Location = new System.Drawing.Point(466, 21);
             this.buttonSaveToBrowse.Name = "buttonSaveToBrowse";
-            this.buttonSaveToBrowse.Size = new System.Drawing.Size(44, 31);
+            this.buttonSaveToBrowse.Size = new System.Drawing.Size(25, 31);
             this.buttonSaveToBrowse.TabIndex = 7;
             this.buttonSaveToBrowse.Text = "...";
-            this.buttonSaveToBrowse.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.buttonSaveToBrowse.UseVisualStyleBackColor = true;
             this.buttonSaveToBrowse.Click += new System.EventHandler(this.buttonSaveToBrowse_Click);
             // 
@@ -350,7 +350,7 @@ namespace AlbumArtDownloader
             // 
             this.splitContainerTileQueue_Browser.Panel2.Controls.Add(this.tabControlBrowser);
             this.splitContainerTileQueue_Browser.Size = new System.Drawing.Size(788, 450);
-            this.splitContainerTileQueue_Browser.SplitterDistance = 441;
+            this.splitContainerTileQueue_Browser.SplitterDistance = 440;
             this.splitContainerTileQueue_Browser.TabIndex = 0;
             // 
             // splitContainerTile_Queue
@@ -367,7 +367,7 @@ namespace AlbumArtDownloader
             // splitContainerTile_Queue.Panel2
             // 
             this.splitContainerTile_Queue.Panel2.Controls.Add(this.listViewQueue);
-            this.splitContainerTile_Queue.Size = new System.Drawing.Size(441, 450);
+            this.splitContainerTile_Queue.Size = new System.Drawing.Size(440, 450);
             this.splitContainerTile_Queue.SplitterDistance = 247;
             this.splitContainerTile_Queue.TabIndex = 0;
             // 
@@ -386,7 +386,7 @@ namespace AlbumArtDownloader
             this.megaListTiles.MultiSelect = false;
             this.megaListTiles.Name = "megaListTiles";
             this.megaListTiles.ShowItemToolTips = true;
-            this.megaListTiles.Size = new System.Drawing.Size(441, 247);
+            this.megaListTiles.Size = new System.Drawing.Size(440, 247);
             this.megaListTiles.SmallImageList = this.imageListTile;
             this.megaListTiles.TabIndex = 0;
             this.toolTip.SetToolTip(this.megaListTiles, "test");
@@ -405,7 +405,7 @@ namespace AlbumArtDownloader
             this.listViewQueue.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.listViewQueue.Location = new System.Drawing.Point(0, 0);
             this.listViewQueue.Name = "listViewQueue";
-            this.listViewQueue.Size = new System.Drawing.Size(441, 199);
+            this.listViewQueue.Size = new System.Drawing.Size(440, 199);
             this.listViewQueue.SmallImageList = this.QueueImageList;
             this.listViewQueue.TabIndex = 1;
             this.listViewQueue.UseCompatibleStateImageBehavior = false;
@@ -432,7 +432,7 @@ namespace AlbumArtDownloader
             this.tabControlBrowser.Location = new System.Drawing.Point(0, 0);
             this.tabControlBrowser.Name = "tabControlBrowser";
             this.tabControlBrowser.SelectedIndex = global::AlbumArtDownloader.Properties.Settings.Default.SelectedBrowserTab;
-            this.tabControlBrowser.Size = new System.Drawing.Size(343, 450);
+            this.tabControlBrowser.Size = new System.Drawing.Size(344, 450);
             this.tabControlBrowser.TabIndex = 2;
             // 
             // tabPageBrowseFolder
@@ -442,7 +442,7 @@ namespace AlbumArtDownloader
             this.tabPageBrowseFolder.Location = new System.Drawing.Point(4, 22);
             this.tabPageBrowseFolder.Name = "tabPageBrowseFolder";
             this.tabPageBrowseFolder.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageBrowseFolder.Size = new System.Drawing.Size(335, 424);
+            this.tabPageBrowseFolder.Size = new System.Drawing.Size(336, 424);
             this.tabPageBrowseFolder.TabIndex = 1;
             this.tabPageBrowseFolder.Text = "Browse Folder";
             this.tabPageBrowseFolder.UseVisualStyleBackColor = true;
@@ -458,7 +458,7 @@ namespace AlbumArtDownloader
             this.megaListBrowserPath.FullRowSelect = true;
             this.megaListBrowserPath.Location = new System.Drawing.Point(3, 28);
             this.megaListBrowserPath.Name = "megaListBrowserPath";
-            this.megaListBrowserPath.Size = new System.Drawing.Size(329, 393);
+            this.megaListBrowserPath.Size = new System.Drawing.Size(330, 393);
             this.megaListBrowserPath.SmallImageList = this.imageListHasAlbumArt;
             this.megaListBrowserPath.TabIndex = 2;
             this.megaListBrowserPath.UseCompatibleStateImageBehavior = false;
@@ -499,7 +499,7 @@ namespace AlbumArtDownloader
             this.BrowserPathProgress});
             this.toolStripBrowserPath.Location = new System.Drawing.Point(3, 3);
             this.toolStripBrowserPath.Name = "toolStripBrowserPath";
-            this.toolStripBrowserPath.Size = new System.Drawing.Size(329, 25);
+            this.toolStripBrowserPath.Size = new System.Drawing.Size(330, 25);
             this.toolStripBrowserPath.TabIndex = 3;
             this.toolStripBrowserPath.Text = "toolStrip1";
             // 
@@ -549,7 +549,7 @@ namespace AlbumArtDownloader
             this.tabPageCOMServer.Location = new System.Drawing.Point(4, 22);
             this.tabPageCOMServer.Name = "tabPageCOMServer";
             this.tabPageCOMServer.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageCOMServer.Size = new System.Drawing.Size(324, 424);
+            this.tabPageCOMServer.Size = new System.Drawing.Size(336, 424);
             this.tabPageCOMServer.TabIndex = 0;
             this.tabPageCOMServer.Text = "Foobar2000 COM Server";
             this.tabPageCOMServer.UseVisualStyleBackColor = true;
@@ -565,7 +565,7 @@ namespace AlbumArtDownloader
             this.megaListBrowserCOM.FullRowSelect = true;
             this.megaListBrowserCOM.Location = new System.Drawing.Point(3, 28);
             this.megaListBrowserCOM.Name = "megaListBrowserCOM";
-            this.megaListBrowserCOM.Size = new System.Drawing.Size(318, 393);
+            this.megaListBrowserCOM.Size = new System.Drawing.Size(330, 393);
             this.megaListBrowserCOM.SmallImageList = this.imageListHasAlbumArt;
             this.megaListBrowserCOM.TabIndex = 0;
             this.megaListBrowserCOM.UseCompatibleStateImageBehavior = false;
@@ -599,7 +599,7 @@ namespace AlbumArtDownloader
             this.BrowserCOMProgress});
             this.toolStripBrowserCOM.Location = new System.Drawing.Point(3, 3);
             this.toolStripBrowserCOM.Name = "toolStripBrowserCOM";
-            this.toolStripBrowserCOM.Size = new System.Drawing.Size(318, 25);
+            this.toolStripBrowserCOM.Size = new System.Drawing.Size(330, 25);
             this.toolStripBrowserCOM.TabIndex = 1;
             this.toolStripBrowserCOM.Text = "toolStrip1";
             // 
@@ -664,7 +664,7 @@ namespace AlbumArtDownloader
             this.menuStripMain.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
             this.viewToolStripMenuItem,
-            this.aboutToolStripMenuItem});
+            this.helpToolStripMenuItem});
             this.menuStripMain.Location = new System.Drawing.Point(0, 0);
             this.menuStripMain.Name = "menuStripMain";
             this.menuStripMain.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
@@ -700,7 +700,8 @@ namespace AlbumArtDownloader
             // 
             this.viewToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.queueToolStripMenuItem,
-            this.browserToolStripMenuItem});
+            this.browserToolStripMenuItem,
+            this.saveToolbarToolStripMenuItem});
             this.viewToolStripMenuItem.Name = "viewToolStripMenuItem";
             this.viewToolStripMenuItem.Size = new System.Drawing.Size(41, 20);
             this.viewToolStripMenuItem.Text = "View";
@@ -709,7 +710,7 @@ namespace AlbumArtDownloader
             // 
             this.queueToolStripMenuItem.CheckOnClick = true;
             this.queueToolStripMenuItem.Name = "queueToolStripMenuItem";
-            this.queueToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
+            this.queueToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.queueToolStripMenuItem.Text = "Queue";
             this.queueToolStripMenuItem.CheckedChanged += new System.EventHandler(this.queueToolStripMenuItem_CheckedChanged);
             // 
@@ -717,23 +718,31 @@ namespace AlbumArtDownloader
             // 
             this.browserToolStripMenuItem.CheckOnClick = true;
             this.browserToolStripMenuItem.Name = "browserToolStripMenuItem";
-            this.browserToolStripMenuItem.Size = new System.Drawing.Size(113, 22);
+            this.browserToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
             this.browserToolStripMenuItem.Text = "Browser";
             this.browserToolStripMenuItem.CheckedChanged += new System.EventHandler(this.browserToolStripMenuItem_CheckedChanged);
             // 
+            // saveToolbarToolStripMenuItem
+            // 
+            this.saveToolbarToolStripMenuItem.CheckOnClick = true;
+            this.saveToolbarToolStripMenuItem.Name = "saveToolbarToolStripMenuItem";
+            this.saveToolbarToolStripMenuItem.Size = new System.Drawing.Size(137, 22);
+            this.saveToolbarToolStripMenuItem.Text = "Save Toolbar";
+            this.saveToolbarToolStripMenuItem.CheckedChanged += new System.EventHandler(this.saveToolbarToolStripMenuItem_CheckedChanged);
+            // 
+            // helpToolStripMenuItem
+            // 
+            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.aboutToolStripMenuItem});
+            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(40, 20);
+            this.helpToolStripMenuItem.Text = "Help";
+            // 
             // aboutToolStripMenuItem
             // 
-            this.aboutToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.aboutToolStripMenuItem1});
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(40, 20);
-            this.aboutToolStripMenuItem.Text = "Help";
-            // 
-            // aboutToolStripMenuItem1
-            // 
-            this.aboutToolStripMenuItem1.Name = "aboutToolStripMenuItem1";
-            this.aboutToolStripMenuItem1.Size = new System.Drawing.Size(103, 22);
-            this.aboutToolStripMenuItem1.Text = "About";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.aboutToolStripMenuItem.Text = "About";
             // 
             // panelSearchOutput
             // 
@@ -759,11 +768,6 @@ namespace AlbumArtDownloader
             this.toolStripContainerMain.ContentPanel.Controls.Add(this.panelSearchOutput);
             this.toolStripContainerMain.ContentPanel.Size = new System.Drawing.Size(788, 523);
             this.toolStripContainerMain.Dock = System.Windows.Forms.DockStyle.Fill;
-            // 
-            // toolStripContainerMain.LeftToolStripPanel
-            // 
-            this.toolStripContainerMain.LeftToolStripPanel.Controls.Add(this.toolStripSaveAs);
-            this.toolStripContainerMain.LeftToolStripPanelVisible = false;
             this.toolStripContainerMain.Location = new System.Drawing.Point(0, 0);
             this.toolStripContainerMain.Name = "toolStripContainerMain";
             this.toolStripContainerMain.Size = new System.Drawing.Size(788, 569);
@@ -773,26 +777,35 @@ namespace AlbumArtDownloader
             // toolStripContainerMain.TopToolStripPanel
             // 
             this.toolStripContainerMain.TopToolStripPanel.Controls.Add(this.menuStripMain);
+            this.toolStripContainerMain.TopToolStripPanel.Controls.Add(this.toolStripSave);
             // 
-            // toolStripSaveAs
+            // toolStripSave
             // 
-            this.toolStripSaveAs.Dock = System.Windows.Forms.DockStyle.None;
-            this.toolStripSaveAs.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
-            this.toolStripSaveAs.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripSave.Dock = System.Windows.Forms.DockStyle.None;
+            this.toolStripSave.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
+            this.toolStripSave.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripButtonSaveAs});
-            this.toolStripSaveAs.Location = new System.Drawing.Point(0, 3);
-            this.toolStripSaveAs.Name = "toolStripSaveAs";
-            this.toolStripSaveAs.Size = new System.Drawing.Size(24, 25);
-            this.toolStripSaveAs.TabIndex = 0;
+            this.toolStripSave.Location = new System.Drawing.Point(0, 24);
+            this.toolStripSave.Name = "toolStripSave";
+            this.toolStripSave.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
+            this.toolStripSave.Size = new System.Drawing.Size(788, 36);
+            this.toolStripSave.Stretch = true;
+            this.toolStripSave.TabIndex = 0;
+            this.toolStripSave.Visible = false;
             // 
             // toolStripButtonSaveAs
             // 
-            this.toolStripButtonSaveAs.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.toolStripButtonSaveAs.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButtonSaveAs.Image")));
+            this.toolStripButtonSaveAs.Image = global::AlbumArtDownloader.Properties.Resources.saveHS1;
             this.toolStripButtonSaveAs.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButtonSaveAs.Name = "toolStripButtonSaveAs";
-            this.toolStripButtonSaveAs.Size = new System.Drawing.Size(22, 20);
+            this.toolStripButtonSaveAs.Size = new System.Drawing.Size(64, 33);
             this.toolStripButtonSaveAs.Text = "Save as ...";
+            this.toolStripButtonSaveAs.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+            this.toolStripButtonSaveAs.Click += new System.EventHandler(this.toolStripButtonSaveAs_Click);
+            // 
+            // saveFileDialog
+            // 
+            this.saveFileDialog.Filter = "JPEG Files|*.jpg;*.jpeg";
             // 
             // MainForm
             // 
@@ -836,14 +849,12 @@ namespace AlbumArtDownloader
             this.toolStripContainerMain.BottomToolStripPanel.ResumeLayout(false);
             this.toolStripContainerMain.BottomToolStripPanel.PerformLayout();
             this.toolStripContainerMain.ContentPanel.ResumeLayout(false);
-            this.toolStripContainerMain.LeftToolStripPanel.ResumeLayout(false);
-            this.toolStripContainerMain.LeftToolStripPanel.PerformLayout();
             this.toolStripContainerMain.TopToolStripPanel.ResumeLayout(false);
             this.toolStripContainerMain.TopToolStripPanel.PerformLayout();
             this.toolStripContainerMain.ResumeLayout(false);
             this.toolStripContainerMain.PerformLayout();
-            this.toolStripSaveAs.ResumeLayout(false);
-            this.toolStripSaveAs.PerformLayout();
+            this.toolStripSave.ResumeLayout(false);
+            this.toolStripSave.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -890,7 +901,7 @@ namespace AlbumArtDownloader
         private System.Windows.Forms.ToolStripProgressBar MainProgress;
         private System.Windows.Forms.ImageList QueueImageList;
         private System.ComponentModel.BackgroundWorker BrowserWorkerPath;
-        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialog;
+        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialogFolder;
         private System.Windows.Forms.TabControl tabControlBrowser;
         private System.Windows.Forms.TabPage tabPageCOMServer;
         private System.Windows.Forms.TabPage tabPageBrowseFolder;
@@ -907,8 +918,8 @@ namespace AlbumArtDownloader
         private System.Windows.Forms.MenuStrip menuStripMain;
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem settingsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem viewToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem queueToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem browserToolStripMenuItem;
@@ -918,8 +929,11 @@ namespace AlbumArtDownloader
         private System.Windows.Forms.ColumnHeader clhBrowserPathSize;
         private System.Windows.Forms.ColumnHeader clhBrowserCOMSize;
         private System.Windows.Forms.ToolStripContainer toolStripContainerMain;
-        private System.Windows.Forms.ToolStrip toolStripSaveAs;
         private System.Windows.Forms.ToolStripButton toolStripButtonSaveAs;
+        private System.Windows.Forms.ToolStripMenuItem saveToolbarToolStripMenuItem;
+        private System.Windows.Forms.SaveFileDialog saveFileDialog;
+        internal System.Windows.Forms.ToolStrip toolStripSave;
+        private System.Windows.Forms.FolderBrowserDialog folderBrowserDialogSaveTo;
     }
 }
 

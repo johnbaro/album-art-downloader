@@ -119,5 +119,11 @@
     <Setting Name="ShowFolderPicturesRecursiv" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="SaveButtons" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Save As...</Value>
+    </Setting>
+    <Setting Name="ShowSaveToolbar" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

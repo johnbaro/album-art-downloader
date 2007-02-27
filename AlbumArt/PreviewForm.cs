@@ -73,7 +73,7 @@ namespace AlbumArtDownloader
         private void pictureBox1_DoubleClick(object sender, EventArgs e)
         {
             if (thumbres != null)
-                mainForm.ThumbClicked(thumbres, true);
+                mainForm.ThumbClicked(thumbres, Properties.Settings.Default.SaveFileName);
         }
 
     }

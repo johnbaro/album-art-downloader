@@ -28,6 +28,9 @@ namespace AlbumArtDownloader
         MainForm theparent;
         static char[] hexDigits = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
 
+        ListViewItem listViewItemEdit;
+        bool isEdit;
+
         public SettingsForm(MainForm parent)
         {
             theparent = parent;
@@ -44,6 +47,11 @@ namespace AlbumArtDownloader
             }
 
 			listScripts_SelectedIndexChanged(null, EventArgs.Empty); //Set up panel visibility and button enabling appropriately
+
+            foreach ( ToolStripButton tsb in theparent.toolStripSave.Items )
+            {
+                listViewSaveButtons.Items.Add(tsb.Text);
+            }
 
             drawSizeOverlayPreview();
         }
@@ -63,14 +71,14 @@ namespace AlbumArtDownloader
                 labelScriptCreator.Text = String.Format("Name: {0}", ((Script)listScripts.SelectedItem).Creator);
                 
 				int selIdx = listScripts.SelectedIndex;
-				buttonUp.Enabled = selIdx > 0;
-				buttonDown.Enabled = selIdx < listScripts.Items.Count - 1;
+				buttonScriptUp.Enabled = selIdx > 0;
+				buttonScriptDown.Enabled = selIdx < listScripts.Items.Count - 1;
             }
             else
             {
                 panelScriptManager.Visible = false;
-				buttonUp.Enabled = false;
-				buttonDown.Enabled = false;
+				buttonScriptUp.Enabled = false;
+				buttonScriptDown.Enabled = false;
             }
         }
 
@@ -126,6 +134,47 @@ namespace AlbumArtDownloader
 			lv.Focus();
         }
 
+        private void MoveListViewItem(ref ListView lv, bool moveUp)
+        {
+            string cache;
+            int selIdx;
+
+            selIdx = lv.SelectedItems[0].Index;
+            if (moveUp)
+            {
+                if (selIdx == 0)
+                    return;
+
+                for (int i = 0; i < lv.Items[selIdx].SubItems.Count; i++)
+                {
+                    cache = lv.Items[selIdx - 1].SubItems[i].Text;
+                    lv.Items[selIdx - 1].SubItems[i].Text =
+                      lv.Items[selIdx].SubItems[i].Text;
+                    lv.Items[selIdx].SubItems[i].Text = cache;
+                }
+                lv.Items[selIdx - 1].Selected = true;
+                lv.Refresh();
+                lv.Focus();
+            }
+            else
+            {
+                if (selIdx == lv.Items.Count - 1)
+                    return;
+
+                for (int i = 0; i < lv.Items[selIdx].SubItems.Count; i++)
+                {
+                    cache = lv.Items[selIdx + 1].SubItems[i].Text;
+                    lv.Items[selIdx + 1].SubItems[i].Text =
+                      lv.Items[selIdx].SubItems[i].Text;
+                    lv.Items[selIdx].SubItems[i].Text = cache;
+                }
+                lv.Items[selIdx + 1].Selected = true;
+                lv.Refresh();
+                lv.Focus();
+            }
+        }
+
+
         private void buttonClose_Click(object sender, EventArgs e)
         {
             lock (theparent.a.scripts)
@@ -137,6 +186,16 @@ namespace AlbumArtDownloader
 
                 theparent.UpdateScriptOrder(theparent.a.scripts);
             }
+
+            string[] buttons = new string[listViewSaveButtons.Items.Count];
+
+            for (int i = 0; i < listViewSaveButtons.Items.Count; i++)
+            {
+                buttons[i] = listViewSaveButtons.Items[i].Text;
+            }
+
+            theparent.AddSaveButtonsFromString(string.Join("|", buttons), theparent.toolStripSave);
+
         }
 
 		private bool mAllowCheck; //Only allow check state to change programatically.
@@ -286,6 +345,63 @@ namespace AlbumArtDownloader
         private void checkBoxShowSizeOverlay_CheckedChanged(object sender, EventArgs e)
         {
             panelSizeOverlaySettings.Enabled = checkBoxShowSizeOverlay.Checked;
+        }
+
+        private void buttonSaveUp_Click(object sender, EventArgs e)
+        {
+            if (listViewSaveButtons.SelectedIndices.Count > 0)
+            {
+                MoveListViewItem(ref listViewSaveButtons, true);
+            }
+        }
+
+        private void buttonSaveDown_Click(object sender, EventArgs e)
+        {
+            MoveListViewItem(ref listViewSaveButtons, false);
+        }
+
+        private void buttonSaveAdd_Click(object sender, EventArgs e)
+        {
+
+            isEdit = false;
+
+            listViewItemEdit = listViewSaveButtons.Items.Add("");
+
+            listViewItemEdit.Selected = true;
+
+            listViewSaveButtons.LabelEdit = true;
+
+            listViewItemEdit.BeginEdit();
+        }
+
+        private void listViewSaveButtons_AfterLabelEdit(object sender, LabelEditEventArgs e)
+        {
+            listViewSaveButtons.LabelEdit = false;
+
+            if ((e.Label == "" || e.Label == null) && isEdit == false)
+                listViewSaveButtons.Items.RemoveAt(e.Item);
+        }
+
+        private void buttonSaveEdit_Click(object sender, EventArgs e)
+        {
+            if (listViewSaveButtons.SelectedIndices.Count > 0)
+            {
+                isEdit = true;
+                listViewSaveButtons.LabelEdit = true;
+                listViewSaveButtons.SelectedItems[0].BeginEdit();
+            }
+        }
+
+        private void buttonSaveRemove_Click(object sender, EventArgs e)
+        {
+            if (listViewSaveButtons.SelectedIndices.Count > 0)
+                listViewSaveButtons.Items.RemoveAt(listViewSaveButtons.SelectedIndices[0]);
+
+        }
+
+        private void SettingsForm_SizeChanged(object sender, EventArgs e)
+        {
+            columnHeaderFolder.Width = -2;
         }
 
     }

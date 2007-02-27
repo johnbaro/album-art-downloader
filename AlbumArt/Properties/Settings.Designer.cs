@@ -489,5 +489,29 @@ namespace AlbumArtDownloader.Properties {
                 this["ShowFolderPicturesRecursiv"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Save As...")]
+        public string SaveButtons {
+            get {
+                return ((string)(this["SaveButtons"]));
+            }
+            set {
+                this["SaveButtons"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowSaveToolbar {
+            get {
+                return ((bool)(this["ShowSaveToolbar"]));
+            }
+            set {
+                this["ShowSaveToolbar"] = value;
+            }
+        }
     }
 }

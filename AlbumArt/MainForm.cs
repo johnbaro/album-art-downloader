@@ -160,7 +160,7 @@ namespace AlbumArtDownloader
                 {
                     r.Width = width;
                     r.Height = height;
-                    r.Name = "---Existing---" + textBoxFileSave.Text;
+                    r.Name = "---Existing---" + textBoxFileSave.Text + "\\" + Properties.Settings.Default.SaveFileName;
                     r.ScriptOwner = null;
                     lock (r)
                     {
@@ -174,9 +174,7 @@ namespace AlbumArtDownloader
 
             if (Properties.Settings.Default.ShowFolderPictures && !String.IsNullOrEmpty(selectedtask.FileSave))
             {
-                string albumPath = System.IO.Path.GetDirectoryName(selectedtask.FileSave);
-
-                DirectoryInfo dirinfo = new DirectoryInfo(albumPath);
+                DirectoryInfo dirinfo = new DirectoryInfo(selectedtask.FileSave);
 
                 FileInfo[] filesInfo;
 
@@ -191,9 +189,9 @@ namespace AlbumArtDownloader
 
                 foreach (FileInfo fileInfo in filesInfo)
                 {
-                    if (fileInfo.FullName != selectedtask.FileSave)
+                    if (fileInfo.FullName != selectedtask.FileSave + "\\" + Properties.Settings.Default.SaveFileName)
                     {
-                        if (fileInfo.Extension == ".bmp" || fileInfo.Extension == ".jpg" || fileInfo.Extension == ".jpeg" || fileInfo.Extension == ".png" || fileInfo.Extension == ".gif")
+                        if (fileInfo.Extension.ToLower() == ".bmp" || fileInfo.Extension.ToLower() == ".jpg" || fileInfo.Extension.ToLower() == ".jpeg" || fileInfo.Extension.ToLower() == ".png" || fileInfo.Extension.ToLower() == ".gif")
                         {
                             ArtDownloader.ThumbRes r = new ArtDownloader.ThumbRes();
                             Int32 width = new Int32();
@@ -257,7 +255,7 @@ namespace AlbumArtDownloader
                 return null;
             try
             {
-                Bitmap b = new Bitmap(textBoxFileSave.Text);
+                Bitmap b = new Bitmap(textBoxFileSave.Text + "\\" + Properties.Settings.Default.SaveFileName);
                 if (b != null)
                 {
                     Bitmap b2 = ResizeBitmap(b, (int)Properties.Settings.Default.ThumbnailWidth, (int)Properties.Settings.Default.ThumbnailHeight);
@@ -422,36 +420,50 @@ namespace AlbumArtDownloader
             megaListTiles.Groups.Add(x);
             return x;
         }
-        public void ThumbClicked(AlbumArtDownloader.ArtDownloader.ThumbRes res, bool usedefsave)
+        //public void ThumbClicked(AlbumArtDownloader.ArtDownloader.ThumbRes res, bool usedefsave)
+        //{
+        //    if (textBoxFileSave.Text.Length == 0 || !usedefsave)
+        //    {
+        //        if (getFileName())
+        //        {
+        //            if (res.ScriptOwner != null)
+        //            {
+        //                a.SaveArt(res, textBoxFileSave.Text);
+        //            }
+        //            else
+        //            {
+        //                if (res.Name != textBoxFileSave.Text)
+        //                    File.Copy(res.Name, textBoxFileSave.Text, true);
+        //            }
+        //        }
+        //    }
+        //    else
+        //    {
+        //        if (res.ScriptOwner != null)
+        //        {
+        //            a.SaveArt(res, textBoxFileSave.Text);
+        //        }
+        //        else
+        //        {
+        //            if (res.Name != textBoxFileSave.Text)
+        //                File.Copy(res.Name, textBoxFileSave.Text, true);
+        //        }
+        //    }
+        //}
+
+        public void ThumbClicked(AlbumArtDownloader.ArtDownloader.ThumbRes res, string filename)
         {
-            if (textBoxFileSave.Text.Length == 0 || !usedefsave)
+            if (res.ScriptOwner != null)
             {
-                if (getFileName())
-                {
-                    if (res.ScriptOwner != null)
-                    {
-                        a.SaveArt(res, textBoxFileSave.Text);
-                    }
-                    else
-                    {
-                        if (res.Name != textBoxFileSave.Text)
-                            File.Copy(res.Name, textBoxFileSave.Text, true);
-                    }
-                }
+                a.SaveArt(res, filename);
             }
             else
             {
-                if (res.ScriptOwner != null)
-                {
-                    a.SaveArt(res, textBoxFileSave.Text);
-                }
-                else
-                {
-                    if (res.Name != textBoxFileSave.Text)
-                        File.Copy(res.Name, textBoxFileSave.Text, true);
-                }
+                if (res.Name != filename)
+                    File.Copy(res.Name, filename, true);
             }
         }
+
         public void UpdateProgess(int prog)
         {
             if (prog == -1) MainProgress.Visible = false;
@@ -603,6 +615,7 @@ namespace AlbumArtDownloader
                 Properties.Settings.Default.MainPosH = DesktopBounds.Height;
                 Properties.Settings.Default.ShowQueue = queueToolStripMenuItem.Checked;
                 Properties.Settings.Default.ShowBrowser = browserToolStripMenuItem.Checked;
+                Properties.Settings.Default.ShowSaveToolbar = saveToolbarToolStripMenuItem.Checked;
                 if (!Properties.Settings.Default.ShowQueue)
                 {
                     queueToolStripMenuItem.Checked = true;
@@ -621,6 +634,7 @@ namespace AlbumArtDownloader
                 Properties.Settings.Default.BrowserColsPath = SaveListViewSizeToString(megaListBrowserPath);
                 Properties.Settings.Default.ScriptOrder = SaveScriptOrderToString(a.scripts);
                 Properties.Settings.Default.ScriptEnabled = SaveScriptEnabledToString(a.scripts);
+                Properties.Settings.Default.SaveButtons = SaveSaveButtonsToString(toolStripSave);
                 Properties.Settings.Default.Save();
             }
         }
@@ -710,14 +724,46 @@ namespace AlbumArtDownloader
             }
             return string.Join(";", colwidths);
         }
+
+        internal void AddSaveButtonsFromString(string str, ToolStrip toolstrip)
+        {
+            string[] buttons = str.Split('|');
+
+            toolstrip.Items.Clear();
+
+            foreach (string button in buttons)
+            {
+                ToolStripItem toolstripitem = toolstrip.Items.Add(button);
+                toolstripitem.Image = global::AlbumArtDownloader.Properties.Resources.saveHS1;
+                toolstripitem.ImageTransparentColor = System.Drawing.Color.Magenta;
+                toolstripitem.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
+                if (button == "Save As...")
+                    toolstripitem.Click += new System.EventHandler(this.toolStripButtonSaveAs_Click);
+                else
+                    toolstripitem.Click += new System.EventHandler(this.toolStripButtonSaveDefault_Click);
+            }
+        }
+
+        internal string SaveSaveButtonsToString(ToolStrip toolstrip)
+        {
+            string[] buttons = new string[toolstrip.Items.Count];
+
+            for (int i = 0; i < toolstrip.Items.Count; i++)
+            {
+                buttons[i] = toolstrip.Items[i].Text;
+            }
+
+            return string.Join("|", buttons);
+        }
+
         private void MainForm_Load(object sender, EventArgs e)
         {
             bool forceminimise = false;
             a.TaskAdded += new TaskEventHandler(a_TaskAdded);
             a.TaskRemoved += new TaskEventHandler(a_TaskRemoved);
             a.ThreadCountChanged += new ThreadEventHandler(a_ThreadCountChanged);
-            savedlg = new SaveWithPreset();
-            savedlg.DefaultExt = "jpg";
+            //savedlg = new SaveWithPreset();
+            //savedlg.DefaultExt = "jpg";
             megaListTiles.SetExStyle();
             megaListBrowserCOM.SetExStyleNoBorderSelect();
             UpdateSize(false);
@@ -732,6 +778,8 @@ namespace AlbumArtDownloader
             OrderScriptsFromString(Properties.Settings.Default.ScriptOrder, a.scripts);
             EnableScriptsFromString(Properties.Settings.Default.ScriptEnabled, a.scripts);
             UpdateScriptOrder(a.scripts);
+            AddSaveButtonsFromString(Properties.Settings.Default.SaveButtons, toolStripSave);
+
             a.SetThreads();
             forceminimise = ProcessArgs(args, true);
             if (Properties.Settings.Default.MainPosX != 0 || Properties.Settings.Default.MainPosY != 0 || Properties.Settings.Default.MainPosW != 0 || Properties.Settings.Default.MainPosH != 0)
@@ -749,8 +797,10 @@ namespace AlbumArtDownloader
                 WindowState = Properties.Settings.Default.MainWindowState;
             queueToolStripMenuItem.Checked = Properties.Settings.Default.ShowQueue;
             browserToolStripMenuItem.Checked = Properties.Settings.Default.ShowBrowser;
+            saveToolbarToolStripMenuItem.Checked = Properties.Settings.Default.ShowSaveToolbar;
             UpdateBottomPanel();
             megaListTiles.Focus();
+
             if (Properties.Settings.Default.FirstRun)
             {
                 (new LicenseForm()).ShowDialog();
@@ -769,8 +819,7 @@ namespace AlbumArtDownloader
 
                 if (arguments["?"] == "true")
                 {
-                    Console.WriteLine("Syntax:\r\nalbumart.exe [-ae on|off] [-pf on|off] [-ar \"Artist\"] [-al \"Album\"] [-p \"Path\"]\r\n\r\nOptions:\r\n-ae on|off\tShow already existing Album Art\r\n-pf on|off\t\tShow pictures in folder\r\n-ar \"Artist\"\tArtist to search\r\n-al \"Album\"\tAlbum to search\r\n-p \"Path\"\t\tPath to save image");
-                    MessageBox.Show("Syntax:\r\nalbumart.exe [-ae on|off] [-pf on|off] [-ar \"Artist\"] [-al \"Album\"] [-p \"Path\"]\r\n\r\nOptions:\r\n-ae on|off\tShow already existing Album Art\r\n-pf on|off\t\tShow pictures in folder\r\n-ar \"Artist\"\tArtist to search\r\n-al \"Album\"\tAlbum to search\r\n-p \"Path\"\t\tPath to save image");
+                    MessageBox.Show("Syntax:\r\nalbumart.exe [-ae on|off] [-pf on|off] [-ar \"Artist\"] [-al \"Album\"] [-p \"Path\"] [-f \"Filename\"]\r\n\r\nOptions:\r\n-ae on|off\tShow already existing Album Art\r\n-pf on|off\t\tShow pictures in folder\r\n-ar \"Artist\"\tArtist to search\r\n-al \"Album\"\tAlbum to search\r\n-p \"Path\"\t\tPath to save image\r\n-f \"Filename\"\tFilename to use");
                     if (fromself)
                         Close();
                 }
@@ -784,15 +833,20 @@ namespace AlbumArtDownloader
                             textBoxAlbum.Text = arguments["al"];
                         if (arguments["p"] != null)
                             textBoxFileSave.Text = arguments["p"];
+                        if (arguments["f"] != null)
+                            Properties.Settings.Default.SaveFileName = arguments["f"];
                         if (arguments["ae"] != null)
                             Properties.Settings.Default.PreviewSavedArt = arguments["ae"] == "on" ? true : false;
-                        if (arguments["ae"] != null)
+                        if (arguments["pf"] != null)
                             Properties.Settings.Default.ShowFolderPictures = arguments["pf"] == "on" ? true : false;
 
                         this.buttonAddTask_Click(this, new EventArgs());
                     }
                     else
                     {
+                        if (arguments["f"] != null)
+                            Properties.Settings.Default.SaveFileName = arguments["f"];
+
                         if (arguments["ae"] == null && arguments["pf"] == null)
                             a.AddTask(new Task(a, (arguments["ar"] != null ? arguments["ar"] : ""), (arguments["al"] != null ? arguments["al"] : ""), (arguments["p"] != null ? arguments["p"] : ""), Properties.Settings.Default.PreviewSavedArt, Properties.Settings.Default.ShowFolderPictures, false));
                         else if (arguments["ae"] == null && arguments["pf"] != null)
@@ -855,39 +909,25 @@ namespace AlbumArtDownloader
                 SwitchToTask(e.task);
         }
 
-        private bool getFileName()
+        private bool getSaveToFolder()
         {
-            /*        System.Windows.Forms.SaveFileDialog sfd = new System.Windows.Forms.SaveFileDialog();
-                    sfd.AddExtension = true;
-                    sfd.FileName = Properties.Settings.Default.SaveFileName;
-                    sfd.Filter = "JPEG Files|*.jpg;*.jpeg";
-                    if (sfd.ShowDialog(this) == DialogResult.OK)
-                    {
-                        filesave.Text = sfd.FileName;
-                        return true;
-                    }
-                    else return false;*/
-            if (savedlg.ShowDialog() == DialogResult.OK)
+            if (folderBrowserDialogSaveTo.ShowDialog() == DialogResult.OK)
             {
-                textBoxFileSave.Text = savedlg.FileName;
+                textBoxFileSave.Text = folderBrowserDialogSaveTo.SelectedPath;
                 return true;
             }
             return false;
-
-
         }
-
 
         private void buttonSaveToBrowse_Click(object sender, EventArgs e)
         {
-            getFileName();
+            getSaveToFolder();
         }
 
         private void timerClose_Tick(object sender, EventArgs e)
         {
             if (waitingtoclose && !a.ThreadsActive() && !BrowserWorkerCOM.IsBusy && !BrowserWorkerPath.IsBusy) this.Close();
         }
-
 
         private void buttonSettings_Click(object sender, EventArgs e)
         {
@@ -906,8 +946,32 @@ namespace AlbumArtDownloader
             {
                 AlbumArtDownloader.ArtDownloader.ThumbRes t = megaListTiles.SelectedItems[0].Tag as AlbumArtDownloader.ArtDownloader.ThumbRes;
                 if (t != null)
-                    ThumbClicked(t, customfname);
+                {
+                    if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                    {
+                        ThumbClicked(t, saveFileDialog.FileName);
+                    }
+                }
                 PictureChosen(t.OwnerTask);
+            }
+            else
+            {
+                MessageBox.Show(this, "No Image selected!");
+            }
+        }
+
+        private void SaveImage(string filename)
+        {
+            if (megaListTiles.SelectedItems.Count != 0)
+            {
+                AlbumArtDownloader.ArtDownloader.ThumbRes t = megaListTiles.SelectedItems[0].Tag as AlbumArtDownloader.ArtDownloader.ThumbRes;
+                if (t != null)
+                    ThumbClicked(t, filename);
+                PictureChosen(t.OwnerTask);
+            }
+            else
+            {
+                MessageBox.Show(this, "No Image selected!");
             }
         }
 
@@ -966,6 +1030,7 @@ namespace AlbumArtDownloader
         {
             splitContainerTile_Queue.Panel2Collapsed = !queueToolStripMenuItem.Checked;
             splitContainerTileQueue_Browser.Panel2Collapsed = !browserToolStripMenuItem.Checked;
+            toolStripSave.Visible = saveToolbarToolStripMenuItem.Checked;
         }
 
         private void cancelToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1361,9 +1426,9 @@ namespace AlbumArtDownloader
                     itemsadded.Clear();
                 }
 
-                if (folderBrowserDialog.ShowDialog(this) == DialogResult.OK)
+                if (folderBrowserDialogFolder.ShowDialog(this) == DialogResult.OK)
                 {
-                    BrowserWorkerPath.RunWorkerAsync(new string[] { Properties.Settings.Default.SaveFileName, folderBrowserDialog.SelectedPath });
+                    BrowserWorkerPath.RunWorkerAsync(new string[] { Properties.Settings.Default.SaveFileName, folderBrowserDialogFolder.SelectedPath });
                 }
 
                 BrowserPathProgress.Value = 0;
@@ -1492,6 +1557,7 @@ namespace AlbumArtDownloader
             }
 
             UpdateSize(true);
+
         }
 
         private void exitToolStripMenuItem_Click(object sender, EventArgs e)
@@ -1571,7 +1637,21 @@ namespace AlbumArtDownloader
             return newnum;
         }
 
+        private void toolStripButtonSaveAs_Click(object sender, EventArgs e)
+        {
+            DoActivateClickThingy(false);
+        }
 
+        private void toolStripButtonSaveDefault_Click(object sender, EventArgs e)
+        {
+            if (textBoxFileSave.Text != "")
+                SaveImage(textBoxFileSave.Text + "\\" + ((ToolStripButton)sender).Text);
+        }
+
+        private void saveToolbarToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+        {
+            UpdateBottomPanel();
+        }
     }
 
 
