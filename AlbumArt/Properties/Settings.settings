@@ -9,7 +9,7 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="ThumbnailWidth" Type="System.Decimal" Scope="User">
-      <Value Profile="(Default)">150</Value>
+      <Value Profile="(Default)">20</Value>
     </Setting>
     <Setting Name="ThumbnailHeight" Type="System.Decimal" Scope="User">
       <Value Profile="(Default)">150</Value>
@@ -124,6 +124,9 @@
     </Setting>
     <Setting Name="ShowSaveToolbar" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="MaxResults" Type="System.Decimal" Scope="User">
+      <Value Profile="(Default)">20</Value>
     </Setting>
   </Settings>
 </SettingsFile>

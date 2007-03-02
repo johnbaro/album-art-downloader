@@ -2,7 +2,7 @@
 !include LogicLib.nsh
 
 !define PRODUCT_NAME "Album Art Downloader"
-!define PRODUCT_VERSION "0.6-alpha1"
+!define PRODUCT_VERSION "0.6-alpha2"
 !define PRODUCT_WEB_SITE "https://sourceforge.net/projects/album-art"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\AlbumArt.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"

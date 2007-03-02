@@ -80,9 +80,6 @@ namespace AlbumArtDownloader
             this.labelScriptCreator = new System.Windows.Forms.Label();
             this.labelScriptVersion = new System.Windows.Forms.Label();
             this.labelScriptName = new System.Windows.Forms.Label();
-            this.clhScriptName = new System.Windows.Forms.ColumnHeader();
-            this.panelButtons = new System.Windows.Forms.Panel();
-            this.colorDialogSizeOverlay = new System.Windows.Forms.ColorDialog();
             this.tabPageSaveToolbar = new System.Windows.Forms.TabPage();
             this.listViewSaveButtons = new System.Windows.Forms.ListView();
             this.columnHeaderFolder = new System.Windows.Forms.ColumnHeader();
@@ -93,6 +90,11 @@ namespace AlbumArtDownloader
             this.buttonSaveEdit = new System.Windows.Forms.Button();
             this.buttonSaveAdd = new System.Windows.Forms.Button();
             this.buttonSaveRemove = new System.Windows.Forms.Button();
+            this.clhScriptName = new System.Windows.Forms.ColumnHeader();
+            this.panelButtons = new System.Windows.Forms.Panel();
+            this.colorDialogSizeOverlay = new System.Windows.Forms.ColorDialog();
+            this.labelMaxResults = new System.Windows.Forms.Label();
+            this.numericUpDownMaxResults = new System.Windows.Forms.NumericUpDown();
             this.tabControlSettings.SuspendLayout();
             this.tabPageGeneral.SuspendLayout();
             this.groupBoxGeneralSettings.SuspendLayout();
@@ -108,10 +110,11 @@ namespace AlbumArtDownloader
             this.splitContainerScriptManager.SuspendLayout();
             this.panelScriptUpDown.SuspendLayout();
             this.panelScriptManager.SuspendLayout();
-            this.panelButtons.SuspendLayout();
             this.tabPageSaveToolbar.SuspendLayout();
             this.panelSaveUpDown.SuspendLayout();
             this.panelSaveEditButtons.SuspendLayout();
+            this.panelButtons.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMaxResults)).BeginInit();
             this.SuspendLayout();
             // 
             // label1
@@ -181,7 +184,7 @@ namespace AlbumArtDownloader
             this.tabControlSettings.Location = new System.Drawing.Point(0, 0);
             this.tabControlSettings.Name = "tabControlSettings";
             this.tabControlSettings.SelectedIndex = 0;
-            this.tabControlSettings.Size = new System.Drawing.Size(358, 325);
+            this.tabControlSettings.Size = new System.Drawing.Size(358, 346);
             this.tabControlSettings.TabIndex = 21;
             // 
             // tabPageGeneral
@@ -191,7 +194,7 @@ namespace AlbumArtDownloader
             this.tabPageGeneral.Location = new System.Drawing.Point(4, 22);
             this.tabPageGeneral.Name = "tabPageGeneral";
             this.tabPageGeneral.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageGeneral.Size = new System.Drawing.Size(350, 299);
+            this.tabPageGeneral.Size = new System.Drawing.Size(350, 320);
             this.tabPageGeneral.TabIndex = 0;
             this.tabPageGeneral.Text = "General";
             this.tabPageGeneral.UseVisualStyleBackColor = true;
@@ -200,6 +203,8 @@ namespace AlbumArtDownloader
             // 
             this.groupBoxGeneralSettings.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxGeneralSettings.Controls.Add(this.labelMaxResults);
+            this.groupBoxGeneralSettings.Controls.Add(this.numericUpDownMaxResults);
             this.groupBoxGeneralSettings.Controls.Add(this.checkBoxShowFolderPicturesRecursiv);
             this.groupBoxGeneralSettings.Controls.Add(this.checkBoxBold);
             this.groupBoxGeneralSettings.Controls.Add(this.numericUpDown3);
@@ -217,7 +222,7 @@ namespace AlbumArtDownloader
             this.groupBoxGeneralSettings.Controls.Add(this.label3);
             this.groupBoxGeneralSettings.Location = new System.Drawing.Point(6, 6);
             this.groupBoxGeneralSettings.Name = "groupBoxGeneralSettings";
-            this.groupBoxGeneralSettings.Size = new System.Drawing.Size(338, 213);
+            this.groupBoxGeneralSettings.Size = new System.Drawing.Size(338, 239);
             this.groupBoxGeneralSettings.TabIndex = 29;
             this.groupBoxGeneralSettings.TabStop = false;
             this.groupBoxGeneralSettings.Text = "General Settings";
@@ -370,7 +375,7 @@ namespace AlbumArtDownloader
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBoxSizeOverlay.Controls.Add(this.panelSizeOverlaySettings);
             this.groupBoxSizeOverlay.Controls.Add(this.checkBoxShowSizeOverlay);
-            this.groupBoxSizeOverlay.Location = new System.Drawing.Point(6, 225);
+            this.groupBoxSizeOverlay.Location = new System.Drawing.Point(6, 251);
             this.groupBoxSizeOverlay.Name = "groupBoxSizeOverlay";
             this.groupBoxSizeOverlay.Size = new System.Drawing.Size(338, 64);
             this.groupBoxSizeOverlay.TabIndex = 28;
@@ -461,7 +466,7 @@ namespace AlbumArtDownloader
             this.tabPageScriptManager.Location = new System.Drawing.Point(4, 22);
             this.tabPageScriptManager.Name = "tabPageScriptManager";
             this.tabPageScriptManager.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageScriptManager.Size = new System.Drawing.Size(350, 299);
+            this.tabPageScriptManager.Size = new System.Drawing.Size(350, 326);
             this.tabPageScriptManager.TabIndex = 1;
             this.tabPageScriptManager.Text = "Script Manager";
             this.tabPageScriptManager.UseVisualStyleBackColor = true;
@@ -480,7 +485,7 @@ namespace AlbumArtDownloader
             // splitContainerScriptManager.Panel2
             // 
             this.splitContainerScriptManager.Panel2.Controls.Add(this.panelScriptManager);
-            this.splitContainerScriptManager.Size = new System.Drawing.Size(344, 293);
+            this.splitContainerScriptManager.Size = new System.Drawing.Size(344, 320);
             this.splitContainerScriptManager.SplitterDistance = 168;
             this.splitContainerScriptManager.TabIndex = 1;
             // 
@@ -489,7 +494,7 @@ namespace AlbumArtDownloader
             this.listScripts.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listScripts.Location = new System.Drawing.Point(0, 0);
             this.listScripts.Name = "listScripts";
-            this.listScripts.Size = new System.Drawing.Size(133, 289);
+            this.listScripts.Size = new System.Drawing.Size(133, 319);
             this.listScripts.TabIndex = 0;
             this.listScripts.SelectedIndexChanged += new System.EventHandler(this.listScripts_SelectedIndexChanged);
             this.listScripts.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.listScripts_ItemCheck);
@@ -504,7 +509,7 @@ namespace AlbumArtDownloader
             this.panelScriptUpDown.Dock = System.Windows.Forms.DockStyle.Right;
             this.panelScriptUpDown.Location = new System.Drawing.Point(133, 0);
             this.panelScriptUpDown.Name = "panelScriptUpDown";
-            this.panelScriptUpDown.Size = new System.Drawing.Size(35, 293);
+            this.panelScriptUpDown.Size = new System.Drawing.Size(35, 320);
             this.panelScriptUpDown.TabIndex = 6;
             // 
             // buttonScriptDown
@@ -535,7 +540,7 @@ namespace AlbumArtDownloader
             this.panelScriptManager.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelScriptManager.Location = new System.Drawing.Point(0, 0);
             this.panelScriptManager.Name = "panelScriptManager";
-            this.panelScriptManager.Size = new System.Drawing.Size(172, 293);
+            this.panelScriptManager.Size = new System.Drawing.Size(172, 320);
             this.panelScriptManager.TabIndex = 0;
             this.panelScriptManager.Visible = false;
             // 
@@ -566,24 +571,6 @@ namespace AlbumArtDownloader
             this.labelScriptName.TabIndex = 0;
             this.labelScriptName.Text = "Name:";
             // 
-            // clhScriptName
-            // 
-            this.clhScriptName.Text = "Name";
-            this.clhScriptName.Width = 100;
-            // 
-            // panelButtons
-            // 
-            this.panelButtons.Controls.Add(this.buttonClose);
-            this.panelButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelButtons.Location = new System.Drawing.Point(0, 325);
-            this.panelButtons.Name = "panelButtons";
-            this.panelButtons.Size = new System.Drawing.Size(358, 35);
-            this.panelButtons.TabIndex = 22;
-            // 
-            // colorDialogSizeOverlay
-            // 
-            this.colorDialogSizeOverlay.AnyColor = true;
-            // 
             // tabPageSaveToolbar
             // 
             this.tabPageSaveToolbar.Controls.Add(this.listViewSaveButtons);
@@ -592,7 +579,7 @@ namespace AlbumArtDownloader
             this.tabPageSaveToolbar.Location = new System.Drawing.Point(4, 22);
             this.tabPageSaveToolbar.Name = "tabPageSaveToolbar";
             this.tabPageSaveToolbar.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageSaveToolbar.Size = new System.Drawing.Size(350, 299);
+            this.tabPageSaveToolbar.Size = new System.Drawing.Size(350, 326);
             this.tabPageSaveToolbar.TabIndex = 2;
             this.tabPageSaveToolbar.Text = "Save Toolbar";
             this.tabPageSaveToolbar.UseVisualStyleBackColor = true;
@@ -609,7 +596,7 @@ namespace AlbumArtDownloader
             this.listViewSaveButtons.Location = new System.Drawing.Point(3, 3);
             this.listViewSaveButtons.MultiSelect = false;
             this.listViewSaveButtons.Name = "listViewSaveButtons";
-            this.listViewSaveButtons.Size = new System.Drawing.Size(309, 263);
+            this.listViewSaveButtons.Size = new System.Drawing.Size(309, 290);
             this.listViewSaveButtons.TabIndex = 7;
             this.listViewSaveButtons.UseCompatibleStateImageBehavior = false;
             this.listViewSaveButtons.View = System.Windows.Forms.View.Details;
@@ -627,7 +614,7 @@ namespace AlbumArtDownloader
             this.panelSaveUpDown.Dock = System.Windows.Forms.DockStyle.Right;
             this.panelSaveUpDown.Location = new System.Drawing.Point(312, 3);
             this.panelSaveUpDown.Name = "panelSaveUpDown";
-            this.panelSaveUpDown.Size = new System.Drawing.Size(35, 263);
+            this.panelSaveUpDown.Size = new System.Drawing.Size(35, 290);
             this.panelSaveUpDown.TabIndex = 8;
             // 
             // buttonSaveDown
@@ -656,7 +643,7 @@ namespace AlbumArtDownloader
             this.panelSaveEditButtons.Controls.Add(this.buttonSaveAdd);
             this.panelSaveEditButtons.Controls.Add(this.buttonSaveRemove);
             this.panelSaveEditButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelSaveEditButtons.Location = new System.Drawing.Point(3, 266);
+            this.panelSaveEditButtons.Location = new System.Drawing.Point(3, 293);
             this.panelSaveEditButtons.Name = "panelSaveEditButtons";
             this.panelSaveEditButtons.Size = new System.Drawing.Size(344, 30);
             this.panelSaveEditButtons.TabIndex = 6;
@@ -694,13 +681,59 @@ namespace AlbumArtDownloader
             this.buttonSaveRemove.UseVisualStyleBackColor = true;
             this.buttonSaveRemove.Click += new System.EventHandler(this.buttonSaveRemove_Click);
             // 
+            // clhScriptName
+            // 
+            this.clhScriptName.Text = "Name";
+            this.clhScriptName.Width = 100;
+            // 
+            // panelButtons
+            // 
+            this.panelButtons.Controls.Add(this.buttonClose);
+            this.panelButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panelButtons.Location = new System.Drawing.Point(0, 346);
+            this.panelButtons.Name = "panelButtons";
+            this.panelButtons.Size = new System.Drawing.Size(358, 35);
+            this.panelButtons.TabIndex = 22;
+            // 
+            // colorDialogSizeOverlay
+            // 
+            this.colorDialogSizeOverlay.AnyColor = true;
+            // 
+            // labelMaxResults
+            // 
+            this.labelMaxResults.AutoSize = true;
+            this.labelMaxResults.Location = new System.Drawing.Point(3, 214);
+            this.labelMaxResults.Name = "labelMaxResults";
+            this.labelMaxResults.Size = new System.Drawing.Size(89, 13);
+            this.labelMaxResults.TabIndex = 22;
+            this.labelMaxResults.Text = "Maximum Results";
+            // 
+            // numericUpDownMaxResults
+            // 
+            this.numericUpDownMaxResults.DataBindings.Add(new System.Windows.Forms.Binding("Value", global::AlbumArtDownloader.Properties.Settings.Default, "MaxResults", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.numericUpDownMaxResults.Increment = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.numericUpDownMaxResults.Location = new System.Drawing.Point(98, 212);
+            this.numericUpDownMaxResults.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.numericUpDownMaxResults.Name = "numericUpDownMaxResults";
+            this.numericUpDownMaxResults.Size = new System.Drawing.Size(47, 20);
+            this.numericUpDownMaxResults.TabIndex = 23;
+            this.numericUpDownMaxResults.Value = global::AlbumArtDownloader.Properties.Settings.Default.MaxResults;
+            // 
             // SettingsForm
             // 
             this.AcceptButton = this.buttonClose;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(358, 360);
+            this.ClientSize = new System.Drawing.Size(358, 381);
             this.Controls.Add(this.tabControlSettings);
             this.Controls.Add(this.panelButtons);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -729,11 +762,12 @@ namespace AlbumArtDownloader
             this.panelScriptUpDown.ResumeLayout(false);
             this.panelScriptManager.ResumeLayout(false);
             this.panelScriptManager.PerformLayout();
-            this.panelButtons.ResumeLayout(false);
-            this.panelButtons.PerformLayout();
             this.tabPageSaveToolbar.ResumeLayout(false);
             this.panelSaveUpDown.ResumeLayout(false);
             this.panelSaveEditButtons.ResumeLayout(false);
+            this.panelButtons.ResumeLayout(false);
+            this.panelButtons.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMaxResults)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -790,5 +824,7 @@ namespace AlbumArtDownloader
         private System.Windows.Forms.Button buttonSaveEdit;
         private System.Windows.Forms.Button buttonSaveAdd;
         private System.Windows.Forms.Button buttonSaveRemove;
+        private System.Windows.Forms.Label labelMaxResults;
+        private System.Windows.Forms.NumericUpDown numericUpDownMaxResults;
     }
 }

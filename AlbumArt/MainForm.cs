@@ -733,7 +733,8 @@ namespace AlbumArtDownloader
 
             foreach (string button in buttons)
             {
-                ToolStripItem toolstripitem = toolstrip.Items.Add(button);
+                ToolStripItem toolstripitem = toolstrip.Items.Add(ReplacePlaceholders(button));
+                toolstripitem.Tag = button;
                 toolstripitem.Image = global::AlbumArtDownloader.Properties.Resources.saveHS1;
                 toolstripitem.ImageTransparentColor = System.Drawing.Color.Magenta;
                 toolstripitem.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
@@ -744,13 +745,40 @@ namespace AlbumArtDownloader
             }
         }
 
+        private string ReplacePlaceholders(string input)
+        {
+            if (textBoxArtist.Text != "" && textBoxAlbum.Text != "")
+            {
+                input = input.Replace("%Artist%", textBoxArtist.Text);
+                input = input.Replace("%Album%", textBoxAlbum.Text);
+                input = input.Replace("%artist%", textBoxArtist.Text);
+                input = input.Replace("%album%", textBoxAlbum.Text);
+            }
+            return input;
+        }
+
+        private void UpdatePlaceholders(ToolStrip toolstrip)
+        {
+            for (int i = 0; i < toolstrip.Items.Count; i++)
+            {
+                toolstrip.Items[i].Text = (string)toolstrip.Items[i].Tag;
+                if (textBoxArtist.Text != "" && textBoxAlbum.Text != "")
+                {
+                    toolstrip.Items[i].Text = toolstrip.Items[i].Text.Replace("%Artist%", textBoxArtist.Text);
+                    toolstrip.Items[i].Text = toolstrip.Items[i].Text.Replace("%Album%", textBoxAlbum.Text);
+                    toolstrip.Items[i].Text = toolstrip.Items[i].Text.Replace("%artist%", textBoxArtist.Text);
+                    toolstrip.Items[i].Text = toolstrip.Items[i].Text.Replace("%album%", textBoxAlbum.Text);
+                }
+            }
+        }
+
         internal string SaveSaveButtonsToString(ToolStrip toolstrip)
         {
             string[] buttons = new string[toolstrip.Items.Count];
 
             for (int i = 0; i < toolstrip.Items.Count; i++)
             {
-                buttons[i] = toolstrip.Items[i].Text;
+                buttons[i] = (string)toolstrip.Items[i].Tag;
             }
 
             return string.Join("|", buttons);
@@ -1056,6 +1084,7 @@ namespace AlbumArtDownloader
             Properties.Settings.Default.ShowFolderPictures = task.ShowFolder;
             RemoveThumbs();
             a.SelectedTask = task;
+            UpdatePlaceholders(toolStripSave);
         }
 
         private void cancelToolStripMenuItem1_Click(object sender, EventArgs e)

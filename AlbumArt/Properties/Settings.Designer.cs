@@ -49,7 +49,7 @@ namespace AlbumArtDownloader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("150")]
+        [global::System.Configuration.DefaultSettingValueAttribute("20")]
         public decimal ThumbnailWidth {
             get {
                 return ((decimal)(this["ThumbnailWidth"]));
@@ -511,6 +511,18 @@ namespace AlbumArtDownloader.Properties {
             }
             set {
                 this["ShowSaveToolbar"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("20")]
+        public decimal MaxResults {
+            get {
+                return ((decimal)(this["MaxResults"]));
+            }
+            set {
+                this["MaxResults"] = value;
             }
         }
     }

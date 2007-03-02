@@ -72,6 +72,8 @@ namespace AlbumArtDownloader
             task.AddResult(result);
             ++rescount;
             artdownloader.mainForm.BeginInvoke(artdownloader.mainForm.taskupdate, task, script, estimate == 0 ? string.Format("{0}", rescount) : string.Format("{0}/{1}", rescount, estimate));
+            if (rescount >= Properties.Settings.Default.MaxResults)
+                throw new AbortedException();
         }
         public void AddThumb(Stream thumb, string name, int width, int height, object callback)
         {
@@ -96,6 +98,8 @@ namespace AlbumArtDownloader
             task.AddResult(result);
             ++rescount;
             artdownloader.mainForm.BeginInvoke(artdownloader.mainForm.taskupdate, task, script, estimate == 0 ? string.Format("{0}", rescount) : string.Format("{0}/{1}", rescount, estimate));
+            if (rescount >= Properties.Settings.Default.MaxResults)
+                throw new AbortedException();
         }
         public void AddThumb(System.Drawing.Image thumb, string name, int width, int height, object callback)
         {
@@ -112,6 +116,8 @@ namespace AlbumArtDownloader
             task.AddResult(result);
             ++rescount;
             artdownloader.mainForm.BeginInvoke(artdownloader.mainForm.taskupdate, task, script, estimate == 0 ? string.Format("{0}", rescount) : string.Format("{0}/{1}", rescount, estimate));
+            if (rescount >= Properties.Settings.Default.MaxResults)
+                throw new AbortedException();
         }
         public void DebugHTML(string html)
         {

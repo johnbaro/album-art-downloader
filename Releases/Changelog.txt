@@ -12,6 +12,14 @@ Legend:
 
 Revision history: ---------------------------------------------------------
 
+Album Art Downloader 0.6 Alpha 2
+
+* Added Save Toolbar - users can predefine buttons to save images
+
+* Added option to specify maximum results returned by a script
+
+! Changed command line switches - use "albumart.exe -?" to get help
+
 Album Art Downloader 0.6 Alpha 1
 
 + changed the way how the size overlay is displayed - now it is over the image
