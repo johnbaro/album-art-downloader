@@ -975,9 +975,16 @@ namespace AlbumArtDownloader
                 AlbumArtDownloader.ArtDownloader.ThumbRes t = megaListTiles.SelectedItems[0].Tag as AlbumArtDownloader.ArtDownloader.ThumbRes;
                 if (t != null)
                 {
-                    if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                    if (customfname)
                     {
-                        ThumbClicked(t, saveFileDialog.FileName);
+                        if (saveFileDialog.ShowDialog() == DialogResult.OK)
+                        {
+                            ThumbClicked(t, saveFileDialog.FileName);
+                        }
+                    }
+                    else
+                    {
+                        ThumbClicked(t, textBoxFileSave.Text + "\\" + Properties.Settings.Default.SaveFileName);
                     }
                 }
                 PictureChosen(t.OwnerTask);
@@ -1046,7 +1053,7 @@ namespace AlbumArtDownloader
 
         private void megaListTiles_ItemActivate(object sender, EventArgs e)
         {
-            DoActivateClickThingy(true);
+            DoActivateClickThingy(false);
         }
 
         private void checkBoxQueue_CheckedChanged(object sender, EventArgs e)

@@ -50,7 +50,7 @@ namespace AlbumArtDownloader
 
             foreach ( ToolStripButton tsb in theparent.toolStripSave.Items )
             {
-                listViewSaveButtons.Items.Add(tsb.Text);
+                listViewSaveButtons.Items.Add((string)tsb.Tag);
             }
 
             drawSizeOverlayPreview();

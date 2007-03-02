@@ -49,7 +49,7 @@ namespace AlbumArtDownloader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("20")]
+        [global::System.Configuration.DefaultSettingValueAttribute("150")]
         public decimal ThumbnailWidth {
             get {
                 return ((decimal)(this["ThumbnailWidth"]));

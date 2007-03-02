@@ -549,7 +549,7 @@ namespace AlbumArtDownloader
             this.tabPageCOMServer.Location = new System.Drawing.Point(4, 22);
             this.tabPageCOMServer.Name = "tabPageCOMServer";
             this.tabPageCOMServer.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageCOMServer.Size = new System.Drawing.Size(336, 424);
+            this.tabPageCOMServer.Size = new System.Drawing.Size(336, 388);
             this.tabPageCOMServer.TabIndex = 0;
             this.tabPageCOMServer.Text = "Foobar2000 COM Server";
             this.tabPageCOMServer.UseVisualStyleBackColor = true;
@@ -565,7 +565,7 @@ namespace AlbumArtDownloader
             this.megaListBrowserCOM.FullRowSelect = true;
             this.megaListBrowserCOM.Location = new System.Drawing.Point(3, 28);
             this.megaListBrowserCOM.Name = "megaListBrowserCOM";
-            this.megaListBrowserCOM.Size = new System.Drawing.Size(330, 393);
+            this.megaListBrowserCOM.Size = new System.Drawing.Size(330, 357);
             this.megaListBrowserCOM.SmallImageList = this.imageListHasAlbumArt;
             this.megaListBrowserCOM.TabIndex = 0;
             this.megaListBrowserCOM.UseCompatibleStateImageBehavior = false;
@@ -864,7 +864,6 @@ namespace AlbumArtDownloader
         private System.Windows.Forms.TextBox textBoxAlbum;
         private System.Windows.Forms.Button buttonAddTask;
         private System.Windows.Forms.GroupBox groupBoxSearch;
-        private System.Windows.Forms.TextBox textBoxFileSave;
         private System.Windows.Forms.Label labelSaveTo;
         private System.Windows.Forms.StatusStrip statusStrip;
         private System.Windows.Forms.Label labelArtist;
@@ -933,6 +932,7 @@ namespace AlbumArtDownloader
         private System.Windows.Forms.SaveFileDialog saveFileDialog;
         internal System.Windows.Forms.ToolStrip toolStripSave;
         private System.Windows.Forms.FolderBrowserDialog folderBrowserDialogSaveTo;
+        internal System.Windows.Forms.TextBox textBoxFileSave;
     }
 }
 
