@@ -1,0 +1,103 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:AlbumArtDownloader.Controls"
+	xmlns:System="clr-namespace:System;assembly=mscorlib"
+    >
+
+	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/HyperlinkButton.generic.xaml"/>
+	</ResourceDictionary.MergedDictionaries>
+
+	<local:StringFormatterConverter x:Key="mStringFormatterConverter"/>
+	<local:CompareConverter x:Key="mCompareConverter"/>
+
+	<Style TargetType="{x:Type local:SourcePanel}">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type local:SourcePanel}">
+					<Border BorderThickness="0,0,0,1" BorderBrush="#FF7F9DB9">
+						<Grid Margin="4" KeyboardNavigation.DirectionalNavigation="None">
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="Auto"/>
+							</Grid.RowDefinitions>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto"/>
+								<ColumnDefinition Width="*"/>
+								<ColumnDefinition Width="Auto"/>
+								<ColumnDefinition Width="Auto"/>
+							</Grid.ColumnDefinitions>
+							<CheckBox Focusable="False" Grid.RowSpan="2" VerticalAlignment="Center" Margin="2,5,5,5" IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Source.IsEnabled, Mode=TwoWay}"/>
+							<TextBlock Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Source.Name, Mode=OneWay}"/>
+							<TextBlock Name="count" TextAlignment="Right" Grid.Column="3" Margin="5,0,0,0" MinWidth="25">
+								<TextBlock.Text>
+									<MultiBinding Converter="{StaticResource mStringFormatterConverter}" ConverterParameter="{}({0})" Mode="OneWay">
+										<Binding Path="Source.Results.Count" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
+									</MultiBinding>
+								</TextBlock.Text>
+							</TextBlock>
+							<TextBlock Name="versionInfo" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" FontStyle="Italic" Foreground="Silver">
+								<TextBlock.Text>
+									<MultiBinding Converter="{StaticResource mStringFormatterConverter}" ConverterParameter="{}v{0} by {1}" Mode="OneWay">
+										<Binding Path="Source.Version" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
+										<Binding Path="Source.Author" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
+									</MultiBinding>
+								</TextBlock.Text>
+							</TextBlock>
+							<ProgressBar Name="searchProgress" Visibility="Hidden" Grid.Row="1" Grid.Column="1" Margin="2,3,2,1"
+										 Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Source.Results.Count, Mode=OneWay}"
+										 Maximum="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Source.EstimatedResultsCount, Mode=OneWay}">
+								<ProgressBar.Style>
+									<Style TargetType="{x:Type ProgressBar}">
+										<Setter Property="ToolTip">
+											<Setter.Value>
+												<MultiBinding Converter="{StaticResource mStringFormatterConverter}" ConverterParameter="{}Retrieved {0} of {1} results..." Mode="OneWay">
+													<Binding Path="Source.Results.Count" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
+													<Binding Path="Source.EstimatedResultsCount" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
+												</MultiBinding>
+											</Setter.Value>
+										</Setter>
+										<Style.Triggers>
+											<DataTrigger Value="1">
+												<DataTrigger.Binding>
+													<MultiBinding Converter="{StaticResource mCompareConverter}" Mode="OneWay">
+														<Binding Path="Source.Results.Count" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
+														<Binding Path="Source.EstimatedResultsCount" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
+													</MultiBinding>
+												</DataTrigger.Binding>
+												<Setter Property="IsIndeterminate" Value="True"/>
+											</DataTrigger>
+											<DataTrigger Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Source.EstimatedResultsCount, Mode=OneWay}" Value="0">
+												<Setter Property="ToolTip">
+													<Setter.Value>
+														<MultiBinding Converter="{StaticResource mStringFormatterConverter}" ConverterParameter="{}Retrieved {0} results so far..." Mode="OneWay">
+															<Binding Path="Source.Results.Count" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
+														</MultiBinding>
+													</Setter.Value>
+												</Setter>
+												<Setter Property="IsIndeterminate" Value="True"/>
+											</DataTrigger>
+										</Style.Triggers>
+									</Style>
+								</ProgressBar.Style>
+							</ProgressBar>
+							<Button Command="ApplicationCommands.Stop" Name="stopDownload" Visibility="Hidden" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" Style="{StaticResource HyperlinkButton}" HorizontalAlignment="Right">Stop</Button>
+						</Grid>
+					</Border>
+					<ControlTemplate.Triggers>
+						<DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Source.IsSearching, Mode=OneWay}" Value="True">
+							<Setter TargetName="versionInfo" Property="Visibility" Value="Hidden"/>
+							<Setter TargetName="searchProgress" Property="Visibility" Value="Visible"/>
+							<Setter TargetName="stopDownload" Property="Visibility" Value="Visible"/>
+						</DataTrigger>
+						<DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Source.Results.Count, Mode=OneWay}" Value="0">
+							<Setter TargetName="count" Property="Visibility" Value="Hidden"/>
+						</DataTrigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+</ResourceDictionary>

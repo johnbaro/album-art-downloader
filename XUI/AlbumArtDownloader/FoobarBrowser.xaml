@@ -1,0 +1,13 @@
+﻿<Window x:Class="AlbumArtDownloader.FoobarBrowser"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    Title="Foobar Browser" Background="{x:Static SystemColors.ControlBrush}"
+	Icon="AlbumArtDownloader.ico"
+	Height="300" Width="300"
+    >
+	<Grid>
+		<TextBlock FontSize="18" FontStyle="Italic" Foreground="{x:Static SystemColors.ControlDarkDarkBrush}" VerticalAlignment="Center" HorizontalAlignment="Center">
+			Foobar browser goes here...
+		</TextBlock>
+	</Grid>
+</Window>

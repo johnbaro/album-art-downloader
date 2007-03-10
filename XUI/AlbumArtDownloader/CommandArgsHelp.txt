@@ -1,0 +1,54 @@
+>{0}
+
+Album Art Downloader XUI version {1}
+{2}
+Usage: {3} [options]
+
+Option names may be preceded by a / or a -
+Options:
+
+ /artist      Artist to search for            (/artist "Artist Name")
+              May be abbreviated to /ar       (/ar "Artist Name")
+              Parameter name may be omitted
+              if this is the first parameter  ("Artist Name")
+
+ /album       Album to search for             (/album "Album Name")
+              May be abbreviated to /al       (/al "Album Name")
+              Parameter name may be omitted
+              if this is the second parameter ("Artist Name" "Album Name")
+ 
+ /path        Default path to save art as     (/path "\Art\Folder.jpg")
+              May be abbreviated to /p        (/p "\Art\Folder.jpg")
+              Parameter name may be omitted
+              if this is the third parameter  ("Artist Name" "Album Name" "\Art\Folder.jpg")
+
+              The following variables can be used in paths:
+               %artist%     Artist searched for
+               %album%      Album searched for
+               %name%       Name of the image found
+               %extension%  Default file extension for the image
+               %source%     Name of the source where image was found
+               %size%       Dimensions of the image
+
+ /f           Provided for backwards          (/p "\Art" /f "Folder.jpg")
+              compatibility only. When
+              specified, the value is
+              appended to the path.
+
+ /autoclose   Closes the search window after  (/autoclose)
+              a saving. To avoid closing, use
+              Save As.
+              May be abbreviated to /ac
+
+ /sources     Searches only the specified     (/sources "Amazon,Coveralia")
+              sources. Others are disabled.
+              Separate sources with commas.
+              May be abbreviated to /s
+
+ /exclude     Does not search the specified   (/exclude "Local Files,Google")
+              sources. Separate sources with
+              commas.
+              May be abbreviated to /es
+              For backwards compatibilty, the
+              parameter "/ae off" can also be
+              used to exclude "Local Files".

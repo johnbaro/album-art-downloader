@@ -1,0 +1,295 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:AlbumArtDownloader.Controls"
+	xmlns:System="clr-namespace:System;assembly=mscorlib"
+    >
+
+	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/FadeButton.generic.xaml"/>
+	</ResourceDictionary.MergedDictionaries>
+
+	<local:StringFormatterConverter x:Key="mStringFormatterConverter"/>
+	<local:PathCompacterConverter x:Key="mPathCompacterConverter"/>
+	<local:SumConverter x:Key="mSumConverter"/>
+	<local:EqualityConverter x:Key="mEqualityConverter"/>
+	<local:TooltipEnabledOnOverflowConverter x:Key="mTooltipEnabledOnOverflowConverter"/>
+	<BooleanToVisibilityConverter x:Key="mBooleanToVisibilityConverter"/>
+
+	<Style x:Key="DefaultText" TargetType="{x:Type TextBlock}">
+		<Setter Property="Foreground" Value="Black"/>
+		<Setter Property="FontSize" Value="10"/>
+	</Style>
+	<Style x:Key="LabelStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource DefaultText}">
+		<Setter Property="Padding" Value="0,0,5,0"/>
+		<Setter Property="Grid.Column" Value="0"/>
+	</Style>
+	<Style x:Key="ValueStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource DefaultText}">
+		<Setter Property="Padding" Value="0"/>
+		<Setter Property="Grid.Column" Value="1"/>
+		<Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+		<Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=Text}"/>
+		<Setter Property="ToolTipService.Placement" Value="Relative"/>
+		<Setter Property="ToolTipService.IsEnabled">
+			<Setter.Value>
+				<MultiBinding Converter="{StaticResource mTooltipEnabledOnOverflowConverter}" Mode="OneWay">
+					<Binding RelativeSource="{RelativeSource Self}" Mode="OneWay"/>
+					<Binding Path="ActualWidth" RelativeSource="{RelativeSource Self}" Mode="OneWay"/>
+					<Binding Path="ToolTip" RelativeSource="{RelativeSource Self}" Mode="OneWay"/>
+				</MultiBinding>
+			</Setter.Value>
+		</Setter>
+		<Style.Triggers>
+			<DataTrigger Value="True">
+				<DataTrigger.Binding>
+					<MultiBinding Converter="{StaticResource mEqualityConverter}" Mode="OneWay">
+						<Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ArtPanelList}}" Path="SortDescription.PropertyName" Mode="OneWay"/>
+						<Binding RelativeSource="{RelativeSource Self}" Path="Tag"/>
+					</MultiBinding>
+				</DataTrigger.Binding>
+				<Setter Property="FontWeight" Value="Bold"/>
+			</DataTrigger>
+		</Style.Triggers>
+	</Style>
+
+	<Style TargetType="{x:Type local:ArtPanel}">
+		<Setter Property="Height" Value="Auto"/>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type local:ArtPanel}">
+					<Grid KeyboardNavigation.DirectionalNavigation="None">
+						<Grid.MinWidth>
+							<MultiBinding Converter="{StaticResource mSumConverter}" Mode="OneWay">
+								<MultiBinding.ConverterParameter>
+									<System:Double>10</System:Double>
+								</MultiBinding.ConverterParameter>
+								<Binding Path="ThumbSize" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
+								<Binding Path="ActualWidth" ElementName="PART_PanelResizer"  Mode="OneWay"/>
+							</MultiBinding>
+						</Grid.MinWidth>
+						<Grid.Background>
+							<LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+								<GradientStop Color="#FFFAF9F5" Offset="0"/>
+								<GradientStop Color="#FFEBE7E0" Offset="0.5"/>
+								<GradientStop Color="#FFC0C0A8" Offset="0.9"/>
+								<GradientStop Color="#FFA3A37C" Offset="1"/>
+							</LinearGradientBrush>
+						</Grid.Background>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto"/>
+						</Grid.RowDefinitions>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto"/>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="Auto"/>
+						</Grid.ColumnDefinitions>
+						<Grid.ContextMenu>
+							<ContextMenu>
+								<MenuItem Command="ApplicationCommands.Save" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=OneTime}"/>
+								<MenuItem Command="ApplicationCommands.SaveAs" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=OneTime}"/>
+							</ContextMenu>
+						</Grid.ContextMenu>
+						<Grid Margin="5,5,5,5" Width="{Binding ThumbSize, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay}" Height="{Binding RelativeSource={RelativeSource Self}, Path=Width}" MinHeight="20" MinWidth="20" VerticalAlignment="Top">
+							<Grid.BitmapEffect>
+								<DropShadowBitmapEffect Color="Black" Direction="315" ShadowDepth="2" Softness="0.3"/>
+							</Grid.BitmapEffect>
+							<Grid.ToolTip>
+								<ToolTip>
+									<Grid>
+										<Grid.RowDefinitions>
+											<RowDefinition Height="Auto"/>
+											<RowDefinition Height="Auto"/>
+											<RowDefinition Height="Auto"/>
+										</Grid.RowDefinitions>
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="Auto"/>
+											<ColumnDefinition Width="*"/>
+										</Grid.ColumnDefinitions>
+										<TextBlock Grid.Row="1" Style="{StaticResource LabelStyle}">Size:</TextBlock>
+										<TextBlock Grid.Row="2" Style="{StaticResource LabelStyle}">Source:</TextBlock>
+
+										<TextBlock Grid.Row="0" Style="{StaticResource DefaultText}" Grid.Column="0" Grid.ColumnSpan="2" FontWeight="Bold" Text="{TemplateBinding ResultName}"/>
+										<TextBlock Grid.Row="1"  Grid.Column="1">
+											<TextBlock.Style>
+												<Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource DefaultText}">
+													<Setter Property="Text">
+														<Setter.Value>
+															<MultiBinding Converter="{StaticResource mStringFormatterConverter}" ConverterParameter="{}{0} x {1}" Mode="OneWay">
+																<Binding Path="ImageWidth" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
+																<Binding Path="ImageHeight" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
+															</MultiBinding>
+														</Setter.Value>
+													</Setter>
+													<Style.Triggers>
+														<MultiDataTrigger>
+															<MultiDataTrigger.Conditions>
+																<Condition Binding="{Binding Path=ImageWidth, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Value="-1" />
+																<Condition Binding="{Binding Path=ImageHeight, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Value="-1" />
+															</MultiDataTrigger.Conditions>
+															<Setter Property="Text" Value="Unknown"/>
+														</MultiDataTrigger>
+													</Style.Triggers>
+												</Style>
+											</TextBlock.Style>
+										</TextBlock>
+										<TextBlock Grid.Row="2" Style="{StaticResource DefaultText}" Grid.Column="1" Text="{TemplateBinding SourceName}"/>
+									</Grid>
+								</ToolTip>
+							</Grid.ToolTip>
+							<Popup Name="PART_ImagePopup" PlacementTarget="{Binding ElementName=PART_ImageDisplay}" Placement="Center" Width="Auto" Height="Auto">
+								<Border BorderBrush="{x:Static SystemColors.ControlDarkDarkBrush}" BorderThickness="0,0,1,1" Background="{x:Static SystemColors.ControlBrush}">
+									<Border BorderBrush="{x:Static SystemColors.ControlLightLightBrush}" BorderThickness="1,1,0,0">
+										<Border BorderBrush="{x:Static SystemColors.ControlDarkDarkBrush}" BorderThickness="1,1,0,0" Margin="3,3,4,4">
+											<Grid>
+												<Grid.RowDefinitions>
+													<RowDefinition Height="Auto"/>
+													<RowDefinition Height="*"/>
+												</Grid.RowDefinitions>
+												<Image Grid.RowSpan="2" Source="{TemplateBinding Image}" Width="{TemplateBinding ImageWidth}" Height="{TemplateBinding ImageHeight}" Stretch="Fill" MinWidth="{Binding ElementName=PART_ImageDisplay, Path=ActualWidth}" MinHeight="{Binding ElementName=PART_ImageDisplay, Path=ActualHeight}">
+													<Image.Style>
+														<Style TargetType="{x:Type Image}">
+															<Style.Triggers>
+																<DataTrigger Binding="{Binding IsDownloading, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Value="True">
+																	<Setter Property="Cursor" Value="Wait"/>
+																</DataTrigger>
+															</Style.Triggers>
+														</Style>
+													</Image.Style>
+												</Image>
+
+												<StackPanel Orientation="Horizontal" Visibility="{TemplateBinding IsDownloading, Converter={StaticResource mBooleanToVisibilityConverter}}">
+													<StackPanel.Background>
+														<SolidColorBrush Color="White" Opacity="0.6"/>
+													</StackPanel.Background>
+													<Image Source="downloading.png" HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="None" ToolTip="Full size image is being downloaded..."/>
+													<TextBlock Padding="5,1,0,0" Foreground="Black" Text="Full size image is being downloaded...">
+														<TextBlock.BitmapEffect>
+															<DropShadowBitmapEffect Color="White" Direction="315" ShadowDepth="2" Softness="0.3"/>
+														</TextBlock.BitmapEffect>
+													</TextBlock>
+												</StackPanel>
+											</Grid>
+										</Border>
+									</Border>
+								</Border>
+							</Popup>
+
+							<Image Name="PART_ImageDisplay" Source="{TemplateBinding Image}" Focusable="True">
+								<Image.Style>
+									<Style TargetType="{x:Type Image}">
+										<Setter Property="Cursor" Value="Hand"/>
+										<Style.Triggers>
+											<DataTrigger Binding="{Binding IsDownloading, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Value="True">
+												<Setter Property="Cursor" Value="Wait"/>
+											</DataTrigger>
+										</Style.Triggers>
+									</Style>
+								</Image.Style>
+							</Image>
+
+							<Image Visibility="{TemplateBinding IsDownloading, Converter={StaticResource mBooleanToVisibilityConverter}}" Source="downloading.png" HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="None" ToolTip="Full size image is being downloaded..." Cursor="Wait"/>
+							<ResizeGrip Name="PART_ImageResizer" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,-1,-1" Cursor="SizeNWSE" Focusable="False"/>
+						</Grid>
+
+						<Grid Grid.Column="1" Name="PART_Information" Margin="5,5,2,5">
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="Auto"/>
+							</Grid.RowDefinitions>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto"/>
+								<ColumnDefinition Width="*"/>
+							</Grid.ColumnDefinitions>
+							<TextBlock Grid.Row="0" Style="{StaticResource LabelStyle}">Name:</TextBlock>
+							<TextBlock Grid.Row="1" Style="{StaticResource LabelStyle}">Size:</TextBlock>
+							<TextBlock Grid.Row="2" Style="{StaticResource LabelStyle}">Source:</TextBlock>
+							<TextBlock Grid.Row="3" Style="{StaticResource LabelStyle}">File:</TextBlock>
+
+							<TextBlock Tag="ResultName" Grid.Row="0" Style="{StaticResource ValueStyle}" Text="{TemplateBinding ResultName}"/>
+							<TextBlock Tag="ImageWidth" Grid.Row="1">
+								<TextBlock.Style>
+									<Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource ValueStyle}">
+										<Setter Property="Text">
+											<Setter.Value>
+												<MultiBinding Converter="{StaticResource mStringFormatterConverter}" ConverterParameter="{}{0} x {1}" Mode="OneWay">
+													<Binding Path="ImageWidth" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
+													<Binding Path="ImageHeight" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
+												</MultiBinding>
+											</Setter.Value>
+										</Setter>
+										<Style.Triggers>
+											<MultiDataTrigger>
+												<MultiDataTrigger.Conditions>
+													<Condition Binding="{Binding Path=ImageWidth, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Value="-1" />
+													<Condition Binding="{Binding Path=ImageHeight, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Value="-1" />
+												</MultiDataTrigger.Conditions>
+												<Setter Property="Text" Value="Unknown"/>
+											</MultiDataTrigger>
+										</Style.Triggers>
+									</Style>
+								</TextBlock.Style>
+							</TextBlock>
+							<TextBlock Tag="SourceName" Grid.Row="2" Style="{StaticResource ValueStyle}" Text="{TemplateBinding SourceName}"/>
+							<Grid Grid.Row="3" Grid.Column="1">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*"/>
+									<ColumnDefinition Width="Auto"/>
+								</Grid.ColumnDefinitions>
+								<TextBlock Focusable="True" Name="PART_FilePathDisplay" Margin="0,0,5,0" Grid.Column="0" Cursor="IBeam" ToolTip="{TemplateBinding FilePath}">
+									<TextBlock.Style>
+										<Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource ValueStyle}">
+											<Style.Triggers>
+												<DataTrigger Binding="{Binding IsCustomFilePath, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Value="False">
+													<Setter Property="Foreground" Value="Gray"/>
+												</DataTrigger>
+											</Style.Triggers>
+										</Style>
+									</TextBlock.Style>
+									<TextBlock.Text>
+										<MultiBinding Converter="{StaticResource mPathCompacterConverter}" Mode="OneWay">
+											<Binding RelativeSource="{RelativeSource Self}"  Mode="OneWay"/>
+											<Binding Path="ActualWidth" RelativeSource="{RelativeSource Self}"  Mode="OneWay"/>
+											<Binding Path="FilePath" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
+										</MultiBinding>
+									</TextBlock.Text>
+								</TextBlock>
+								<Grid Name="PART_FilePathEditor" Margin="-5,-3,5,0" Visibility="Hidden">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="*"/>
+										<ColumnDefinition Width="Auto"/>
+									</Grid.ColumnDefinitions>
+									<TextBox Name="PART_FilePathTextBox" FontSize="10" VerticalAlignment="Top"/>
+									<Button Name="PART_FilePathBrowse" Grid.Column="1" Content="..." FontSize="10" Height="{Binding ElementName=PART_FilePathTextBox, Path=ActualHeight, Mode=OneWay}"/>
+								</Grid>
+								<Button Focusable="True" Command="ApplicationCommands.Save" Style="{StaticResource FadeButton}" VerticalAlignment="Top" Grid.Column="1">
+									<Image Source="save.png" Stretch="None" ToolTip="Save"/>
+								</Button>
+								<Image VerticalAlignment="Top" Grid.Column="1" Source="wait.png" Stretch="None" Visibility="{TemplateBinding IsSaving, Converter={StaticResource mBooleanToVisibilityConverter}}" ToolTip="Saving..." Cursor="Wait"/>
+								<Image VerticalAlignment="Top" Grid.Column="1" Source="tick.png" Stretch="None" Visibility="{TemplateBinding IsSaved, Converter={StaticResource mBooleanToVisibilityConverter}}" ToolTip="Already Saved"/>
+							</Grid>
+						</Grid>
+
+						<Border Grid.Column="2" Name="PART_PanelResizer" HorizontalAlignment="Right" Width="10" Padding="6,5,1,6" Margin="-3,-1,2,0" Cursor="SizeWE">
+							<Rectangle Focusable="True">
+								<Rectangle.Fill>
+									<DrawingBrush ViewportUnits="Absolute" ViewboxUnits="Absolute" Viewport="0,0,4,4" Viewbox="0,0,4,4" TileMode="Tile">
+										<DrawingBrush.Drawing>
+											<DrawingGroup>
+												<GeometryDrawing Brush="White" Geometry="M1,1L1,3 3,3 3,1z"/>
+												<GeometryDrawing Brush="#FFC1BEB3" Geometry="M0,0L0,2 2,2 2,0z"/>
+											</DrawingGroup>
+										</DrawingBrush.Drawing>
+									</DrawingBrush>
+								</Rectangle.Fill>
+							</Rectangle>
+						</Border>
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+
+</ResourceDictionary>
