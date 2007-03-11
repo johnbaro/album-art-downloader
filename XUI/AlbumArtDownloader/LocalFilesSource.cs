@@ -17,10 +17,8 @@ namespace AlbumArtDownloader
 		[DllImport("gdiplus.dll", ExactSpelling = true)]
 		private static extern int GdipDisposeImage(HandleRef image);
 
-		private ArtSearchWindow mParentWindow;
-		public LocalFilesSource(ArtSearchWindow parentWindow)
+		public LocalFilesSource()
 		{
-			mParentWindow = parentWindow;
 			Results.CollectionChanged += new NotifyCollectionChangedEventHandler(OnResultsChanged);
 			//Ensure GDI+ is initialised
 			Pen pen = Pens.Black;

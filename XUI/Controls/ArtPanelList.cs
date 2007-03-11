@@ -142,18 +142,19 @@ namespace AlbumArtDownloader.Controls
 			return newPanelWidth;
 		}
 
-		private Size mPreviousSize;
+		private double mPreviousImageWidth, mPreviousImageHeight;
 		private void OnFullSizeImageRequested(object sender, RoutedEventArgs e)
 		{
 			IAlbumArt art = ((IAlbumArt)ItemContainerGenerator.ItemFromContainer(((FrameworkElement)e.OriginalSource).TemplatedParent));
-			mPreviousSize = new Size(art.ImageWidth, art.ImageHeight);
+			mPreviousImageWidth = art.ImageWidth;
+			mPreviousImageHeight = art.ImageHeight;
 			art.RetrieveFullSizeImage(new System.Threading.WaitCallback(OnFullSizeImageDownloaded));
 		}
 		private void OnFullSizeImageDownloaded(object sender)
 		{
 			IAlbumArt art = (IAlbumArt)sender;
-			if (art.ImageWidth != mPreviousSize.Width ||
-				art.ImageHeight != mPreviousSize.Height)
+			if (art.ImageWidth != mPreviousImageWidth ||
+				art.ImageHeight != mPreviousImageHeight)
 			{
 				//Causes a refresh. Note that .Refresh doesn't.
 				Items.Filter = Items.Filter;

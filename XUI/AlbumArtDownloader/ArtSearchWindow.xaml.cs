@@ -83,7 +83,7 @@ namespace AlbumArtDownloader
 			{
 				mSources.Add(new ScriptSource(script));
 			}
-			mSources.Add(new LocalFilesSource(this));
+			mSources.Add(new LocalFilesSource());
 
 			LoadDisabledSources();
 			LoadDefaultSaveFolderHistory();
