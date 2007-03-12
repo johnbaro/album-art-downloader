@@ -163,8 +163,8 @@ namespace AlbumArtDownloader
 			{
 				parameters.Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(delegate
 				{
-					RaiseSearchCompleted();
 					IsSearching = false;
+					RaiseSearchCompleted();
 				}));
 			}
 		}

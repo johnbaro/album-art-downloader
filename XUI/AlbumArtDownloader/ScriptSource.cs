@@ -46,6 +46,7 @@ namespace AlbumArtDownloader
 			{
 				mScript.Search(artist, album, results);
 			}
+			catch (ThreadAbortException) { } //Script was cancelled
 			catch (Exception e)
 			{
 				string message;

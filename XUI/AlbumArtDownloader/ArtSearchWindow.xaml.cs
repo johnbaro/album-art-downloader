@@ -35,6 +35,7 @@ namespace AlbumArtDownloader
 		private Thread mAutoDownloadFullSizeImagesThread;
 		private AutoResetEvent mAutoDownloadFullSizeImagesTrigger = new AutoResetEvent(true);
 		private Stack<AlbumArt> mResultsToAutoDownloadFullSizeImages = new Stack<AlbumArt>();
+		private CommandBinding mStopAllCommandBinding;
 
 		public ArtSearchWindow()
 		{
@@ -75,6 +76,8 @@ namespace AlbumArtDownloader
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Find, new ExecutedRoutedEventHandler(FindExec)));
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Save, new ExecutedRoutedEventHandler(SaveExec)));
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.SaveAs, new ExecutedRoutedEventHandler(SaveAsExec)));
+			//Stop All is bound only when doing a search (so the Stop All button only appears while searching)
+			mStopAllCommandBinding = new CommandBinding(ApplicationCommands.Stop, new ExecutedRoutedEventHandler(StopExec));
 			
 			mSourcesViewer.ItemsSource = mSources;
 			mResultsViewer.ItemsSource = mSources.CombinedResults;
@@ -246,6 +249,7 @@ namespace AlbumArtDownloader
 			{
 				if (source.IsEnabled)
 				{
+					source.SearchCompleted += OnSourceSearchCompleted; //Hook the complete event to know when to hide the Stop All button
 					source.Search(mArtist.Text, mAlbum.Text);
 				}
 				else
@@ -254,6 +258,7 @@ namespace AlbumArtDownloader
 					source.Results.Clear();
 				}
 			}
+			CommandBindings.Add(mStopAllCommandBinding);
 		}
 		#endregion
 
@@ -429,7 +434,31 @@ namespace AlbumArtDownloader
 		}
 
 		#endregion
-		
+
+		#region Stop All
+		private void OnSourceSearchCompleted(object sender, EventArgs e)
+		{
+			((Source)sender).SearchCompleted -= OnSourceSearchCompleted; //Unhook the event, we only want one notification.
+			//Check to see if any sources are still searching
+			foreach (Source source in mSources)
+			{
+				if (source != sender && source.IsSearching)
+					return; //At least one source is still searching, so don't remove the Stop All command
+			}
+			//All sources have finished, so remove the Stop All handler
+			CommandBindings.Remove(mStopAllCommandBinding);
+			CommandManager.InvalidateRequerySuggested();
+		}
+		private void StopExec(object sender, ExecutedRoutedEventArgs e)
+		{
+			//Stop all the sources
+			foreach (Source source in mSources)
+			{
+				source.AbortSearch();
+			}
+		}
+		#endregion
+
 		private void SaveExec(object sender, ExecutedRoutedEventArgs e)
 		{
 			AlbumArt albumArt = GetAlbumArt(e);
