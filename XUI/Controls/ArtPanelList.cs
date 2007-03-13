@@ -209,17 +209,28 @@ namespace AlbumArtDownloader.Controls
 		}
 		private static object CoercePanelWidth(DependencyObject sender, object newValue)
 		{
+			if ((Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift ||
+				Keyboard.GetKeyStates(Key.Left) == KeyStates.Down ||
+				Keyboard.GetKeyStates(Key.Up) == KeyStates.Down ||
+				Keyboard.GetKeyStates(Key.Right) == KeyStates.Down ||
+				Keyboard.GetKeyStates(Key.Down) == KeyStates.Down)
+			{
+				//Return the value unsnapped if Shift is held down (to mean unsnapped)
+				//or if any of the direction keys are pressed (which means this is being
+				//adjusted via the keyboard)
+				return newValue;
+			}
 			ArtPanelList artPanelList = (ArtPanelList)sender;
-			double value = (double)newValue;
 			if (artPanelList.PanelWidthSnapping > 0 && artPanelList.ItemsPresenter != null)
 			{
 				//Check if the panel width is close (within PanelWidthSnapping) to a neat arrangment
+				double value = (double)newValue;
 				double nearestArrangedPanelWidth = artPanelList.GetNearestArrangedPanelWidth(value);
 				if (Math.Abs(nearestArrangedPanelWidth - value) <= artPanelList.PanelWidthSnapping)
 					return nearestArrangedPanelWidth;
 			}
 			//Return the value un-coerced
-			return value;
+			return newValue;
 		}
 
 		public static readonly DependencyProperty PanelWidthSnappingProperty = DependencyProperty.Register("PanelWidthSnapping", typeof(double), typeof(ArtPanelList), new FrameworkPropertyMetadata(0D, FrameworkPropertyMetadataOptions.AffectsArrange));
@@ -243,6 +254,14 @@ namespace AlbumArtDownloader.Controls
 			ArtPanelList artPanelList = (ArtPanelList)sender;
 			artPanelList.Items.SortDescriptions.Clear();
 			artPanelList.Items.SortDescriptions.Add((SortDescription)e.NewValue);
+		}
+
+		public static readonly DependencyProperty InformationLocationProperty = DependencyProperty.Register("InformationLocation", typeof(InformationLocation), typeof(ArtPanelList), new FrameworkPropertyMetadata(InformationLocation.Right, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+		/// <summary>Where to position the information, relative to the thumbnail</summary>
+		public InformationLocation InformationLocation
+		{
+			get { return (InformationLocation)GetValue(InformationLocationProperty); }
+			set { SetValue(InformationLocationProperty, value); }
 		}
 		#endregion
 

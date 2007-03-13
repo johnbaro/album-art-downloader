@@ -35,6 +35,7 @@
 							Name="PART_ArtPanel" 
 							Width="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ArtPanelList}}, Path=PanelWidth, Mode=TwoWay}"
 							ThumbSize="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ArtPanelList}}, Path=ThumbSize, Mode=TwoWay}"
+							InformationLocation="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ArtPanelList}}, Path=InformationLocation, Mode=TwoWay}"
 							Image="{Binding Image}"
 							ResultName="{Binding ResultName}"
 							SourceName="{Binding SourceName}"

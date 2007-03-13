@@ -176,6 +176,7 @@
 								ThumbSize="{Binding Default.ThumbSize}"
 								PanelWidth="{Binding Default.PanelWidth}"
 								MinimumImageSize="{Binding Default.MinimumImageSize, Mode=OneWay}"
+								InformationLocation="{Binding Default.InformationLocation}"
 							   />
 
 		<Grid Grid.Column="3" Grid.Row="1" Grid.RowSpan="4">

@@ -136,5 +136,17 @@ namespace AlbumArtDownloader.Properties {
                 this["DefaultSavePathHistory"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Right")]
+        public global::AlbumArtDownloader.Controls.InformationLocation InformationLocation {
+            get {
+                return ((global::AlbumArtDownloader.Controls.InformationLocation)(this["InformationLocation"]));
+            }
+            set {
+                this["InformationLocation"] = value;
+            }
+        }
     }
 }

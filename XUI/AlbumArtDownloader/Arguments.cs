@@ -17,7 +17,7 @@ namespace AlbumArtDownloader
 			string paramName = null;
 			foreach (string arg in args)
 			{
-				if (arg[0] == '-' || arg[0] == '/') //This is a switch
+				if (arg.Length > 0 && (arg[0] == '-' || arg[0] == '/')) //This is a switch
 				{
 					if (paramName != null)
 					{

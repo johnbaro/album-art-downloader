@@ -24,6 +24,11 @@ namespace AlbumArtDownloader.Controls
 
 		private static readonly double sKeyboardSizingStep = 5d;
 
+		public static class Commands
+		{
+			public static RoutedUICommand ToggleInformationLocation = new RoutedUICommand("ToggleInformationLocation", "ToggleInformationLocation", typeof(Commands));
+		}
+
 		static ArtPanel()
 		{
 			//This OverrideMetadata call tells the system that this element wants to provide a style that is different than its base class.
@@ -31,8 +36,15 @@ namespace AlbumArtDownloader.Controls
 			DefaultStyleKeyProperty.OverrideMetadata(typeof(ArtPanel), new FrameworkPropertyMetadata(typeof(ArtPanel)));
 		}
 
+		public ArtPanel()
+		{
+			CommandBindings.Add(new CommandBinding(Commands.ToggleInformationLocation, new ExecutedRoutedEventHandler(ToggleInformationLocationExec)));
+		}
+
 		public override void OnApplyTemplate()
 		{
+			InformationLocation = InformationLocation.Bottom;
+
 			base.OnApplyTemplate();
 
 			if (Information != null)
@@ -100,13 +112,44 @@ namespace AlbumArtDownloader.Controls
 			}
 			else if (e.Key == Key.Left || e.Key == Key.Up)
 			{
-				ThumbSize = Math.Max(0, ThumbSize - sKeyboardSizingStep);
+				if (InformationLocation == InformationLocation.Bottom)
+				{
+					//Resize the panel instead
+					Width = Math.Max(0, Width - sKeyboardSizingStep);
+					UpdateWidthFromBinding();
+				}
+				else
+				{
+					ThumbSize = Math.Max(0, ThumbSize - sKeyboardSizingStep);
+				}
 				e.Handled = true;
 			}
 			else if (e.Key == Key.Right || e.Key == Key.Down)
 			{
-				ThumbSize += sKeyboardSizingStep;
+				if (InformationLocation == InformationLocation.Bottom)
+				{
+					//Resize the panel instead
+					Width += sKeyboardSizingStep;
+					UpdateWidthFromBinding();
+				}
+				else
+				{
+					ThumbSize += sKeyboardSizingStep;
+				}
 				e.Handled = true;
+			}
+		}
+
+		private void ToggleInformationLocationExec(object sender, ExecutedRoutedEventArgs e)
+		{
+			//TODO: Should this set the information location based on the command parameter rather than just switching?
+			if (InformationLocation == InformationLocation.Right)
+			{
+				InformationLocation = InformationLocation.Bottom;
+			}
+			else
+			{
+				InformationLocation = InformationLocation.Right;
 			}
 		}
 
@@ -215,6 +258,10 @@ namespace AlbumArtDownloader.Controls
 						Information.ColumnDefinitions[0].Width = GridLength.Auto;
 				}
 			}
+			if (InformationLocation == InformationLocation.Bottom)
+			{
+				CoerceValue(ThumbSizeProperty);
+			}
 		}
 		#endregion
 
@@ -238,8 +285,18 @@ namespace AlbumArtDownloader.Controls
 				FrameworkElement parent = (FrameworkElement)((FrameworkElement)sender).Parent;
 				Point mousePos = e.GetPosition(parent) - mImageResizeOffset;
 
-				//Keep square aspect ratio, don't have negative size.
-				ThumbSize = Math.Max(0, Math.Max(mousePos.X, mousePos.Y));
+				if (InformationLocation == InformationLocation.Bottom)
+				{
+					//Resize the whole panel instead
+					double delta = Math.Max(0, Math.Max(mousePos.X, mousePos.Y)) - ThumbSize;
+					Width += delta;
+					UpdateWidthFromBinding();				
+				}
+				else
+				{
+					//Keep square aspect ratio, don't have negative size.
+					ThumbSize = Math.Max(0, Math.Max(mousePos.X, mousePos.Y));
+				}
 			}
 		}
 		#endregion
@@ -271,11 +328,7 @@ namespace AlbumArtDownloader.Controls
 			{
 				FrameworkElement parent = (FrameworkElement)((FrameworkElement)sender).Parent;
 				Width = Math.Max(0, e.GetPosition(parent).X - mPanelResizeOffset);
-				BindingExpression bindingExpression = GetBindingExpression(WidthProperty);
-				if (bindingExpression != null)
-				{
-					bindingExpression.UpdateTarget(); //Update in case of snapping
-				}
+				UpdateWidthFromBinding();				
 			}
 		}
 		private void PanelResizer_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -283,12 +336,22 @@ namespace AlbumArtDownloader.Controls
 			if (e.Key == Key.Left)
 			{
 				Width = Math.Max(0, Width - sKeyboardSizingStep);
+				UpdateWidthFromBinding();
 				e.Handled = true;
 			}
 			else if (e.Key == Key.Right)
 			{
 				Width += sKeyboardSizingStep;
+				UpdateWidthFromBinding();
 				e.Handled = true;
+			}
+		}
+		private void UpdateWidthFromBinding()
+		{
+			BindingExpression bindingExpression = GetBindingExpression(WidthProperty);
+			if (bindingExpression != null)
+			{
+				bindingExpression.UpdateTarget(); //Update in case of snapping
 			}
 		}
 		#endregion
@@ -423,12 +486,24 @@ namespace AlbumArtDownloader.Controls
 			set { SetValue(ImageHeightProperty, value); }
 		}
 
-		public static readonly DependencyProperty ThumbSizeProperty = DependencyProperty.Register("ThumbSize", typeof(double), typeof(ArtPanel), new FrameworkPropertyMetadata(50D, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+		public static readonly DependencyProperty ThumbSizeProperty = DependencyProperty.Register("ThumbSize", typeof(double), typeof(ArtPanel), new FrameworkPropertyMetadata(50D, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, null, new CoerceValueCallback(CoerceThumbSize)));
 		/// <summary>The size to show the thumbnail at</summary>
 		public double ThumbSize
 		{
 			get { return (double)GetValue(ThumbSizeProperty); }
 			set { SetValue(ThumbSizeProperty, value); }
+		}
+		
+		private static object CoerceThumbSize(DependencyObject sender, object value)
+		{
+			ArtPanel artPanel = (ArtPanel)sender;
+			if(artPanel.InformationLocation == InformationLocation.Bottom && artPanel.ActualHeight > 0)
+			{
+				//Take up the full width available
+				//(This has to match the Grid MinWidth calculation)
+				return artPanel.ActualWidth - artPanel.PanelResizer.ActualWidth - 10;
+			}
+			return value;
 		}
 
 		public static readonly DependencyProperty ResultNameProperty = DependencyProperty.Register("ResultName", typeof(string), typeof(ArtPanel));
@@ -494,6 +569,27 @@ namespace AlbumArtDownloader.Controls
 		{
 			get { return (bool)GetValue(IsDownloadingProperty); }
 			set { SetValue(IsDownloadingProperty, value); }
+		}
+
+		public static readonly DependencyProperty InformationLocationProperty = DependencyProperty.Register("InformationLocation", typeof(InformationLocation), typeof(ArtPanel), new FrameworkPropertyMetadata(InformationLocation.Right, FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, new PropertyChangedCallback(OnInformationLocationChanged)));
+		/// <summary>Where to position the information, relative to the thumbnail</summary>
+		public InformationLocation InformationLocation
+		{
+			get { return (InformationLocation)GetValue(InformationLocationProperty); }
+			set { SetValue(InformationLocationProperty, value); }
+		}
+		private static void OnInformationLocationChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+		{
+			ArtPanel artPanel = (ArtPanel)sender;
+			artPanel.CoerceValue(ThumbSizeProperty);
+			if ((InformationLocation)e.NewValue == InformationLocation.Right)
+			{
+				//If switching to Right, and the Information panel has disappeared, make sure it is at least visible
+				if (artPanel.Width - artPanel.ThumbSize < 30)
+				{
+					artPanel.Width = artPanel.ThumbSize + artPanel.mMinimumGridSizeForLabelColumn + 10;
+				}
+			}
 		}
 		#endregion
 
