@@ -1,3 +1,4 @@
 0.2 Added "Stop All" button
+    Added ability to toggle display of thumbnail information to go below the thumbnail
 
 0.1 Initial Preview Release
