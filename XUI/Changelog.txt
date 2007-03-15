@@ -1,4 +1,8 @@
 0.2 Added "Stop All" button
     Added ability to toggle display of thumbnail information to go below the thumbnail
+    Work In Progress: 
+ * AutoDownloadFullSizeImages Always, Never, and Only For Unknown Size
+ * Maximum Image size
+ * Maximum number of results to return per source
 
 0.1 Initial Preview Release
