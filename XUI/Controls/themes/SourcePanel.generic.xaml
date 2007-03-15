@@ -37,7 +37,7 @@
 									</MultiBinding>
 								</TextBlock.Text>
 							</TextBlock>
-							<TextBlock Name="versionInfo" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" FontStyle="Italic" Foreground="Silver">
+							<TextBlock Name="versionInfo" Grid.Row="1" Grid.Column="1" FontStyle="Italic" Foreground="Silver">
 								<TextBlock.Text>
 									<MultiBinding Converter="{StaticResource mStringFormatterConverter}" ConverterParameter="{}v{0} by {1}" Mode="OneWay">
 										<Binding Path="Source.Version" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
@@ -45,6 +45,9 @@
 									</MultiBinding>
 								</TextBlock.Text>
 							</TextBlock>
+							<Button Command="ApplicationCommands.Properties" Name="options" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" Style="{StaticResource HyperlinkButton}" HorizontalAlignment="Right"
+									Foreground="#FF7F9DB9" Margin="0,3,0,-3" Content="..." ToolTip="Show source options..."/>
+
 							<ProgressBar Name="searchProgress" Visibility="Hidden" Grid.Row="1" Grid.Column="1" Margin="2,3,2,1"
 										 Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Source.Results.Count, Mode=OneWay}"
 										 Maximum="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Source.EstimatedResultsCount, Mode=OneWay}">
@@ -88,6 +91,7 @@
 					<ControlTemplate.Triggers>
 						<DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Source.IsSearching, Mode=OneWay}" Value="True">
 							<Setter TargetName="versionInfo" Property="Visibility" Value="Hidden"/>
+							<Setter TargetName="options" Property="Visibility" Value="Hidden"/>
 							<Setter TargetName="searchProgress" Property="Visibility" Value="Visible"/>
 							<Setter TargetName="stopDownload" Property="Visibility" Value="Visible"/>
 						</DataTrigger>

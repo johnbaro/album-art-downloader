@@ -12,7 +12,7 @@
 	<local:StringFormatterConverter x:Key="mStringFormatterConverter"/>
 	<local:PathCompacterConverter x:Key="mPathCompacterConverter"/>
 	<local:SumConverter x:Key="mSumConverter"/>
-	<local:EqualityConverter x:Key="mEqualityConverter"/>
+	<local:MultiEqualityConverter x:Key="mMultiEqualityConverter"/>
 	<local:TooltipEnabledOnOverflowConverter x:Key="mTooltipEnabledOnOverflowConverter"/>
 	<BooleanToVisibilityConverter x:Key="mBooleanToVisibilityConverter"/>
 
@@ -43,7 +43,7 @@
 		<Style.Triggers>
 			<DataTrigger Value="True">
 				<DataTrigger.Binding>
-					<MultiBinding Converter="{StaticResource mEqualityConverter}" Mode="OneWay">
+					<MultiBinding Converter="{StaticResource mMultiEqualityConverter}" Mode="OneWay">
 						<Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type local:ArtPanelList}}" Path="SortDescription.PropertyName" Mode="OneWay"/>
 						<Binding RelativeSource="{RelativeSource Self}" Path="Tag"/>
 					</MultiBinding>

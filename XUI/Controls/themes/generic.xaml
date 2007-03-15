@@ -9,6 +9,7 @@
 		<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/ArtPanelList.generic.xaml"/>
 		<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/ArtPanelListSortPicker.generic.xaml"/>
 		<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/ArtPathPatternBox.generic.xaml"/>
+		<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/LimitBox.generic.xaml"/>
 	</ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>

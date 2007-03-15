@@ -7,27 +7,22 @@ using System.Windows;
 namespace AlbumArtDownloader.Controls
 {
 	/// <summary>
-	/// Checks if the values are equal to the first value, and returns true if they are.
+	/// Checks if the value is equal to the parameter, and returns true if they are.
+	/// When set, if the value is true, returns the parameter. Otherwise returns Unset.
 	/// </summary>
-	internal class EqualityConverter : IMultiValueConverter
+	public class EqualityConverter : IValueConverter
 	{
-		public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+		public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
 		{
-			if (values.Length < 2)
-				return false;
-
-			for (int i = 1; i < values.Length; i++)
-			{
-				if (!values[0].Equals(values[i]))
-					return false;
-			}
-			return true;
+			return value.Equals(parameter);
 		}
 
-		public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
+		public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
 		{
-			//Reverse conversion not supported
-			return null;
+			if(value is bool && (bool)value)
+				return parameter;
+
+			return DependencyProperty.UnsetValue;
 		}
 	}
 }

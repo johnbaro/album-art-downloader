@@ -89,18 +89,6 @@ namespace AlbumArtDownloader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool AutoDownloadFullSize {
-            get {
-                return ((bool)(this["AutoDownloadFullSize"]));
-            }
-            set {
-                this["AutoDownloadFullSize"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("10")]
         public int MinimumImageSize {
             get {
@@ -146,6 +134,30 @@ namespace AlbumArtDownloader.Properties {
             }
             set {
                 this["InformationLocation"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("-1")]
+        public int MaximumImageSize {
+            get {
+                return ((int)(this["MaximumImageSize"]));
+            }
+            set {
+                this["MaximumImageSize"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Never")]
+        public global::AlbumArtDownloader.AutoDownloadFullSizeImages AutoDownloadFullSizeImages {
+            get {
+                return ((global::AlbumArtDownloader.AutoDownloadFullSizeImages)(this["AutoDownloadFullSizeImages"]));
+            }
+            set {
+                this["AutoDownloadFullSizeImages"] = value;
             }
         }
     }

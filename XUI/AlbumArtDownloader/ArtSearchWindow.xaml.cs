@@ -46,9 +46,6 @@ namespace AlbumArtDownloader
 			mAutoDownloadFullSizeImagesThread.Priority = ThreadPriority.BelowNormal;
 			mAutoDownloadFullSizeImagesThread.Start();
 
-			mAutoDownloadFullSizeImagesCheckbox.Checked += new RoutedEventHandler(OnAutoDownloadFullSizeImagesChanged);
-			mAutoDownloadFullSizeImagesCheckbox.Unchecked += new RoutedEventHandler(OnAutoDownloadFullSizeImagesChanged);
-
 			//Bind the SelectAll checkbox
 			Binding selectAllBinding = new Binding("AllEnabled");
 			selectAllBinding.Source = mSources;
@@ -161,7 +158,7 @@ namespace AlbumArtDownloader
 			{
 				mAutoDownloadFullSizeImagesTrigger.WaitOne(); //Wait until something has changed to look at
 
-				while (Properties.Settings.Default.AutoDownloadFullSize)
+				while (Properties.Settings.Default.AutoDownloadFullSizeImages != AutoDownloadFullSizeImages.Never)
 				{
 					AlbumArt resultToProcess;
 					lock (mResultsToAutoDownloadFullSizeImages)
@@ -175,7 +172,12 @@ namespace AlbumArtDownloader
 							resultToProcess = mResultsToAutoDownloadFullSizeImages.Pop();
 						}
 					}
-					if (!resultToProcess.IsDownloading && !resultToProcess.IsFullSize)
+					if (!resultToProcess.IsDownloading && !resultToProcess.IsFullSize && 
+							(
+								Properties.Settings.Default.AutoDownloadFullSizeImages == AutoDownloadFullSizeImages.Always ||
+								(Properties.Settings.Default.AutoDownloadFullSizeImages == AutoDownloadFullSizeImages.WhenSizeUnknown && resultToProcess.ImageWidth == -1 && resultToProcess.ImageHeight == -1)
+							)
+						)
 					{
 						resultToProcess.RetrieveFullSizeImage(new WaitCallback(FullSizeImageDownloadCompleted));
 						//Wait until it is finished to move on to the next one, which triggers the trigger.

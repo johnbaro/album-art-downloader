@@ -7,7 +7,7 @@
 	
 	Icon="AlbumArtDownloader.ico"
 	Title="Album Art Downloader" Background="{x:Static SystemColors.ControlBrush}"
-	Width="640" Height="400" 
+	Width="640" Height="400"
 	FocusManager.FocusedElement="{Binding ElementName=mArtist}"
 		
     properties:WindowSettings.Save="True"
@@ -21,6 +21,7 @@
 			</ResourceDictionary.MergedDictionaries>
 
 			<BooleanToVisibilityConverter x:Key="mBooleanToVisibilityConverter"/>
+			<controls:EqualityConverter x:Key="mEqualityConverter"/>
 
 			<Style TargetType="Label">
 				<Setter Property="Margin" Value="2"/>
@@ -111,36 +112,77 @@
 				</Grid.RowDefinitions>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="Auto"/>
-					<ColumnDefinition Width="20"/>
+					<ColumnDefinition Width="Auto"/>
 					<ColumnDefinition Width="*"/>
 				</Grid.ColumnDefinitions>
 				<CheckBox Grid.Row="0" IsChecked="{Binding Source={StaticResource mSettings}, Path=Default.OpenResultsInNewWindow}">Open search results in new _window</CheckBox>
-				<CheckBox Name="mAutoDownloadFullSizeImagesCheckbox" Grid.Row="1" IsChecked="{Binding Source={StaticResource mSettings}, Path=Default.AutoDownloadFullSize}">Automatically _download full-size images</CheckBox>
-				<WrapPanel Grid.Column="3" Grid.RowSpan="2" VerticalAlignment="Top">
-					<Label Margin="-10,2,0,2" Padding="0,3,0,0" Target="{Binding ElementName=mMinimumImageSize}">_Hide images smaller than:</Label>
-					<StackPanel Orientation="Horizontal">
-						<TextBox Name="mMinimumImageSize" MinWidth="30">
-							<TextBox.Text>
-								<Binding Source="{StaticResource mSettings}" Path="Default.MinimumImageSize" UpdateSourceTrigger="PropertyChanged">
-									<Binding.ValidationRules>
-										<ExceptionValidationRule />
-									</Binding.ValidationRules>
+
+				<GroupBox Header="Automatically download full-size images" Grid.Row="1"
+						  RadioButton.Checked="OnAutoDownloadFullSizeImagesChanged">
+					<GroupBox.Resources>
+						<Style TargetType="{x:Type RadioButton}">
+							<Setter Property="Margin" Value="2"/>
+						</Style>
+					</GroupBox.Resources>
+					<StackPanel DataContext="{StaticResource mSettings}">
+						<RadioButton Content="Always">
+							<RadioButton.IsChecked>
+								<Binding Path="Default.AutoDownloadFullSizeImages" Converter="{StaticResource mEqualityConverter}">
+									<Binding.ConverterParameter>
+										<local:AutoDownloadFullSizeImages>Always</local:AutoDownloadFullSizeImages>
+									</Binding.ConverterParameter>
 								</Binding>
-							</TextBox.Text>
-							<TextBox.Style>
-								<Style TargetType="{x:Type TextBox}">
-									<Style.Triggers>
-										<Trigger Property="Validation.HasError" Value="True">
-											<Setter Property="ToolTip"
-												Value="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}"/>
-										</Trigger>
-									</Style.Triggers>
-								</Style>
-							</TextBox.Style>
-						</TextBox>
-						<TextBlock Margin="0,2,0,0" Padding="0,3,0,0">pixels</TextBlock>
+							</RadioButton.IsChecked>
+						</RadioButton>
+						<RadioButton Content="Only when size is unknown">
+							<RadioButton.IsChecked>
+								<Binding Path="Default.AutoDownloadFullSizeImages" Converter="{StaticResource mEqualityConverter}">
+									<Binding.ConverterParameter>
+										<local:AutoDownloadFullSizeImages>WhenSizeUnknown</local:AutoDownloadFullSizeImages>
+									</Binding.ConverterParameter>
+								</Binding>
+							</RadioButton.IsChecked>
+						</RadioButton>
+						<RadioButton Content="Never">
+							<RadioButton.IsChecked>
+								<Binding Path="Default.AutoDownloadFullSizeImages" Converter="{StaticResource mEqualityConverter}">
+									<Binding.ConverterParameter>
+										<local:AutoDownloadFullSizeImages>Never</local:AutoDownloadFullSizeImages>
+									</Binding.ConverterParameter>
+								</Binding>
+							</RadioButton.IsChecked>
+						</RadioButton>
 					</StackPanel>
-				</WrapPanel>
+				</GroupBox>
+
+				<GroupBox Header="Filter by image size" Grid.Row="1" Grid.Column="1" Margin="4,0,0,0">
+					<GroupBox.Resources>
+						<Style TargetType="{x:Type RadioButton}">
+							<Setter Property="Margin" Value="2"/>
+						</Style>
+					</GroupBox.Resources>
+					<Grid Grid.IsSharedSizeScope="True">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+						</Grid.RowDefinitions>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="*"/>
+							<ColumnDefinition Width="Auto"/>
+						</Grid.ColumnDefinitions>
+						<Grid.Resources>
+							<Style TargetType="{x:Type TextBlock}">
+								<Setter Property="Margin" Value="0,5,0,0"/>
+								<Setter Property="Grid.Column" Value="2"/>
+							</Style>
+						</Grid.Resources>
+						<controls:LimitBox Label="Minimum" Value="{Binding Source={StaticResource mSettings}, Path=Default.MinimumImageSize}"/>
+						<TextBlock>px</TextBlock>
+						<controls:LimitBox Grid.Row="1" Label="Maximum" Value="{Binding Source={StaticResource mSettings}, Path=Default.MaximumImageSize}"/>
+						<TextBlock Grid.Row="1">px</TextBlock>
+					</Grid>
+				</GroupBox>
+
 				<Grid Grid.Row="2" Grid.ColumnSpan="3">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="Auto"/>
@@ -171,7 +213,7 @@
 		</controls:ArtPanelListSortPicker>
 		<controls:ArtPanelList  Grid.Row="4" Name="mResultsViewer"
 								PanelWidthSnapping="7"
-								DataContext="{StaticResource mSettings}" 
+								DataContext="{StaticResource mSettings}"
 								SortDescription="{Binding Default.ResultsSorting, Mode=OneWay}"
 								ThumbSize="{Binding Default.ThumbSize}"
 								PanelWidth="{Binding Default.PanelWidth}"
@@ -193,7 +235,7 @@
 			<Label Padding="0" Grid.ColumnSpan="2" Target="{Binding ElementName=mSourcesViewer}">S_ources:</Label>
 			<CheckBox Name="mSelectAll" Margin="4,0,0,3" Grid.Row="1">Select _All</CheckBox>
 			<Button Margin="0,0,8,0" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right" Style="{StaticResource HyperlinkButton}"
-					Command="ApplicationCommands.Stop" Visibility="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled, Converter={StaticResource mBooleanToVisibilityConverter}}" 
+					Command="ApplicationCommands.Stop" Visibility="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled, Converter={StaticResource mBooleanToVisibilityConverter}}"
 					Content="Stop All"/>
 			<ItemsControl Grid.Row="3" Grid.ColumnSpan="2" Name="mSourcesViewer" Style="{StaticResource SimpleList}"
 						  ScrollViewer.VerticalScrollBarVisibility="Auto">

@@ -161,7 +161,7 @@ namespace AlbumArtDownloader
 			}
 			finally
 			{
-				parameters.Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(delegate
+				parameters.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new ThreadStart(delegate
 				{
 					IsSearching = false;
 					RaiseSearchCompleted();

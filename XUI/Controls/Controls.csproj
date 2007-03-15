@@ -40,8 +40,10 @@
     <Compile Include="ArtPanelListSortPicker.cs" />
     <Compile Include="CompareConverter.cs" />
     <Compile Include="ArtPathPatternBox.cs" />
+    <Compile Include="LimitBox.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="ISource.cs" />
+    <Compile Include="MultiEqualityConverter.cs" />
     <Compile Include="SourcePanel.cs" />
     <Compile Include="EqualityConverter.cs" />
     <Compile Include="IAlbumArt.cs" />
@@ -55,6 +57,7 @@
     <Page Include="themes\ArtPanelList.generic.xaml" />
     <Page Include="themes\ArtPanelListSortPicker.generic.xaml" />
     <Page Include="themes\ArtPathPatternBox.generic.xaml" />
+    <Page Include="themes\LimitBox.generic.xaml" />
     <Page Include="themes\HyperlinkExpander.generic.xaml" />
     <Page Include="themes\SimpleList.generic.xaml" />
     <Page Include="themes\HyperlinkButton.generic.xaml" />

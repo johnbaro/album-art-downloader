@@ -21,9 +21,6 @@
     <Setting Name="OpenResultsInNewWindow" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="AutoDownloadFullSize" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
     <Setting Name="MinimumImageSize" Type="System.Int32" Scope="User">
       <Value Profile="(Default)">10</Value>
     </Setting>
@@ -37,6 +34,12 @@
     </Setting>
     <Setting Name="InformationLocation" Type="AlbumArtDownloader.Controls.InformationLocation" Scope="User">
       <Value Profile="(Default)">Right</Value>
+    </Setting>
+    <Setting Name="MaximumImageSize" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">-1</Value>
+    </Setting>
+    <Setting Name="AutoDownloadFullSizeImages" Type="AlbumArtDownloader.AutoDownloadFullSizeImages" Scope="User">
+      <Value Profile="(Default)">Never</Value>
     </Setting>
   </Settings>
 </SettingsFile>
