@@ -139,7 +139,7 @@ namespace AlbumArtDownloader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("-1")]
+        [global::System.Configuration.DefaultSettingValueAttribute("900")]
         public int MaximumImageSize {
             get {
                 return ((int)(this["MaximumImageSize"]));
@@ -158,6 +158,30 @@ namespace AlbumArtDownloader.Properties {
             }
             set {
                 this["AutoDownloadFullSizeImages"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool UseMinimumImageSize {
+            get {
+                return ((bool)(this["UseMinimumImageSize"]));
+            }
+            set {
+                this["UseMinimumImageSize"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool UseMaximumImageSize {
+            get {
+                return ((bool)(this["UseMaximumImageSize"]));
+            }
+            set {
+                this["UseMaximumImageSize"] = value;
             }
         }
     }

@@ -176,9 +176,9 @@
 								<Setter Property="Grid.Column" Value="2"/>
 							</Style>
 						</Grid.Resources>
-						<controls:LimitBox Label="Minimum" Value="{Binding Source={StaticResource mSettings}, Path=Default.MinimumImageSize}"/>
+						<controls:LimitBox Label="Minimum" Value="{Binding Source={StaticResource mSettings}, Path=Default.MinimumImageSize}" HasValue="{Binding Source={StaticResource mSettings}, Path=Default.UseMinimumImageSize}"/>
 						<TextBlock>px</TextBlock>
-						<controls:LimitBox Grid.Row="1" Label="Maximum" Value="{Binding Source={StaticResource mSettings}, Path=Default.MaximumImageSize}"/>
+						<controls:LimitBox Grid.Row="1" Label="Maximum" Value="{Binding Source={StaticResource mSettings}, Path=Default.MaximumImageSize}" HasValue="{Binding Source={StaticResource mSettings}, Path=Default.UseMaximumImageSize}"/>
 						<TextBlock Grid.Row="1">px</TextBlock>
 					</Grid>
 				</GroupBox>
@@ -217,7 +217,10 @@
 								SortDescription="{Binding Default.ResultsSorting, Mode=OneWay}"
 								ThumbSize="{Binding Default.ThumbSize}"
 								PanelWidth="{Binding Default.PanelWidth}"
+								UseMinimumImageSize="{Binding Default.UseMinimumImageSize, Mode=OneWay}"
 								MinimumImageSize="{Binding Default.MinimumImageSize, Mode=OneWay}"
+								UseMaximumImageSize="{Binding Default.UseMaximumImageSize, Mode=OneWay}"
+								MaximumImageSize="{Binding Default.MaximumImageSize, Mode=OneWay}"
 								InformationLocation="{Binding Default.InformationLocation}"
 							   />
 

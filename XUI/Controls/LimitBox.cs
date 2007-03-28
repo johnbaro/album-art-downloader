@@ -30,12 +30,18 @@ namespace AlbumArtDownloader.Controls
 			set { SetValue(LabelProperty, value); }
 		}
 
-		public static readonly DependencyProperty ValueProperty = DependencyProperty.Register("Value", typeof(int), typeof(LimitBox));
+		public static readonly DependencyProperty ValueProperty = DependencyProperty.Register("Value", typeof(int), typeof(LimitBox), new FrameworkPropertyMetadata(0, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 		public int Value
 		{
 			get { return (int)GetValue(ValueProperty); }
 			set { SetValue(ValueProperty, value); }
 		}
-		
+
+		public static readonly DependencyProperty HasValueProperty = DependencyProperty.Register("HasValue", typeof(bool), typeof(LimitBox), new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+		public bool HasValue
+		{
+			get { return (bool)GetValue(HasValueProperty); }
+			set { SetValue(HasValueProperty, HasValue); }
+		}
 	}
 }

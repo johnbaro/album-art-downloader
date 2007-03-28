@@ -30,7 +30,7 @@
 								</Style>
 							</TextBox.Style>
 							<TextBox.Text>
-								<Binding Source="{RelativeSource TemplatedParent}" Path="Value" UpdateSourceTrigger="PropertyChanged">
+								<Binding RelativeSource="{RelativeSource TemplatedParent}" Path="Value" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
 									<Binding.ValidationRules>
 										<ExceptionValidationRule />
 									</Binding.ValidationRules>

@@ -162,24 +162,59 @@ namespace AlbumArtDownloader.Controls
 		}
 
 		#region Properties
-		public static readonly DependencyProperty MinimumImageSizeProperty = DependencyProperty.Register("MinimumImageSize", typeof(double), typeof(ArtPanelList),
-			new FrameworkPropertyMetadata(0D, new PropertyChangedCallback(OnMinimumImageSizeChanged)));
-		/// <summary>The minimum size of image to display. Images smaller than this will be filtered out.</summary>		
-		public double MinimumImageSize
+		public static readonly DependencyProperty UseMinimumImageSizeProperty = DependencyProperty.Register("UseMinimumImageSize", typeof(bool), typeof(ArtPanelList),
+			new FrameworkPropertyMetadata(false, new PropertyChangedCallback(OnImageSizeLimitChanged)));
+		/// <summary>Whether to use the Minimum size setting.</summary>		
+		public bool UseMinimumImageSize
 		{
-			get { return (double)GetValue(MinimumImageSizeProperty); }
+			get { return (bool)GetValue(UseMinimumImageSizeProperty); }
+			set { SetValue(UseMinimumImageSizeProperty, value); }
+		}
+		public static readonly DependencyProperty UseMaximumImageSizeProperty = DependencyProperty.Register("UseMaximumImageSize", typeof(bool), typeof(ArtPanelList),
+			new FrameworkPropertyMetadata(false, new PropertyChangedCallback(OnImageSizeLimitChanged)));
+		/// <summary>Whether to use the Maximum size setting.</summary>		
+		public bool UseMaximumImageSize
+		{
+			get { return (bool)GetValue(UseMaximumImageSizeProperty); }
+			set { SetValue(UseMaximumImageSizeProperty, value); }
+		}
+		public static readonly DependencyProperty MinimumImageSizeProperty = DependencyProperty.Register("MinimumImageSize", typeof(int), typeof(ArtPanelList),
+			new FrameworkPropertyMetadata(0, new PropertyChangedCallback(OnImageSizeLimitChanged)));
+		/// <summary>The minimum size of image to display. Images smaller than this will be filtered out.</summary>		
+		public int MinimumImageSize
+		{
+			get { return (int)GetValue(MinimumImageSizeProperty); }
 			set { SetValue(MinimumImageSizeProperty, value); }
 		}
-		private static void OnMinimumImageSizeChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+		public static readonly DependencyProperty MaximumImageSizeProperty = DependencyProperty.Register("MaximumImageSize", typeof(int), typeof(ArtPanelList),
+			new FrameworkPropertyMetadata(0, new PropertyChangedCallback(OnImageSizeLimitChanged)));
+		/// <summary>The Maximum size of image to display. Images larger than this will be filtered out.</summary>		
+		public int MaximumImageSize
+		{
+			get { return (int)GetValue(MaximumImageSizeProperty); }
+			set { SetValue(MaximumImageSizeProperty, value); }
+		}
+		private static void OnImageSizeLimitChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
 		{
 			ArtPanelList artPanelList = (ArtPanelList)sender;
-			artPanelList.Items.Filter = new Predicate<object>(artPanelList.SizeFilter); //Apply the new minimum image size filter
+
+			if (!artPanelList.UseMaximumImageSize && !artPanelList.UseMinimumImageSize)
+			{
+				artPanelList.Items.Filter = null; //No filtering required
+			}
+			else
+			{
+				artPanelList.Items.Filter = new Predicate<object>(artPanelList.SizeFilter); //Apply the new minimum image size filter
+			}
 		}
 		private bool SizeFilter(object item)
 		{
 			IAlbumArt albumArt = item as IAlbumArt;
 			if (albumArt == null)
 				return true; //Can't filter it, don't know what it is
+
+			if (!UseMaximumImageSize && !UseMinimumImageSize)
+				return true; //No filtering required
 
 			//Both width and height must be bigger, so use the smallest of the two
 			double size = Math.Min(albumArt.ImageWidth, albumArt.ImageHeight);
@@ -189,7 +224,9 @@ namespace AlbumArtDownloader.Controls
 				size = Math.Min(albumArt.Image.Width, albumArt.Image.Height);
 			}
 
-			return size >= MinimumImageSize;
+			//Valid if there is no limit specified, or the size is within the limit. Both limits must apply if both are present
+			return (!UseMinimumImageSize || size >= MinimumImageSize) &&
+				   (!UseMaximumImageSize || size <= MaximumImageSize);
 		}
 
 		public static readonly DependencyProperty ThumbSizeProperty = DependencyProperty.Register("ThumbSize", typeof(double), typeof(ArtPanelList), new FrameworkPropertyMetadata(50D, FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));

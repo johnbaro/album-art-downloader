@@ -36,10 +36,16 @@
       <Value Profile="(Default)">Right</Value>
     </Setting>
     <Setting Name="MaximumImageSize" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">-1</Value>
+      <Value Profile="(Default)">900</Value>
     </Setting>
     <Setting Name="AutoDownloadFullSizeImages" Type="AlbumArtDownloader.AutoDownloadFullSizeImages" Scope="User">
       <Value Profile="(Default)">Never</Value>
+    </Setting>
+    <Setting Name="UseMinimumImageSize" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="UseMaximumImageSize" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>
 </SettingsFile>
