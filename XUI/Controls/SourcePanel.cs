@@ -4,6 +4,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Controls.Primitives;
 
 namespace AlbumArtDownloader.Controls
 {
@@ -45,7 +46,8 @@ namespace AlbumArtDownloader.Controls
 		protected override void OnPreviewMouseLeftButtonUp(System.Windows.Input.MouseButtonEventArgs e)
 		{
 			base.OnPreviewMouseLeftButtonUp(e);
-			if (!(e.OriginalSource is Button)) //Button commands are screwed by focus change, it appears
+			if (!(e.OriginalSource is ButtonBase) && //Button commands are screwed by focus change, it appears
+				!(e.OriginalSource is TextBoxBase)) 
 			{
 				Focus();
 			}

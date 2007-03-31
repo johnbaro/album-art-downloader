@@ -11,6 +11,7 @@
 
 	<local:StringFormatterConverter x:Key="mStringFormatterConverter"/>
 	<local:CompareConverter x:Key="mCompareConverter"/>
+	<BooleanToVisibilityConverter x:Key="mBooleanToVisibilityConverter"/>
 
 	<Style TargetType="{x:Type local:SourcePanel}">
 		<Setter Property="Template">
@@ -19,6 +20,7 @@
 					<Border BorderThickness="0,0,0,1" BorderBrush="#FF7F9DB9">
 						<Grid Margin="4" KeyboardNavigation.DirectionalNavigation="None">
 							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto"/>
 								<RowDefinition Height="Auto"/>
 								<RowDefinition Height="Auto"/>
 							</Grid.RowDefinitions>
@@ -45,8 +47,20 @@
 									</MultiBinding>
 								</TextBlock.Text>
 							</TextBlock>
-							<Button Command="ApplicationCommands.Properties" Name="options" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" Style="{StaticResource HyperlinkButton}" HorizontalAlignment="Right"
-									Foreground="#FF7F9DB9" Margin="0,3,0,-3" Content="..." ToolTip="Show source options..."/>
+							<ToggleButton Name="optionsToggle" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Right"
+									 Foreground="#FF7F9DB9" Margin="0,3,0,-3">
+								<ToggleButton.Style>
+									<Style BasedOn="{StaticResource HyperlinkButton}" TargetType="{x:Type ToggleButton}">
+										<Setter Property="Content" Value="..."/>
+										<Setter Property="ToolTip" Value="Show source options..."/>
+										<Style.Triggers>
+											<Trigger Property="IsChecked" Value="True">
+												<Setter Property="ToolTip" Value="Hide source options"/>
+											</Trigger>
+										</Style.Triggers>
+									</Style>
+								</ToggleButton.Style>
+							</ToggleButton>
 
 							<ProgressBar Name="searchProgress" Visibility="Hidden" Grid.Row="1" Grid.Column="1" Margin="2,3,2,1"
 										 Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Source.Results.Count, Mode=OneWay}"
@@ -86,12 +100,31 @@
 								</ProgressBar.Style>
 							</ProgressBar>
 							<Button Command="ApplicationCommands.Stop" Name="stopDownload" Visibility="Hidden" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" Style="{StaticResource HyperlinkButton}" HorizontalAlignment="Right">Stop</Button>
+							<GroupBox Name="options" Header="Options" Grid.Row="2" Grid.ColumnSpan="4"
+									  Visibility="{Binding ElementName=optionsToggle, Path=IsChecked, Converter={StaticResource mBooleanToVisibilityConverter}}">
+								<Grid>
+									<Grid.Resources>
+										<Style TargetType="{x:Type TextBlock}">
+											<Setter Property="Margin" Value="0,5,0,0"/>
+										</Style>
+									</Grid.Resources>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="Auto"/>
+										<ColumnDefinition Width="*"/>
+									</Grid.ColumnDefinitions>
+									<local:LimitBox Label="Limit to"
+													Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Source.MaximumResults}"
+													HasValue="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Source.UseMaximumResults}"/>
+									<TextBlock Grid.Column="1">results</TextBlock>
+								</Grid>
+							</GroupBox>
 						</Grid>
 					</Border>
 					<ControlTemplate.Triggers>
 						<DataTrigger Binding="{Binding RelativeSource={RelativeSource Self}, Path=Source.IsSearching, Mode=OneWay}" Value="True">
 							<Setter TargetName="versionInfo" Property="Visibility" Value="Hidden"/>
-							<Setter TargetName="options" Property="Visibility" Value="Hidden"/>
+							<Setter TargetName="optionsToggle" Property="Visibility" Value="Hidden"/>
+							<Setter TargetName="options" Property="Visibility" Value="Collapsed"/>
 							<Setter TargetName="searchProgress" Property="Visibility" Value="Visible"/>
 							<Setter TargetName="stopDownload" Property="Visibility" Value="Visible"/>
 						</DataTrigger>

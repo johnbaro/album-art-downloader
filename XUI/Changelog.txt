@@ -1,8 +1,10 @@
 0.2 Added "Stop All" button
     Added ability to toggle display of thumbnail information to go below the thumbnail
-    Work In Progress: 
- * AutoDownloadFullSizeImages Always, Never, and Only For Unknown Size
- * Maximum Image size
- * Maximum number of results to return per source
+    Enhanced auto download of full size images to give the options: Always, Never, and Only For Unknown Size
+    Added an optional Maximum Image size restriction
+    Fixed bug where Local Files source would lock the files it found, preventing them from being replaced
+    Added checkbox for setting AutoClose behaviour in the UI.
+    Added option to disable AutoClose behaviour from the command line: "/autoclose off"
+    Added option to restrict the maximum number of results to return per source
 
 0.1 Initial Preview Release

@@ -21,7 +21,7 @@ using AlbumArtDownloader.Scripts;
 
 namespace AlbumArtDownloader
 {
-	public partial class ArtSearchWindow : System.Windows.Window
+	public partial class ArtSearchWindow : System.Windows.Window, INotifyPropertyChanged
 	{
 		public static class Commands
 		{
@@ -85,8 +85,10 @@ namespace AlbumArtDownloader
 			}
 			mSources.Add(new LocalFilesSource());
 
-			LoadDisabledSources();
+			LoadSourceSettings();
 			LoadDefaultSaveFolderHistory();
+			//Initial value of AutoClose is taken from settings. May be overriden by command line parameters
+			AutoClose = Properties.Settings.Default.AutoClose;
 
 			this.Loaded += new RoutedEventHandler(OnLoaded);
 		}
@@ -109,7 +111,7 @@ namespace AlbumArtDownloader
 		private ArtSearchWindow NewSearchWindow()
 		{
 			//Save these values to settings so that the new window picks up on them
-			SaveDisabledSources();
+			SaveSourceSettings();
 			SaveDefaultSaveFolderHistory();
 
 			ArtSearchWindow newWindow = new ArtSearchWindow();
@@ -313,11 +315,33 @@ namespace AlbumArtDownloader
 		private bool mAutoClose;
 		/// <summary>
 		/// If set true, the window will automatically be closed after a save (but not save as) operation
+		/// To set AutoClose behaviour without saving the setting, use <see cref="OverrideAutoClose"/>.
 		/// </summary>
 		public bool AutoClose
 		{
-			get { return mAutoClose; }
-			set { mAutoClose = value; }
+			get 
+			{
+				return mAutoClose; 
+			}
+			set 
+			{
+				//Assigns the value to the settings too
+				Properties.Settings.Default.AutoClose = value;
+				OverrideAutoClose(value);
+			}
+		}
+
+		/// <summary>
+		/// Sets the <see cref="AutoClose"/> behaviour without persisting the value in Settings.
+		/// </summary>
+		/// <param name="value"></param>
+		public void OverrideAutoClose(bool value)
+		{
+			if (mAutoClose != value)
+			{
+				mAutoClose = value;
+				NotifyPropertyChanged("AutoClose");
+			}
 		}
 		private void AutoCloseOnSave(object sender, PropertyChangedEventArgs e)
 		{
@@ -336,8 +360,7 @@ namespace AlbumArtDownloader
 			base.OnClosing(e);
 
 			SaveDefaultSaveFolderHistory();
-			SaveDisabledSources();
-			Properties.Settings.Default.Save();
+			SaveSourceSettings();
 		}
 
 		protected override void OnClosed(EventArgs e)
@@ -351,25 +374,24 @@ namespace AlbumArtDownloader
 		}
 		#endregion
 
-		#region Disabling Sources
-		private void LoadDisabledSources()
+		#region Source Settings
+		private void LoadSourceSettings()
 		{
 			foreach (Source source in mSources)
 			{
-				if (Properties.Settings.Default.DisabledSources.Contains(source.Name))
-					source.IsEnabled = false;
+				source.LoadSettings();
 			}
 		}
-		private void SaveDisabledSources()
+		private void SaveSourceSettings()
 		{
-			Properties.Settings.Default.DisabledSources.Clear();
 			foreach (Source source in mSources)
 			{
-				if (!source.IsEnabled)
-					Properties.Settings.Default.DisabledSources.Add(source.Name);
+				source.SaveSettings();
 			}
 		}
+		#endregion
 
+		#region Disabling Sources
 		/// <summary>
 		/// Disable all sources except those specified
 		/// </summary>
@@ -457,6 +479,18 @@ namespace AlbumArtDownloader
 			foreach (Source source in mSources)
 			{
 				source.AbortSearch();
+			}
+		}
+		#endregion
+
+		#region Property Notification
+		public event PropertyChangedEventHandler PropertyChanged;
+		private void NotifyPropertyChanged(string propertyName)
+		{
+			PropertyChangedEventHandler temp = PropertyChanged;
+			if (temp != null)
+			{
+				temp(this, new PropertyChangedEventArgs(propertyName));
 			}
 		}
 		#endregion

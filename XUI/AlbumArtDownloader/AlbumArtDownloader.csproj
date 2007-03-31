@@ -29,7 +29,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>.\bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;EPHEMERAL_SETTINGS</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;_EPHEMERAL_SETTINGS</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>false</DebugSymbols>
@@ -129,9 +129,9 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Settings.cs" />
     <Compile Include="Source.cs" />
     <Compile Include="Sources.cs" />
+    <Compile Include="SourceSettings.cs" />
     <Compile Include="Splashscreen.xaml.cs">
       <SubType>Code</SubType>
       <DependentUpon>Splashscreen.xaml</DependentUpon>

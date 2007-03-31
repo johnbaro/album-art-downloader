@@ -27,6 +27,25 @@ namespace AlbumArtDownloader
 		{
 		}
 
+		SourceSettings mSettings;
+		public virtual void LoadSettings()
+		{ 
+			if(String.IsNullOrEmpty(Name))
+				throw new InvalidOperationException("Cannot load settings for a source with no name");
+
+			mSettings = ((App)Application.Current).GetSourceSettings(Name);
+			this.IsEnabled = mSettings.Enabled;
+			this.UseMaximumResults = mSettings.UseMaximumResults;
+			this.MaximumResults = mSettings.MaximumResults;
+		}
+
+		public virtual void SaveSettings()
+		{
+			mSettings.Enabled = this.IsEnabled;
+			mSettings.UseMaximumResults = this.UseMaximumResults;
+			mSettings.MaximumResults = this.MaximumResults;
+		}
+
 		#region Abstract members
 		public abstract string Name {get;}
 		public abstract string Author { get;}
@@ -65,6 +84,44 @@ namespace AlbumArtDownloader
 			}
 		}
 
+		private bool mUseMaximumResults = true;
+		public bool UseMaximumResults
+		{
+			get
+			{
+				return mUseMaximumResults;
+			}
+			set
+			{
+				if (mUseMaximumResults != value)
+				{
+					mUseMaximumResults = value;
+					NotifyPropertyChanged("UseMaximumResults");
+					if (UseMaximumResults && MaximumResults < EstimatedResultsCount)
+						NotifyPropertyChanged("EstimatedResultsCount"); //This will be coerced to be no more than maximum results
+				}
+			}
+		}
+
+		private int mMaximumResults;
+		public int MaximumResults
+		{
+			get
+			{
+				return mMaximumResults;
+			}
+			set
+			{
+				if (mMaximumResults != value)
+				{
+					mMaximumResults = value;
+					NotifyPropertyChanged("MaximumResults");
+					if(UseMaximumResults && MaximumResults < EstimatedResultsCount)
+						NotifyPropertyChanged("EstimatedResultsCount"); //This will be coerced to be no more than maximum results
+				}
+			}
+		}
+
 		public ObservableCollection<IAlbumArt> Results
 		{
 			get { return mResults; }
@@ -89,6 +146,10 @@ namespace AlbumArtDownloader
 		{
 			get
 			{
+				//If there is a maximum set, then the estimated results count should never be more than that.
+				if (UseMaximumResults && MaximumResults < mEstimatedResultsCount)
+					return MaximumResults;
+
 				return mEstimatedResultsCount;
 			}
 			private set
@@ -245,6 +306,12 @@ namespace AlbumArtDownloader
 							fullSizeImageHeight,
 							fullSizeImageCallback));
 					}));
+				}
+
+				if (mSource.UseMaximumResults && mSource.Results.Count >= mSource.MaximumResults)
+				{
+					//Break out of this search
+					Thread.CurrentThread.Abort();
 				}
 			}
 		}

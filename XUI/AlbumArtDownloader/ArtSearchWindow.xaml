@@ -9,6 +9,8 @@
 	Title="Album Art Downloader" Background="{x:Static SystemColors.ControlBrush}"
 	Width="640" Height="400"
 	FocusManager.FocusedElement="{Binding ElementName=mArtist}"
+	
+	Name="this" 
 		
     properties:WindowSettings.Save="True"
 	>
@@ -116,6 +118,8 @@
 					<ColumnDefinition Width="*"/>
 				</Grid.ColumnDefinitions>
 				<CheckBox Grid.Row="0" IsChecked="{Binding Source={StaticResource mSettings}, Path=Default.OpenResultsInNewWindow}">Open search results in new _window</CheckBox>
+				<CheckBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Content="Automatically _close after saving"
+						  IsChecked="{Binding ElementName=this, Path=AutoClose}"/>
 
 				<GroupBox Header="Automatically download full-size images" Grid.Row="1"
 						  RadioButton.Checked="OnAutoDownloadFullSizeImagesChanged">

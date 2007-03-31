@@ -13,8 +13,9 @@
 							<ColumnDefinition Width="Auto" SharedSizeGroup="LimitBoxLabel"/>
 							<ColumnDefinition Width="*" SharedSizeGroup="LimitBoxEditor"/>
 						</Grid.ColumnDefinitions>
-						<CheckBox Content="{TemplateBinding Label}"
-								  IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=HasValue, Mode=TwoWay}"/>
+						<CheckBox Content="{TemplateBinding Label}" Margin="5,5,2,2" 
+								  IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=HasValue, Mode=TwoWay}">
+						</CheckBox>
 						<TextBox Grid.Column="1">
 							<TextBox.Style>
 								<Style TargetType="{x:Type TextBox}">

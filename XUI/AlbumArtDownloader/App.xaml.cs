@@ -5,6 +5,7 @@ using System.IO;
 using System.Reflection;
 using AlbumArtDownloader.Scripts;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 
 namespace AlbumArtDownloader
 {
@@ -24,7 +25,7 @@ namespace AlbumArtDownloader
 				return;
 			}
 
-			bool autoClose = false;
+			bool? autoClose = null;
 			string artist = null, album = null, path = null;
 			List<String> useSources = new List<string>(); 
 			List<String> excludeSources = new List<string>();
@@ -79,7 +80,14 @@ namespace AlbumArtDownloader
 							break; //See case "p" for handling of this parameter
 						case "autoclose":
 						case "ac":
-							autoClose = true;
+							if (parameter.Value.Equals("off", StringComparison.InvariantCultureIgnoreCase))
+							{
+								autoClose = false;
+							}
+							else
+							{
+								autoClose = true;
+							}
 							break;
 						case "sources":
 						case "s":
@@ -111,6 +119,8 @@ namespace AlbumArtDownloader
 			
 			#endregion
 
+			UpgradeSettings();
+
 #if EPHEMERAL_SETTINGS
 			AlbumArtDownloader.Properties.Settings.Default.Reset();
 #endif
@@ -128,7 +138,8 @@ namespace AlbumArtDownloader
 				ArtSearchWindow searchWindow = new ArtSearchWindow();
 
 				#region Apply Command Args Settings
-				searchWindow.AutoClose = autoClose;
+				if (autoClose.HasValue)
+					searchWindow.OverrideAutoClose(autoClose.Value);
 				if (path != null)
 					searchWindow.SetDefaultSaveFolderPattern(path);
 				if(useSources.Count > 0)
@@ -146,6 +157,21 @@ namespace AlbumArtDownloader
 			{
 				//Splashscreen returned false, so exit
 				Shutdown();
+			}
+		}
+
+		//Any other settings loaded will also require upgrading, if the main settings do, so set this flag to indicate that.
+		private bool mSettingsUpgradeRequired;
+		private void UpgradeSettings()
+		{
+			//Settings may need upgrading from an earlier version
+			string currentVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+			if (AlbumArtDownloader.Properties.Settings.Default.ApplicationVersion != currentVersion)
+			{
+				System.Diagnostics.Debug.WriteLine("Upgrading settings");
+				mSettingsUpgradeRequired = true;
+				AlbumArtDownloader.Properties.Settings.Default.Upgrade();
+				AlbumArtDownloader.Properties.Settings.Default.ApplicationVersion = currentVersion;
 			}
 		}
 
@@ -242,6 +268,38 @@ namespace AlbumArtDownloader
 
 				return mCachedScriptsPath;
 			}
+		}
+
+		protected override void OnExit(ExitEventArgs e)
+		{
+			//Save all the settings
+			AlbumArtDownloader.Properties.Settings.Default.Save();
+			foreach (SourceSettings sourceSettings in mSourceSettings.Values)
+			{
+				sourceSettings.Save();
+			}
+
+			base.OnExit(e);
+		}
+
+		private Dictionary<string, SourceSettings> mSourceSettings = new Dictionary<String, SourceSettings>();
+		public SourceSettings GetSourceSettings(string sourceName)
+		{
+			SourceSettings sourceSettings;
+			if (!mSourceSettings.TryGetValue(sourceName, out sourceSettings))
+			{
+				sourceSettings = new SourceSettings(sourceName);
+				if(mSettingsUpgradeRequired)
+					sourceSettings.Upgrade();
+
+#if EPHEMERAL_SETTINGS
+				sourceSettings.Reset();
+#endif
+
+				mSourceSettings.Add(sourceName, sourceSettings);
+			}
+			
+			return sourceSettings;
 		}
 	}
 }

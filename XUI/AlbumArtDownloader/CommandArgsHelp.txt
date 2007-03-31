@@ -36,9 +36,13 @@ Options:
               appended to the path.
 
  /autoclose   Closes the search window after  (/autoclose)
-              a saving. To avoid closing, use
+              saving. To avoid closing, use
               Save As.
               May be abbreviated to /ac
+              
+              Append "off" to disable closing (/autoclose off)
+              the search window after saving,
+              if this option is on by default.
 
  /sources     Searches only the specified     (/sources "Amazon,Coveralia")
               sources. Others are disabled.
