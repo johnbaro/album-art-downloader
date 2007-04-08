@@ -30,10 +30,10 @@ namespace TestScript
 			Bitmap fullSize = new Bitmap(typeof(TestScript), "testFullsize.jpg");
 			results.Add(thumbnail, "Bitmap", 600, 600, fullSize);
 			results.Add(@"file://C:\Documents and Settings\David Vallat\My Documents\Alexander\foobar2000\CoverDownloader\AlbumArtDownloader\XUI\TestScript\testThumbnail.jpg", "String", 400, 400, @"file://C:\Documents and Settings\David Vallat\My Documents\Alexander\foobar2000\CoverDownloader\AlbumArtDownloader\XUI\TestScript\testFullsize.jpg");
-			results.EstimatedCount = 5;			
-			//System.Threading.Thread.Sleep(5000);
-			results.Add("http://ec2.images-amazon.com/images/P/B0000C7GG2.01._AA240_SCLZZZZZZZ_.jpg", "URL", "http://ec2.images-amazon.com/images/P/B0000C7GG2.01._SS500_SCLZZZZZZZ_.jpg");
 			results.Add(thumbnail, "No Fullsize", null);
+			results.EstimatedCount = 5;			
+			System.Threading.Thread.Sleep(3000);
+			results.Add("http://ec2.images-amazon.com/images/P/B0000C7GG2.01._AA240_SCLZZZZZZZ_.jpg", "URL", "http://ec2.images-amazon.com/images/P/B0000C7GG2.01._SS500_SCLZZZZZZZ_.jpg");
 			results.Add(@"file://C:\Documents and Settings\David Vallat\My Documents\Alexander\foobar2000\CoverDownloader\AlbumArtDownloader\XUI\TestScript\testThumbnail.png", "PNG format", 600, 600, @"file://C:\Documents and Settings\David Vallat\My Documents\Alexander\foobar2000\CoverDownloader\AlbumArtDownloader\XUI\TestScript\testFullsize.png");
 			results.Add(@"http://www.google.com/invalid", "Not valid url", null);
 		}

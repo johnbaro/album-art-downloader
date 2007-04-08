@@ -7,6 +7,8 @@ using System.Windows.Input;
 using System.Windows.Documents;
 using System.Runtime.InteropServices;
 using System.ComponentModel;
+using System.Collections.Specialized;
+using System.Collections;
 
 namespace AlbumArtDownloader.Controls
 {
@@ -15,6 +17,10 @@ namespace AlbumArtDownloader.Controls
 		static ArtPanelList()
 		{
 			DefaultStyleKeyProperty.OverrideMetadata(typeof(ArtPanelList), new FrameworkPropertyMetadata(typeof(ArtPanelList)));
+
+			PropertyMetadata baseMetadata = ItemsSourceProperty.GetMetadata(typeof(ItemsControl));
+			System.Diagnostics.Debug.Assert(baseMetadata.CoerceValueCallback == null, "Not expecting any pre-existing coercion");
+			ItemsSourceProperty.OverrideMetadata(typeof(ArtPanelList), new FrameworkPropertyMetadata(baseMetadata.DefaultValue, baseMetadata.PropertyChangedCallback, new CoerceValueCallback(CoerceItemsSource)));
 		}
 
 		public ArtPanelList()
@@ -24,13 +30,12 @@ namespace AlbumArtDownloader.Controls
 		}
 
 		#region Mouse shifting
-		private IDisposable mDeferRefresh;
 		private Point mPanelResizeDragOffset;
 		protected override void OnGotMouseCapture(MouseEventArgs e)
 		{
 			base.OnGotMouseCapture(e);
 
-			mDeferRefresh = Items.DeferRefresh();
+			Suspended = true;
 
 			ArtPanel panel = GetArtPanel(e.OriginalSource);
 			if (panel != null)
@@ -44,11 +49,8 @@ namespace AlbumArtDownloader.Controls
 		{
 			base.OnLostMouseCapture(e);
 			PreviewMouseMove -= OnPreviewMouseMoveWhileCaptured;
-			if (mDeferRefresh != null)
-			{
-				mDeferRefresh.Dispose();
-				mDeferRefresh = null;
-			}
+
+			Suspended = false;
 		}
 
 		private void OnPreviewMouseMoveWhileCaptured(object sender, MouseEventArgs e)
@@ -110,6 +112,7 @@ namespace AlbumArtDownloader.Controls
 		}
 		#endregion
 
+		#region Auto Size panels
 		private void AlignJustifyCommandHandler(object sender, ExecutedRoutedEventArgs e)
 		{
 			AutoSizePanels();
@@ -118,7 +121,7 @@ namespace AlbumArtDownloader.Controls
 		public void AutoSizePanels()
 		{
 			//Auto-size the panel widths by finding the closest width that fits neatly
-			if(ItemsPresenter != null)
+			if (ItemsPresenter != null)
 			{
 				PanelWidth = GetNearestArrangedPanelWidth(PanelWidth);
 			}
@@ -141,7 +144,9 @@ namespace AlbumArtDownloader.Controls
 			}
 			return newPanelWidth;
 		}
+		#endregion
 
+		#region Full Size Image download
 		private double mPreviousImageWidth, mPreviousImageHeight;
 		private void OnFullSizeImageRequested(object sender, RoutedEventArgs e)
 		{
@@ -156,10 +161,10 @@ namespace AlbumArtDownloader.Controls
 			if (art.ImageWidth != mPreviousImageWidth ||
 				art.ImageHeight != mPreviousImageHeight)
 			{
-				//Causes a refresh. Note that .Refresh doesn't.
-				Items.Filter = Items.Filter;
+				RefreshFilter();
 			}
 		}
+		#endregion
 
 		#region Properties
 		public static readonly DependencyProperty UseMinimumImageSizeProperty = DependencyProperty.Register("UseMinimumImageSize", typeof(bool), typeof(ArtPanelList),
@@ -300,6 +305,16 @@ namespace AlbumArtDownloader.Controls
 			get { return (InformationLocation)GetValue(InformationLocationProperty); }
 			set { SetValue(InformationLocationProperty, value); }
 		}
+
+		private static object CoerceItemsSource(DependencyObject sender, object newValue)
+		{
+			IList itemsSource = newValue as IList;
+			if (itemsSource != null && itemsSource is INotifyCollectionChanged && !(itemsSource is SuspendedNotificationCollection))
+			{
+				return new SuspendedNotificationCollection(itemsSource);
+			}
+			return newValue;
+		}
 		#endregion
 
 		#region Elements
@@ -320,5 +335,143 @@ namespace AlbumArtDownloader.Controls
 			}
 		}
 		#endregion
+
+		#region Suspension and resuming of modifications to the list
+		//TODO: Should this do ref counting? How about an IDisposable suspension pattern?
+		//Currently this is only used from Mouse Captured and Lost Capture, so isn't necessary.
+		private bool Suspended
+		{
+			get
+			{
+				SuspendedNotificationCollection suspender = ItemsSource as SuspendedNotificationCollection;
+				if (suspender != null)
+					return suspender.Suspended;
+
+				return false;
+			}
+			set
+			{
+				SuspendedNotificationCollection suspender = ItemsSource as SuspendedNotificationCollection;
+				if (suspender != null)
+					suspender.Suspended = value;
+
+				if (!value && mNeedsRefresh)
+				{
+					RefreshFilter();
+				}
+			}
+		}
+
+		private bool mNeedsRefresh;
+		private void RefreshFilter()
+		{
+			if (Suspended)
+			{
+				mNeedsRefresh = true; //Perform the refresh when suspension is lifted
+			}
+			else
+			{
+				//Perform it immediately
+				Items.Filter = Items.Filter; //Causes a refresh. Note that .Refresh doesn't.
+				mNeedsRefresh = false;
+			}
+		}
+		#endregion
+		/// <summary>
+		/// Wrapper around an <see cref="INotifyCollectionChanged"/> that can suspend
+		/// the notifications that the collection has changed, batch them up, then
+		/// release them when the suspension is lifted. The collection must also implement
+		/// <see cref="IList"/>.
+		/// </summary>
+		private class SuspendedNotificationCollection : INotifyCollectionChanged, IList
+		{
+			public event NotifyCollectionChangedEventHandler CollectionChanged;
+
+			private IList mWrappedCollection;
+			private Queue<NotifyCollectionChangedEventArgs> mQueuedChanges = new Queue<NotifyCollectionChangedEventArgs>();
+
+			public SuspendedNotificationCollection(IList collection)
+			{
+				mWrappedCollection = collection;
+
+				INotifyCollectionChanged notify = collection as INotifyCollectionChanged;
+				if (notify == null)
+					throw new ArgumentException("The collection must implement INotifyCollectionChanged", "collection");
+				
+				notify.CollectionChanged += new NotifyCollectionChangedEventHandler(OnBaseCollectionChanged);
+			}
+
+			private void OnBaseCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+			{
+				if (Suspended)
+				{
+					//Batch up the change for later use
+					mQueuedChanges.Enqueue(e);
+				}
+				else
+				{
+					//Pass it on immediately
+					RaiseCollectionChanged(e);
+				}
+			}
+
+			private void RaiseCollectionChanged(NotifyCollectionChangedEventArgs e)
+			{
+				NotifyCollectionChangedEventHandler temp = CollectionChanged;
+				if (temp != null)
+				{
+					temp(mWrappedCollection, e);
+				}
+			}
+
+			private bool mSuspended;
+			public bool Suspended
+			{
+				get { return mSuspended; }
+				set 
+				{
+					if (value != mSuspended)
+					{
+						mSuspended = value;
+						if (!mSuspended)
+						{
+							//Raise all the enqued changes
+							while (mQueuedChanges.Count > 0)
+							{
+								RaiseCollectionChanged(mQueuedChanges.Dequeue());
+							}
+						}
+					}
+				}
+			}
+
+			#region IList wrappers
+			public int Add(object value) { return mWrappedCollection.Add(value); }
+			public void Clear() { mWrappedCollection.Clear(); }
+			public bool Contains(object value) { return mWrappedCollection.Contains(value); }
+			public int IndexOf(object value) { return mWrappedCollection.IndexOf(value); }
+			public void Insert(int index, object value) { mWrappedCollection.Insert(index, value); }
+			public bool IsFixedSize { get { return mWrappedCollection.IsFixedSize; } }
+			public bool IsReadOnly { get { return mWrappedCollection.IsReadOnly; } }
+			public void Remove(object value) { mWrappedCollection.Remove(value); }
+			public void RemoveAt(int index) { mWrappedCollection.RemoveAt(index); }
+			public void CopyTo(Array array, int index) { mWrappedCollection.CopyTo(array, index); }
+			public int Count { get { return mWrappedCollection.Count; } }
+			public bool IsSynchronized { get { return mWrappedCollection.IsSynchronized; } }
+			public object SyncRoot { get { return mWrappedCollection.SyncRoot; } }
+			public IEnumerator GetEnumerator() { return mWrappedCollection.GetEnumerator(); }
+			public object this[int index]
+			{
+				get
+				{
+					return mWrappedCollection[index];
+				}
+				set
+				{
+					mWrappedCollection[index] = value;
+				}
+			}
+			#endregion
+		}
 	}
 }

@@ -145,7 +145,7 @@ namespace AlbumArtDownloader
 			{
 				foreach (IAlbumArt albumArt in e.NewItems)
 				{
-					TryAddResultToCombinedResults(albumArt);
+					CombinedResults.Add(albumArt);
 				}
 			}
 			if (e.Action == NotifyCollectionChangedAction.Remove ||
@@ -165,24 +165,6 @@ namespace AlbumArtDownloader
 				//For reset, there is no way of knowing that the items removed are,
 				//so recreate the whole thing
 				RecreateCombinedResults();
-			}
-		}
-
-		private delegate void TryAddResultToCombinedResultsDelegate(IAlbumArt albumArt);
-		private void TryAddResultToCombinedResults(IAlbumArt albumArt)
-		{
-			//Perform the add asynchronously, in case it fails due to the CombinedResults having a deferred update
-			try
-			{
-				CombinedResults.Add(albumArt);
-				return; //Successfully added.
-			}
-			catch (InvalidOperationException)
-			{
-				//This will occur if the collection has a view on it that is defer refreshed.
-				
-				//Try to do it again, as background
-				Dispatcher.CurrentDispatcher.BeginInvoke(DispatcherPriority.Background, new TryAddResultToCombinedResultsDelegate(TryAddResultToCombinedResults), albumArt);
 			}
 		}
 

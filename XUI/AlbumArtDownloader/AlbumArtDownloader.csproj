@@ -23,13 +23,14 @@
     <BootstrapperEnabled>true</BootstrapperEnabled>
     <PublishUrl>Publish\</PublishUrl>
     <ApplicationIcon>AlbumArtDownloader.ico</ApplicationIcon>
+    <StartupObject>AlbumArtDownloader.App</StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>.\bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;_EPHEMERAL_SETTINGS</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;_EPHEMERAL_SETTINGS ERROR_REPORTING</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>false</DebugSymbols>
@@ -62,7 +63,6 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml" />
     <Page Include="About.xaml" />
     <Page Include="ArtSearchWindow.xaml" />
     <Page Include="CommandArgsHelp.xaml" />
@@ -70,10 +70,6 @@
     <Page Include="FoobarBrowser.xaml" />
     <Page Include="Logo.xaml" />
     <Page Include="Splashscreen.xaml" />
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="ArtSearchWindow.xaml.cs">
       <DependentUpon>ArtSearchWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -85,6 +81,7 @@
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
     <Compile Include="AlbumArt.cs" />
+    <Compile Include="App.cs" />
     <Compile Include="Arguments.cs" />
     <Compile Include="CommandArgsHelp.xaml.cs">
       <SubType>Code</SubType>

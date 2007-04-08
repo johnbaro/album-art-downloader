@@ -9,14 +9,48 @@ using System.Collections.Specialized;
 
 namespace AlbumArtDownloader
 {
-	public partial class App : System.Windows.Application
+	public class App : System.Windows.Application
 	{
+		/// <summary>
+		/// Application Entry Point.
+		/// </summary>
+		[System.STAThreadAttribute()]
+		public static void Main()
+		{
+#if ERROR_REPORTING
+			try
+			{
+#endif
+				AlbumArtDownloader.App app = new AlbumArtDownloader.App();
+				app.Run();
+#if ERROR_REPORTING
+			}
+			catch (Exception e)
+			{
+				Assembly entryAssembly = Assembly.GetEntryAssembly();
+				string filename = Path.Combine(Path.GetDirectoryName(entryAssembly.Location), "errorlog.txt");
+				using (StreamWriter errorLog = File.CreateText(filename))
+				{
+					errorLog.WriteLine("Album Art Downloader has encountered a fatal error, and has had to close.");
+					errorLog.WriteLine("If you wish to report this error, please include this information, which");
+					errorLog.WriteLine("has been written to the file: " + filename);
+					errorLog.WriteLine();
+					errorLog.WriteLine("App version: {0}, running on {1}", entryAssembly.GetName().Version, Environment.OSVersion);
+					errorLog.WriteLine();
+					errorLog.WriteLine(e);
+				}
+				System.Diagnostics.Process.Start(filename);
+				Environment.Exit(-1); //Ensure exit
+			}
+#endif
+		}
+
 		protected override void OnStartup(StartupEventArgs e)
 		{
 			base.OnStartup(e);
 
 			#region Command Args
-			
+
 			Arguments arguments = new Arguments(e.Args);
 			if (arguments.Contains("?"))
 			{
@@ -27,7 +61,7 @@ namespace AlbumArtDownloader
 
 			bool? autoClose = null;
 			string artist = null, album = null, path = null;
-			List<String> useSources = new List<string>(); 
+			List<String> useSources = new List<string>();
 			List<String> excludeSources = new List<string>();
 			string errorMessage = null;
 
@@ -116,7 +150,7 @@ namespace AlbumArtDownloader
 				Shutdown();
 				return;
 			}
-			
+
 			#endregion
 
 			UpgradeSettings();
@@ -142,7 +176,7 @@ namespace AlbumArtDownloader
 					searchWindow.OverrideAutoClose(autoClose.Value);
 				if (path != null)
 					searchWindow.SetDefaultSaveFolderPattern(path);
-				if(useSources.Count > 0)
+				if (useSources.Count > 0)
 					searchWindow.UseSources(useSources);
 				if (excludeSources.Count > 0)
 					searchWindow.ExcludeSources(excludeSources);
@@ -195,7 +229,7 @@ namespace AlbumArtDownloader
 		/// </summary>
 		private void AssignDefaultSettings()
 		{
-			if(AlbumArtDownloader.Properties.Settings.Default.DefaultSavePath == "%default%")
+			if (AlbumArtDownloader.Properties.Settings.Default.DefaultSavePath == "%default%")
 				AlbumArtDownloader.Properties.Settings.Default.DefaultSavePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), @"Album Art\%artist%\%album%\Folder.%extension%");
 		}
 
@@ -228,7 +262,7 @@ namespace AlbumArtDownloader
 								script = new StaticScript(type);
 							}
 
-							if(script != null)
+							if (script != null)
 								mScripts.Add(script);
 						}
 						catch (Exception e)
@@ -289,7 +323,7 @@ namespace AlbumArtDownloader
 			if (!mSourceSettings.TryGetValue(sourceName, out sourceSettings))
 			{
 				sourceSettings = new SourceSettings(sourceName);
-				if(mSettingsUpgradeRequired)
+				if (mSettingsUpgradeRequired)
 					sourceSettings.Upgrade();
 
 #if EPHEMERAL_SETTINGS
@@ -298,7 +332,7 @@ namespace AlbumArtDownloader
 
 				mSourceSettings.Add(sourceName, sourceSettings);
 			}
-			
+
 			return sourceSettings;
 		}
 	}

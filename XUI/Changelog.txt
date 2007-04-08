@@ -1,3 +1,7 @@
+0.3 Stability improvements:
+      Stop All should not cause the app to become unresponsive
+      Fixed bug where app could hang while previewing during a search
+      
 0.2 Added "Stop All" button
     Added ability to toggle display of thumbnail information to go below the thumbnail
     Enhanced auto download of full size images to give the options: Always, Never, and Only For Unknown Size

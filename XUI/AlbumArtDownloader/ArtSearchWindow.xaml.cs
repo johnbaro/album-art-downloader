@@ -248,6 +248,8 @@ namespace AlbumArtDownloader
 		/// </summary>
 		private void StartSearch()
 		{
+			throw new Exception("Test");
+
 			mDefaultSaveFolder.AddPatternToHistory();
 			foreach (Source source in mSources)
 			{
@@ -475,11 +477,18 @@ namespace AlbumArtDownloader
 		}
 		private void StopExec(object sender, ExecutedRoutedEventArgs e)
 		{
-			//Stop all the sources
+			//Stop all the sources (asynch, to avoid locking up UI)
 			foreach (Source source in mSources)
 			{
-				source.AbortSearch();
+				Dispatcher.BeginInvoke(DispatcherPriority.Background, new ParameterizedThreadStart(AbortSource), source);
 			}
+		}
+		/// <summary>
+		/// Delegate to asynchronously abort the source
+		/// </summary>
+		private void AbortSource(object source)
+		{
+			((Source)source).AbortSearch();
 		}
 		#endregion
 

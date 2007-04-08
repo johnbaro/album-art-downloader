@@ -201,7 +201,7 @@ namespace AlbumArtDownloader.Controls
 		{
 			Thread.Sleep(GetDoubleClickTime());
 
-			Dispatcher.BeginInvoke(DispatcherPriority.Input, new ThreadStart(delegate
+			Dispatcher.BeginInvoke(DispatcherPriority.Normal, new ThreadStart(delegate
 			{
 				if (Mouse.LeftButton != MouseButtonState.Pressed)
 				{
