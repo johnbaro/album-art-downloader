@@ -1,6 +1,10 @@
 0.3 Stability improvements:
       Stop All should not cause the app to become unresponsive
       Fixed bug where app could hang while previewing during a search
+    If a search is performed for the same album and artist, but with different sources,
+     a minimal search is now performed where only the newly selected sources are queried,
+     and the existing results are kept in the same window.
+    Added better error reporting. If a crash occurs, an errorlog.txt file will be produced.
       
 0.2 Added "Stop All" button
     Added ability to toggle display of thumbnail information to go below the thumbnail

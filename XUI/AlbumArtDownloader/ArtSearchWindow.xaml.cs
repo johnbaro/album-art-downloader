@@ -221,8 +221,19 @@ namespace AlbumArtDownloader
 		#endregion
 
 		#region Searching
+		private SearchParameters mSearchParameters;
 		private void FindExec(object sender, RoutedEventArgs e)
 		{
+			//Check to see whether current results can be altered, or a new search is required
+			if (mSearchParameters != null)
+			{
+				//Can only enhance if the artist and album to search for are identical
+				if (mArtist.Text == mSearchParameters.Artist && mAlbum.Text == mSearchParameters.Album)
+				{
+					AlterSearch();
+					return;
+				}
+			}
 			if (mSources.CombinedResults.Count > 0 && Properties.Settings.Default.OpenResultsInNewWindow)
 			{
 				NewSearchWindow().Search(mArtist.Text, mAlbum.Text);
@@ -248,7 +259,7 @@ namespace AlbumArtDownloader
 		/// </summary>
 		private void StartSearch()
 		{
-			throw new Exception("Test");
+			mSearchParameters = new SearchParameters(mArtist.Text, mAlbum.Text);
 
 			mDefaultSaveFolder.AddPatternToHistory();
 			foreach (Source source in mSources)
@@ -256,7 +267,8 @@ namespace AlbumArtDownloader
 				if (source.IsEnabled)
 				{
 					source.SearchCompleted += OnSourceSearchCompleted; //Hook the complete event to know when to hide the Stop All button
-					source.Search(mArtist.Text, mAlbum.Text);
+					source.Search(mSearchParameters.Artist, mSearchParameters.Album);
+					mSearchParameters.AddSource(source);
 				}
 				else
 				{
@@ -265,6 +277,46 @@ namespace AlbumArtDownloader
 				}
 			}
 			CommandBindings.Add(mStopAllCommandBinding);
+		}
+		/// <summary>
+		/// Alters the existing search to include or exclude additional sources
+		/// </summary>
+		private void AlterSearch()
+		{
+			foreach (Source source in mSources)
+			{
+				if (source.IsEnabled)
+				{
+					bool performSearch = false;
+					//Perform the search if the source was not previously searched
+					if (!mSearchParameters.ContainsSource(source))
+					{
+						performSearch = true;
+					}
+					else
+					{
+						//Repeat the search if the maximum results settings for the source have changed.
+						int? previousMaxResults = mSearchParameters[source];
+						performSearch = source.UseMaximumResults != previousMaxResults.HasValue ||
+										(previousMaxResults.HasValue && source.MaximumResults != previousMaxResults.Value);
+					}
+					if(performSearch)
+					{
+						source.SearchCompleted += OnSourceSearchCompleted; //Hook the complete event to know when to hide the Stop All button
+						source.Search(mArtist.Text, mAlbum.Text);
+
+						mSearchParameters.AddSource(source);
+					}
+				}
+				else
+				{
+					//Remove the results if the source was unselected
+					source.AbortSearch();
+					source.Results.Clear();
+
+					mSearchParameters.RemoveSource(source);
+				}
+			}
 		}
 		#endregion
 
