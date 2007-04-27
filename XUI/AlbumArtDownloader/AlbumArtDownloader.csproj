@@ -68,6 +68,7 @@
     <Page Include="CommandArgsHelp.xaml" />
     <Page Include="FileBrowser.xaml" />
     <Page Include="FoobarBrowser.xaml" />
+    <Page Include="LocalFilesSourceSettings.xaml" />
     <Page Include="Logo.xaml" />
     <Page Include="Splashscreen.xaml" />
     <Compile Include="ArtSearchWindow.xaml.cs">
@@ -88,6 +89,10 @@
       <DependentUpon>CommandArgsHelp.xaml</DependentUpon>
     </Compile>
     <Compile Include="Enums.cs" />
+    <Compile Include="LocalFilesSourceSettings.xaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>LocalFilesSourceSettings.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ScriptSource.cs" />
     <Compile Include="FileBrowser.xaml.cs">
       <SubType>Code</SubType>

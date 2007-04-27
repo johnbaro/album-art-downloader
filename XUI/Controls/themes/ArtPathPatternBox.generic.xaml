@@ -2,7 +2,6 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:AlbumArtDownloader.Controls"
     >
-
 	<Style TargetType="{x:Type local:ArtPathPatternBox}">
 		<Setter Property="Focusable" Value="False"/>
 		<Setter Property="Template">
@@ -21,25 +20,18 @@
 							an editable combo box, then whenever it gets focus, it selects the entire text. That sucks, and can't be changed-->
 						<TextBox Name="PART_PathEditor" BorderThickness="1,1,0,1"
 								 Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=PathPattern, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-						
+
 						<ToggleButton Name="PART_MenuButton" Grid.Column="1" Content="4" FontFamily="Marlett" FontSize="18" Padding="-5" Margin="0"
 								ContextMenuService.Placement="Bottom" IsChecked="{Binding RelativeSource={RelativeSource Self}, Path=ContextMenu.IsOpen, Mode=TwoWay}">
+							<ToggleButton.Resources>
+								<MenuItem x:Key="PART_BrowseMenuItem" Header="_Browse..." Command="{x:Static local:ArtPathPatternBox+Commands.Browse}">
+									<MenuItem.Icon>
+										<Image Source="browse.png"/>
+									</MenuItem.Icon>
+								</MenuItem>
+							</ToggleButton.Resources>
 							<ToggleButton.ContextMenu>
-								<ContextMenu>
-									<MenuItem Header="_Browse..." Command="{x:Static local:ArtPathPatternBox+Commands.Browse}">
-										<MenuItem.Icon>
-											<Image Source="browse.png"/>
-										</MenuItem.Icon>
-									</MenuItem>
-									<Separator/>
-									<MenuItem Header="A_rtist" ToolTip="The artist searched for" CommandParameter="%artist%" Command="{x:Static local:ArtPathPatternBox+Commands.InsertPlaceholder}"/>
-									<MenuItem Header="A_lbum" ToolTip="The album searched for" CommandParameter="%album%" Command="{x:Static local:ArtPathPatternBox+Commands.InsertPlaceholder}"/>
-									<Separator/>
-									<MenuItem Header="_Name" ToolTip="The name of the result found" CommandParameter="%name%" Command="{x:Static local:ArtPathPatternBox+Commands.InsertPlaceholder}"/>
-									<MenuItem Header="_Extension" ToolTip="The file extension of the result found" CommandParameter="%extension%" Command="{x:Static local:ArtPathPatternBox+Commands.InsertPlaceholder}"/>
-									<MenuItem Header="_Source" ToolTip="The source from which the result was found" CommandParameter="%source%" Command="{x:Static local:ArtPathPatternBox+Commands.InsertPlaceholder}"/>
-									<MenuItem Header="Si_ze" ToolTip="The dimensions, in pixels, of the result" CommandParameter="%size%" Command="{x:Static local:ArtPathPatternBox+Commands.InsertPlaceholder}"/>
-								</ContextMenu>
+								<ContextMenu ItemsSource="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=PlaceholdersMenu, Mode=OneWay}"/>
 							</ToggleButton.ContextMenu>
 						</ToggleButton>
 					</Grid>

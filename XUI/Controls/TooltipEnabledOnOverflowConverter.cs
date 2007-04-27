@@ -8,9 +8,6 @@ using System.Windows.Controls;
 
 namespace AlbumArtDownloader.Controls
 {
-	/// <summary>
-	/// Returns true if the first value is greater than the second
-	/// </summary>
 	internal class TooltipEnabledOnOverflowConverter : IMultiValueConverter
 	{
 		public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)

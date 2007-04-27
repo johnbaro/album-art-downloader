@@ -296,9 +296,7 @@ namespace AlbumArtDownloader
 					else
 					{
 						//Repeat the search if the maximum results settings for the source have changed.
-						int? previousMaxResults = mSearchParameters[source];
-						performSearch = source.UseMaximumResults != previousMaxResults.HasValue ||
-										(previousMaxResults.HasValue && source.MaximumResults != previousMaxResults.Value);
+						performSearch = source.SettingsChanged;
 					}
 					if(performSearch)
 					{
@@ -443,6 +441,34 @@ namespace AlbumArtDownloader
 				source.SaveSettings();
 			}
 		}
+		/// <summary>
+		/// Sets the LocalFilesSource image search path.
+		/// Pass null to set as unspecified.
+		/// </summary>
+		/// <param name="path"></param>
+		public void SetLocalImagesPath(string path)
+		{
+			LocalFilesSource localFilesSource = null;
+			foreach (Source source in mSources)
+			{
+				localFilesSource = source as LocalFilesSource;
+				if (localFilesSource != null) //TODO: Could there ever be more than one local files source?
+					break;
+			}
+
+			if (localFilesSource != null)
+			{
+				if (String.IsNullOrEmpty(path))
+				{
+					localFilesSource.UseSearchPathPattern = false;
+				}
+				else
+				{
+					localFilesSource.UseSearchPathPattern = true;
+					localFilesSource.SearchPathPattern = path;
+				}
+			}
+		}
 		#endregion
 
 		#region Disabling Sources
@@ -510,7 +536,6 @@ namespace AlbumArtDownloader
 			mDefaultSaveFolder.AddPatternToHistory(); //Save the previous value
 			Properties.Settings.Default.DefaultSavePath = path; //Set the new value
 		}
-
 		#endregion
 
 		#region Stop All

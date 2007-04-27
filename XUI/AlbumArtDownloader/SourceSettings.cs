@@ -5,8 +5,25 @@ using System.Configuration;
 
 namespace AlbumArtDownloader
 {
+	public delegate SourceSettings SourceSettingsCreator(string name);
+		
 	public class SourceSettings : ApplicationSettingsBase
 	{
+		#region Creation
+		//SourceSettings overrides should provide custom versions of these too
+		public static SourceSettingsCreator Creator
+		{
+			get
+			{
+				return new SourceSettingsCreator(Create);
+			}
+		}
+		private static SourceSettings Create(string name)
+		{
+			return new SourceSettings(name);
+		}
+		#endregion
+
 		public SourceSettings(string sourceName) : base(sourceName)
 		{
 		}

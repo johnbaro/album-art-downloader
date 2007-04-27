@@ -22,6 +22,22 @@ namespace AlbumArtDownloader.Controls
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Stop, new ExecutedRoutedEventHandler(StopCommandHandler)));
 		}
 
+		public override void OnApplyTemplate()
+		{
+			base.OnApplyTemplate();
+
+			if (Options != null)
+			{
+				Options.IsVisibleChanged += BringIntoViewOnVisible;
+			}
+		}
+
+		private void BringIntoViewOnVisible(object sender, DependencyPropertyChangedEventArgs e)
+		{
+			if ((bool)e.NewValue == true)
+				((FrameworkElement)sender).BringIntoView();
+		}
+
 		public static readonly DependencyProperty SourceProperty = DependencyProperty.Register("Source", typeof(ISource), typeof(SourcePanel));
 		public ISource Source
 		{
@@ -46,11 +62,29 @@ namespace AlbumArtDownloader.Controls
 		protected override void OnPreviewMouseLeftButtonUp(System.Windows.Input.MouseButtonEventArgs e)
 		{
 			base.OnPreviewMouseLeftButtonUp(e);
-			if (!(e.OriginalSource is ButtonBase) && //Button commands are screwed by focus change, it appears
-				!(e.OriginalSource is TextBoxBase)) 
+			if (e.OriginalSource is TextBlock) 
 			{
 				Focus();
 			}
 		}
+
+		#region Elements
+		private FrameworkElement mCachedOptions;
+		protected FrameworkElement Options
+		{
+			get
+			{
+				if (mCachedOptions == null)
+				{
+					if (Template != null)
+					{
+						mCachedOptions = Template.FindName("PART_Options", this) as FrameworkElement;
+					}
+				}
+
+				return mCachedOptions;
+			}
+		}
+		#endregion
 	}
 }

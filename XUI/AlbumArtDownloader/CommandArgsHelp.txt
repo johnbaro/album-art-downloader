@@ -35,6 +35,25 @@ Options:
               specified, the value is
               appended to the path.
 
+ /localImagesPath
+              Path to search for local image  (/localImagesPath "\Art\Unsorted\**\*.jpg")
+              files in. If not specified, the
+              path to save art in is used.
+              
+              The following variables can be used in paths:
+               %artist%     Artist searched for
+               %album%      Album searched for
+               *            Wildcard, matches any characters
+               \**\         Subfolder search. Any folders will match
+                             at this point in the path. For example
+                             "\Art\Unsorted\**\*.jpg" will match:
+                              \Art\Unsorted\image.jpg
+                              \Art\Unsorted\misc\image.jpg
+                              \Art\Unsorted\misc\old\image.jpg
+                             
+                             "\Art\Unsorted\*\*.jpg" will match only:
+                              \Art\Unsorted\misc\image.jpg
+
  /autoclose   Closes the search window after  (/autoclose)
               saving. To avoid closing, use
               Save As.

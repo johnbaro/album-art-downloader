@@ -6,7 +6,7 @@ namespace AlbumArtDownloader
 	{
 		private string mArtist;
 		private string mAlbum;
-		private Dictionary<Source, int?> mSources = new Dictionary<Source,int?>();
+		private Dictionary<Source, object> mSources = new Dictionary<Source, object>();
 
 		public SearchParameters(string artist, string album)
 		{
@@ -25,15 +25,9 @@ namespace AlbumArtDownloader
 
 		public void AddSource(Source source)
 		{
-			if (source.UseMaximumResults)
-			{
-				mSources[source] = source.MaximumResults;
-			}
-			else
-			{
-				mSources[source] = null;
-			}
+			mSources[source] = null;
 		}
+
 		public void RemoveSource(Source source)
 		{
 			mSources.Remove(source);
@@ -42,11 +36,6 @@ namespace AlbumArtDownloader
 		public bool ContainsSource(Source source)
 		{
 			return mSources.ContainsKey(source);
-		}
-
-		public int? this[Source source]
-		{
-			get { return mSources[source]; }
 		}
 	}
 }

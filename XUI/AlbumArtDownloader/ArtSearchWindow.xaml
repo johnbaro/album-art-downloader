@@ -1,6 +1,7 @@
 ﻿<Window x:Class="AlbumArtDownloader.ArtSearchWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:Win32="clr-namespace:Microsoft.Win32;assembly=presentationframework" 
 	xmlns:local="clr-namespace:AlbumArtDownloader"
 	xmlns:properties="clr-namespace:AlbumArtDownloader.Properties"
 	xmlns:controls="clr-namespace:AlbumArtDownloader.Controls;assembly=AlbumArtDownloader.Controls"
@@ -195,7 +196,17 @@
 					<Label Target="{Binding ElementName=mDefaultSaveFolder}">Sa_ve images to:</Label>
 					<controls:ArtPathPatternBox Grid.Row="2" Grid.Column="1" Name="mDefaultSaveFolder"
 												Margin="2" Padding="2"
-												PathPattern="{Binding Source={StaticResource mSettings}, Path=Default.DefaultSavePath}"/>
+												PathPattern="{Binding Source={StaticResource mSettings}, Path=Default.DefaultSavePath}">
+						<controls:ArtPathPatternBox.AdditionalPlaceholders>
+							<controls:PatternPlaceholder MenuItemHeader="_Name" ToolTip="The name of the result found" Placeholder="%name%"/>
+							<controls:PatternPlaceholder MenuItemHeader="_Extension" ToolTip="The file extension of the result found" Placeholder="%extension%"/>
+							<controls:PatternPlaceholder MenuItemHeader="_Source" ToolTip="The source from which the result was found" Placeholder="%source%"/>
+							<controls:PatternPlaceholder MenuItemHeader="Si_ze" ToolTip="The dimensions, in pixels, of the result" Placeholder="%size%"/>
+						</controls:ArtPathPatternBox.AdditionalPlaceholders>
+						<controls:ArtPathPatternBox.BrowseDialog>
+							<Win32:SaveFileDialog Title="Save images to" ValidateNames="False" CheckPathExists="False" OverwritePrompt="False" Filter="All Files (*.*)|*.*"/>
+						</controls:ArtPathPatternBox.BrowseDialog>
+					</controls:ArtPathPatternBox>
 
 				</Grid>
 			</Grid>

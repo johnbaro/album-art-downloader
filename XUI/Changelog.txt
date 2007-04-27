@@ -1,3 +1,8 @@
+0.4 Local Files Source now has the ability to specify the path to search for images in
+     separately to the path to save images in. Set this either in the Local Files Source
+     settings, or using the /localImagesPath command line parameter.
+    Experimental authenticating proxy support (undocumented feature)
+    
 0.3 Stability improvements:
       Stop All should not cause the app to become unresponsive
       Fixed bug where app could hang while previewing during a search

@@ -1,0 +1,24 @@
+<UserControl x:Class="AlbumArtDownloader.LocalFilesSourceSettings"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:Win32="clr-namespace:Microsoft.Win32;assembly=presentationframework"
+	xmlns:controls="clr-namespace:AlbumArtDownloader.Controls;assembly=AlbumArtDownloader.Controls"
+	>
+    <Grid Name="mGrid">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
+		<CheckBox Grid.Row="0" IsChecked="{Binding UseSearchPathPattern}">Specify path to find images:</CheckBox>
+		<controls:ArtPathPatternBox Name="mSearchPathPatternBox" Grid.Row="1" Margin="0,4,0,0" MaxWidth="{Binding ElementName=mGrid, Path=ActualWidth}" 
+									IsEnabled="{Binding UseSearchPathPattern}" 
+									PathPattern="{Binding SearchPathPattern}">
+			<controls:ArtPathPatternBox.AdditionalPlaceholders>
+				<controls:PatternPlaceholder MenuItemHeader="_Subfolders" ToolTip="Matches subfolders recursively at this point in the path" Placeholder="\**\"/>
+			</controls:ArtPathPatternBox.AdditionalPlaceholders>
+			<controls:ArtPathPatternBox.BrowseDialog>
+				<Win32:OpenFileDialog Title="Path to find images" ValidateNames="False" CheckFileExists="False" CheckPathExists="False" Filter="All Files (*.*)|*.*"/>
+			</controls:ArtPathPatternBox.BrowseDialog>
+		</controls:ArtPathPatternBox>
+    </Grid>
+</UserControl>

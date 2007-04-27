@@ -11,6 +11,7 @@ using System.Windows;
 using System.Collections.ObjectModel;
 using AlbumArtDownloader.Scripts;
 using System.Drawing;
+using System.Windows.Controls;
 
 namespace AlbumArtDownloader
 {
@@ -20,30 +21,88 @@ namespace AlbumArtDownloader
 		public event EventHandler SearchCompleted;
 
 		private ObservableCollection<IAlbumArt> mResults = new ObservableCollection<IAlbumArt>();
+		private SourceSettings mSettings;
+		private Control mCustomSettingsUI; 
 
 		private Thread mSearchThread;
 
 		public Source()
 		{
+			mCustomSettingsUI = CreateCustomSettingsUI();
+			if(mCustomSettingsUI != null)
+				mCustomSettingsUI.DataContext = this;
+		}
+		/// <summary>
+		/// Override this to create the custom settings UI control to be displayed
+		/// to allow editing of custom settings for the source.
+		/// </summary>
+		protected virtual System.Windows.Controls.Control CreateCustomSettingsUI()
+		{
+			return null;
 		}
 
-		SourceSettings mSettings;
-		public virtual void LoadSettings()
-		{ 
-			if(String.IsNullOrEmpty(Name))
+		public void LoadSettings()
+		{
+			mSettings = GetSettings();
+			LoadSettingsInternal(mSettings);
+		}
+
+		public void SaveSettings()
+		{
+			SaveSettingsInternal(mSettings);
+		}
+
+		private bool mSettingsChanged = false;
+		/// <summary>
+		/// This flag is set true whenever a setting is changed, and
+		/// reset to false when a search is performed. It can then be
+		/// used to determine whether or not a new search is needed to
+		/// be performed for this source (if the artist and album haven't)
+		/// chagned.
+		/// </summary>
+		public bool SettingsChanged
+		{
+			get
+			{
+				return mSettingsChanged;
+			}
+			protected set
+			{
+				mSettingsChanged = value;
+			}
+		}
+
+		/// <summary>
+		/// Load the SourceSettings object for this source
+		/// </summary>
+		protected virtual SourceSettings GetSettings()
+		{
+			if (String.IsNullOrEmpty(Name))
 				throw new InvalidOperationException("Cannot load settings for a source with no name");
 
-			mSettings = ((App)Application.Current).GetSourceSettings(Name);
-			this.IsEnabled = mSettings.Enabled;
-			this.UseMaximumResults = mSettings.UseMaximumResults;
-			this.MaximumResults = mSettings.MaximumResults;
+			return ((App)Application.Current).GetSourceSettings(Name);
 		}
 
-		public virtual void SaveSettings()
+		/// <summary>
+		/// Reads the values from the SourceSettings object
+		/// </summary>
+		/// <param name="settings"></param>
+		protected virtual void LoadSettingsInternal(SourceSettings settings)
 		{
-			mSettings.Enabled = this.IsEnabled;
-			mSettings.UseMaximumResults = this.UseMaximumResults;
-			mSettings.MaximumResults = this.MaximumResults;
+			this.IsEnabled = settings.Enabled;
+			this.UseMaximumResults = settings.UseMaximumResults;
+			this.MaximumResults = settings.MaximumResults;
+		}
+
+		/// <summary>
+		/// Saves the values to the SourceSettings object
+		/// </summary>
+		/// <param name="settings"></param>
+		protected virtual void SaveSettingsInternal(SourceSettings settings)
+		{
+			settings.Enabled = this.IsEnabled;
+			settings.UseMaximumResults = this.UseMaximumResults;
+			settings.MaximumResults = this.MaximumResults;
 		}
 
 		#region Abstract members
@@ -62,6 +121,18 @@ namespace AlbumArtDownloader
 		#endregion
 
 		#region Basic properties
+		/// <summary>
+		/// Null for no custom settings, or a control which should be displayed to allow custom
+		/// settings for this source to be edited.
+		/// </summary>
+		public Control CustomSettingsUI
+		{
+			get
+			{
+				return mCustomSettingsUI;
+			}
+		}
+
 		private bool mIsEnabled = true;
 		public bool IsEnabled
 		{
@@ -96,6 +167,8 @@ namespace AlbumArtDownloader
 				if (mUseMaximumResults != value)
 				{
 					mUseMaximumResults = value;
+					
+					SettingsChanged = true;
 					NotifyPropertyChanged("UseMaximumResults");
 					if (UseMaximumResults && MaximumResults < EstimatedResultsCount)
 						NotifyPropertyChanged("EstimatedResultsCount"); //This will be coerced to be no more than maximum results
@@ -115,6 +188,8 @@ namespace AlbumArtDownloader
 				if (mMaximumResults != value)
 				{
 					mMaximumResults = value;
+
+					SettingsChanged = true;
 					NotifyPropertyChanged("MaximumResults");
 					if(UseMaximumResults && MaximumResults < EstimatedResultsCount)
 						NotifyPropertyChanged("EstimatedResultsCount"); //This will be coerced to be no more than maximum results
@@ -159,7 +234,7 @@ namespace AlbumArtDownloader
 			}
 		}
 
-		private void NotifyPropertyChanged(string propertyName)
+		protected void NotifyPropertyChanged(string propertyName)
 		{
 			PropertyChangedEventHandler temp = PropertyChanged;
 			if (temp != null)
@@ -227,6 +302,7 @@ namespace AlbumArtDownloader
 					IsSearching = false;
 					RaiseSearchCompleted();
 				}));
+				SettingsChanged = false;
 			}
 		}
 
@@ -297,7 +373,7 @@ namespace AlbumArtDownloader
 
 				if (thumbnailBitmap != null)
 				{
-					mDispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(delegate
+					mDispatcher.Invoke(DispatcherPriority.Input, new ThreadStart(delegate
 					{
 						mSource.Results.Add(new AlbumArt(mSource,
 							thumbnailBitmap,

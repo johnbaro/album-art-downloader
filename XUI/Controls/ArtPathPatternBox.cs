@@ -7,6 +7,9 @@ using System.Windows.Input;
 using System.Windows.Controls.Primitives;
 using System.Collections.ObjectModel;
 using Microsoft.Win32;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Collections.Specialized;
 
 namespace AlbumArtDownloader.Controls
 {
@@ -27,7 +30,9 @@ namespace AlbumArtDownloader.Controls
 
 		public ArtPathPatternBox()
 		{
-			CommandBindings.Add(new CommandBinding(Commands.Browse, new ExecutedRoutedEventHandler(BrowseExec)));
+			AdditionalPlaceholders.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(OnAdditionalPlaceholdersChanged);
+
+			CommandBindings.Add(new CommandBinding(Commands.Browse, new ExecutedRoutedEventHandler(BrowseExec), new CanExecuteRoutedEventHandler(CanBrowse)));
 			CommandBindings.Add(new CommandBinding(Commands.InsertPlaceholder, new ExecutedRoutedEventHandler(InsertPlaceholderExec)));
 		}
 
@@ -37,6 +42,8 @@ namespace AlbumArtDownloader.Controls
 
 			if (MenuButton != null)
 			{
+				RecreatePlaceholdersMenu();
+
 				MenuButton.ContextMenuOpening += new ContextMenuEventHandler(MenuButtonContextMenuOpening);
 				MenuButton.ContextMenu.Placement = PlacementMode.Bottom;
 				MenuButton.ContextMenu.PlacementTarget = MenuButton;
@@ -54,17 +61,16 @@ namespace AlbumArtDownloader.Controls
 			}
 		}
 
+		private void CanBrowse(object sender, CanExecuteRoutedEventArgs e)
+		{
+			e.CanExecute = BrowseDialog != null;
+		}
 		private void BrowseExec(object sender, ExecutedRoutedEventArgs e)
 		{
-			SaveFileDialog saveFileDialog = new SaveFileDialog();
-			saveFileDialog.FileName = PathPattern;
-			saveFileDialog.DefaultExt = ".jpg";
-			saveFileDialog.OverwritePrompt = false;
-			saveFileDialog.Filter = "JPEG Files (.jpg)|*.jpeg|All Files|*.*"; // Filter files by extension
-
-			if (saveFileDialog.ShowDialog().GetValueOrDefault(false))
+			BrowseDialog.FileName = PathPattern;
+			if (BrowseDialog.ShowDialog().GetValueOrDefault(false))
 			{
-				PathPattern = saveFileDialog.FileName;
+				PathPattern = BrowseDialog.FileName;
 			}
 			if(PathEditor != null)
 				PathEditor.Focus();
@@ -144,11 +150,92 @@ namespace AlbumArtDownloader.Controls
 		}
 		#endregion
 
+		private FileDialog mBrowseDialog;
+		public FileDialog BrowseDialog
+		{
+			get 
+			{
+				return mBrowseDialog; 
+			}
+			set 
+			{
+				mBrowseDialog = value;
+			}
+		}
+
 		public static readonly DependencyProperty PathPatternProperty = DependencyProperty.Register("PathPattern", typeof(string), typeof(ArtPathPatternBox), new FrameworkPropertyMetadata(String.Empty, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 		public string PathPattern
 		{
 			get { return (string)GetValue(PathPatternProperty); }
 			set { SetValue(PathPatternProperty, value); }
+		}
+
+		private ObservableCollection<PatternPlaceholder> mAdditionalPlaceholders = new ObservableCollection<PatternPlaceholder>();
+		public ObservableCollection<PatternPlaceholder> AdditionalPlaceholders
+		{
+			get { return mAdditionalPlaceholders; }
+		}
+
+		private void OnAdditionalPlaceholdersChanged(object sender, NotifyCollectionChangedEventArgs e)
+		{
+			if (Template != null) //If the template has not been assigned yet, then don't bother updating, it will be updated when the template is applied anyway
+			{
+				if (e.Action == NotifyCollectionChangedAction.Add)
+				{
+					//Just add the item
+					if (AdditionalPlaceholders.Count == 1)
+					{
+						//This is the first item, so add a separator
+						PlaceholdersMenu.Add(new Separator());
+					}
+					foreach (PatternPlaceholder placeholder in e.NewItems)
+					{
+						PlaceholdersMenu.Add(CreatePlaceholderMenuItem(placeholder));
+					}
+				}
+				else
+				{
+					RecreatePlaceholdersMenu();
+				}
+			}
+		}
+
+		private ObservableCollection<Control> mPlaceholdersMenu = new ObservableCollection<Control>();
+		public ObservableCollection<Control> PlaceholdersMenu
+		{
+			get { return mPlaceholdersMenu; }
+		}
+		private void RecreatePlaceholdersMenu()
+		{
+			mPlaceholdersMenu.Clear();
+			MenuItem browse = MenuButton.TryFindResource("PART_BrowseMenuItem") as MenuItem;
+			if (browse != null)
+			{
+				PlaceholdersMenu.Add(browse);
+				PlaceholdersMenu.Add(new Separator());
+			}
+			PlaceholdersMenu.Add(CreatePlaceholderMenuItem(new PatternPlaceholder("A_rtist", "The artist searched for", "%artist%")));
+			PlaceholdersMenu.Add(CreatePlaceholderMenuItem(new PatternPlaceholder("A_lbum", "The album searched for", "%album%")));
+
+			if (AdditionalPlaceholders.Count > 0)
+			{
+				PlaceholdersMenu.Add(new Separator());
+
+				foreach (PatternPlaceholder placeholder in AdditionalPlaceholders)
+				{
+					PlaceholdersMenu.Add(CreatePlaceholderMenuItem(placeholder));
+				}
+			}
+		}
+
+		private MenuItem CreatePlaceholderMenuItem(PatternPlaceholder placeholder)
+		{
+			MenuItem menuItem = new MenuItem();
+			menuItem.Header = placeholder.MenuItemHeader;
+			menuItem.ToolTip = placeholder.ToolTip;
+			menuItem.CommandParameter = placeholder.Placeholder;
+			menuItem.Command = Commands.InsertPlaceholder;
+			return menuItem;
 		}
 
 		private ObservableCollection<String> mHistory = new ObservableCollection<string>();
@@ -183,7 +270,6 @@ namespace AlbumArtDownloader.Controls
 					//Already in the history, so bring it to the top
 					History.Move(index, 0);
 				}
-				PathPattern = pathPattern;
 			}
 		}
 

@@ -60,7 +60,7 @@ namespace AlbumArtDownloader
 			}
 
 			bool? autoClose = null;
-			string artist = null, album = null, path = null;
+			string artist = null, album = null, path = null, localImagesPath = null;
 			List<String> useSources = new List<string>();
 			List<String> excludeSources = new List<string>();
 			string errorMessage = null;
@@ -112,6 +112,9 @@ namespace AlbumArtDownloader
 							break;
 						case "f":
 							break; //See case "p" for handling of this parameter
+						case "localImagesPath":
+							localImagesPath = parameter.Value;
+							break;
 						case "autoclose":
 						case "ac":
 							if (parameter.Value.Equals("off", StringComparison.InvariantCultureIgnoreCase))
@@ -161,6 +164,8 @@ namespace AlbumArtDownloader
 
 			AssignDefaultSettings();
 
+			ApplyDefaultProxyCredentials();
+
 			//Only shut down if the Exit button is pressed
 			ShutdownMode = ShutdownMode.OnExplicitShutdown;
 			if (Splashscreen.ShowIfRequired())
@@ -176,6 +181,8 @@ namespace AlbumArtDownloader
 					searchWindow.OverrideAutoClose(autoClose.Value);
 				if (path != null)
 					searchWindow.SetDefaultSaveFolderPattern(path);
+				if (localImagesPath != null)
+					searchWindow.SetLocalImagesPath(localImagesPath);
 				if (useSources.Count > 0)
 					searchWindow.UseSources(useSources);
 				if (excludeSources.Count > 0)
@@ -231,6 +238,21 @@ namespace AlbumArtDownloader
 		{
 			if (AlbumArtDownloader.Properties.Settings.Default.DefaultSavePath == "%default%")
 				AlbumArtDownloader.Properties.Settings.Default.DefaultSavePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), @"Album Art\%artist%\%album%\Folder.%extension%");
+		}
+
+		/// <summary>
+		/// The config file mechanism for sepecifying a proxy server to use 
+		/// (http://msdn2.microsoft.com/en-us/library/kd3cf2ex.aspx)
+		/// does not allow specification of credentials for that proxy, so apply
+		/// credentials stored in our own settings.
+		/// </summary>
+		private void ApplyDefaultProxyCredentials()
+		{
+			System.Net.NetworkCredential credentials = AlbumArtDownloader.Properties.Settings.Default.ProxyCredentials;
+			if (credentials != null)
+			{
+				System.Net.WebRequest.DefaultWebProxy.Credentials = credentials;
+			}
 		}
 
 		/// <summary>
@@ -319,10 +341,14 @@ namespace AlbumArtDownloader
 		private Dictionary<string, SourceSettings> mSourceSettings = new Dictionary<String, SourceSettings>();
 		public SourceSettings GetSourceSettings(string sourceName)
 		{
+			return GetSourceSettings(sourceName, SourceSettings.Creator);
+		}
+		public SourceSettings GetSourceSettings(string sourceName, SourceSettingsCreator sourceSettingsCreator)
+		{
 			SourceSettings sourceSettings;
 			if (!mSourceSettings.TryGetValue(sourceName, out sourceSettings))
 			{
-				sourceSettings = new SourceSettings(sourceName);
+				sourceSettings = sourceSettingsCreator(sourceName);
 				if (mSettingsUpgradeRequired)
 					sourceSettings.Upgrade();
 

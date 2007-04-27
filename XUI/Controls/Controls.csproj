@@ -44,6 +44,7 @@
     <Compile Include="Enums.cs" />
     <Compile Include="ISource.cs" />
     <Compile Include="MultiEqualityConverter.cs" />
+    <Compile Include="PatternPlaceholder.cs" />
     <Compile Include="SourcePanel.cs" />
     <Compile Include="EqualityConverter.cs" />
     <Compile Include="IAlbumArt.cs" />

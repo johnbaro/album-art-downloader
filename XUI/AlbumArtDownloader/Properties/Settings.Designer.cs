@@ -195,5 +195,16 @@ namespace AlbumArtDownloader.Properties {
                 this["ApplicationVersion"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Net.NetworkCredential ProxyCredentials {
+            get {
+                return ((global::System.Net.NetworkCredential)(this["ProxyCredentials"]));
+            }
+            set {
+                this["ProxyCredentials"] = value;
+            }
+        }
     }
 }

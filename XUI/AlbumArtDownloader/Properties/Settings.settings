@@ -49,5 +49,8 @@
     <Setting Name="ApplicationVersion" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="ProxyCredentials" Type="System.Net.NetworkCredential" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>
