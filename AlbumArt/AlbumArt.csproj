@@ -250,6 +250,9 @@
   <ItemGroup>
     <None Include="Resources\arrMoveDown.gif" />
     <None Include="Resources\arrMoveUp.gif" />
+    <None Include="Scripts\amazon_de.boo">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Scripts\artists.trivialbeing.boo">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

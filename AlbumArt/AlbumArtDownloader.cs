@@ -646,7 +646,8 @@ namespace AlbumArtDownloader
 
         public void SendThumb(ThumbRes r)
         {
-            mainForm.BeginInvoke(mainForm.thumbupdate, r);
+            lock (r)
+                mainForm.BeginInvoke(mainForm.thumbupdate, r);
         }
 
         public MainForm mainForm;

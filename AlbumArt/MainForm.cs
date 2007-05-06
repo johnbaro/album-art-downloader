@@ -330,89 +330,92 @@ namespace AlbumArtDownloader
         }
         public ListViewItem AddThumb(AlbumArtDownloader.ArtDownloader.ThumbRes res)
         {
-            int i = imageListTile.Images.Count;
-
-            Bitmap thumbnail = ResizeBitmap(res.Thumb, ThumbNailSize.Width, ThumbNailSize.Height);
-
-		    if (Properties.Settings.Default.ShowSizeOverlay)
+            lock (res)
             {
-			    res.Thumb = ResizeBitmap(res.Thumb, ThumbNailSize.Width, ThumbNailSize.Height);
-			    if (!(res.Width > 0 && res.Height > 0))
+                int i = imageListTile.Images.Count;
+
+                Bitmap thumbnail = ResizeBitmap(res.Thumb, ThumbNailSize.Width, ThumbNailSize.Height);
+
+                if (Properties.Settings.Default.ShowSizeOverlay)
                 {
-				    if(Properties.Settings.Default.AutoDownloadFullImage)
-				    {
-                        a.PopupateFullSizeStream(res);
-				    }
-				    if(res.FullSize != null)
-				    {
-					    Image fullSize = Image.FromStream(res.FullSize);
-					    res.Width = fullSize.Width;
-					    res.Height = fullSize.Height;
-				    }
+                    res.Thumb = ResizeBitmap(res.Thumb, ThumbNailSize.Width, ThumbNailSize.Height);
+                    if (!(res.Width > 0 && res.Height > 0))
+                    {
+                        if (Properties.Settings.Default.AutoDownloadFullImage)
+                        {
+                            a.PopupateFullSizeStream(res);
+                        }
+                        if (res.FullSize != null)
+                        {
+                            Image fullSize = Image.FromStream(res.FullSize);
+                            res.Width = fullSize.Width;
+                            res.Height = fullSize.Height;
+                        }
 
-                    thumbnail = ResizeBitmap(res.Thumb, ThumbNailSize.Width, ThumbNailSize.Height);
-			    }
+                        thumbnail = ResizeBitmap(res.Thumb, ThumbNailSize.Width, ThumbNailSize.Height);
+                    }
 
-                if (thumbnail.Width > 0 && thumbnail.Height > 0)
-			    {
-                    string caption = System.String.Format("{0} x {1}", res.Width, res.Height);
+                    if (thumbnail.Width > 0 && thumbnail.Height > 0)
+                    {
+                        string caption = System.String.Format("{0} x {1}", res.Width, res.Height);
 
-                    Bitmap b = new Bitmap(thumbnail.Width,thumbnail.Height + SystemFonts.DefaultFont.Height + 1);
+                        Bitmap b = new Bitmap(thumbnail.Width, thumbnail.Height + SystemFonts.DefaultFont.Height + 1);
 
-                    Graphics g = Graphics.FromImage(b);
-                    g.Clear(Color.White);
-                    
-                    g.DrawImage(thumbnail, 0, SystemFonts.DefaultFont.Height + 1);
+                        Graphics g = Graphics.FromImage(b);
+                        g.Clear(Color.White);
 
-                    g.DrawLine(new Pen(new SolidBrush(this.BackColor)), 0, SystemFonts.DefaultFont.Height, thumbnail.Width, SystemFonts.DefaultFont.Height);
+                        g.DrawImage(thumbnail, 0, SystemFonts.DefaultFont.Height + 1);
 
-                    g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
-                    Font f = new Font(SystemFonts.DefaultFont, FontStyle.Bold);
-                    g.DrawString(caption, f, new SolidBrush(HexStringToColor(Properties.Settings.Default.SizeOverlayColorForeground)), 1, 1);
+                        g.DrawLine(new Pen(new SolidBrush(this.BackColor)), 0, SystemFonts.DefaultFont.Height, thumbnail.Width, SystemFonts.DefaultFont.Height);
 
-                    thumbnail = b;
+                        g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAlias;
+                        Font f = new Font(SystemFonts.DefaultFont, FontStyle.Bold);
+                        g.DrawString(caption, f, new SolidBrush(HexStringToColor(Properties.Settings.Default.SizeOverlayColorForeground)), 1, 1);
 
-                    f.Dispose();
-                    g.Dispose();
+                        thumbnail = b;
+
+                        f.Dispose();
+                        g.Dispose();
+                    }
                 }
+
+                imageListTile.Images.Add(thumbnail);
+
+                ListViewItem x;
+
+                if (res.ScriptOwner != null)
+                {
+                    megaListTiles.Items.Add(x = new ListViewItem(res.Name, i, res.ScriptOwner.group));
+                }
+                else if (res.Name.IndexOf("---Existing---") >= 0)
+                {
+                    res.Name = res.Name.Replace("---Existing---", "");
+
+                    FileInfo fileInfo = new FileInfo(res.Name);
+
+                    megaListTiles.Items.Add(x = new ListViewItem(fileInfo.Name, i, existing));
+                }
+                else if (res.Name.IndexOf("---LocalFolder---") >= 0)
+                {
+                    res.Name = res.Name.Replace("---LocalFolder---", "");
+
+                    FileInfo fileInfo = new FileInfo(res.Name);
+
+                    megaListTiles.Items.Add(x = new ListViewItem(fileInfo.Name, i, folder_existing));
+                }
+                else
+                {
+                    megaListTiles.Items.Add(x = new ListViewItem());
+                }
+
+                if (res.Exact && Properties.Settings.Default.ExactMatchBold)
+                    x.Font = new Font(x.Font, FontStyle.Bold);
+
+                x.Tag = res;
+
+                megaListTiles.Update();
+                return x;
             }
-
-            imageListTile.Images.Add(thumbnail);
-            
-            ListViewItem x;
-            
-            if (res.ScriptOwner != null)
-            {
-                megaListTiles.Items.Add(x = new ListViewItem(res.Name, i, res.ScriptOwner.group));
-            }
-            else if (res.Name.IndexOf("---Existing---") >= 0)
-            {
-                res.Name = res.Name.Replace("---Existing---", "");
-
-                FileInfo fileInfo = new FileInfo(res.Name);
-
-                megaListTiles.Items.Add(x = new ListViewItem(fileInfo.Name, i, existing));
-            }
-            else if (res.Name.IndexOf("---LocalFolder---") >= 0)
-            {
-                res.Name = res.Name.Replace("---LocalFolder---", "");
-
-                FileInfo fileInfo = new FileInfo(res.Name);
-
-                megaListTiles.Items.Add(x = new ListViewItem(fileInfo.Name, i, folder_existing));
-            }
-            else
-            {
-                megaListTiles.Items.Add(x = new ListViewItem());
-            }
-
-            if (res.Exact && Properties.Settings.Default.ExactMatchBold)
-                x.Font = new Font(x.Font, FontStyle.Bold);
-
-            x.Tag = res;
-
-            megaListTiles.Update();
-            return x;
         }
         public ListViewGroup AddGroup(AlbumArtDownloader.Script s)
         {
