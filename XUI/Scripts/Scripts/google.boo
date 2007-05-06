@@ -13,9 +13,9 @@ class GoogleImage:
 	static SourceName as string:
 		get: return "GoogleImage"
 	static SourceCreator as string:
-		get: return "Unknown"
+		get: return "Unknown, Marc Landis"
 	static SourceVersion as string:
-		get: return "0.3"
+		get: return "0.4"
 	static def GetThumbs(coverart,artist,album):
 		query = artist+" "+album
 		params = EncodeUrl(query)
@@ -26,7 +26,7 @@ class GoogleImage:
 		iterator = r.Matches(text)
 		coverart.SetCountEstimate(iterator.Count)
 		for result as Match in iterator:
-			name=(result.Groups[7].Value.Replace("<b>","").Replace("</b>",""))
+			name=Regex.Replace(Regex.Replace(result.Groups[7].Value,".x3cb.x3e",""),".x3c/b.x3e","")
 			sizeString = result.Groups[10].Value
 			sizeRegex = Regex("(?<width>\\d+) x (?<height>\\d+)")
 			match = sizeRegex.Matches(sizeString)[0]
