@@ -343,7 +343,11 @@ namespace AlbumArtDownloader
                     {
                         if (Properties.Settings.Default.AutoDownloadFullImage)
                         {
-                            a.PopupateFullSizeStream(res);
+                            Thread t = new Thread(new ParameterizedThreadStart(a.PopupateFullSizeStream));
+                            //a.PopupateFullSizeStream(res);
+                            t.IsBackground = true;
+                            t.Start(res);
+                            t.Join();
                         }
                         if (res.FullSize != null)
                         {

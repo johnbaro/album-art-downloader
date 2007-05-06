@@ -815,6 +815,7 @@ namespace AlbumArtDownloader
         static public System.IO.Stream GetHTTPStream(string url, ref long size)
         {
             HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(url);
+
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
             size = response.ContentLength;
             return response.GetResponseStream();
@@ -953,13 +954,13 @@ namespace AlbumArtDownloader
             ThreadEnded(System.Threading.Thread.CurrentThread);
         }
 
-        public void PopupateFullSizeStream(ThumbRes thumb)
+        public void PopupateFullSizeStream(Object thumb)
 		{
-			if (thumb.FullSize == null)
+			if ((thumb as ThumbRes).FullSize == null)
 			{
-				mainForm.CoolInvoke(mainForm.statupdate, "Retrieving image...", null, false, Thread.CurrentThread);
-				mainForm.CoolInvoke(mainForm.produpdate, (int)(0));
-				object output = thumb.ScriptOwner.GetResult(thumb.CallbackData);
+                //mainForm.CoolInvoke(mainForm.statupdate, "Retrieving image...", null, false, Thread.CurrentThread);
+                //mainForm.CoolInvoke(mainForm.produpdate, (int)(0));
+                object output = (thumb as ThumbRes).ScriptOwner.GetResult((thumb as ThumbRes).CallbackData);
 				if (output is System.IO.Stream)
 				{
 					long length = new long();
@@ -975,8 +976,8 @@ namespace AlbumArtDownloader
 					{
 						throw new Exception("Script returned preposterous Stream (greater than 50MB.)");
 					}
-					thumb.FullSize = new MemoryStream((int)(length));
-					GetStreamToStream(thumb.FullSize, ss, length, true);
+                    (thumb as ThumbRes).FullSize = new MemoryStream((int)(length));
+                    GetStreamToStream((thumb as ThumbRes).FullSize, ss, length, true);
 
 				}
 				else if (output is String)
@@ -992,12 +993,58 @@ namespace AlbumArtDownloader
 					{
 						throw new Exception("Server returned preposterous Content-Length (greater than 50MB.)");
 					}
-					thumb.FullSize = new MemoryStream((int)(size));
-					GetStreamToStream(thumb.FullSize, ss, size, true);
+                    (thumb as ThumbRes).FullSize = new MemoryStream((int)(size));
+                    GetStreamToStream((thumb as ThumbRes).FullSize, ss, size, true);
 
 				}
 			}
 		}
+
+        public void PopupateFullSizeStream(ThumbRes thumb)
+        {
+            if (thumb.FullSize == null)
+            {
+                mainForm.CoolInvoke(mainForm.statupdate, "Retrieving image...", null, false, Thread.CurrentThread);
+                mainForm.CoolInvoke(mainForm.produpdate, (int)(0));
+                object output = thumb.ScriptOwner.GetResult(thumb.CallbackData);
+                if (output is System.IO.Stream)
+                {
+                    long length = new long();
+
+                    Stream ss = output as Stream;
+
+                    if (ss.CanSeek)
+                        length = ss.Length;
+                    else
+                        length = 0;
+
+                    if (length > 50 * 1024 * 1024)
+                    {
+                        throw new Exception("Script returned preposterous Stream (greater than 50MB.)");
+                    }
+                    thumb.FullSize = new MemoryStream((int)(length));
+                    GetStreamToStream(thumb.FullSize, ss, length, true);
+
+                }
+                else if (output is String)
+                {
+                    long size = new long();
+
+                    Stream ss = GetHTTPStream(output as String, ref size);
+
+                    if (!ss.CanSeek)
+                        size = 0;
+
+                    if (size > 50 * 1024 * 1024)
+                    {
+                        throw new Exception("Server returned preposterous Content-Length (greater than 50MB.)");
+                    }
+                    thumb.FullSize = new MemoryStream((int)(size));
+                    GetStreamToStream(thumb.FullSize, ss, size, true);
+
+                }
+            }
+        }
 
         private System.Drawing.Image ProcessStream(ref FileStream f, SaveData s, ThumbRes thumb)
         {

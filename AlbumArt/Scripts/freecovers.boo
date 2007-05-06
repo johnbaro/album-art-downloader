@@ -27,17 +27,20 @@ class Freecovers:
 		  name = resultMatch.Groups["name"].Value
 		  if (String.IsNullOrEmpty(artist) or name.IndexOf(artist, StringComparison.OrdinalIgnoreCase) >= 0) and (String.IsNullOrEmpty(album) or name.IndexOf(album, StringComparison.OrdinalIgnoreCase) >= 0):
 		    fullMatches.Add(resultMatch)
-		    coverart.EstimatedCount += resultMatch.Groups["urlPart"].Captures.Count
-
+		
+		coverart.SetCountEstimate(fullMatches.Count)
+		
 		//Process the filtered results
 		for resultMatch as Match in fullMatches:
 			name = resultMatch.Groups["name"].Value
 			
 			for i in range(resultMatch.Groups["urlBase"].Captures.Count):
-			  urlBase = resultMatch.Groups["urlBase"].Captures[i].Value
-			  urlTitle = resultMatch.Groups["urlTitle"].Captures[i].Value
-			  urlPart = resultMatch.Groups["urlPart"].Captures[i].Value
-			  coverart.Add(String.Format("http://www.freecovers.net/thumb/{0}/preview.jpg", urlBase), String.Format("{0} - {1}", name, urlPart), String.Format("http://www.freecovers.net/download/{0}/{1}-%5B{2}%5D-%5Bwww.FreeCovers.net%5D.jpg", urlBase, urlTitle, urlPart))
-			
+				urlBase = resultMatch.Groups["urlBase"].Captures[i].Value
+				urlTitle = resultMatch.Groups["urlTitle"].Captures[i].Value
+				urlPart = resultMatch.Groups["urlPart"].Captures[i].Value
+				if (urlBase != "" and urlTitle != "" and urlPart != ""):
+					//coverart.AddThumb(String.Format("http://www.freecovers.net/download/{0}/{1}-%5B{2}%5D-%5Bwww.FreeCovers.net%5D.jpg", urlBase, urlTitle, urlPart), String.Format("{0} - {1}", name, urlPart), -1, -1, null)
+					coverart.AddThumb(String.Format("http://www.freecovers.net/thumb/{0}/preview.jpg", urlBase), String.Format("{0} - {1}", name, urlPart), -1, -1, String.Format("http://www.freecovers.net/download/{0}/{1}-%5B{2}%5D-%5Bwww.FreeCovers.net%5D.jpg", urlBase, urlTitle, urlPart))
+		
 	static def GetResult(param):
 		return param
