@@ -6,23 +6,28 @@ using System.Reflection;
 using AlbumArtDownloader.Scripts;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ServiceModel;
 
 namespace AlbumArtDownloader
 {
-	public class App : System.Windows.Application
+	[ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
+	public class App : System.Windows.Application, IPriorInstance
 	{
 		/// <summary>
 		/// Application Entry Point.
 		/// </summary>
 		[System.STAThreadAttribute()]
-		public static void Main()
+		public static void Main(string[] args)
 		{
 #if ERROR_REPORTING
 			try
 			{
 #endif
-				AlbumArtDownloader.App app = new AlbumArtDownloader.App();
-				app.Run();
+			const string channelUri = "net.pipe://localhost/AlbumArtDownloader/SingleInstance";
+			if (!InstanceMutex.QueryPriorInstance(args, channelUri))
+			{
+				InstanceMutex.RunAppAsServiceHost(new AlbumArtDownloader.App(), channelUri);
+			}
 #if ERROR_REPORTING
 			}
 			catch (Exception e)
@@ -47,16 +52,61 @@ namespace AlbumArtDownloader
 
 		protected override void OnStartup(StartupEventArgs e)
 		{
+			System.Threading.Thread.CurrentThread.Name = "Main";
 			base.OnStartup(e);
 
-			#region Command Args
+			UpgradeSettings();
 
-			Arguments arguments = new Arguments(e.Args);
+#if EPHEMERAL_SETTINGS
+			AlbumArtDownloader.Properties.Settings.Default.Reset();
+#endif
+
+			AssignDefaultSettings();
+			ApplyDefaultProxyCredentials();
+
+			//Only shut down if the Exit button is pressed
+			ShutdownMode = ShutdownMode.OnExplicitShutdown;
+			if (!Splashscreen.ShowIfRequired())
+			{
+				//Splashscreen returned false, so exit
+				Shutdown();
+				return;
+			}
+
+			LoadScripts(); //TODO: Should this be done showing the splashscren? Faliures to load scripts could be shown in the details area...
+
+			//Now shut down when all the windows are closed
+			ShutdownMode = ShutdownMode.OnLastWindowClose;
+
+			if (!ProcessCommandArgs(e.Args))
+			{
+				Shutdown();
+				return;
+			}
+		}
+
+		/// <summary>
+		/// Called when a new instance of the application was run, and this instance was already running.
+		/// </summary>
+		public void Signal(string[] args)
+		{
+			Application.Current.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new System.Threading.ThreadStart(delegate
+			{
+				ProcessCommandArgs(args);
+			}));
+			//No need to exit if no window was shown.
+		}
+
+		/// <summary>
+		/// Process command args. Returns True if a new search window was shown, False if it was not.
+		/// </summary>
+		private bool ProcessCommandArgs(string[] args)
+		{
+			Arguments arguments = new Arguments(args);
 			if (arguments.Contains("?"))
 			{
 				ShowCommandArgs();
-				Shutdown();
-				return;
+				return false;
 			}
 
 			bool? autoClose = null;
@@ -112,7 +162,7 @@ namespace AlbumArtDownloader
 							break;
 						case "f":
 							break; //See case "p" for handling of this parameter
-						case "localImagesPath":
+						case "localimagespath":
 							localImagesPath = parameter.Value;
 							break;
 						case "autoclose":
@@ -150,55 +200,28 @@ namespace AlbumArtDownloader
 			if (errorMessage != null) //Problem with the command args, so display the error, and the help
 			{
 				ShowCommandArgs(errorMessage);
-				Shutdown();
-				return;
+				return false;
 			}
 
-			#endregion
+			ArtSearchWindow searchWindow = new ArtSearchWindow();
 
-			UpgradeSettings();
+			if (autoClose.HasValue)
+				searchWindow.OverrideAutoClose(autoClose.Value);
+			if (path != null)
+				searchWindow.SetDefaultSaveFolderPattern(path);
+			if (localImagesPath != null)
+				searchWindow.SetLocalImagesPath(localImagesPath);
+			if (useSources.Count > 0)
+				searchWindow.UseSources(useSources);
+			if (excludeSources.Count > 0)
+				searchWindow.ExcludeSources(excludeSources);
 
-#if EPHEMERAL_SETTINGS
-			AlbumArtDownloader.Properties.Settings.Default.Reset();
-#endif
+			searchWindow.Show();
 
-			AssignDefaultSettings();
+			if (artist != null || album != null)
+				searchWindow.Search(artist, album);
 
-			ApplyDefaultProxyCredentials();
-
-			//Only shut down if the Exit button is pressed
-			ShutdownMode = ShutdownMode.OnExplicitShutdown;
-			if (Splashscreen.ShowIfRequired())
-			{
-				LoadScripts(); //TODO: Should this be done showing the splashscren? Faliures to load scripts could be shown in the details area...
-
-				//Now shut down when all the windows are closed
-				ShutdownMode = ShutdownMode.OnLastWindowClose;
-				ArtSearchWindow searchWindow = new ArtSearchWindow();
-
-				#region Apply Command Args Settings
-				if (autoClose.HasValue)
-					searchWindow.OverrideAutoClose(autoClose.Value);
-				if (path != null)
-					searchWindow.SetDefaultSaveFolderPattern(path);
-				if (localImagesPath != null)
-					searchWindow.SetLocalImagesPath(localImagesPath);
-				if (useSources.Count > 0)
-					searchWindow.UseSources(useSources);
-				if (excludeSources.Count > 0)
-					searchWindow.ExcludeSources(excludeSources);
-				#endregion
-
-				searchWindow.Show();
-
-				if (artist != null || album != null)
-					searchWindow.Search(artist, album);
-			}
-			else
-			{
-				//Splashscreen returned false, so exit
-				Shutdown();
-			}
+			return true;
 		}
 
 		//Any other settings loaded will also require upgrading, if the main settings do, so set this flag to indicate that.

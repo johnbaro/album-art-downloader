@@ -39,9 +39,6 @@
     <DefineConstants>TRACE;ERROR_REPORTING</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AlbumArt, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <ExecutableExtension>.exe</ExecutableExtension>
-    </Reference>
     <Reference Include="Boo.Lang, Version=1.0.0.0, Culture=neutral, PublicKeyToken=32c39770e9a21a67, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\ThirdParty Assemblies\Boo.Lang.dll</HintPath>
@@ -57,6 +54,7 @@
     <Reference Include="mscorlib" />
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.ServiceModel" />
     <Reference Include="UIAutomationProvider" />
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
@@ -88,10 +86,16 @@
       <SubType>Code</SubType>
       <DependentUpon>CommandArgsHelp.xaml</DependentUpon>
     </Compile>
+    <Compile Include="InstanceMutex.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="LocalFilesSourceSettings.xaml.cs">
       <SubType>Code</SubType>
       <DependentUpon>LocalFilesSourceSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="ScriptSource.cs" />
     <Compile Include="FileBrowser.xaml.cs">
@@ -125,11 +129,6 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="SearchParameters.cs" />
     <Compile Include="Source.cs" />

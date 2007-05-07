@@ -1,3 +1,8 @@
+0.5 Added Single-Instance behaviour. Only one instance of the application will now be
+     allowed to run (others will have their command line parameters passed on to the first
+     for execution).
+    Added FreeCovers script
+    
 0.4 Local Files Source now has the ability to specify the path to search for images in
      separately to the path to save images in. Set this either in the Local Files Source
      settings, or using the /localImagesPath command line parameter.
