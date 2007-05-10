@@ -17,11 +17,7 @@ namespace AlbumArtDownloader
 	internal class ScriptSource : Source
 	{
 		private IScript mScript;
-		private string mAuthor;
-		private string mVersion;
 		
-		private Thread mSearchThread;
-
 		public ScriptSource(IScript script)
 		{
 			mScript = script;

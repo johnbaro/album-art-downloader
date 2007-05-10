@@ -1,6 +1,12 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio Codename Orcas
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{73A3D999-3113-43E8-BF01-A6605BFDFE0C}"
+	ProjectSection(SolutionItems) = preProject
+		Changelog.txt = Changelog.txt
+		Proxy Configuration - AlbumArt.exe.config = Proxy Configuration - AlbumArt.exe.config
+	EndProjectSection
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Controls", "Controls\Controls.csproj", "{760836F5-1921-4159-9FA7-38DC664BCD4B}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AlbumArtDownloader", "AlbumArtDownloader\AlbumArtDownloader.csproj", "{DAA4053C-5EB9-4AC9-BDC0-FCFDD6F79D64}"
@@ -11,12 +17,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scripts", "Scripts\Scripts.csproj", "{9AA60D1F-2771-4C45-893A-BF3C685C9985}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestScript", "TestScript\TestScript.csproj", "{2B91641F-5C14-4880-B00E-A7C76A41DE43}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{73A3D999-3113-43E8-BF01-A6605BFDFE0C}"
-	ProjectSection(SolutionItems) = preProject
-		Changelog.txt = Changelog.txt
-		Proxy Configuration - AlbumArt.exe.config = Proxy Configuration - AlbumArt.exe.config
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

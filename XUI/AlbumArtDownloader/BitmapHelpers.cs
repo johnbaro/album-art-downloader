@@ -61,7 +61,7 @@ namespace AlbumArtDownloader
 					}
 				}
 			}
-			catch (Exception e)
+			catch (Exception)
 			{
 				System.Diagnostics.Trace.Write("Could not get a bitmap for: ");
 				System.Diagnostics.Trace.WriteLine(from);

@@ -52,7 +52,6 @@ namespace AlbumArtDownloader
 
 		protected override void OnStartup(StartupEventArgs e)
 		{
-			System.Threading.Thread.CurrentThread.Name = "Main";
 			base.OnStartup(e);
 
 			UpgradeSettings();

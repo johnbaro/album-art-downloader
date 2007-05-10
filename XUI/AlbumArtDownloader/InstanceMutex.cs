@@ -35,6 +35,8 @@ namespace AlbumArtDownloader
 				
 				//Exception on following line is normal behaviour (ugh) and should be ignored
 				instance.Signal(args);
+				((ICommunicationObject)instance).Close();
+
 				return true;
 			}
 			catch (EndpointNotFoundException)

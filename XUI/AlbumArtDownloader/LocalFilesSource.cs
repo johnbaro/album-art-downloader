@@ -315,7 +315,7 @@ namespace AlbumArtDownloader
 		{
 			#region Creation
 			//SourceSettings overrides should provide custom versions of these too
-			public static SourceSettingsCreator Creator
+			public new static SourceSettingsCreator Creator
 			{
 				get
 				{
