@@ -12,6 +12,8 @@ using System.Collections;
 
 namespace AlbumArtDownloader.Controls
 {
+	[TemplatePart(Name = "PART_ItemsPresenter", Type = typeof(ItemsPresenter))]
+	[TemplatePart(Name = "PART_ArtPanel", Type = typeof(ArtPanel))]
 	public class ArtPanelList : ItemsControl
 	{
 		static ArtPanelList()

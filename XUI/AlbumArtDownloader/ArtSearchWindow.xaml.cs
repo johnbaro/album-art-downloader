@@ -21,15 +21,8 @@ using AlbumArtDownloader.Scripts;
 
 namespace AlbumArtDownloader
 {
-	public partial class ArtSearchWindow : System.Windows.Window, INotifyPropertyChanged
+	public partial class ArtSearchWindow : System.Windows.Window, INotifyPropertyChanged, IAppWindow
 	{
-		public static class Commands
-		{
-			public static RoutedUICommand NewFileBrowser = new RoutedUICommand("New File Browser...", "NewFileBrowser", typeof(Commands));
-			public static RoutedUICommand NewFoobarBrowser = new RoutedUICommand("New Foobar Browser...", "NewFoobarBrowser", typeof(Commands));
-			public static RoutedUICommand About = new RoutedUICommand("About...", "About", typeof(Commands));
-		}
-
 		private Sources mSources = new Sources();
 
 		private Thread mAutoDownloadFullSizeImagesThread;
@@ -40,7 +33,7 @@ namespace AlbumArtDownloader
 		public ArtSearchWindow()
 		{
 			InitializeComponent();
-
+			
 			mAutoDownloadFullSizeImagesThread = new Thread(new ThreadStart(AutoDownloadFullSizeImagesWorker));
 			mAutoDownloadFullSizeImagesThread.Name = "Auto Download Full Size Images";
 			mAutoDownloadFullSizeImagesThread.Priority = ThreadPriority.BelowNormal;
@@ -61,18 +54,11 @@ namespace AlbumArtDownloader
 
 			mSources.CombinedResults.CollectionChanged += new NotifyCollectionChangedEventHandler(OnResultsChanged);
 
-			//Menu commands:
-			CommandBindings.Add(new CommandBinding(ApplicationCommands.New, new ExecutedRoutedEventHandler(NewSearchWindowExec)));
-			CommandBindings.Add(new CommandBinding(Commands.NewFileBrowser, new ExecutedRoutedEventHandler(NewFileBrowserExec)));
-			CommandBindings.Add(new CommandBinding(Commands.NewFoobarBrowser, new ExecutedRoutedEventHandler(NewFoobarBrowserExec)));
-			CommandBindings.Add(new CommandBinding(ApplicationCommands.Close, new ExecutedRoutedEventHandler(CloseExec)));
-			CommandBindings.Add(new CommandBinding(Commands.About, new ExecutedRoutedEventHandler(AboutExec)));
-			CommandBindings.Add(new CommandBinding(NavigationCommands.GoToPage, new ExecutedRoutedEventHandler(GoToPageExec)));
-
-			//Other commands:
+			//Commands:
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Find, new ExecutedRoutedEventHandler(FindExec)));
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Save, new ExecutedRoutedEventHandler(SaveExec)));
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.SaveAs, new ExecutedRoutedEventHandler(SaveAsExec)));
+
 			//Stop All is bound only when doing a search (so the Stop All button only appears while searching)
 			mStopAllCommandBinding = new CommandBinding(ApplicationCommands.Stop, new ExecutedRoutedEventHandler(StopExec));
 			
@@ -102,54 +88,7 @@ namespace AlbumArtDownloader
 				mResultsViewer.AutoSizePanels();
 			}
 		}
-
-		#region New Window
-		private void NewSearchWindowExec(object sender, ExecutedRoutedEventArgs e)
-		{
-			NewSearchWindow();
-		}
-		private ArtSearchWindow NewSearchWindow()
-		{
-			//Save these values to settings so that the new window picks up on them
-			SaveSourceSettings();
-			SaveDefaultSaveFolderHistory();
-
-			ArtSearchWindow newWindow = new ArtSearchWindow();
-			//Move the window a little, so that it is obvious it is a new window
-			newWindow.Left = Left + 40;
-			newWindow.Top = Top + 40;
-
-			newWindow.Show();
-			return newWindow;
-		}
-
-		private void NewFileBrowserExec(object sender, ExecutedRoutedEventArgs e)
-		{
-			new FileBrowser().Show();
-		}
-		private void NewFoobarBrowserExec(object sender, ExecutedRoutedEventArgs e)
-		{
-			new FoobarBrowser().Show();
-		}
-		#endregion
-
-		#region Help Menu Commands
-		private void AboutExec(object sender, ExecutedRoutedEventArgs e)
-		{
-			About about = new About();
-			about.Owner = this;
-			about.ShowDialog();
-		}
-		private void GoToPageExec(object sender, ExecutedRoutedEventArgs e)
-		{
-			//TODO: Validation that this is a web address?
-			if (e.Parameter is string)
-			{
-				System.Diagnostics.Process.Start((string)e.Parameter);
-			}
-		}
-		#endregion
-
+		
 		#region Auto Download Full Size Images
 		/// <summary>
 		/// Thread worker for downloading full size images
@@ -236,7 +175,7 @@ namespace AlbumArtDownloader
 			}
 			if (mSources.CombinedResults.Count > 0 && Properties.Settings.Default.OpenResultsInNewWindow)
 			{
-				NewSearchWindow().Search(mArtist.Text, mAlbum.Text);
+				Common.NewSearchWindow(this).Search(mArtist.Text, mAlbum.Text);
 			}
 			else
 			{
@@ -403,10 +342,6 @@ namespace AlbumArtDownloader
 			}
 		}
 
-		private void CloseExec(object sender, ExecutedRoutedEventArgs e)
-		{
-			this.Close();
-		}
 		protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
 		{
 			base.OnClosing(e);
@@ -424,6 +359,7 @@ namespace AlbumArtDownloader
 			}
 			base.OnClosed(e);
 		}
+
 		#endregion
 
 		#region Source Settings
@@ -618,6 +554,14 @@ namespace AlbumArtDownloader
 
 			return (AlbumArt)mResultsViewer.ItemContainerGenerator.ItemFromContainer(source.TemplatedParent);
 		}
+
+		#region IAppWindow
+		public void SaveSettings()
+		{
+			SaveSourceSettings();
+			SaveDefaultSaveFolderHistory();
+		}
+		#endregion
 
 		/// <summary>
 		/// Used so that if any of the sources are selected, the search button is enabled

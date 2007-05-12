@@ -9,7 +9,7 @@
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
-		<CheckBox Grid.Row="0" IsChecked="{Binding UseSearchPathPattern}">Specify path to find images:</CheckBox>
+		<CheckBox Grid.Row="0" IsChecked="{Binding UseSearchPathPattern}">_Specify path to find images:</CheckBox>
 		<controls:ArtPathPatternBox Name="mSearchPathPatternBox" Grid.Row="1" Margin="0,4,0,0" MaxWidth="{Binding ElementName=mGrid, Path=ActualWidth}" 
 									IsEnabled="{Binding UseSearchPathPattern}" 
 									PathPattern="{Binding SearchPathPattern}">

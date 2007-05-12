@@ -17,6 +17,16 @@ using System.Threading;
 
 namespace AlbumArtDownloader.Controls
 {
+	[TemplatePart(Name = "PART_ImageDisplay", Type = typeof(Image))]
+	[TemplatePart(Name = "PART_ImagePopup", Type = typeof(Popup))]
+	[TemplatePart(Name = "PART_ImageResizer", Type = typeof(FrameworkElement))]
+	[TemplatePart(Name = "PART_ImageArea", Type = typeof(FrameworkElement))]
+	[TemplatePart(Name = "PART_PanelResizer", Type = typeof(FrameworkElement))]
+	[TemplatePart(Name = "PART_Information", Type = typeof(Grid))]
+	[TemplatePart(Name = "PART_FilePathDisplay", Type = typeof(FrameworkElement))]
+	[TemplatePart(Name = "PART_FilePathEditor", Type = typeof(FrameworkElement))]
+	[TemplatePart(Name = "PART_FilePathBrowse", Type = typeof(Button))]
+	[TemplatePart(Name = "PART_FilePathTextBox", Type = typeof(TextBox))]
 	public class ArtPanel : Control
 	{
 		[System.Runtime.InteropServices.DllImport("user32.dll", ExactSpelling = true)]

@@ -206,5 +206,54 @@ namespace AlbumArtDownloader.Properties {
                 this["ProxyCredentials"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("%default%")]
+        public string FileBrowseRoot {
+            get {
+                return ((string)(this["FileBrowseRoot"]));
+            }
+            set {
+                this["FileBrowseRoot"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool FileBrowseSubfolders {
+            get {
+                return ((bool)(this["FileBrowseSubfolders"]));
+            }
+            set {
+                this["FileBrowseSubfolders"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("%default%")]
+        public string FileBrowseImagePath {
+            get {
+                return ((string)(this["FileBrowseImagePath"]));
+            }
+            set {
+                this["FileBrowseImagePath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
+            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" />")]
+        public global::System.Collections.Specialized.StringCollection FileBrowseImagePathHistory {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["FileBrowseImagePathHistory"]));
+            }
+            set {
+                this["FileBrowseImagePathHistory"] = value;
+            }
+        }
     }
 }

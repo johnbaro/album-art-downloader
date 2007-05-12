@@ -13,6 +13,10 @@ using System.Collections.Specialized;
 
 namespace AlbumArtDownloader.Controls
 {
+	[TemplatePart(Name = "PART_PathEditorHistory", Type = typeof(ComboBox))]
+	[TemplatePart(Name = "PART_PathEditor", Type = typeof(TextBox))]
+	[TemplatePart(Name = "PART_MenuButton", Type = typeof(ToggleButton))]
+	[TemplatePart(Name = "PART_BrowseMenuItem", Type = typeof(MenuItem))]
 	public class ArtPathPatternBox : Control
 	{
 		private static readonly int sMaxHistoryLength = 8;

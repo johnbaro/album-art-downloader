@@ -39,7 +39,7 @@
 		</ResourceDictionary>
 	</Window.Resources>
 
-	<Grid Grid.Row="1" Margin="5">
+	<Grid Margin="5">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>
@@ -55,28 +55,9 @@
 			<!-- Auto width doesn't work with vertical scrollbar set to auto, for some reason -->
 			<ColumnDefinition Width="{Binding ElementName=mSourcesViewer, Path=ActualWidth}"/>
 		</Grid.ColumnDefinitions>
-		<Border Grid.ColumnSpan="3" Margin="-5,-6,-5,5"
-				BorderBrush="{x:Static SystemColors.ControlLightLightBrush}" BorderThickness="0,0,0,1">
-			<Border BorderBrush="{x:Static SystemColors.ControlDarkBrush}" BorderThickness="0,0,0,1">
 
-				<Menu>
-					<MenuItem Header="_File">
-						<MenuItem Header="_New">
-							<MenuItem Header="_Search Window..." Command="ApplicationCommands.New"/>
-							<MenuItem Header="_File Browser..." Command="{x:Static local:ArtSearchWindow+Commands.NewFileBrowser}"/>
-							<MenuItem Header="F_oobar Browser..." Command="{x:Static local:ArtSearchWindow+Commands.NewFoobarBrowser}"/>
-						</MenuItem>
-						<Separator/>
-						<MenuItem Command="ApplicationCommands.Close"/>
-					</MenuItem>
-					<MenuItem Header="_Help">
-						<MenuItem Header="Album Art Downloader _Website" Command="GoToPage" CommandParameter="http://album-art.sourceforge.net"/>
-						<Separator/>
-						<MenuItem Header="_About Album Art Downloader..." Command="{x:Static local:ArtSearchWindow+Commands.About}"/>
-					</MenuItem>
-				</Menu>
-			</Border>
-		</Border>
+		<local:Menu Margin="-5,-6,-5,5" Grid.ColumnSpan="3"/>
+
 		<Grid Grid.Row="1">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto"/>
@@ -98,7 +79,6 @@
 				</StackPanel>
 			</Button>
 		</Grid>
-
 		<Expander Style="{StaticResource HyperlinkExpander}" Padding="0" Margin="0" Grid.Row="2"
 				  Header="Options..." BorderBrush="{x:Static SystemColors.ControlDarkBrush}"
 				  Name="mOptionsBox">
@@ -118,6 +98,7 @@
 					<ColumnDefinition Width="Auto"/>
 					<ColumnDefinition Width="*"/>
 				</Grid.ColumnDefinitions>
+				
 				<CheckBox Grid.Row="0" IsChecked="{Binding Source={StaticResource mSettings}, Path=Default.OpenResultsInNewWindow}">Open search results in new _window</CheckBox>
 				<CheckBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Content="Automatically _close after saving"
 						  IsChecked="{Binding ElementName=this, Path=AutoClose}"/>

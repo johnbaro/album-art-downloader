@@ -8,6 +8,7 @@ using System.Windows.Controls.Primitives;
 
 namespace AlbumArtDownloader.Controls
 {
+	[TemplatePart(Name = "PART_Options", Type = typeof(FrameworkElement))]
 	public class SourcePanel : Control
 	{
 		static SourcePanel()

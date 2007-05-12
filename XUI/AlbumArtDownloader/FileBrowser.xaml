@@ -1,13 +1,92 @@
 ﻿<Window x:Class="AlbumArtDownloader.FileBrowser"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="File Browser" Background="{x:Static SystemColors.ControlBrush}"
-	Icon="AlbumArtDownloader.ico" 
-	Height="300" Width="300"
-    >
-	<Grid>
-		<TextBlock FontSize="18" FontStyle="Italic" Foreground="{x:Static SystemColors.ControlDarkDarkBrush}" VerticalAlignment="Center" HorizontalAlignment="Center">
-			File browser goes here...
-		</TextBlock>
+    xmlns:Win32="clr-namespace:Microsoft.Win32;assembly=presentationframework"
+    
+	xmlns:local="clr-namespace:AlbumArtDownloader"
+	xmlns:properties="clr-namespace:AlbumArtDownloader.Properties"
+	xmlns:controls="clr-namespace:AlbumArtDownloader.Controls;assembly=AlbumArtDownloader.Controls"
+	
+	Title="File Browser" Background="{x:Static SystemColors.ControlBrush}"
+	Icon="AlbumArtDownloader.ico"
+	Width="640" Height="400" ResizeMode="CanResizeWithGrip"
+	
+    properties:WindowSettings.Save="True"
+	>
+	<Window.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/HyperlinkExpander.generic.xaml"/>
+			</ResourceDictionary.MergedDictionaries>
+
+			<properties:Settings x:Key="mSettings"/>
+		</ResourceDictionary>
+	</Window.Resources>
+	<Grid Margin="5">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
+		
+		<local:Menu Margin="-5,-6,-5,5"/>
+		
+		<Grid Grid.Row="1">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition Width="Auto"/>
+			</Grid.ColumnDefinitions>
+			<Label Target="{Binding ElementName=mFilePathBox}" Padding="0,0,0,4">_Search for audio files in:</Label>
+			<TextBox Grid.Row="1" Name="mFilePathBox" Text="{Binding Source={StaticResource mSettings}, Path=Default.FileBrowseRoot}" />
+			<Button Grid.Row="1" Name="mBrowse" Grid.Column="1" Content="..." Padding="0,-2,0,-2" Margin="0"/>
+			<Button Name="mSearch" Padding="5,-5,5,-5" Margin="5,0,0,0" Grid.Column="2" Grid.RowSpan="2" Command="ApplicationCommands.Find" IsDefault="True">
+				<StackPanel Orientation="Horizontal">
+					<Image Source="search.ico" Margin="0,4,0,0"/>
+					<Label>_Search</Label>
+				</StackPanel>
+			</Button>
+		</Grid>
+		<Expander Padding="5,5,0,0" Grid.Row="2"
+				  Header="Options..." BorderBrush="{x:Static SystemColors.ControlDarkBrush}">
+			<Expander.Style>
+				<Style TargetType="{x:Type Expander}" BasedOn="{StaticResource HyperlinkExpander}">
+					<Setter Property="Margin" Value="0,2,0,0"/>
+					<Style.Triggers>
+						<Trigger Property="IsExpanded" Value="True">
+							<Setter Property="Margin" Value="0,2,0,5"/>
+						</Trigger>
+					</Style.Triggers>
+				</Style>
+			</Expander.Style>
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
+				<CheckBox IsChecked="{Binding Source={StaticResource mSettings}, Path=Default.FileBrowseSubfolders}">Include subfolders when searching for audio files</CheckBox>
+				<Label Target="{Binding ElementName=mImagePathPatternBox}" Padding="0,4,0,4" Grid.Row="1">Specify path to find _images:</Label>
+				<controls:ArtPathPatternBox Name="mImagePathPatternBox" Grid.Row="2" PathPattern="{Binding Source={StaticResource mSettings}, Path=Default.FileBrowseImagePath}">
+					<controls:ArtPathPatternBox.AdditionalPlaceholders>
+						<!--<controls:PatternPlaceholder MenuItemHeader="_Subfolders" ToolTip="Matches subfolders recursively at this point in the path" Placeholder="\**\"/>-->
+					</controls:ArtPathPatternBox.AdditionalPlaceholders>
+					<controls:ArtPathPatternBox.BrowseDialog>
+						<Win32:OpenFileDialog Title="Path to find images" ValidateNames="False" CheckFileExists="False" CheckPathExists="False" Filter="All Files (*.*)|*.*"/>
+					</controls:ArtPathPatternBox.BrowseDialog>
+				</controls:ArtPathPatternBox>
+			</Grid>
+		</Expander>
+		<ListView Grid.Row="3">
+		</ListView>
+		<StatusBar Grid.Row="4" Margin="0,0,0,-5">
+			<StatusBarItem Name="mStatus" Content="Ready"/>
+		</StatusBar>
 	</Grid>
 </Window>

@@ -60,10 +60,18 @@
     <Reference Include="System" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.ServiceModel" />
-    <Reference Include="UIAutomationProvider" />
-    <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
+    <Reference Include="UIAutomationProvider">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="PresentationCore">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="PresentationFramework">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Page Include="About.xaml" />
@@ -73,6 +81,9 @@
     <Page Include="FoobarBrowser.xaml" />
     <Page Include="LocalFilesSourceSettings.xaml" />
     <Page Include="Logo.xaml" />
+    <Page Include="Menu.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Splashscreen.xaml" />
     <Compile Include="ArtSearchWindow.xaml.cs">
       <DependentUpon>ArtSearchWindow.xaml</DependentUpon>
@@ -91,11 +102,16 @@
       <SubType>Code</SubType>
       <DependentUpon>CommandArgsHelp.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Common.cs" />
+    <Compile Include="IAppWindow.cs" />
     <Compile Include="InstanceMutex.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="LocalFilesSourceSettings.xaml.cs">
       <SubType>Code</SubType>
       <DependentUpon>LocalFilesSourceSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Menu.xaml.cs">
+      <DependentUpon>Menu.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>

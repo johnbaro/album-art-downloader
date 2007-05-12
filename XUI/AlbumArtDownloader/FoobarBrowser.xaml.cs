@@ -16,7 +16,7 @@ namespace AlbumArtDownloader
 	/// Interaction logic for FoobarBrowser.xaml
 	/// </summary>
 
-	public partial class FoobarBrowser : System.Windows.Window
+	public partial class FoobarBrowser : System.Windows.Window, IAppWindow
 	{
 
 		public FoobarBrowser()
@@ -24,5 +24,10 @@ namespace AlbumArtDownloader
 			InitializeComponent();
 		}
 
+
+		public void SaveSettings()
+		{
+			
+		}
 	}
 }

@@ -260,6 +260,13 @@ namespace AlbumArtDownloader
 		{
 			if (AlbumArtDownloader.Properties.Settings.Default.DefaultSavePath == "%default%")
 				AlbumArtDownloader.Properties.Settings.Default.DefaultSavePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), @"Album Art\%artist%\%album%\Folder.%extension%");
+
+			if (AlbumArtDownloader.Properties.Settings.Default.FileBrowseRoot == "%default%")
+				AlbumArtDownloader.Properties.Settings.Default.FileBrowseRoot = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
+
+			if (AlbumArtDownloader.Properties.Settings.Default.FileBrowseImagePath == "%default%")
+				AlbumArtDownloader.Properties.Settings.Default.FileBrowseImagePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), @"Album Art\%artist%\%album%\Folder.jpg");
+
 		}
 
 		/// <summary>

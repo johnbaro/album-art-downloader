@@ -1,0 +1,32 @@
+﻿<Border x:Class="AlbumArtDownloader.Menu"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:local="clr-namespace:AlbumArtDownloader"
+	
+	BorderBrush="{x:Static SystemColors.ControlLightLightBrush}" BorderThickness="0,0,0,1"
+	>
+	<Border BorderBrush="{x:Static SystemColors.ControlDarkBrush}" BorderThickness="0,0,0,1">
+
+		<Menu>
+			<MenuItem Header="_File">
+				<MenuItem Header="_New">
+					<MenuItem Header="_Search Window..." Command="ApplicationCommands.New"/>
+					<MenuItem Header="_File Browser..." Command="{x:Static local:Menu+Commands.NewFileBrowser}"/>
+					<MenuItem Header="F_oobar Browser..." Command="{x:Static local:Menu+Commands.NewFoobarBrowser}"/>
+				</MenuItem>
+				<Separator/>
+				<MenuItem Command="ApplicationCommands.Close"/>
+				<Separator/>
+				<MenuItem Name="test" Command="{x:Static local:Menu+Commands.Exit}"/>
+			</MenuItem>
+			<MenuItem Header="_Window">
+				<MenuItem Header="*window list goes here*"/>
+			</MenuItem>
+			<MenuItem Header="_Help">
+				<MenuItem Header="Album Art Downloader _Website" Command="GoToPage" CommandParameter="http://album-art.sourceforge.net"/>
+				<Separator/>
+				<MenuItem Header="_About Album Art Downloader..." Command="{x:Static local:Menu+Commands.About}"/>
+			</MenuItem>
+		</Menu>
+	</Border>
+</Border>

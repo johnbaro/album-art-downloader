@@ -8,6 +8,8 @@ using System.Windows.Controls.Primitives;
 
 namespace AlbumArtDownloader.Controls
 {
+	[TemplatePart(Name = "PART_SortField", Type = typeof(ComboBox))]
+	[TemplatePart(Name = "PART_SortDirection", Type = typeof(ToggleButton))]
 	public class ArtPanelListSortPicker : Control
 	{
 		private static readonly SortFieldItem[] sSortFields = new SortFieldItem[] { 

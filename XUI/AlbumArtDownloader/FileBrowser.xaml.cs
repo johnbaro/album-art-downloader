@@ -12,17 +12,53 @@ using System.Windows.Shapes;
 
 namespace AlbumArtDownloader
 {
-	/// <summary>
-	/// Interaction logic for FileBrowser.xaml
-	/// </summary>
-
-	public partial class FileBrowser : System.Windows.Window
+	public partial class FileBrowser : System.Windows.Window, IAppWindow
 	{
-
 		public FileBrowser()
 		{
 			InitializeComponent();
+			LoadPathPatternHistory();
+
+			CommandBindings.Add(new CommandBinding(ApplicationCommands.Find, new ExecutedRoutedEventHandler(FindExec)));
 		}
 
+		protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+		{
+			base.OnClosing(e);
+
+			SavePathPatternHistory();
+		}
+
+		private void LoadPathPatternHistory()
+		{
+			ICollection<String> history = mImagePathPatternBox.History;
+			history.Clear();
+			foreach (string historyItem in Properties.Settings.Default.FileBrowseImagePathHistory)
+			{
+				history.Add(historyItem);
+			}
+		}
+
+		private void SavePathPatternHistory()
+		{
+			ICollection<String> history = mImagePathPatternBox.History;
+
+			Properties.Settings.Default.FileBrowseImagePathHistory.Clear();
+			foreach (string historyItem in history)
+			{
+				Properties.Settings.Default.FileBrowseImagePathHistory.Add(historyItem);
+			}
+		}
+
+		private void FindExec(object sender, RoutedEventArgs e)
+		{
+			mImagePathPatternBox.AddPatternToHistory();
+			//TODO: Kick off asynch search here.
+		}
+
+		public void SaveSettings()
+		{
+			SavePathPatternHistory();
+		}
 	}
 }
