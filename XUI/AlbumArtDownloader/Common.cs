@@ -7,6 +7,7 @@ namespace AlbumArtDownloader
 {
 	internal static class Common
 	{
+		#region New Window
 		public static ArtSearchWindow NewSearchWindow()
 		{
 			return NewSearchWindow(null);
@@ -49,5 +50,19 @@ namespace AlbumArtDownloader
 			newWindow.Show();
 			return newWindow;
 		}
+		#endregion
+
+		#region EnumerableHelpers
+		/// <summary>
+		/// Takes a specified generic IEnumerable, and returns an unspecified one.
+		/// </summary>
+		public static System.Collections.IEnumerable UnspecifyEnumerable<T>(IEnumerable<T> enumerable)
+		{
+			foreach (T item in enumerable)
+			{
+				yield return item;
+			}
+		}
+		#endregion
 	}
 }

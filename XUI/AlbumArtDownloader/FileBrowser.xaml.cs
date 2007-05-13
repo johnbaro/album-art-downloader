@@ -18,12 +18,14 @@ namespace AlbumArtDownloader
 	public partial class FileBrowser : System.Windows.Window, IAppWindow
 	{
 		private Thread mSearchThread;
+		private ObservableAlbumCollection mAlbums = new ObservableAlbumCollection();
 
 		public FileBrowser()
 		{
 			InitializeComponent();
 			LoadPathPatternHistory();
 
+			mResults.ItemsSource = mAlbums;
 			mBrowse.Click += new RoutedEventHandler(OnBrowseForFilePath);
 
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Find, new ExecutedRoutedEventHandler(FindExec)));
@@ -137,6 +139,7 @@ namespace AlbumArtDownloader
 			Dispatcher.BeginInvoke(DispatcherPriority.DataBind, new ThreadStart(delegate
 			{
 				mStop.Visibility = Visibility.Visible;
+				mAlbums.Clear();
 			}));
 			try
 			{
@@ -164,7 +167,13 @@ namespace AlbumArtDownloader
 					foreach (FileInfo file in NetMatters.FileSearcher.GetFiles(root, "*", parameters.IncludeSubfolders ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly))
 					{
 						SetStatusText("Searching... " + file.Name);
-						//TODO: Get Album and Artist info from the file, add to results
+
+						//TODO: Get Album and Artist info from the file
+							
+						Dispatcher.Invoke(DispatcherPriority.DataBind, new ThreadStart(delegate
+						{
+							mAlbums.Add(file.DirectoryName, file.Name);
+						}));
 					}
 				}
 				catch (ThreadAbortException)

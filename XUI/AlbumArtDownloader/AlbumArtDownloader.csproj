@@ -95,6 +95,7 @@
       <SubType>Code</SubType>
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Album.cs" />
     <Compile Include="AlbumArt.cs" />
     <Compile Include="App.cs" />
     <Compile Include="Arguments.cs" />
@@ -114,6 +115,7 @@
     <Compile Include="Menu.xaml.cs">
       <DependentUpon>Menu.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ObservableAlbumCollection.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
