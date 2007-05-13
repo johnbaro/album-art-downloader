@@ -109,7 +109,8 @@ namespace AlbumArtDownloader
 			}
 
 			bool? autoClose = null;
-			string artist = null, album = null, path = null, localImagesPath = null;
+			bool showSearchWindow = false, showFileBrowser = false;
+			string artist = null, album = null, path = null, localImagesPath = null, fileBrowser = null;
 			List<String> useSources = new List<string>();
 			List<String> excludeSources = new List<string>();
 			string errorMessage = null;
@@ -119,6 +120,8 @@ namespace AlbumArtDownloader
 				//Check un-named parameters
 				if (parameter.Name == null)
 				{
+					showSearchWindow = true;
+
 					//For un-named parameters, use compatibility mode: 3 args,  "<artist>" "<album>" "<path to save image>"
 					switch (arguments.IndexOf(parameter))
 					{
@@ -144,10 +147,12 @@ namespace AlbumArtDownloader
 						case "artist":
 						case "ar":
 							artist = parameter.Value;
+							showSearchWindow = true;
 							break;
 						case "album":
 						case "al":
 							album = parameter.Value;
+							showSearchWindow = true;
 							break;
 						case "path":
 						case "p":
@@ -158,11 +163,13 @@ namespace AlbumArtDownloader
 							{
 								path = Path.Combine(path, filename);
 							}
+							showSearchWindow = true;
 							break;
 						case "f":
 							break; //See case "p" for handling of this parameter
 						case "localimagespath":
 							localImagesPath = parameter.Value;
+							showSearchWindow = true;
 							break;
 						case "autoclose":
 						case "ac":
@@ -178,16 +185,23 @@ namespace AlbumArtDownloader
 						case "sources":
 						case "s":
 							useSources.AddRange(parameter.Value.Split(','));
+							showSearchWindow = true;
 							break;
 						case "exclude":
 						case "es":
 							excludeSources.AddRange(parameter.Value.Split(','));
+							showSearchWindow = true;
 							break;
 						case "ae": //Compatibility: Show Existing Album Art
 							excludeSources.Add("Local Files");
+							showSearchWindow = true;
 							break; //Not currently supported
 						case "pf": //Compatibility: Show pictures in folder
 							break; //Not currently supported
+						case "filebrowser":
+							fileBrowser = parameter.Value;
+							showFileBrowser = true;
+							break;
 						default:
 							errorMessage = "Unexpected command line parameter: " + parameter.Name;
 							break;
@@ -202,24 +216,36 @@ namespace AlbumArtDownloader
 				return false;
 			}
 
-			ArtSearchWindow searchWindow = new ArtSearchWindow();
+			if (showFileBrowser)
+			{
+				FileBrowser browserWindow = new FileBrowser();
+				browserWindow.Show();
+				if (!String.IsNullOrEmpty(fileBrowser))
+				{
+					browserWindow.Search(fileBrowser, AlbumArtDownloader.Properties.Settings.Default.FileBrowseSubfolders); //TODO: Should the browse subfolders flag be a command line parameter?
+				}
+			}
 
-			if (autoClose.HasValue)
-				searchWindow.OverrideAutoClose(autoClose.Value);
-			if (path != null)
-				searchWindow.SetDefaultSaveFolderPattern(path);
-			if (localImagesPath != null)
-				searchWindow.SetLocalImagesPath(localImagesPath);
-			if (useSources.Count > 0)
-				searchWindow.UseSources(useSources);
-			if (excludeSources.Count > 0)
-				searchWindow.ExcludeSources(excludeSources);
+			if (showSearchWindow)
+			{
+				ArtSearchWindow searchWindow = new ArtSearchWindow();
 
-			searchWindow.Show();
+				if (autoClose.HasValue)
+					searchWindow.OverrideAutoClose(autoClose.Value);
+				if (path != null)
+					searchWindow.SetDefaultSaveFolderPattern(path);
+				if (localImagesPath != null)
+					searchWindow.SetLocalImagesPath(localImagesPath);
+				if (useSources.Count > 0)
+					searchWindow.UseSources(useSources);
+				if (excludeSources.Count > 0)
+					searchWindow.ExcludeSources(excludeSources);
 
-			if (artist != null || album != null)
-				searchWindow.Search(artist, album);
+				searchWindow.Show();
 
+				if (artist != null || album != null)
+					searchWindow.Search(artist, album);
+			}
 			return true;
 		}
 

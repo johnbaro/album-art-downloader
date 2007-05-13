@@ -103,6 +103,7 @@
       <DependentUpon>CommandArgsHelp.xaml</DependentUpon>
     </Compile>
     <Compile Include="Common.cs" />
+    <Compile Include="FileSearcher.cs" />
     <Compile Include="IAppWindow.cs" />
     <Compile Include="InstanceMutex.cs" />
     <Compile Include="Enums.cs" />

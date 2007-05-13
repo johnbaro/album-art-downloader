@@ -75,3 +75,14 @@ Options:
               For backwards compatibilty, the
               parameter "/ae off" can also be
               used to exclude "Local Files".
+
+ /fileBrowser                                 (/fileBrowser "\Music")
+              Opens a File Browser window. If
+              a path is specified, starts
+              searching that path immediately.
+              If no path is specified, the
+              browser window is just opened.  (/fileBrowser)
+              
+              If other parameters are not
+              specified, then a search window
+              will not be shown initially.

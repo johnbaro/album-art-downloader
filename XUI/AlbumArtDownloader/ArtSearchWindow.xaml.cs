@@ -346,8 +346,7 @@ namespace AlbumArtDownloader
 		{
 			base.OnClosing(e);
 
-			SaveDefaultSaveFolderHistory();
-			SaveSourceSettings();
+			SaveSettings();
 		}
 
 		protected override void OnClosed(EventArgs e)

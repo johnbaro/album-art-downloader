@@ -19,6 +19,7 @@
 				<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/HyperlinkExpander.generic.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 
+			<Win32:OpenFileDialog x:Key="mFilePathBrowser" Title="Specify folder to search for audio files" ValidateNames="False" CheckFileExists="False" CheckPathExists="True" Filter="Folders|."/>
 			<properties:Settings x:Key="mSettings"/>
 		</ResourceDictionary>
 	</Window.Resources>
@@ -71,11 +72,11 @@
 					<RowDefinition Height="Auto"/>
 					<RowDefinition Height="Auto"/>
 				</Grid.RowDefinitions>
-				<CheckBox IsChecked="{Binding Source={StaticResource mSettings}, Path=Default.FileBrowseSubfolders}">Include subfolders when searching for audio files</CheckBox>
+				<CheckBox Name="mIncludeSubfolders" IsChecked="{Binding Source={StaticResource mSettings}, Path=Default.FileBrowseSubfolders}">Include subfolders when searching for audio files</CheckBox>
 				<Label Target="{Binding ElementName=mImagePathPatternBox}" Padding="0,4,0,4" Grid.Row="1">Specify path to find _images:</Label>
 				<controls:ArtPathPatternBox Name="mImagePathPatternBox" Grid.Row="2" PathPattern="{Binding Source={StaticResource mSettings}, Path=Default.FileBrowseImagePath}">
 					<controls:ArtPathPatternBox.AdditionalPlaceholders>
-						<!--<controls:PatternPlaceholder MenuItemHeader="_Subfolders" ToolTip="Matches subfolders recursively at this point in the path" Placeholder="\**\"/>-->
+						<controls:PatternPlaceholder MenuItemHeader="_Subfolders" ToolTip="Matches subfolders recursively at this point in the path" Placeholder="\**\"/>
 					</controls:ArtPathPatternBox.AdditionalPlaceholders>
 					<controls:ArtPathPatternBox.BrowseDialog>
 						<Win32:OpenFileDialog Title="Path to find images" ValidateNames="False" CheckFileExists="False" CheckPathExists="False" Filter="All Files (*.*)|*.*"/>
@@ -85,7 +86,10 @@
 		</Expander>
 		<ListView Grid.Row="3">
 		</ListView>
-		<StatusBar Grid.Row="4" Margin="0,0,0,-5">
+		<StatusBar Grid.Row="4" Margin="0,3,0,-2">
+			<StatusBarItem DockPanel.Dock="Right">
+				<Button Name="mStop" Visibility="Collapsed" Command="ApplicationCommands.Stop" Padding="10,0,10,0" Margin="0,-4,10,-4">Stop</Button>
+			</StatusBarItem>
 			<StatusBarItem Name="mStatus" Content="Ready"/>
 		</StatusBar>
 	</Grid>
