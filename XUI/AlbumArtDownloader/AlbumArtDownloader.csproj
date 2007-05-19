@@ -91,6 +91,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\Third Party Assemblies\MediaInfoDLL.cs">
+      <Link>MediaInfoDLL.cs</Link>
+    </Compile>
     <Compile Include="About.xaml.cs">
       <SubType>Code</SubType>
       <DependentUpon>About.xaml</DependentUpon>
@@ -183,6 +186,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="CommandArgsHelp.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Third Party Assemblies\MediaInfo.dll">
+      <Link>MediaInfo.dll</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

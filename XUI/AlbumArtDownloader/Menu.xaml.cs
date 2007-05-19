@@ -42,15 +42,15 @@ namespace AlbumArtDownloader
 		#region Standard Handlers
 		private static void NewSearchWindowExec(object sender, ExecutedRoutedEventArgs e)
 		{
-			Common.NewSearchWindow(sender as IAppWindow).Show();
+			Common.NewSearchWindow(sender as IAppWindow);
 		}
 		private static void NewFileBrowserExec(object sender, ExecutedRoutedEventArgs e)
 		{
-			Common.NewFileBrowser(sender as IAppWindow).Show();
+			Common.NewFileBrowser(sender as IAppWindow);
 		}
 		private static void NewFoobarBrowserExec(object sender, ExecutedRoutedEventArgs e)
 		{
-			Common.NewFoobarBrowser(sender as IAppWindow).Show();
+			Common.NewFoobarBrowser(sender as IAppWindow);
 		}
 		private static void CloseExec(object sender, ExecutedRoutedEventArgs e)
 		{

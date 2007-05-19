@@ -12,11 +12,22 @@ using System.Windows.Shapes;
 using System.Threading;
 using System.Windows.Threading;
 using System.IO;
+using System.Reflection;
 
 namespace AlbumArtDownloader
 {
 	public partial class FileBrowser : System.Windows.Window, IAppWindow
 	{
+		private enum MediaInfoState
+		{
+			Uninitialised,
+			Initialised,
+			Error
+		}
+
+		private static MediaInfoLib.MediaInfo sMediaInfo;
+		private static MediaInfoState sMediaInfoState;
+
 		private Thread mSearchThread;
 		private ObservableAlbumCollection mAlbums = new ObservableAlbumCollection();
 
@@ -30,6 +41,36 @@ namespace AlbumArtDownloader
 
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Find, new ExecutedRoutedEventHandler(FindExec)));
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Stop, new ExecutedRoutedEventHandler(StopExec)));
+
+			IsVisibleChanged += new DependencyPropertyChangedEventHandler(OnIsVisibleChanged);
+		}
+
+		private void OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+		{
+			if ((bool)e.NewValue)
+			{
+				//Window is being shown.
+
+				if (sMediaInfoState == MediaInfoState.Uninitialised)
+				{
+					//Initialise the MediaInfo tag reader
+					sMediaInfo = new MediaInfoLib.MediaInfo();
+					AssemblyName assemblyName = Assembly.GetEntryAssembly().GetName();
+					if (String.IsNullOrEmpty(sMediaInfo.Option("Info_Version", String.Format("0.7.4.7;{0};{1}", assemblyName.Name, assemblyName.Version))))
+					{
+						sMediaInfoState = MediaInfoState.Error;
+					}
+					else
+					{
+						sMediaInfoState = MediaInfoState.Initialised;
+					}
+				}
+				if (sMediaInfoState == MediaInfoState.Error)
+				{
+					MessageBox.Show("The version of the MediaInfo.dll found is not compatible with the expected version. Please re-install the latest version of Album Art Downloader to use the File Browser functionality", "DLL Version Mismatch", MessageBoxButton.OK, MessageBoxImage.Error);
+					this.Close();
+				}
+			}
 		}
 
 		protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
@@ -168,12 +209,32 @@ namespace AlbumArtDownloader
 					{
 						SetStatusText("Searching... " + file.Name);
 
-						//TODO: Get Album and Artist info from the file
-							
-						Dispatcher.Invoke(DispatcherPriority.DataBind, new ThreadStart(delegate
+						string artist, album;
+						sMediaInfo.Open(file.FullName);
+						try
 						{
-							mAlbums.Add(file.DirectoryName, file.Name);
-						}));
+							artist = sMediaInfo.Get(MediaInfoLib.StreamKind.General, 0, "Artist");
+							album = sMediaInfo.Get(MediaInfoLib.StreamKind.General, 0, "Album");
+						}
+						catch (Exception e)
+						{
+							System.Diagnostics.Trace.WriteLine("Could not get artist and album information for file: " + file.FullName);
+							System.Diagnostics.Trace.Indent();
+							System.Diagnostics.Trace.WriteLine(e.Message);
+							System.Diagnostics.Trace.Unindent();
+							continue;
+						}
+						finally
+						{
+							sMediaInfo.Close();
+						}
+						if (!(String.IsNullOrEmpty(artist) && String.IsNullOrEmpty(album))) //No point adding it if no artist or album could be found.
+						{
+							Dispatcher.Invoke(DispatcherPriority.DataBind, new ThreadStart(delegate
+							{
+								mAlbums.Add(file.DirectoryName, artist, album);
+							}));
+						}
 					}
 				}
 				catch (ThreadAbortException)

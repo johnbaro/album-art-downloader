@@ -10,8 +10,9 @@ namespace AlbumArtDownloader
 	/// </summary>
 	internal struct Album
 	{
-		public Album(string artistName, string albumName)
+		public Album(string basePath, string artistName, string albumName)
 		{
+			mBasePath = basePath;
 			mName = albumName;
 			mArtist = artistName;
 			mArtFile = null;
@@ -40,6 +41,20 @@ namespace AlbumArtDownloader
 				return mArtist; 
 			}
 		}
+
+		private string mBasePath;
+		/// <summary>
+		/// The path relative to which images are found.
+		/// </summary>
+		public string BasePath
+		{
+			get 
+			{
+				//Null base paths are allowed, but then relative image search paths can't be used.
+				return mBasePath; 
+			}
+		}
+
 
 		/// <summary>
 		/// The art file, or null if none has been found

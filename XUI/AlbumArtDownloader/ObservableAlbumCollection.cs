@@ -23,9 +23,9 @@ namespace AlbumArtDownloader
 			}
 		}
 
-		public void Add(string artistName, string albumName)
+		public void Add(string basePath, string artistName, string albumName)
 		{
-			Add(new Album(artistName, albumName));
+			Add(new Album(basePath, artistName, albumName));
 		}
 		public void Add(Album album)
 		{

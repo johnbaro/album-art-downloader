@@ -216,6 +216,9 @@ namespace AlbumArtDownloader
 				return false;
 			}
 
+			if (!showFileBrowser && !showSearchWindow) //If no windows will be shown, show the search window
+				showSearchWindow = true;
+
 			if (showFileBrowser)
 			{
 				FileBrowser browserWindow = new FileBrowser();
@@ -289,10 +292,6 @@ namespace AlbumArtDownloader
 
 			if (AlbumArtDownloader.Properties.Settings.Default.FileBrowseRoot == "%default%")
 				AlbumArtDownloader.Properties.Settings.Default.FileBrowseRoot = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);
-
-			if (AlbumArtDownloader.Properties.Settings.Default.FileBrowseImagePath == "%default%")
-				AlbumArtDownloader.Properties.Settings.Default.FileBrowseImagePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), @"Album Art\%artist%\%album%\Folder.jpg");
-
 		}
 
 		/// <summary>

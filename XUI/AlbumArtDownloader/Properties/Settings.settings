@@ -59,7 +59,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="FileBrowseImagePath" Type="System.String" Scope="User">
-      <Value Profile="(Default)">%default%</Value>
+      <Value Profile="(Default)">Folder.jpg</Value>
     </Setting>
     <Setting Name="FileBrowseImagePathHistory" Type="System.Collections.Specialized.StringCollection" Scope="User">
       <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;

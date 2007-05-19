@@ -29,6 +29,7 @@
 					<LineBreak/>
 					<Bold>Libraries:</Bold><LineBreak/>
 					This software uses the Boo language from Codehaus<LineBreak/>
+					Audio file tag reading courtesy of: http://mediainfo.sourceforge.net<LineBreak/>
 					<LineBreak/>
 					<Bold>License:</Bold><LineBreak/>
 					Licensed under the GPL. See website for more details.<LineBreak/>
