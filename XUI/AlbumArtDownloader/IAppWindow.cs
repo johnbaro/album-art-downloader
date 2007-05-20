@@ -19,5 +19,6 @@ namespace AlbumArtDownloader
 		double Top { get; set; }
 
 		void Show();
+		string Description { get; }
 	}
 }

@@ -19,8 +19,8 @@
 				<Separator/>
 				<MenuItem Name="test" Command="{x:Static local:Menu+Commands.Exit}"/>
 			</MenuItem>
-			<MenuItem Header="_Window">
-				<MenuItem Header="*window list goes here*"/>
+			<MenuItem Header="_Window" SubmenuOpened="OnWindowListOpened">
+				<MenuItem Header="Test"/>
 			</MenuItem>
 			<MenuItem Header="_Help">
 				<MenuItem Header="Album Art Downloader _Website" Command="GoToPage" CommandParameter="http://album-art.sourceforge.net"/>

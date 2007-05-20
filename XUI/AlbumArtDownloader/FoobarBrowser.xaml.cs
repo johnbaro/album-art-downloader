@@ -29,5 +29,13 @@ namespace AlbumArtDownloader
 		{
 			
 		}
+
+		string IAppWindow.Description
+		{
+			get
+			{
+				return "Foobar Browser";
+			}
+		}
 	}
 }

@@ -3,16 +3,12 @@ using System.Collections.Generic;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Threading;
 using System.Windows.Threading;
 using System.IO;
 using System.Reflection;
+using System.Collections.Specialized;
 
 namespace AlbumArtDownloader
 {
@@ -25,11 +21,32 @@ namespace AlbumArtDownloader
 			Error
 		}
 
+		public enum BrowserState
+		{
+			/// <summary>No search been performed yet.</summary>
+			Ready,
+			/// <summary>Finding media files with artist and album tags, and simultaneously finding art for them.</summary>
+			FindingFiles,
+			/// <summary>No longer finding media files, only finding art for albums already located.</summary>
+			FindingArt,
+			/// <summary>Search completed successfully.</summary>
+			Done,
+			/// <summary>Search stopped by user.</summary>
+			Stopped,
+			/// <summary>Search abandoned due to error.</summary>
+			Error
+		}
+
 		private static MediaInfoLib.MediaInfo sMediaInfo;
 		private static MediaInfoState sMediaInfoState;
 
 		private Thread mSearchThread;
 		private ObservableAlbumCollection mAlbums = new ObservableAlbumCollection();
+
+		private Thread mArtFileSearchThread;
+		private Queue<Album> mArtFileSearchQueue = new Queue<Album>();
+		private AutoResetEvent mArtFileSearchTrigger = new AutoResetEvent(false);
+		private string mImagePathPattern; //This is held separately to the value of mImagePathPatternBox.PathPattern, so it will be constant during a search.
 
 		public FileBrowser()
 		{
@@ -43,6 +60,10 @@ namespace AlbumArtDownloader
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Stop, new ExecutedRoutedEventHandler(StopExec)));
 
 			IsVisibleChanged += new DependencyPropertyChangedEventHandler(OnIsVisibleChanged);
+
+			mAlbums.CollectionChanged += new NotifyCollectionChangedEventHandler(OnAlbumsCollectionChanged);
+
+			CreateArtFileSearchThread();
 		}
 
 		private void OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -81,6 +102,11 @@ namespace AlbumArtDownloader
 		protected override void OnClosed(EventArgs e)
 		{
 			AbortSearch();
+			if (mArtFileSearchThread != null)
+			{
+				mArtFileSearchThread.Abort();
+				mArtFileSearchThread = null;
+			}
 			base.OnClosed(e);
 		}
 
@@ -112,6 +138,39 @@ namespace AlbumArtDownloader
 		}
 		#endregion
 
+		#region Properties
+		string IAppWindow.Description
+		{
+			get
+			{
+				if (String.IsNullOrEmpty(mFilePathBox.Text))
+					return "File Browser";
+
+				return "File Browser: " + Path.GetFileName(mFilePathBox.Text);
+			}
+		}
+
+		public static readonly DependencyPropertyKey StatePropertyKey = DependencyProperty.RegisterReadOnly("State", typeof(BrowserState), typeof(FileBrowser), new FrameworkPropertyMetadata(BrowserState.Ready));
+		public BrowserState State
+		{
+			get { return (BrowserState)GetValue(StatePropertyKey.DependencyProperty); }
+			private set { SetValue(StatePropertyKey, value); }
+		}
+
+		public static readonly DependencyPropertyKey ProgressTextPropertyKey = DependencyProperty.RegisterReadOnly("ProgressText", typeof(string), typeof(FileBrowser), new FrameworkPropertyMetadata(String.Empty));
+		public string ProgressText
+		{
+			get { return (string)GetValue(ProgressTextPropertyKey.DependencyProperty); }
+			private set { SetValue(ProgressTextPropertyKey, value); }
+		}
+		public static readonly DependencyPropertyKey ErrorTextPropertyKey = DependencyProperty.RegisterReadOnly("ErrorText", typeof(string), typeof(FileBrowser), new FrameworkPropertyMetadata(String.Empty));
+		public string ErrorText
+		{
+			get { return (string)GetValue(ErrorTextPropertyKey.DependencyProperty); }
+			private set { SetValue(ErrorTextPropertyKey, value); }
+		}
+		#endregion
+
 		private void OnBrowseForFilePath(object sender, RoutedEventArgs e)
 		{
 			Microsoft.Win32.FileDialog filePathBrowser = (Microsoft.Win32.FileDialog)Resources["mFilePathBrowser"];
@@ -127,7 +186,7 @@ namespace AlbumArtDownloader
 		private void FindExec(object sender, RoutedEventArgs e)
 		{
 			mImagePathPatternBox.AddPatternToHistory();
-			Search(mFilePathBox.Text, mIncludeSubfolders.IsChecked.GetValueOrDefault());
+			Search(mFilePathBox.Text, mIncludeSubfolders.IsChecked.GetValueOrDefault(), mImagePathPatternBox.PathPattern);
 		}
 
 		private void StopExec(object sender, RoutedEventArgs e)
@@ -136,17 +195,20 @@ namespace AlbumArtDownloader
 		}
 		#endregion
 
-		#region Searching
+		#region Media File Searching
 		/// <summary>
 		/// Begins an asynchronous search for files.
 		/// </summary>
-		public void Search(string rootPath, bool includeSubfolders)
+		public void Search(string rootPath, bool includeSubfolders, string imagePathPattern)
 		{
 			//Ensure UI is synched
 			mFilePathBox.Text = rootPath;
 			mIncludeSubfolders.IsChecked = includeSubfolders;
+			mImagePathPatternBox.PathPattern = imagePathPattern;
 
 			AbortSearch(); //Abort any existing search
+
+			mImagePathPattern = imagePathPattern; //Keep this in a variable for the ArtFileSearchWorker to refer to.
 			mSearchThread = new Thread(new ParameterizedThreadStart(SearchWorker));
 			mSearchThread.Name = "File Browser Search";
 			mSearchThread.Start(new SearchThreadParameters(rootPath, includeSubfolders));
@@ -157,9 +219,17 @@ namespace AlbumArtDownloader
 		/// </summary>
 		public void AbortSearch()
 		{
+			ClearArtFileSearchQueue();
+			
+			//Restart the art file search thread
+			mArtFileSearchThread.Abort();
+			mArtFileSearchThread = null;
+			CreateArtFileSearchThread();
+
 			if (mSearchThread != null)
 			{
 				mSearchThread.Abort();
+				mSearchThread = null;
 			}
 		}
 
@@ -177,97 +247,238 @@ namespace AlbumArtDownloader
 		}
 		private void SearchWorker(object state)
 		{
-			Dispatcher.BeginInvoke(DispatcherPriority.DataBind, new ThreadStart(delegate
+			Dispatcher.Invoke(DispatcherPriority.DataBind, new ThreadStart(delegate
 			{
-				mStop.Visibility = Visibility.Visible;
+				State = BrowserState.FindingFiles;
 				mAlbums.Clear();
 			}));
+			
+			SearchThreadParameters parameters = (SearchThreadParameters)state;
+			SetProgressText("Searching...");
+
+			DirectoryInfo root = null;
 			try
 			{
-				SearchThreadParameters parameters = (SearchThreadParameters)state;
-				SetStatusText("Searching...");
+				root = new DirectoryInfo(parameters.RootPath);
+			}
+			catch (Exception e)
+			{
+				//Path not valid, so no images to find
+				System.Diagnostics.Trace.WriteLine("Path not valid for file search: " + parameters.RootPath);
+				System.Diagnostics.Trace.Indent();
+				System.Diagnostics.Trace.WriteLine(e.Message);
+				System.Diagnostics.Trace.Unindent();
+				SetErrorState(String.Format("Could not search \"{0}\": {1}", parameters.RootPath, e.Message));
+				return;
+			}
 
-				DirectoryInfo root = null;
-				try
+			try
+			{
+				foreach (FileInfo file in NetMatters.FileSearcher.GetFiles(root, "*", parameters.IncludeSubfolders ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly))
 				{
-					root = new DirectoryInfo(parameters.RootPath);
-				}
-				catch (Exception e)
-				{
-					//Path not valid, so no images to find
-					System.Diagnostics.Trace.WriteLine("Path not valid for file search: " + parameters.RootPath);
-					System.Diagnostics.Trace.Indent();
-					System.Diagnostics.Trace.WriteLine(e.Message);
-					System.Diagnostics.Trace.Unindent();
-					SetStatusText(String.Format("Could not search \"{0}\": {1}", parameters.RootPath, e.Message));
-					return;
-				}
+					SetProgressText("Searching... " + file.Name);
 
-				try
-				{
-					foreach (FileInfo file in NetMatters.FileSearcher.GetFiles(root, "*", parameters.IncludeSubfolders ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly))
+					string artistName, albumName;
+					sMediaInfo.Open(file.FullName);
+					try
 					{
-						SetStatusText("Searching... " + file.Name);
-
-						string artist, album;
-						sMediaInfo.Open(file.FullName);
-						try
+						artistName = sMediaInfo.Get(MediaInfoLib.StreamKind.General, 0, "Artist");
+						albumName = sMediaInfo.Get(MediaInfoLib.StreamKind.General, 0, "Album");
+					}
+					catch (Exception e)
+					{
+						System.Diagnostics.Trace.WriteLine("Could not get artist and album information for file: " + file.FullName);
+						System.Diagnostics.Trace.Indent();
+						System.Diagnostics.Trace.WriteLine(e.Message);
+						System.Diagnostics.Trace.Unindent();
+						continue;
+					}
+					finally
+					{
+						sMediaInfo.Close();
+					}
+					if (!(String.IsNullOrEmpty(artistName) && String.IsNullOrEmpty(albumName))) //No point adding it if no artist or album could be found.
+					{
+						Dispatcher.Invoke(DispatcherPriority.DataBind, new ThreadStart(delegate
 						{
-							artist = sMediaInfo.Get(MediaInfoLib.StreamKind.General, 0, "Artist");
-							album = sMediaInfo.Get(MediaInfoLib.StreamKind.General, 0, "Album");
-						}
-						catch (Exception e)
-						{
-							System.Diagnostics.Trace.WriteLine("Could not get artist and album information for file: " + file.FullName);
-							System.Diagnostics.Trace.Indent();
-							System.Diagnostics.Trace.WriteLine(e.Message);
-							System.Diagnostics.Trace.Unindent();
-							continue;
-						}
-						finally
-						{
-							sMediaInfo.Close();
-						}
-						if (!(String.IsNullOrEmpty(artist) && String.IsNullOrEmpty(album))) //No point adding it if no artist or album could be found.
-						{
-							Dispatcher.Invoke(DispatcherPriority.DataBind, new ThreadStart(delegate
-							{
-								mAlbums.Add(file.DirectoryName, artist, album);
-							}));
-						}
+							mAlbums.Add(new Album(file.DirectoryName, artistName, albumName));
+						}));
 					}
 				}
-				catch (ThreadAbortException)
-				{
-					SetStatusText("Stopped");
-					return;
-				}
-				catch (Exception e)
-				{
-					SetStatusText(String.Format("Error occurred while searching: {0}", e.Message));
-					return;
-				}
-
-				SetStatusText("Done");
 			}
-			finally
+			catch (ThreadAbortException)
 			{
 				Dispatcher.BeginInvoke(DispatcherPriority.DataBind, new ThreadStart(delegate
 				{
-					mStop.Visibility = Visibility.Collapsed;
+					State = BrowserState.Stopped;
 				}));
+				return;
 			}
+			catch (Exception e)
+			{
+				SetErrorState(String.Format("Error occurred while searching: {0}", e.Message));
+				return;
+			}
+
+			bool artSearchComplete;
+			lock (mArtFileSearchQueue)
+			{
+				artSearchComplete = mArtFileSearchQueue.Count == 0;
+			}
+
+			Dispatcher.BeginInvoke(DispatcherPriority.DataBind, new ThreadStart(delegate
+			{
+				if (artSearchComplete)
+				{
+					State = BrowserState.Done;
+				}
+				else
+				{
+					State = BrowserState.FindingArt;
+					ProgressText = "Finding art...";
+				}
+			}));
 		}
-		
+
 		/// <summary>
-		/// Update the status bar text, safe to call from the search worker thread.
+		/// Update the progress text, safe to call from the search worker thread.
 		/// </summary>
-		private void SetStatusText(string text)
+		private void SetProgressText(string text)
 		{
 			Dispatcher.BeginInvoke(DispatcherPriority.DataBind, new ThreadStart(delegate
 			{
-				mStatus.Content = text;
+				ProgressText = text;
 			}));
+		}
+
+		/// <summary>
+		/// Sets the error state, with error message. Safe to call from the search worker thread.
+		/// </summary>
+		private void SetErrorState(string message)
+		{
+			Dispatcher.BeginInvoke(DispatcherPriority.DataBind, new ThreadStart(delegate
+			{
+				ProgressText = String.Empty;
+				ErrorText = message;
+				State = BrowserState.Error;
+			}));
+		}
+
+		#endregion
+
+		#region ArtFile Searching
+		private void OnAlbumsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+		{
+			switch (e.Action)
+			{
+				case NotifyCollectionChangedAction.Add:
+					foreach (Album album in e.NewItems)
+					{
+						QueueAlbumForArtFileSearch(album);
+					}
+					break;
+				case NotifyCollectionChangedAction.Reset:
+					ClearArtFileSearchQueue();
+					break;
+			}
+		}
+		
+		private void QueueAlbumForArtFileSearch(Album album)
+		{
+			album.ArtFileStatus = ArtFileStatus.Queued;
+			lock (mArtFileSearchQueue)
+			{
+				mArtFileSearchQueue.Enqueue(album);
+			}
+			mArtFileSearchTrigger.Set();
+		}
+
+		private void ClearArtFileSearchQueue()
+		{
+			lock (mArtFileSearchQueue)
+			{
+				foreach (Album album in mArtFileSearchQueue)
+				{
+					album.ArtFileStatus = ArtFileStatus.Unknown;
+				}
+				mArtFileSearchQueue.Clear();
+			}
+		}
+
+		private void CreateArtFileSearchThread()
+		{
+			System.Diagnostics.Debug.Assert(mArtFileSearchThread == null, "An art file search thread already exists!");
+			mArtFileSearchThread = new Thread(new ThreadStart(ArtFileSearchWorker));
+			mArtFileSearchThread.Name = "Art File Searcher";
+			mArtFileSearchThread.Start();
+		}
+
+		private void ArtFileSearchWorker()
+		{
+			try
+			{
+				do
+				{
+					mArtFileSearchTrigger.WaitOne(); //Wait until there is work to do
+
+					do //Loop through all the queued art.
+					{
+						Album album;
+						lock (mArtFileSearchQueue)
+						{
+							if (mArtFileSearchQueue.Count == 0)
+							{
+								break; //Nothing to search for, so go back and wait until there is.
+							}
+							else
+							{
+								album = mArtFileSearchQueue.Dequeue();
+							}
+						}
+						System.Diagnostics.Debug.Assert(album.ArtFileStatus == ArtFileStatus.Queued, "Expecting the album to be queued for searching");
+						album.ArtFileStatus = ArtFileStatus.Searching;
+						try
+						{
+							SetProgressText(String.Format("Finding art... {0} / {1}", album.Artist, album.Name));
+
+							string artFileSearchPattern = Common.SubstitutePlaceholders(mImagePathPattern, album.Artist, album.Name);
+
+							if (!Path.IsPathRooted(artFileSearchPattern))
+							{
+								artFileSearchPattern = Path.Combine(album.BasePath, artFileSearchPattern);
+							}
+							foreach (string artFile in Common.ResolvePathPattern(artFileSearchPattern))
+							{
+								album.ArtFile = artFile;
+								album.ArtFileStatus = ArtFileStatus.Present;
+								break; //Only use the first art file that matches, if there are multiple matches.
+							}
+						}
+						catch(Exception)
+						{
+							album.ArtFileStatus = ArtFileStatus.Unknown; //It might not be missing, we just haven't found it before hitting an exception
+						}
+						if (album.ArtFileStatus != ArtFileStatus.Present) //If it wasn't found, then it's missing.
+							album.ArtFileStatus = ArtFileStatus.Missing;
+					} while (true);
+
+					Dispatcher.BeginInvoke(DispatcherPriority.DataBind, new ThreadStart(delegate
+					{
+						if (State == BrowserState.FindingArt) //If only finding art, then that has now been done, and the state is now Done.
+						{
+							State = BrowserState.Done;
+						}
+					}));
+				} while (true);
+			}
+			catch (ThreadAbortException)
+			{
+				Dispatcher.BeginInvoke(DispatcherPriority.DataBind, new ThreadStart(delegate
+				{
+					State = BrowserState.Stopped;
+				}));
+				return;
+			}
 		}
 		#endregion
 	}

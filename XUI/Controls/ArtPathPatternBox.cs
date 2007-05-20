@@ -269,7 +269,7 @@ namespace AlbumArtDownloader.Controls
 						History.RemoveAt(History.Count - 1);
 					}
 				}
-				else
+				else if(index != 0)
 				{
 					//Already in the history, so bring it to the top
 					History.Move(index, 0);

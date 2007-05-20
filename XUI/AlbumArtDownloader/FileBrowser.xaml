@@ -6,7 +6,9 @@
 	xmlns:local="clr-namespace:AlbumArtDownloader"
 	xmlns:properties="clr-namespace:AlbumArtDownloader.Properties"
 	xmlns:controls="clr-namespace:AlbumArtDownloader.Controls;assembly=AlbumArtDownloader.Controls"
-	
+
+	DataContext="{Binding RelativeSource={RelativeSource Self}}"
+		
 	Title="File Browser" Background="{x:Static SystemColors.ControlBrush}"
 	Icon="AlbumArtDownloader.ico"
 	Width="640" Height="400" ResizeMode="CanResizeWithGrip"
@@ -19,6 +21,8 @@
 				<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/HyperlinkExpander.generic.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 
+			<controls:TooltipEnabledOnOverflowConverter x:Key="mTooltipEnabledOnOverflowConverter"/>
+			
 			<Win32:OpenFileDialog x:Key="mFilePathBrowser" Title="Specify folder to search for audio files" ValidateNames="False" CheckFileExists="False" CheckPathExists="True" Filter="Folders|."/>
 			<properties:Settings x:Key="mSettings"/>
 		</ResourceDictionary>
@@ -45,7 +49,7 @@
 				<ColumnDefinition Width="Auto"/>
 			</Grid.ColumnDefinitions>
 			<Label Target="{Binding ElementName=mFilePathBox}" Padding="0,0,0,4">_Search for audio files in:</Label>
-			<TextBox Grid.Row="1" Name="mFilePathBox" Text="{Binding Source={StaticResource mSettings}, Path=Default.FileBrowseRoot}" />
+			<TextBox Grid.Row="1" Name="mFilePathBox" Text="{Binding Source={StaticResource mSettings}, Path=Default.FileBrowseRoot, UpdateSourceTrigger=PropertyChanged}" />
 			<Button Grid.Row="1" Name="mBrowse" Grid.Column="1" Content="..." Padding="0,-2,0,-2" Margin="0"/>
 			<Button Name="mSearch" Padding="5,-5,5,-5" Margin="5,0,0,0" Grid.Column="2" Grid.RowSpan="2" Command="ApplicationCommands.Find" IsDefault="True">
 				<StackPanel Orientation="Horizontal">
@@ -88,18 +92,75 @@
 			<ListView.ItemTemplate>
 				<DataTemplate>
 					<StackPanel Orientation="Horizontal">
-						<TextBlock Text="{Binding Path=Artist}"/>
+						<TextBlock Text="{Binding Artist}"/>
 						<TextBlock Text=", " />
-						<TextBlock Text="{Binding Path=Name}" />
+						<TextBlock Text="{Binding Name}" />
+						<TextBlock Text=", " />
+						<TextBlock Text="{Binding ArtFileStatus}" />
+						<TextBlock Text=": " />
+						<TextBlock Text="{Binding ArtFile}" />
 					</StackPanel>
 				</DataTemplate>
 			</ListView.ItemTemplate>
 		</ListView>
 		<StatusBar Grid.Row="4" Margin="0,3,0,-2">
 			<StatusBarItem DockPanel.Dock="Right">
-				<Button Name="mStop" Visibility="Collapsed" Command="ApplicationCommands.Stop" Padding="10,0,10,0" Margin="0,-4,10,-4">Stop</Button>
+				<Button Padding="10,0,10,0" Margin="0,-4,10,-4"
+						Command="ApplicationCommands.Stop" Content="Stop">
+					<Button.Style>
+						<Style TargetType="{x:Type Button}">
+							<Setter Property="Visibility" Value="Collapsed"/>
+							<Style.Triggers>
+								<DataTrigger Binding="{Binding State}" Value="FindingFiles">
+									<Setter Property="Visibility" Value="Visible"/>
+								</DataTrigger>
+								<DataTrigger Binding="{Binding State}" Value="FindingArt">
+									<Setter Property="Visibility" Value="Visible"/>
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</Button.Style>
+				</Button>
 			</StatusBarItem>
-			<StatusBarItem Name="mStatus" Content="Ready"/>
+			<StatusBarItem>
+				<TextBlock>
+					<TextBlock.Style>
+						<Style TargetType="{x:Type TextBlock}">
+							<Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+							<Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=Text}"/>
+							<Setter Property="ToolTipService.IsEnabled">
+								<Setter.Value>
+									<MultiBinding Converter="{StaticResource mTooltipEnabledOnOverflowConverter}" Mode="OneWay">
+										<Binding RelativeSource="{RelativeSource Self}" Mode="OneWay"/>
+										<Binding Path="ActualWidth" RelativeSource="{RelativeSource Self}" Mode="OneWay"/>
+										<Binding Path="ToolTip" RelativeSource="{RelativeSource Self}" Mode="OneWay"/>
+									</MultiBinding>
+								</Setter.Value>
+							</Setter>
+							<Style.Triggers>
+								<DataTrigger Binding="{Binding State}" Value="Ready">
+									<Setter Property="Text" Value="Ready"/>
+								</DataTrigger>
+								<DataTrigger Binding="{Binding State}" Value="FindingFiles">
+									<Setter Property="Text" Value="{Binding ProgressText}"/>
+								</DataTrigger>
+								<DataTrigger Binding="{Binding State}" Value="FindingArt">
+									<Setter Property="Text" Value="{Binding ProgressText}"/>
+								</DataTrigger>
+								<DataTrigger Binding="{Binding State}" Value="Done">
+									<Setter Property="Text" Value="Done"/>
+								</DataTrigger>
+								<DataTrigger Binding="{Binding State}" Value="Stopped">
+									<Setter Property="Text" Value="Stopped"/>
+								</DataTrigger>
+								<DataTrigger Binding="{Binding State}" Value="Error">
+									<Setter Property="Text" Value="{Binding ErrorText}"/>
+								</DataTrigger>						
+							</Style.Triggers>
+						</Style>
+					</TextBlock.Style>
+				</TextBlock>
+			</StatusBarItem>
 		</StatusBar>
 	</Grid>
 </Window>

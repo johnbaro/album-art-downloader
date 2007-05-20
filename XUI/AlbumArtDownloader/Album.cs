@@ -2,13 +2,22 @@
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
+using System.ComponentModel;
 
 namespace AlbumArtDownloader
 {
+	internal enum ArtFileStatus
+	{
+		Unknown,
+		Queued,
+		Searching,
+		Present,
+		Missing
+	}
 	/// <summary>
 	/// An album, as found by one of the Browser tasks
 	/// </summary>
-	internal struct Album
+	internal class Album: INotifyPropertyChanged
 	{
 		public Album(string basePath, string artistName, string albumName)
 		{
@@ -59,11 +68,45 @@ namespace AlbumArtDownloader
 		/// <summary>
 		/// The art file, or null if none has been found
 		/// </summary>
-		private FileInfo mArtFile;
-		public FileInfo ArtFile
+		private string mArtFile;
+		public string ArtFile
 		{
 			get { return mArtFile; }
-			set { mArtFile = value; }
+			set
+			{
+				if (value != mArtFile)
+				{
+					mArtFile = value;
+					NotifyPropertyChanged("ArtFile");
+				}
+			}
 		}
+
+		private ArtFileStatus mArtFileStatus;
+		public ArtFileStatus ArtFileStatus
+		{
+			get { return mArtFileStatus; }
+			set
+			{
+				if (value != mArtFileStatus)
+				{
+					mArtFileStatus = value;
+					NotifyPropertyChanged("ArtFileStatus");
+				}
+			}
+		}
+
+		#region Property Notification
+		public event PropertyChangedEventHandler PropertyChanged;
+		private void NotifyPropertyChanged(string propertyName)
+		{
+			PropertyChangedEventHandler temp = PropertyChanged;
+			if (temp != null)
+			{
+				temp(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		#endregion
+
 	}
 }

@@ -27,7 +27,7 @@ namespace AlbumArtDownloader
 
 		private Thread mAutoDownloadFullSizeImagesThread;
 		private AutoResetEvent mAutoDownloadFullSizeImagesTrigger = new AutoResetEvent(true);
-		private Stack<AlbumArt> mResultsToAutoDownloadFullSizeImages = new Stack<AlbumArt>();
+		private Queue<AlbumArt> mResultsToAutoDownloadFullSizeImages = new Queue<AlbumArt>();
 		private CommandBinding mStopAllCommandBinding;
 
 		public ArtSearchWindow()
@@ -110,7 +110,7 @@ namespace AlbumArtDownloader
 						}
 						else
 						{
-							resultToProcess = mResultsToAutoDownloadFullSizeImages.Pop();
+							resultToProcess = mResultsToAutoDownloadFullSizeImages.Dequeue();
 						}
 					}
 					if (!resultToProcess.IsDownloading && !resultToProcess.IsFullSize && 
@@ -145,7 +145,7 @@ namespace AlbumArtDownloader
 		{
 			lock(mResultsToAutoDownloadFullSizeImages)
 			{
-				mResultsToAutoDownloadFullSizeImages.Push(result);
+				mResultsToAutoDownloadFullSizeImages.Enqueue(result);
 			}
 			mAutoDownloadFullSizeImagesTrigger.Set();
 		}
@@ -559,6 +559,25 @@ namespace AlbumArtDownloader
 		{
 			SaveSourceSettings();
 			SaveDefaultSaveFolderHistory();
+		}
+		string IAppWindow.Description
+		{
+			get
+			{
+				if (String.IsNullOrEmpty(mArtist.Text))
+				{
+					if (String.IsNullOrEmpty(mAlbum.Text))
+					{
+						return "Search";
+					}
+					return "Search: " + mAlbum.Text;
+				}
+				else if(String.IsNullOrEmpty(mAlbum.Text))
+				{
+					return "Search: " + mArtist.Text;
+				}
+				return String.Format("Search: {0} / {1}", mArtist.Text, mAlbum.Text);
+			}
 		}
 		#endregion
 

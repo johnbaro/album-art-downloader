@@ -50,19 +50,13 @@ namespace AlbumArtDownloader
 				((LocalFilesSourceSettings)CustomSettingsUI).mSearchPathPatternBox.AddPatternToHistory();
 			}));
 
-			string pathPattern = SearchPathPattern.Replace("%artist%", artist)
-												  .Replace("%album%", album)
-												//Replace these too, just in case path pattern was copied and pasted with them in, for example
-												.Replace("%name%", "*")
-												.Replace("%extension%", "*")
-												.Replace("%source%", "*")
-												.Replace("%size%", "*");
+			string pathPattern = Common.SubstitutePlaceholders(SearchPathPattern, artist, album);
 			
 			//Avoid duplicates
 			StringDictionary addedFiles = new StringDictionary();
 
 			//Match path with wildcards
-			foreach (string filename in ResolvePathPattern(pathPattern))
+			foreach (string filename in Common.ResolvePathPattern(pathPattern))
 			{
 				if (!addedFiles.ContainsKey(filename)) //Don't re-add a file that's already been added
 				{
@@ -95,91 +89,6 @@ namespace AlbumArtDownloader
 						System.Diagnostics.Trace.WriteLine(e.Message);
 						System.Diagnostics.Trace.Unindent();
 					}
-				}
-			}
-		}
-
-		private static Regex sPathPatternSplitter = new Regex(@"(?<fixed>(?:[^/\\*]*(?:[/\\]|$))*)(?<match>[^/\\]+)?[/\\]?(?<remainder>.*)", RegexOptions.Compiled);
-		private IEnumerable<string> ResolvePathPattern(string pathPattern)
-		{
-			Match match = sPathPatternSplitter.Match(pathPattern);
-
-			if (match.Groups["match"].Success)
-			{
-				//Theres a wildcard part of the path that needs matching against.
-				DirectoryInfo fixedPart = null;
-				try
-				{
-					fixedPart = new DirectoryInfo(match.Groups["fixed"].Value);
-				}
-				catch (Exception e)
-				{
-					//Path not valid, so no images to find
-					System.Diagnostics.Trace.WriteLine("Path not valid for local file search: " + match.Groups["fixed"].Value);
-					System.Diagnostics.Trace.Indent();
-					System.Diagnostics.Trace.WriteLine(e.Message);
-					System.Diagnostics.Trace.Unindent();
-					yield break;
-				}
-				if (fixedPart == null || !fixedPart.Exists)
-				{
-					//Path not found, so no images to find
-					System.Diagnostics.Trace.WriteLine("Path not found for local file search: " + match.Groups["fixed"].Value);
-					yield break;
-				}
-
-				//Find all the matching paths for the part of pattern specified
-				string searchPattern = match.Groups["match"].Value;
-				if (searchPattern == "**")
-				{
-					//Recursive folder matching wildcard
-					//Start with the current folder
-					foreach (string result in ResolvePathPattern(Path.Combine(fixedPart.FullName, match.Groups["remainder"].Value)))
-					{
-						yield return result;
-					}
-					//Go into subfolders
-					foreach (DirectoryInfo matchedPath in fixedPart.GetDirectories("*", SearchOption.AllDirectories))
-					{
-						foreach (string result in ResolvePathPattern(Path.Combine(matchedPath.FullName, match.Groups["remainder"].Value)))
-						{
-							yield return result;
-						}
-					}
-				}
-				else
-				{
-					//Normal wildcard
-					foreach (FileSystemInfo matchedPath in fixedPart.GetFileSystemInfos(searchPattern))
-					{
-						foreach (string result in ResolvePathPattern(Path.Combine(matchedPath.FullName, match.Groups["remainder"].Value)))
-						{
-							yield return result;
-						}
-					}
-				}
-			}
-			else
-			{
-				//There is no wildcard part of the path remaining, so check if it exists
-				if (Directory.Exists(pathPattern))
-				{
-					//It's a folder, so return all the files within it
-					foreach (string result in Directory.GetFiles(pathPattern))
-					{
-						yield return result;
-					}
-				}
-				else if (File.Exists(pathPattern))
-				{
-					//It's a file, so return it
-					yield return pathPattern;
-				}
-				else
-				{
-					//Path not found, so no images to find
-					System.Diagnostics.Trace.WriteLine("Path not found for local file search: " + match.Groups["fixed"].Value);
-					yield break;
 				}
 			}
 		}

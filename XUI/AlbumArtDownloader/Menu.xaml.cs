@@ -1,5 +1,7 @@
-﻿using System.Windows.Input;
+﻿using System;
+using System.Windows.Input;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace AlbumArtDownloader
 {
@@ -39,6 +41,44 @@ namespace AlbumArtDownloader
 			InitializeComponent();
 		}
 
+		private void OnWindowListOpened(object sender, RoutedEventArgs e)
+		{
+			//Populate the list with all the windows
+			MenuItem windowList = sender as MenuItem;
+			if (windowList != null)
+			{
+				windowList.Items.Clear();
+				int iWindow = 0;
+				IAppWindow thisWindow = Window.GetWindow(windowList) as IAppWindow;
+				
+				if(thisWindow != null)
+				{
+					//Add this window as the first in the list.
+					MenuItem thisWindowMenuItem = CreateWindowMenuItem(thisWindow, ++iWindow);
+					thisWindowMenuItem.IsChecked = true; //This is the active window
+					windowList.Items.Add(thisWindowMenuItem);
+				}
+
+				foreach (Window window in Application.Current.Windows)
+				{
+					if (window is IAppWindow && window != thisWindow) //Don't add this window again, it's already added.
+					{
+						windowList.Items.Add(CreateWindowMenuItem((IAppWindow)window, ++iWindow));
+					}
+				}
+			}
+		}
+
+		private MenuItem CreateWindowMenuItem(IAppWindow window, int windowIndex)
+		{
+			MenuItem windowMenuItem = new MenuItem();
+			windowMenuItem.Header = String.Format("_{0} {1}", windowIndex, window.Description);
+			windowMenuItem.IsCheckable = true;
+			windowMenuItem.Command = NavigationCommands.GoToPage;
+			windowMenuItem.CommandParameter = window;
+			return windowMenuItem;
+		}
+
 		#region Standard Handlers
 		private static void NewSearchWindowExec(object sender, ExecutedRoutedEventArgs e)
 		{
@@ -70,10 +110,14 @@ namespace AlbumArtDownloader
 		}
 		private static void GoToPageExec(object sender, ExecutedRoutedEventArgs e)
 		{
-			//TODO: Validation that this is a web address?
 			if (e.Parameter is string)
 			{
+				//TODO: Validation that this is a web address?
 				System.Diagnostics.Process.Start((string)e.Parameter);
+			}
+			else if (e.Parameter is Window)
+			{
+				((Window)e.Parameter).Activate();
 			}
 		}
 		#endregion
