@@ -13,4 +13,16 @@ namespace AlbumArtDownloader
 		WhenSizeUnknown,
 		Always
 	}
+
+	/// <summary>
+	/// States that the art file search can be in for the browsers
+	/// </summary>
+	public enum ArtFileStatus
+	{
+		Unknown,
+		Queued,
+		Searching,
+		Present,
+		Missing
+	}
 }

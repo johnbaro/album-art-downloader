@@ -6,14 +6,6 @@ using System.ComponentModel;
 
 namespace AlbumArtDownloader
 {
-	internal enum ArtFileStatus
-	{
-		Unknown,
-		Queued,
-		Searching,
-		Present,
-		Missing
-	}
 	/// <summary>
 	/// An album, as found by one of the Browser tasks
 	/// </summary>

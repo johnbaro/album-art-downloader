@@ -18,11 +18,13 @@
 	<Window.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/HyperlinkButton.generic.xaml"/>
 				<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/HyperlinkExpander.generic.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 
+			<controls:FileNameConverter x:Key="mFileNameConverter"/>
 			<controls:TooltipEnabledOnOverflowConverter x:Key="mTooltipEnabledOnOverflowConverter"/>
-			
+
 			<Win32:OpenFileDialog x:Key="mFilePathBrowser" Title="Specify folder to search for audio files" ValidateNames="False" CheckFileExists="False" CheckPathExists="True" Filter="Folders|."/>
 			<properties:Settings x:Key="mSettings"/>
 		</ResourceDictionary>
@@ -89,19 +91,85 @@
 			</Grid>
 		</Expander>
 		<ListView Grid.Row="3" Name="mResults">
-			<ListView.ItemTemplate>
-				<DataTemplate>
-					<StackPanel Orientation="Horizontal">
-						<TextBlock Text="{Binding Artist}"/>
-						<TextBlock Text=", " />
-						<TextBlock Text="{Binding Name}" />
-						<TextBlock Text=", " />
-						<TextBlock Text="{Binding ArtFileStatus}" />
-						<TextBlock Text=": " />
-						<TextBlock Text="{Binding ArtFile}" />
-					</StackPanel>
-				</DataTemplate>
-			</ListView.ItemTemplate>
+			<ListView.Resources>
+				<Style TargetType="{x:Type GridViewColumnHeader}">
+					<Setter Property="HorizontalContentAlignment" Value="Left"/>
+				</Style>
+			</ListView.Resources>
+			<ListView.View>
+				<GridView>
+					<GridViewColumn>
+						<GridViewColumn.Header>
+							<GridViewColumnHeader Command="ApplicationCommands.SelectAll">
+								<CheckBox ToolTip="Select All" IsChecked="{Binding Path=AllSelected}" Margin="2,0,2,0"/>
+							</GridViewColumnHeader>
+						</GridViewColumn.Header>
+						<GridViewColumn.CellTemplate>
+							<DataTemplate>
+								<CheckBox IsChecked="{Binding Path=IsSelected, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"/>
+							</DataTemplate>
+						</GridViewColumn.CellTemplate>
+					</GridViewColumn>
+					<GridViewColumn Header="Artist" DisplayMemberBinding="{Binding Artist}" Width="200"/>
+					<GridViewColumn Header="Album" DisplayMemberBinding="{Binding Name}" Width="200"/>
+					<GridViewColumn Header="Status" Width="200">
+						<GridViewColumn.CellTemplate>
+							<DataTemplate>
+								<StackPanel Orientation="Horizontal">
+									<Image Margin="0,0,2,0">
+										<Image.Style>
+											<Style TargetType="{x:Type Image}">
+												<Style.Triggers>
+													<DataTrigger Binding="{Binding ArtFileStatus}" Value="Searching">
+														<Setter Property="Source" Value="search.ico"/>
+													</DataTrigger>
+													<DataTrigger Binding="{Binding ArtFileStatus}" Value="Present">
+														<Setter Property="Source" Value="ArtPresent.png"/>
+													</DataTrigger>
+													<DataTrigger Binding="{Binding ArtFileStatus}" Value="Missing">
+														<Setter Property="Source" Value="ArtMissing.png"/>
+													</DataTrigger>
+												</Style.Triggers>
+											</Style>
+										</Image.Style>
+									</Image>
+									<TextBlock>
+										<TextBlock.Style>
+											<Style TargetType="{x:Type TextBlock}">
+												<Style.Triggers>
+													<DataTrigger Binding="{Binding ArtFileStatus}" Value="Searching">
+														<Setter Property="Text" Value="Searching..."/>
+													</DataTrigger>
+													<DataTrigger Binding="{Binding ArtFileStatus}" Value="Present">
+														<Setter Property="Text" Value="Found:"/>
+													</DataTrigger>
+													<DataTrigger Binding="{Binding ArtFileStatus}" Value="Missing">
+														<Setter Property="Text" Value="Not Present"/>
+													</DataTrigger>
+												</Style.Triggers>
+											</Style>
+										</TextBlock.Style>
+									</TextBlock>
+									<Button Margin="4,0,0,0"
+											Content="{Binding ArtFile, Converter={StaticResource mFileNameConverter}}" 
+											ToolTip="{Binding ArtFile}">
+										<Button.Style>
+											<Style TargetType="{x:Type Button}" BasedOn="{StaticResource HyperlinkButton}">
+												<Setter Property="Visibility" Value="Collapsed"/>
+												<Style.Triggers>
+													<DataTrigger Binding="{Binding ArtFileStatus}" Value="Present">
+														<Setter Property="Visibility" Value="Visible"/>
+													</DataTrigger>
+												</Style.Triggers>
+											</Style>
+										</Button.Style>
+									</Button>
+								</StackPanel>
+							</DataTemplate>
+						</GridViewColumn.CellTemplate>
+					</GridViewColumn>
+				</GridView>
+			</ListView.View>
 		</ListView>
 		<StatusBar Grid.Row="4" Margin="0,3,0,-2">
 			<StatusBarItem DockPanel.Dock="Right">
@@ -155,7 +223,7 @@
 								</DataTrigger>
 								<DataTrigger Binding="{Binding State}" Value="Error">
 									<Setter Property="Text" Value="{Binding ErrorText}"/>
-								</DataTrigger>						
+								</DataTrigger>
 							</Style.Triggers>
 						</Style>
 					</TextBlock.Style>

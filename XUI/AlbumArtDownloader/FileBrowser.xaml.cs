@@ -9,10 +9,11 @@ using System.Windows.Threading;
 using System.IO;
 using System.Reflection;
 using System.Collections.Specialized;
+using System.ComponentModel;
 
 namespace AlbumArtDownloader
 {
-	public partial class FileBrowser : System.Windows.Window, IAppWindow
+	public partial class FileBrowser : System.Windows.Window, INotifyPropertyChanged, IAppWindow
 	{
 		private enum MediaInfoState
 		{
@@ -58,10 +59,13 @@ namespace AlbumArtDownloader
 
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Find, new ExecutedRoutedEventHandler(FindExec)));
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Stop, new ExecutedRoutedEventHandler(StopExec)));
+			CommandBindings.Add(new CommandBinding(ApplicationCommands.SelectAll, new ExecutedRoutedEventHandler(SelectAllExec)));
 
 			IsVisibleChanged += new DependencyPropertyChangedEventHandler(OnIsVisibleChanged);
 
 			mAlbums.CollectionChanged += new NotifyCollectionChangedEventHandler(OnAlbumsCollectionChanged);
+
+			mResults.SelectionChanged += new SelectionChangedEventHandler(OnSelectionChanged);
 
 			CreateArtFileSearchThread();
 		}
@@ -192,6 +196,78 @@ namespace AlbumArtDownloader
 		private void StopExec(object sender, RoutedEventArgs e)
 		{
 			AbortSearch();
+		}
+
+		private void SelectAllExec(object sender, RoutedEventArgs e)
+		{
+			AllSelected = !AllSelected.GetValueOrDefault(true); //Mimic behaviour of clicking on the checkbox.
+		}
+		#endregion
+
+		#region Select All
+		private bool mSettingAllSelected = false; //Flag to prevent listening to IsSelected changes when setting them all
+		private bool? mAllSelected = false;
+		/// <summary>
+		/// This can be set to true, to enable all sources, false, to disable them all,
+		/// or null to leave them as they are. It will return true if all sources are
+		/// Selected, false if they are all disabled, or null if they are mixed.
+		/// </summary>
+		public bool? AllSelected
+		{
+			get
+			{
+				return mAllSelected;
+			}
+			set
+			{
+				if (value != mAllSelected)
+				{
+					if (value.HasValue)
+					{
+						mSettingAllSelected = true;
+						if (value.Value)
+						{
+							mResults.SelectAll();
+						}
+						else
+						{
+							mResults.SelectedItems.Clear();
+						}
+						mSettingAllSelected = false;
+					}
+					mAllSelected = value;
+					NotifyPropertyChanged("AllSelected");
+				}
+			}
+		}
+		private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			if (!mSettingAllSelected) //Ignore selection change while setting selection from AllSelected setter.
+			{
+				if (e.RemovedItems.Count > 0)
+				{
+					//Check to see if there is now nothing selected
+					if (mResults.SelectedItems.Count == 0)
+					{
+						mAllSelected = false; //Don't change through the accessor, so it doesn't bother trying to reapply the selection
+						NotifyPropertyChanged("AllSelected");
+						return;
+					}
+				}
+				if (e.AddedItems.Count > 0)
+				{
+					//Check to see if there is now all selected
+					if (mResults.SelectedItems.Count == mResults.Items.Count)
+					{
+						mAllSelected = true; //Don't change through the accessor, so it doesn't bother trying to reapply the selection
+						NotifyPropertyChanged("AllSelected");
+						return;
+					}
+				}
+				//Not all items are selected, so set property as mixed.
+				mAllSelected = null;
+				NotifyPropertyChanged("AllSelected");
+			}
 		}
 		#endregion
 
@@ -478,6 +554,18 @@ namespace AlbumArtDownloader
 					State = BrowserState.Stopped;
 				}));
 				return;
+			}
+		}
+		#endregion
+
+		#region Property Notification
+		public event PropertyChangedEventHandler PropertyChanged;
+		private void NotifyPropertyChanged(string propertyName)
+		{
+			PropertyChangedEventHandler temp = PropertyChanged;
+			if (temp != null)
+			{
+				temp(this, new PropertyChangedEventArgs(propertyName));
 			}
 		}
 		#endregion
