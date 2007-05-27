@@ -1,9 +1,10 @@
-0.5 Added Single-Instance behaviour. Only one instance of the application will now be
+0.5 Added File Browser
+    Added Single-Instance behaviour. Only one instance of the application will now be
      allowed to run (others will have their command line parameters passed on to the first
      for execution).
-    Added FreeCovers script
-    Added File Browser
     Added Window list menu.
+    Added FreeCovers script, and updated Google script
+    Improved detection of changed scripts for recreating the script cache
     
 0.4 Local Files Source now has the ability to specify the path to search for images in
      separately to the path to save images in. Set this either in the Local Files Source

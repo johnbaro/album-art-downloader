@@ -48,6 +48,18 @@ namespace AlbumArtDownloader
 				//Move the window a little, so that it is obvious it is a new window
 				newWindow.Left = oldWindow.Left + 40;
 				newWindow.Top = oldWindow.Top + 40;
+
+				//TODO: Neater laying out of windows which would go off the screen. Note how Firefox handles this, for example, when opening lots of new non-maximised windows.
+				//TODO: Multimonitor support.
+				if (newWindow.Left + newWindow.Width > SystemParameters.PrimaryScreenWidth)
+				{
+					//For the present, just make sure that the window doesn't leave the screen.
+					newWindow.Left = SystemParameters.PrimaryScreenWidth - newWindow.Width;
+				}
+				if (newWindow.Top + newWindow.Height > SystemParameters.PrimaryScreenHeight)
+				{
+					newWindow.Top = SystemParameters.PrimaryScreenHeight - newWindow.Height;
+				}
 			}
 
 			newWindow.Show();

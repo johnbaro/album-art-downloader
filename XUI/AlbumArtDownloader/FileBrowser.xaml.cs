@@ -10,6 +10,7 @@ using System.IO;
 using System.Reflection;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Windows.Media;
 
 namespace AlbumArtDownloader
 {
@@ -21,25 +22,16 @@ namespace AlbumArtDownloader
 			Initialised,
 			Error
 		}
-
-		public enum BrowserState
-		{
-			/// <summary>No search been performed yet.</summary>
-			Ready,
-			/// <summary>Finding media files with artist and album tags, and simultaneously finding art for them.</summary>
-			FindingFiles,
-			/// <summary>No longer finding media files, only finding art for albums already located.</summary>
-			FindingArt,
-			/// <summary>Search completed successfully.</summary>
-			Done,
-			/// <summary>Search stopped by user.</summary>
-			Stopped,
-			/// <summary>Search abandoned due to error.</summary>
-			Error
-		}
-
 		private static MediaInfoLib.MediaInfo sMediaInfo;
 		private static MediaInfoState sMediaInfoState;
+
+		public static class Commands
+		{
+			public static RoutedUICommand SelectMissing = new RoutedUICommand("Select Missing", "SelectMissing", typeof(Commands));
+			public static RoutedUICommand GetArtwork = new RoutedUICommand("Get Artwork", "GetArtwork", typeof(Commands));
+			/// <summary>Displays the file passed in as the parameter to the command in Windows Explorer</summary>
+			public static RoutedUICommand ShowInExplorer = new RoutedUICommand("Show in Explorer", "ShowInExplorer", typeof(Commands));
+		}
 
 		private Thread mSearchThread;
 		private ObservableAlbumCollection mAlbums = new ObservableAlbumCollection();
@@ -60,12 +52,16 @@ namespace AlbumArtDownloader
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Find, new ExecutedRoutedEventHandler(FindExec)));
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Stop, new ExecutedRoutedEventHandler(StopExec)));
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.SelectAll, new ExecutedRoutedEventHandler(SelectAllExec)));
+			CommandBindings.Add(new CommandBinding(Commands.SelectMissing, new ExecutedRoutedEventHandler(SelectMissingExec)));
+			CommandBindings.Add(new CommandBinding(Commands.GetArtwork, new ExecutedRoutedEventHandler(GetArtworkExec), new CanExecuteRoutedEventHandler(GetArtworkCanExec)));
+			CommandBindings.Add(new CommandBinding(Commands.ShowInExplorer, new ExecutedRoutedEventHandler(ShowInExplorerExec)));
 
 			IsVisibleChanged += new DependencyPropertyChangedEventHandler(OnIsVisibleChanged);
 
 			mAlbums.CollectionChanged += new NotifyCollectionChangedEventHandler(OnAlbumsCollectionChanged);
 
 			mResults.SelectionChanged += new SelectionChangedEventHandler(OnSelectionChanged);
+			mResults.MouseDoubleClick += new MouseButtonEventHandler(OnResultsDoubleClicked);
 
 			CreateArtFileSearchThread();
 		}
@@ -187,20 +183,115 @@ namespace AlbumArtDownloader
 		}
 
 		#region Command Handlers
-		private void FindExec(object sender, RoutedEventArgs e)
+		private void FindExec(object sender, ExecutedRoutedEventArgs e)
 		{
 			mImagePathPatternBox.AddPatternToHistory();
 			Search(mFilePathBox.Text, mIncludeSubfolders.IsChecked.GetValueOrDefault(), mImagePathPatternBox.PathPattern);
 		}
 
-		private void StopExec(object sender, RoutedEventArgs e)
+		private void StopExec(object sender, ExecutedRoutedEventArgs e)
 		{
 			AbortSearch();
 		}
 
-		private void SelectAllExec(object sender, RoutedEventArgs e)
+		private void SelectAllExec(object sender, ExecutedRoutedEventArgs e)
 		{
 			AllSelected = !AllSelected.GetValueOrDefault(true); //Mimic behaviour of clicking on the checkbox.
+		}
+
+		private void SelectMissingExec(object sender, ExecutedRoutedEventArgs e)
+		{
+			mResults.SelectAll(); //Adding items to the selection programatically is irritatingly difficult, so remove them instead.
+			for (int i = 0; i < mResults.Items.Count; i++)
+			{
+				Album album = (Album)mResults.Items[i];
+				if (album.ArtFileStatus != ArtFileStatus.Missing)
+				{
+					mResults.SelectedItems.Remove(album);
+				}
+			}
+		}
+
+		private void GetArtworkCanExec(object sender, CanExecuteRoutedEventArgs e)
+		{
+			e.CanExecute = mResults.SelectedItems.Count > 0; //Can't execute if there aren't any selected items.
+		}
+
+		/// <summary>
+		/// When creating new multiple search windows, offset each by this amount so that they aren't all on top of each other.
+		/// </summary>
+		private static readonly int sSearchWindowCascadeOffset = 20;
+		private void GetArtworkExec(object sender, ExecutedRoutedEventArgs e)
+		{
+			//Don't substitute placeholders, but do substitute recursive path matching with the simplest solution to it, just putting saving to the immediate subfolder
+			string artFileSearchPattern = mImagePathPattern.Replace("\\**\\","\\");
+			int i = 0;
+			foreach (Album album in mResults.SelectedItems)
+			{
+				//If the image path is relative, get an absolute path for it.
+				if (!Path.IsPathRooted(artFileSearchPattern))
+				{
+					artFileSearchPattern = Path.Combine(album.BasePath, artFileSearchPattern);
+				}
+
+				//TODO: Some sort of queueing?
+				ArtSearchWindow searchWindow = Common.NewSearchWindow(this);
+				searchWindow.Top += i * sSearchWindowCascadeOffset;
+				searchWindow.Left += i * sSearchWindowCascadeOffset;
+
+				//TODO: Neater laying out of windows which would go off the screen. Note how Firefox handles this, for example, when opening lots of new non-maximised windows.
+				//TODO: Multimonitor support.
+				if (searchWindow.Left + searchWindow.Width > SystemParameters.PrimaryScreenWidth)
+				{
+					//For the present, just make sure that the window doesn't leave the screen.
+					searchWindow.Left = SystemParameters.PrimaryScreenWidth - searchWindow.Width;
+				}
+				if (searchWindow.Top + searchWindow.Height > SystemParameters.PrimaryScreenHeight)
+				{
+					searchWindow.Top = SystemParameters.PrimaryScreenHeight - searchWindow.Height;
+				}
+
+				searchWindow.SetDefaultSaveFolderPattern(artFileSearchPattern); //Default save to the location where the image was searched for.
+				searchWindow.Search(album.Artist, album.Name); //Kick off the search.
+				searchWindow.Closed += new EventHandler(delegate(object win, EventArgs ev)
+				  {
+					  QueueAlbumForArtFileSearch(album);
+				  }); //Watch for the window being closed to update the status of the artwork
+
+				i++;
+			}
+		}
+
+		private void OnResultsDoubleClicked(object sender, MouseButtonEventArgs e)
+		{
+			DependencyObject parent = e.OriginalSource as DependencyObject;
+			while (parent != null)
+			{
+				if (parent is ListViewItem)
+				{
+					//A list item was double clicked on, so get artwork for it
+					e.Handled = true;
+					System.Diagnostics.Debug.Assert(mResults.SelectedItems.Count == 1, "Expecting only the double clicked item to be selected");
+					GetArtworkExec(null, null);
+					return;
+				}
+				else if (parent == sender)
+				{
+					//A list item was not double clicked on, something else was
+					break;
+				}
+				parent = VisualTreeHelper.GetParent(parent);
+			}
+			//Do nothing for double click happening elsewhere.
+		}
+
+		private void ShowInExplorerExec(object sender, ExecutedRoutedEventArgs e)
+		{
+			if (e.Parameter is string)
+			{
+				//TODO: Validation that this is a file path?
+				System.Diagnostics.Process.Start("explorer.exe", String.Format("/select,{0}", e.Parameter));
+			}
 		}
 		#endregion
 

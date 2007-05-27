@@ -2,15 +2,18 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Collections.Specialized;
+using System.Collections;
 
 namespace AlbumArtDownloader
 {
 	/// <summary>
 	/// An observable collection of albums, unique by artist and album name (case insensitive).
 	/// </summary>
-	internal class ObservableAlbumCollection : ICollection<Album>, INotifyCollectionChanged
+	internal class ObservableAlbumCollection : IList<Album>, INotifyCollectionChanged, IList
 	{
 		private Dictionary<string, Dictionary<string, Album>> mAlbumsByArtist = new Dictionary<string,Dictionary<string,Album>>();
+		private List<Album> mAlbumsByIndex = new List<Album>(); //Maintain a separate list by index, for implementing IList
+
 		private int mVersion; //Tick to check for enumeration invalidation
 
 		public event NotifyCollectionChangedEventHandler CollectionChanged;
@@ -23,7 +26,21 @@ namespace AlbumArtDownloader
 			}
 		}
 
+		int IList.Add(object album)
+		{
+			Add((Album)album);
+			return Count - 1;
+		}
 		public void Add(Album album)
+		{
+			Insert(Count, album);
+		}
+
+		void IList.Insert(int index, object album)
+		{
+			Insert(index, (Album)album);
+		}
+		public void Insert(int index, Album album)
 		{
 			//Check for uniquness
 			string artistNameKey = album.Artist.ToLowerInvariant();
@@ -38,6 +55,7 @@ namespace AlbumArtDownloader
 					{
 						//Unique
 						artistAlbums.Add(albumNameKey, album);
+						mAlbumsByIndex.Insert(index, album);
 						mVersion++;
 						RaiseCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, album));
 					}
@@ -48,12 +66,22 @@ namespace AlbumArtDownloader
 					artistAlbums = new Dictionary<string, Album>();
 					artistAlbums.Add(albumNameKey, album);
 					mAlbumsByArtist.Add(artistNameKey, artistAlbums);
+					mAlbumsByIndex.Insert(index, album);
 					mVersion++;
 					RaiseCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, album));
 				}
 			}
 		}
 
+		public void RemoveAt(int index)
+		{
+			Remove(this[index]);
+		}
+
+		void IList.Remove(object album)
+		{
+			Remove((Album)album);
+		}
 		public bool Remove(Album album)
 		{
 			string artistNameKey = album.Artist.ToLowerInvariant();
@@ -66,6 +94,7 @@ namespace AlbumArtDownloader
 				{
 					if (artistAlbums.Remove(albumNameKey))
 					{
+						mAlbumsByIndex.Remove(album);
 						mVersion++;
 						RaiseCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, album));
 						return true;
@@ -80,11 +109,16 @@ namespace AlbumArtDownloader
 			lock (this)
 			{
 				mAlbumsByArtist.Clear();
+				mAlbumsByIndex.Clear();
 				mVersion++;
 				RaiseCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
 			}
 		}
 
+		bool IList.Contains(object album)
+		{
+			return Contains((Album)album);
+		}
 		public bool Contains(Album album)
 		{
 			string artistNameKey = album.Artist.ToLowerInvariant();
@@ -108,25 +142,20 @@ namespace AlbumArtDownloader
 		{
 			get 
 			{
-				int count = 0;
 				lock (this)
 				{
-					foreach (Dictionary<string, Album> artistAlbums in mAlbumsByArtist.Values)
-					{
-						count += artistAlbums.Count;
-					}
+					return mAlbumsByIndex.Count;
 				}
-				return count;
 			}
 		}
 		public IEnumerator<Album> GetEnumerator()
 		{
-			return new Enumerator(this);
+			return mAlbumsByIndex.GetEnumerator();
 		}
 
-		System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+		IEnumerator IEnumerable.GetEnumerator()
 		{
-			return new Enumerator(this);
+			return ((IEnumerable)mAlbumsByIndex).GetEnumerator();
 		}
 
 		public bool IsReadOnly
@@ -134,69 +163,61 @@ namespace AlbumArtDownloader
 			get { return false; }
 		}
 
+		void ICollection.CopyTo(Array array, int index)
+		{
+			((IList)mAlbumsByIndex).CopyTo(array, index);
+		}
 		public void CopyTo(Album[] array, int arrayIndex)
 		{
-			List<Album> flatList = new List<Album>(this);
-			flatList.CopyTo(array, arrayIndex);
+			mAlbumsByIndex.CopyTo(array, arrayIndex);
 		}
 
-		private class Enumerator : IEnumerator<Album>, System.Collections.IEnumerator
+		int IList.IndexOf(object album)
 		{
-			private IEnumerator<Album> mInnerEnumerator;
-			private ObservableAlbumCollection mObservableAlbumCollection;
-			private int mVersion;
+			return IndexOf((Album)album);
+		}
+		public int IndexOf(Album album)
+		{
+			return mAlbumsByIndex.IndexOf(album);
+		}
 
-			public Enumerator(ObservableAlbumCollection observableAlbumCollection)
+		object IList.this[int index]
+		{
+			get
 			{
-				mObservableAlbumCollection = observableAlbumCollection;
-				mVersion = mObservableAlbumCollection.mVersion;
-				mInnerEnumerator = GetAllAlbums().GetEnumerator();
+				return this[index];
 			}
-
-			private IEnumerable<Album> GetAllAlbums()
+			set
 			{
-				foreach (Dictionary<string, Album> artistAlbums in mObservableAlbumCollection.mAlbumsByArtist.Values)
-				{
-					foreach (Album album in artistAlbums.Values)
-					{
-						yield return album;
-					}
-				}
+				this[index] = (Album)value;
 			}
-
-			public void Dispose()
+		}
+		public Album this[int index]
+		{
+			get
 			{
-				mInnerEnumerator.Dispose();
-				mInnerEnumerator = null;
+				return mAlbumsByIndex[index];
 			}
-
-			public Album Current
+			set
 			{
-				get { return mInnerEnumerator.Current; }
+				RemoveAt(index);
+				Insert(index, value);
 			}
+		}
 
-			object System.Collections.IEnumerator.Current
-			{
-				get { return Current; }
-			}
+		bool IList.IsFixedSize
+		{
+			get { return false; }
+		}
 
-			public bool MoveNext()
-			{
-				//NOTE: Sometimes in WPF Binding this exception is expected, and is handled by the list view control
-				if (mVersion != mObservableAlbumCollection.mVersion)
-					throw new InvalidOperationException("Collection was modified; enumeration operation may not execute.");
+		bool ICollection.IsSynchronized
+		{
+			get { return ((IList)mAlbumsByIndex).IsSynchronized; }
+		}
 
-				return mInnerEnumerator.MoveNext();
-			}
-
-			public void Reset()
-			{
-				//NOTE: Sometimes in WPF Binding this exception is expected, and is handled by the list view control
-				if (mVersion != mObservableAlbumCollection.mVersion)
-					throw new InvalidOperationException("Collection was modified; enumeration operation may not execute.");
-
-				mInnerEnumerator.Reset();
-			}
+		object ICollection.SyncRoot
+		{
+			get { return ((IList)mAlbumsByIndex).SyncRoot; }
 		}
 	}
 }

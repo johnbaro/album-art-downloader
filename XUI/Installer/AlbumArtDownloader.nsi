@@ -55,6 +55,9 @@ SectionEnd
 Section "Amazon (US)"
   File "..\Scripts\Scripts\amazon.boo"
 SectionEnd
+Section "Amazon (DE)"
+  File "..\Scripts\Scripts\amazon_de.boo"
+SectionEnd
 Section "Google"
   File "..\Scripts\Scripts\google.boo"
 SectionEnd

@@ -37,7 +37,18 @@ namespace AlbumArtDownloader
 					if (scriptFolder.LastWriteTimeUtc <= cacheFileInfo.LastWriteTimeUtc)
 					{
 						//The folder hasn't been changed (file added or removed, or edited) since the cache file was created
-						return true;
+						//Check to see if any files within it have been modified since that time (as this doesn't seem to trigger the LastWriteTime of the folder reliably)
+						bool fileTouched = false;
+						foreach (FileInfo fileInfo in scriptFolder.GetFiles())
+						{
+							if (fileInfo.LastWriteTimeUtc > cacheFileInfo.LastWriteTimeUtc)
+							{
+								fileTouched = true;
+								break;
+							}
+						}
+						if(!fileTouched)
+							return true;
 					}					
 				}
 			}

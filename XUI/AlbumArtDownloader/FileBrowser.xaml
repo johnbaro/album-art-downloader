@@ -20,9 +20,12 @@
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/HyperlinkButton.generic.xaml"/>
 				<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/HyperlinkExpander.generic.xaml"/>
+				<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/Statusbar.generic.xaml"/>
+				<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/SortableColumnHeader.generic.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 
 			<controls:FileNameConverter x:Key="mFileNameConverter"/>
+			<controls:StringFormatterConverter x:Key="mStringFormatterConverter"/>
 			<controls:TooltipEnabledOnOverflowConverter x:Key="mTooltipEnabledOnOverflowConverter"/>
 
 			<Win32:OpenFileDialog x:Key="mFilePathBrowser" Title="Specify folder to search for audio files" ValidateNames="False" CheckFileExists="False" CheckPathExists="True" Filter="Folders|."/>
@@ -35,6 +38,7 @@
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="*"/>
+			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 
@@ -90,13 +94,16 @@
 				</controls:ArtPathPatternBox>
 			</Grid>
 		</Expander>
-		<ListView Grid.Row="3" Name="mResults">
-			<ListView.Resources>
+		<controls:SortableListView Grid.Row="3" Name="mResults"
+								   ColumnHeaderSortedAscendingTemplate="ColumnHeaderSortedAscendingTemplate"
+								   ColumnHeaderSortedDescendingTemplate="ColumnHeaderSortedDescendingTemplate"
+								   ColumnHeaderNotSortedTemplate="ColumnHeaderNotSortedTemplate">
+			<controls:SortableListView.Resources>
 				<Style TargetType="{x:Type GridViewColumnHeader}">
 					<Setter Property="HorizontalContentAlignment" Value="Left"/>
 				</Style>
-			</ListView.Resources>
-			<ListView.View>
+			</controls:SortableListView.Resources>
+			<controls:SortableListView.View>
 				<GridView>
 					<GridViewColumn>
 						<GridViewColumn.Header>
@@ -110,10 +117,10 @@
 							</DataTemplate>
 						</GridViewColumn.CellTemplate>
 					</GridViewColumn>
-					<GridViewColumn Header="Artist" DisplayMemberBinding="{Binding Artist}" Width="200"/>
-					<GridViewColumn Header="Album" DisplayMemberBinding="{Binding Name}" Width="200"/>
-					<GridViewColumn Header="Status" Width="200">
-						<GridViewColumn.CellTemplate>
+					<controls:SortableGridViewColumn Header="Artist" SortPropertyName="Artist" DisplayMemberBinding="{Binding Artist}" Width="200"/>
+					<controls:SortableGridViewColumn Header="Album" SortPropertyName="Name" DisplayMemberBinding="{Binding Name}" Width="200"/>
+					<controls:SortableGridViewColumn Header="Artwork Status" SortPropertyName="ArtFileStatus" Width="200">
+						<controls:SortableGridViewColumn.CellTemplate>
 							<DataTemplate>
 								<StackPanel Orientation="Horizontal">
 									<Image Margin="0,0,2,0">
@@ -151,6 +158,7 @@
 										</TextBlock.Style>
 									</TextBlock>
 									<Button Margin="4,0,0,0"
+											Command="{x:Static local:FileBrowser+Commands.ShowInExplorer}" CommandParameter="{Binding ArtFile}"
 											Content="{Binding ArtFile, Converter={StaticResource mFileNameConverter}}" 
 											ToolTip="{Binding ArtFile}">
 										<Button.Style>
@@ -166,14 +174,36 @@
 									</Button>
 								</StackPanel>
 							</DataTemplate>
-						</GridViewColumn.CellTemplate>
-					</GridViewColumn>
+						</controls:SortableGridViewColumn.CellTemplate>
+					</controls:SortableGridViewColumn>
 				</GridView>
-			</ListView.View>
-		</ListView>
-		<StatusBar Grid.Row="4" Margin="0,3,0,-2">
+			</controls:SortableListView.View>
+		</controls:SortableListView>
+		<Grid Grid.Row="4" Margin="4,4,0,4">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="Auto"/>
+			</Grid.ColumnDefinitions>
+			<TextBlock Grid.Row="0" Margin="0,0,0,4">
+				<TextBlock.Text>
+					<MultiBinding Converter="{StaticResource mStringFormatterConverter}" ConverterParameter="{}{0} of {1} albums selected" Mode="OneWay">
+						<Binding ElementName="mResults" Path="SelectedItems.Count"/>
+						<Binding ElementName="mResults" Path="Items.Count"/>
+					</MultiBinding>
+				</TextBlock.Text>
+			</TextBlock>
+			<Button Grid.Row="1" VerticalAlignment="Top" Style="{StaticResource HyperlinkButton}"
+					Command="{x:Static local:FileBrowser+Commands.SelectMissing}" Content="Select all albums with missing artwork"/>
+			<Button Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Padding="10,-4,10,-4"
+					Command="{x:Static local:FileBrowser+Commands.GetArtwork}" Content="Get Artwork for Selection..."/>
+		</Grid>
+		<StatusBar Grid.Row="5" Margin="-5,0,-5,-5" Padding="5,2,5,2">
 			<StatusBarItem DockPanel.Dock="Right">
-				<Button Padding="10,0,10,0" Margin="0,-4,10,-4"
+				<Button Padding="10,-3,10,-1" Margin="0,-3,10,-5"
 						Command="ApplicationCommands.Stop" Content="Stop">
 					<Button.Style>
 						<Style TargetType="{x:Type Button}">

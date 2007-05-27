@@ -13,20 +13,22 @@ class GoogleImage:
 	static SourceName as string:
 		get: return "GoogleImage"
 	static SourceCreator as string:
-		get: return "Unknown, Marc Landis"
+		get: return "Unknown, Marc Landis, zheka"
 	static SourceVersion as string:
-		get: return "0.4"
+		get: return "0.5"
 	static def GetThumbs(coverart,artist,album):
 		query = artist+" "+album
 		params = EncodeUrl(query)
 		params.Replace('%20','+')
 		textstream = GetPageSecret("http://images.google.com/images?q="+params)
 		text = System.IO.StreamReader(textstream).ReadToEnd()
-		r = Regex("""dyn\.Img\("([^"]*)","([^"]*)","([^"]*)","([^"]*)","([^"]*)","([^"]*)","([^"]*)","([^"]*)","([^"]*)","([^"]*)","([^"]*)","([^"]*)","([^"]*)","([^"]*)","([^"]*)"\)""")
+		r = Regex("""dyn\.Img\("([^"]*)","([^"]*)","([^"]*)","([^"]*)","([^"]*)","([^"]*)","([^"]*)","([^"]*)","([^"]*)","([^"]*)","([^"]*)","([^"]*)","([^"]*)","([^"]*)","([^"]*)","([^"]*)"\)""")
+
 		iterator = r.Matches(text)
 		coverart.SetCountEstimate(iterator.Count)
 		for result as Match in iterator:
 			name=Regex.Replace(Regex.Replace(result.Groups[7].Value,".x3cb.x3e",""),".x3c/b.x3e","")
+			#name=(result.Groups[4].Value.Replace("<b>","").Replace("</b>",""))
 			sizeString = result.Groups[10].Value
 			sizeRegex = Regex("(?<width>\\d+) x (?<height>\\d+)")
 			match = sizeRegex.Matches(sizeString)[0]

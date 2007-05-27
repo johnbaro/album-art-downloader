@@ -9,7 +9,7 @@ namespace AlbumArtDownloader.Controls
 	/// <summary>
 	/// Formats the values according to the string formatter specified as the parameter
 	/// </summary>
-	internal class StringFormatterConverter : IMultiValueConverter
+	public class StringFormatterConverter : IMultiValueConverter
 	{
 		public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
 		{

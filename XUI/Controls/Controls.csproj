@@ -52,6 +52,8 @@
     <Compile Include="ISource.cs" />
     <Compile Include="MultiEqualityConverter.cs" />
     <Compile Include="PatternPlaceholder.cs" />
+    <Compile Include="SortableGridViewColumn.cs" />
+    <Compile Include="SortableListView.cs" />
     <Compile Include="SourcePanel.cs" />
     <Compile Include="EqualityConverter.cs" />
     <Compile Include="IAlbumArt.cs" />
@@ -65,6 +67,8 @@
     <Page Include="themes\ArtPanelList.generic.xaml" />
     <Page Include="themes\ArtPanelListSortPicker.generic.xaml" />
     <Page Include="themes\ArtPathPatternBox.generic.xaml" />
+    <Page Include="themes\SortableColumnHeader.generic.xaml" />
+    <Page Include="themes\StatusBar.generic.xaml" />
     <Page Include="themes\LimitBox.generic.xaml" />
     <Page Include="themes\HyperlinkExpander.generic.xaml" />
     <Page Include="themes\SimpleList.generic.xaml" />
