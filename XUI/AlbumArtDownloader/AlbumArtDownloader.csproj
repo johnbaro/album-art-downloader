@@ -58,6 +58,7 @@
       <HintPath>..\..\ThirdParty Assemblies\Boo.Lang.Parser.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.configuration" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="UIAutomationProvider">

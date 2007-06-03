@@ -1,5 +1,5 @@
 !define PRODUCT_NAME "Album Art Downloader XUI"
-!define PRODUCT_VERSION "0.5"
+!define PRODUCT_VERSION "0.6"
 !define PRODUCT_WEB_SITE "https://sourceforge.net/projects/album-art"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\AlbumArt.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
@@ -44,14 +44,15 @@ Section "!Album Art Downloader"
   CreateShortCut "$SMPROGRAMS\Album Art Downloader\Album Art Downloader.lnk" "$INSTDIR\AlbumArt.exe"
 SectionEnd
 
-SectionGroup "Image Download Scripts"
 Section -ScriptsPath
 SetOutPath "$INSTDIR\Scripts"
 SetOverwrite ifnewer
-#delete ScriptCache, just to be sure. It should be updated automatically, though
+#delete old script cache file
 Delete "$INSTDIR\Scripts\boo script cache.dll"
+File "..\Scripts\Scripts\util.boo"
 SectionEnd
 
+SectionGroup "Image Download Scripts"
 Section "Amazon (US)"
   File "..\Scripts\Scripts\amazon.boo"
 SectionEnd
@@ -91,12 +92,8 @@ SectionEnd
 Section "Artists.Trivialbeing (artist images)"
   File "..\Scripts\Scripts\artists.trivialbeing.boo"
 SectionEnd
-
-Section "-Other Scripts"
-  File /nonfatal "..\Scripts\Scripts\*.boo"
-SectionEnd
-
 SectionGroupEnd
+
 
 Section -AdditionalIcons
   CreateShortCut "$SMPROGRAMS\Album Art Downloader\Uninstall.lnk" "$INSTDIR\uninst.exe"
@@ -129,8 +126,6 @@ Section Uninstall
   Delete "$INSTDIR\errorlog.txt"
   Delete "$INSTDIR\*.dll"
   Delete "$INSTDIR\Scripts\*.boo"
-  Delete "$INSTDIR\Scripts\boo script cache.dll"
-  Delete "$INSTDIR\Scripts\boo script cache.pdb" #Shouldn't be created, but again, just in case
   RMDir "$INSTDIR\Scripts"
   RMDir "$INSTDIR"
 

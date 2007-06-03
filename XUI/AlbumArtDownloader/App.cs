@@ -317,41 +317,44 @@ namespace AlbumArtDownloader
 		private void LoadScripts()
 		{
 			mScripts = new List<IScript>();
-			foreach (string dllFile in Directory.GetFiles(ScriptsPath, "*.dll"))
+			foreach (string scriptsPath in ScriptsPaths)
 			{
-				try
+				foreach (string dllFile in Directory.GetFiles(scriptsPath, "*.dll"))
 				{
-					Assembly assembly = Assembly.LoadFile(dllFile);
-					foreach (Type type in assembly.GetTypes())
+					try
 					{
-						try
+						Assembly assembly = Assembly.LoadFile(dllFile);
+						foreach (Type type in assembly.GetTypes())
 						{
-							IScript script = null;
-							//Check for types implementing IScript
-							if (typeof(IScript).IsAssignableFrom(type))
+							try
 							{
-								script = (IScript)Activator.CreateInstance(type);
-							}
-							//Check for static scripts (for backwards compatibility)
-							else if (type.Namespace == "CoverSources")
-							{
-								script = new StaticScript(type);
-							}
+								IScript script = null;
+								//Check for types implementing IScript
+								if (typeof(IScript).IsAssignableFrom(type))
+								{
+									script = (IScript)Activator.CreateInstance(type);
+								}
+								//Check for static scripts (for backwards compatibility)
+								else if (type.Namespace == "CoverSources")
+								{
+									script = new StaticScript(type);
+								}
 
-							if (script != null)
-								mScripts.Add(script);
-						}
-						catch (Exception e)
-						{
-							//Skip the type. Does this need to display a user error message?
-							System.Diagnostics.Debug.Fail(String.Format("Could not load script: {0}\n\n{1}", type.Name, e.Message));
+								if (script != null)
+									mScripts.Add(script);
+							}
+							catch (Exception e)
+							{
+								//Skip the type. Does this need to display a user error message?
+								System.Diagnostics.Debug.Fail(String.Format("Could not load script: {0}\n\n{1}", type.Name, e.Message));
+							}
 						}
 					}
-				}
-				catch (Exception e)
-				{
-					//Skip the assembly
-					System.Diagnostics.Debug.Fail(String.Format("Could not load assembly: {0}\n\n{1}", dllFile, e.Message));
+					catch (Exception e)
+					{
+						//Skip the assembly
+						System.Diagnostics.Debug.Fail(String.Format("Could not load assembly: {0}\n\n{1}", dllFile, e.Message));
+					}
 				}
 			}
 		}
@@ -368,15 +371,31 @@ namespace AlbumArtDownloader
 			}
 		}
 
-		private static string mCachedScriptsPath;
-		public static string ScriptsPath
+		/// <summary>
+		/// Returns each path that scripts may be found in.
+		/// </summary>
+		public static IEnumerable<string> ScriptsPaths
 		{
 			get
 			{
-				if (mCachedScriptsPath == null)
-					mCachedScriptsPath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "scripts");
+				//Scripts may be in a "scripts" subfolder of the application folder
+				yield return Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "scripts");
 
-				return mCachedScriptsPath;
+				//They may also be in the scripts cache file path.
+				yield return Path.GetDirectoryName(BooScriptsCacheFile);
+			}
+		}
+
+		private static readonly string sBooScriptCacheDll = "boo script cache.dll";
+		private static string mBooScriptsCacheFile;
+		internal static string BooScriptsCacheFile
+		{
+			get
+			{
+				if (mBooScriptsCacheFile == null)
+					mBooScriptsCacheFile = Path.Combine(Path.Combine(Path.GetDirectoryName(ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath), "scripts"), sBooScriptCacheDll);
+
+				return mBooScriptsCacheFile;
 			}
 		}
 

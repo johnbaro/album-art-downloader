@@ -1,3 +1,7 @@
+0.6 Script Cache DLL creation made compatible with running without admin privileges on Vista
+     Note: If you are upgrading from a previous version, the "boo script cache.dll" file in
+           your scripts folder should be deleted.
+     
 0.5 Added File Browser
     Added Single-Instance behaviour. Only one instance of the application will now be
      allowed to run (others will have their command line parameters passed on to the first

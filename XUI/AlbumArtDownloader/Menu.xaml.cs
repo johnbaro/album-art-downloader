@@ -39,6 +39,10 @@ namespace AlbumArtDownloader
 		public Menu()
 		{
 			InitializeComponent();
+
+#if EPHEMERAL_SETTINGS
+			this.Background = System.Windows.Media.Brushes.Red;
+#endif
 		}
 
 		private void OnWindowListOpened(object sender, RoutedEventArgs e)

@@ -13,7 +13,7 @@ class GoogleImage:
 	static SourceName as string:
 		get: return "GoogleImage"
 	static SourceCreator as string:
-		get: return "Unknown, Marc Landis, zheka"
+		get: return "Marc Landis, zheka"
 	static SourceVersion as string:
 		get: return "0.5"
 	static def GetThumbs(coverart,artist,album):

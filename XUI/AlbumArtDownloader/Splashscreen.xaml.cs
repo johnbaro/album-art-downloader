@@ -13,7 +13,6 @@ namespace AlbumArtDownloader
 {
 	public partial class Splashscreen : System.Windows.Window, INotifyPropertyChanged
 	{
-		private static readonly string sBooScriptCacheDll = "boo script cache.dll";
 
 		public static class Commands
 		{
@@ -29,27 +28,42 @@ namespace AlbumArtDownloader
 			//Check whether boo script cache is up to date or not
 			try
 			{
-				FileInfo cacheFileInfo = new FileInfo(Path.Combine(App.ScriptsPath, sBooScriptCacheDll));
+				FileInfo cacheFileInfo = new FileInfo(App.BooScriptsCacheFile);
 				if (cacheFileInfo.Exists)
 				{
 					//There is a cache file, so check if it is up to date or not
-					DirectoryInfo scriptFolder = new DirectoryInfo(App.ScriptsPath);
-					if (scriptFolder.LastWriteTimeUtc <= cacheFileInfo.LastWriteTimeUtc)
+					bool rebuildCache = false;
+							
+					foreach (string scriptsPath in App.ScriptsPaths)
 					{
-						//The folder hasn't been changed (file added or removed, or edited) since the cache file was created
-						//Check to see if any files within it have been modified since that time (as this doesn't seem to trigger the LastWriteTime of the folder reliably)
-						bool fileTouched = false;
-						foreach (FileInfo fileInfo in scriptFolder.GetFiles())
+						DirectoryInfo scriptFolder = new DirectoryInfo(scriptsPath);
+
+						if (scriptFolder.Exists)
 						{
-							if (fileInfo.LastWriteTimeUtc > cacheFileInfo.LastWriteTimeUtc)
+							if (scriptFolder.LastWriteTimeUtc > cacheFileInfo.LastWriteTimeUtc)
 							{
-								fileTouched = true;
+								//This folder has been modified (file added or removed, so rebuild)
+								rebuildCache = true;
 								break;
 							}
+						
+							//Check to see if any boo script files within it have been modified since that time (as this doesn't seem to trigger the LastWriteTime of the folder reliably)
+							foreach (FileInfo fileInfo in scriptFolder.GetFiles("*.boo"))
+							{
+								if (fileInfo.LastWriteTimeUtc > cacheFileInfo.LastWriteTimeUtc)
+								{
+									rebuildCache = true;
+									break;
+								}
+							}
 						}
-						if(!fileTouched)
-							return true;
-					}					
+
+						if (rebuildCache)
+							break; //No need to check the others, we already need to rebuild
+					}
+
+					if (!rebuildCache)
+						return true; //No need to rebuild the cache, so just continue execution.
 				}
 			}
 			catch (Exception e)
@@ -120,43 +134,48 @@ namespace AlbumArtDownloader
 		{
 			try
 			{
+				FileInfo outputFile = new FileInfo(App.BooScriptsCacheFile);
+				if(!outputFile.Directory.Exists)
+					outputFile.Directory.Create(); //Enusre that the output file can be created.
+
 				mBackgroundWorker.ReportProgress(0, "Searching for scripts...");
-				
+
 				List<string> readableFiles = new List<string>();
 				List<string> references = new List<string>();
 
-				foreach (string scriptFile in Directory.GetFiles(App.ScriptsPath, "*.boo"))
+				foreach (string scriptsPath in App.ScriptsPaths)
 				{
-					try
+					foreach (string scriptFile in Directory.GetFiles(scriptsPath, "*.boo"))
 					{
-						using (StreamReader reader = File.OpenText(scriptFile))
+						try
 						{
-							string firstLine = reader.ReadLine();
-							if (firstLine.StartsWith("# refs: ") && firstLine.Length > 8)
+							using (StreamReader reader = File.OpenText(scriptFile))
 							{
-								string refsText = firstLine.Substring(8);
-								references.AddRange(refsText.Split(' '));
+								string firstLine = reader.ReadLine();
+								if (firstLine.StartsWith("# refs: ") && firstLine.Length > 8)
+								{
+									string refsText = firstLine.Substring(8);
+									references.AddRange(refsText.Split(' '));
+								}
+								readableFiles.Add(scriptFile);
 							}
-							readableFiles.Add(scriptFile);
 						}
-					}
-					catch (Exception fileReadingException)
-					{
-						mBackgroundWorker.ReportProgress(-1, String.Format("Skipping unreadable file: \"{0}\"\n  {1}", scriptFile, fileReadingException.Message));
+						catch (Exception fileReadingException)
+						{
+							mBackgroundWorker.ReportProgress(-1, String.Format("Skipping unreadable file: \"{0}\"\n  {1}", scriptFile, fileReadingException.Message));
+						}
 					}
 				}
 
 				mBackgroundWorker.ReportProgress(-1, string.Format("Found {0} files, [{1}]...", readableFiles.Count, FormatFileListForDisplay(readableFiles)));
 				mBackgroundWorker.ReportProgress(-1, string.Format("Loading references; [{0}]...", string.Join(", ", references.ToArray())));
 
-				string target = Path.Combine(App.ScriptsPath, sBooScriptCacheDll);
 				BooCompiler compiler = new BooCompiler();
-				//compiler.Parameters.LibPaths.Add(Application.StartupPath);
 				compiler.Parameters.Ducky = true; //Required to allow late-binding to "coverart" parameter
 				compiler.Parameters.OutputType = CompilerOutputType.Library;
 				compiler.Parameters.Debug = false;
 				compiler.Parameters.Pipeline = new CompileToFile();
-				compiler.Parameters.OutputAssembly = target;
+				compiler.Parameters.OutputAssembly = outputFile.FullName;
 				foreach (string reference in references)
 				{
 					compiler.Parameters.References.Add(compiler.Parameters.LoadAssembly(reference, true));
@@ -173,28 +192,19 @@ namespace AlbumArtDownloader
 				compiler.Parameters.Pipeline.BeforeStep += new CompilerStepEventHandler(OnBeforeCompilerStep);
 
 				CompilerContext compilerContext = compiler.Run();
-				
-				if (compilerContext.GeneratedAssembly != null)
+
+				foreach (CompilerWarning warning in compilerContext.Warnings)
 				{
-					foreach (CompilerWarning warning in compilerContext.Warnings)
-					{
-						ReportCompilerIssue("warning", warning.LexicalInfo, warning.Code, warning.Message);
-					}
+					ReportCompilerIssue("warning", warning.LexicalInfo, warning.Code, warning.Message);
 					//TODO: Not auto-close if warnings are present?
-					mBackgroundWorker.ReportProgress(-1, "Complete");
 				}
-				else
+				foreach (CompilerError error in compilerContext.Errors)
 				{
-					foreach (CompilerWarning warning in compilerContext.Warnings)
-					{
-						ReportCompilerIssue("warning", warning.LexicalInfo, warning.Code, warning.Message);
-					}
-					foreach (CompilerError error in compilerContext.Errors)
-					{
-						ReportCompilerIssue("error", error.LexicalInfo, error.Code, error.Message);
-					}
+					ReportCompilerIssue("error", error.LexicalInfo, error.Code, error.Message);
 					e.Cancel = true;
 				}
+				if (!e.Cancel)
+					mBackgroundWorker.ReportProgress(-1, "Complete");
 			}
 			catch (Exception exception)
 			{

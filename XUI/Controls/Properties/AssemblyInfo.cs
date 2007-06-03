@@ -11,4 +11,4 @@ using System.Reflection;
 [assembly: NeutralResourcesLanguageAttribute("")]
 [assembly: ComVisibleAttribute(false)]
 [assembly: System.Windows.ThemeInfo(System.Windows.ResourceDictionaryLocation.None, System.Windows.ResourceDictionaryLocation.SourceAssembly)]
-[assembly: AssemblyVersion("0.5.0.0")]
+[assembly: AssemblyVersion("0.6.0.0")]

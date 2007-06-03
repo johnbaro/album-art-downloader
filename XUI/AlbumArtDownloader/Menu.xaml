@@ -17,10 +17,10 @@
 				<Separator/>
 				<MenuItem Command="ApplicationCommands.Close"/>
 				<Separator/>
-				<MenuItem Name="test" Command="{x:Static local:Menu+Commands.Exit}"/>
+				<MenuItem Command="{x:Static local:Menu+Commands.Exit}"/>
 			</MenuItem>
 			<MenuItem Header="_Window" SubmenuOpened="OnWindowListOpened">
-				<MenuItem Header="Test"/>
+				<MenuItem/>
 			</MenuItem>
 			<MenuItem Header="_Help">
 				<MenuItem Header="Album Art Downloader _Website" Command="GoToPage" CommandParameter="http://album-art.sourceforge.net"/>
