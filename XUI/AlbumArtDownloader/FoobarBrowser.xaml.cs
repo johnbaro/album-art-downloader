@@ -30,6 +30,11 @@ namespace AlbumArtDownloader
 			
 		}
 
+		public void LoadSettings()
+		{
+
+		}
+
 		string IAppWindow.Description
 		{
 			get

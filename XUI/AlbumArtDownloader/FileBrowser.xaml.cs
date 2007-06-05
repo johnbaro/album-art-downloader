@@ -44,7 +44,7 @@ namespace AlbumArtDownloader
 		public FileBrowser()
 		{
 			InitializeComponent();
-			LoadPathPatternHistory();
+			LoadSettings();
 
 			mResults.ItemsSource = mAlbums;
 			mBrowse.Click += new RoutedEventHandler(OnBrowseForFilePath);
@@ -135,6 +135,10 @@ namespace AlbumArtDownloader
 		public void SaveSettings()
 		{
 			SavePathPatternHistory();
+		}
+		public void LoadSettings()
+		{
+			LoadPathPatternHistory();
 		}
 		#endregion
 
@@ -229,9 +233,14 @@ namespace AlbumArtDownloader
 			foreach (Album album in mResults.SelectedItems)
 			{
 				//If the image path is relative, get an absolute path for it.
-				if (!Path.IsPathRooted(artFileSearchPattern))
+				string rootedArtFileSearchPattern;
+				if (Path.IsPathRooted(artFileSearchPattern))
 				{
-					artFileSearchPattern = Path.Combine(album.BasePath, artFileSearchPattern);
+					rootedArtFileSearchPattern = artFileSearchPattern;
+				}
+				else
+				{
+					rootedArtFileSearchPattern = Path.Combine(album.BasePath, artFileSearchPattern);
 				}
 
 				//TODO: Some sort of queueing?
@@ -251,7 +260,7 @@ namespace AlbumArtDownloader
 					searchWindow.Top = SystemParameters.PrimaryScreenHeight - searchWindow.Height;
 				}
 
-				searchWindow.SetDefaultSaveFolderPattern(artFileSearchPattern); //Default save to the location where the image was searched for.
+				searchWindow.SetDefaultSaveFolderPattern(rootedArtFileSearchPattern, true); //Default save to the location where the image was searched for.
 				searchWindow.Search(album.Artist, album.Name); //Kick off the search.
 				searchWindow.Closed += new EventHandler(delegate(object win, EventArgs ev)
 				  {

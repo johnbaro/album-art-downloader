@@ -176,8 +176,7 @@
 					</Grid.ColumnDefinitions>
 					<Label Target="{Binding ElementName=mDefaultSaveFolder}">Sa_ve images to:</Label>
 					<controls:ArtPathPatternBox Grid.Row="2" Grid.Column="1" Name="mDefaultSaveFolder"
-												Margin="2" Padding="2"
-												PathPattern="{Binding Source={StaticResource mSettings}, Path=Default.DefaultSavePath}">
+												Margin="2" Padding="2">
 						<controls:ArtPathPatternBox.AdditionalPlaceholders>
 							<controls:PatternPlaceholder MenuItemHeader="_Name" ToolTip="The name of the result found" Placeholder="%name%"/>
 							<controls:PatternPlaceholder MenuItemHeader="_Extension" ToolTip="The file extension of the result found" Placeholder="%extension%"/>

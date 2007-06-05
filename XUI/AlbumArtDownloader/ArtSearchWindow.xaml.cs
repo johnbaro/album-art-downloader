@@ -71,8 +71,7 @@ namespace AlbumArtDownloader
 			}
 			mSources.Add(new LocalFilesSource());
 
-			LoadSourceSettings();
-			LoadDefaultSaveFolderHistory();
+			LoadSettings();
 			//Initial value of AutoClose is taken from settings. May be overriden by command line parameters
 			AutoClose = Properties.Settings.Default.AutoClose;
 
@@ -450,6 +449,12 @@ namespace AlbumArtDownloader
 		#endregion
 
 		#region Default Save Folder
+		/// <summary>
+		/// This is the temporary default save path, if there is one. If the default save path
+		/// is equal to this value, it should not be saved to settings.
+		/// </summary>
+		private string mDefaultSavePathIsTemporary;
+		
 		private void LoadDefaultSaveFolderHistory()
 		{
 			mDefaultSaveFolder.History.Clear();
@@ -457,19 +462,36 @@ namespace AlbumArtDownloader
 			{
 				mDefaultSaveFolder.History.Add(historyItem);
 			}
+			mDefaultSaveFolder.PathPattern = Properties.Settings.Default.DefaultSavePath;
 		}
 		private void SaveDefaultSaveFolderHistory()
 		{
+			if (!String.Equals(mDefaultSaveFolder.PathPattern, mDefaultSavePathIsTemporary, StringComparison.CurrentCultureIgnoreCase))
+			{
+				//Only save the default path if it isn't a temporary one
+				Properties.Settings.Default.DefaultSavePath = mDefaultSaveFolder.PathPattern;
+			}
 			Properties.Settings.Default.DefaultSavePathHistory.Clear();
 			foreach (string historyItem in mDefaultSaveFolder.History)
 			{
 				Properties.Settings.Default.DefaultSavePathHistory.Add(historyItem);
 			}
 		}
+		/// <summary>
+		/// Sets the default save folder pattern, optionally on a temporary basis so it won't be saved
+		/// as the default in the settings.
+		/// </summary>
 		public void SetDefaultSaveFolderPattern(string path)
 		{
+			SetDefaultSaveFolderPattern(path, false);
+		}
+		public void SetDefaultSaveFolderPattern(string path, bool temporary)
+		{
+			if (temporary)
+				mDefaultSavePathIsTemporary = path;
+
 			mDefaultSaveFolder.AddPatternToHistory(); //Save the previous value
-			Properties.Settings.Default.DefaultSavePath = path; //Set the new value
+			mDefaultSaveFolder.PathPattern = path; //Set the new value
 		}
 		#endregion
 
@@ -555,6 +577,11 @@ namespace AlbumArtDownloader
 		}
 
 		#region IAppWindow
+		public void LoadSettings()
+		{
+			LoadSourceSettings();
+			LoadDefaultSaveFolderHistory();
+		}
 		public void SaveSettings()
 		{
 			SaveSourceSettings();

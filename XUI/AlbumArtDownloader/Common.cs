@@ -44,6 +44,8 @@ namespace AlbumArtDownloader
 			{
 				//Save values to settings so that the new window picks up on them
 				oldWindow.SaveSettings();
+				//Load the newly saved settings
+				newWindow.LoadSettings();
 
 				//Move the window a little, so that it is obvious it is a new window
 				newWindow.Left = oldWindow.Left + 40;

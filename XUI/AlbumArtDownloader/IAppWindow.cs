@@ -15,6 +15,11 @@ namespace AlbumArtDownloader
 		/// </summary>
 		void SaveSettings();
 
+		/// <summary>
+		/// Load values from settings
+		/// </summary>
+		void LoadSettings();
+
 		double Left { get; set; }
 		double Top { get; set; }
 		double Width { get; }
@@ -22,5 +27,6 @@ namespace AlbumArtDownloader
 
 		void Show();
 		string Description { get; }
+
 	}
 }
