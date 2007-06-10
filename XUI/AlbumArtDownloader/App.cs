@@ -244,10 +244,22 @@ namespace AlbumArtDownloader
 				if (excludeSources.Count > 0)
 					searchWindow.ExcludeSources(excludeSources);
 
-				searchWindow.Show();
-
+				SearchQueue.EnqueueSearchWindow(searchWindow);
+					
 				if (artist != null || album != null)
+				{
 					searchWindow.Search(artist, album);
+					if (SearchQueue.Queue.Count == 1)
+					{
+						//This is the first item enqueued, so show the queue manager window
+						SearchQueue.ShowManagerWindow();
+					}
+				}
+				else
+				{
+					//Showing a new search window without performing a search, so force show it.
+					SearchQueue.ForceSearchWindow(searchWindow);
+				}
 			}
 			return true;
 		}
@@ -433,6 +445,21 @@ namespace AlbumArtDownloader
 			}
 
 			return sourceSettings;
+		}
+
+		private SearchQueue mSearchQueue;
+		/// <summary>
+		/// Handles queueing up of searches so that multiple searches can be kicked off without
+		/// them actually starting until previous ones have finished.
+		/// </summary>
+		public SearchQueue SearchQueue
+		{
+			get
+			{
+				if (mSearchQueue == null)
+					mSearchQueue = new SearchQueue();
+				return mSearchQueue;
+			}
 		}
 	}
 }

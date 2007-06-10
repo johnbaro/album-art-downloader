@@ -255,5 +255,17 @@ namespace AlbumArtDownloader.Properties {
                 this["FileBrowseImagePathHistory"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3")]
+        public int NumberOfWindowsForQueue {
+            get {
+                return ((int)(this["NumberOfWindowsForQueue"]));
+            }
+            set {
+                this["NumberOfWindowsForQueue"] = value;
+            }
+        }
     }
 }

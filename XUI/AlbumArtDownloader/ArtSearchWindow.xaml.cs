@@ -159,6 +159,22 @@ namespace AlbumArtDownloader
 		#endregion
 
 		#region Searching
+
+
+		public static readonly DependencyProperty ArtistProperty = DependencyProperty.Register("Artist", typeof(string), typeof(ArtSearchWindow));
+		public string Artist
+		{
+			get { return (string)GetValue(ArtistProperty); }
+			set { SetValue(ArtistProperty, value); }
+		}
+
+		public static readonly DependencyProperty AlbumProperty = DependencyProperty.Register("Album", typeof(string), typeof(ArtSearchWindow));
+		public string Album
+		{
+			get { return (string)GetValue(AlbumProperty); }
+			set { SetValue(AlbumProperty, value); }
+		}
+
 		private SearchParameters mSearchParameters;
 		private void FindExec(object sender, RoutedEventArgs e)
 		{
@@ -166,7 +182,7 @@ namespace AlbumArtDownloader
 			if (mSearchParameters != null)
 			{
 				//Can only enhance if the artist and album to search for are identical
-				if (mArtist.Text == mSearchParameters.Artist && mAlbum.Text == mSearchParameters.Album)
+				if (Artist == mSearchParameters.Artist && Album == mSearchParameters.Album)
 				{
 					AlterSearch();
 					return;
@@ -174,7 +190,7 @@ namespace AlbumArtDownloader
 			}
 			if (mSources.CombinedResults.Count > 0 && Properties.Settings.Default.OpenResultsInNewWindow)
 			{
-				Common.NewSearchWindow(this).Search(mArtist.Text, mAlbum.Text);
+				Common.NewSearchWindow(this).Search(Artist, Album);
 			}
 			else
 			{
@@ -183,13 +199,32 @@ namespace AlbumArtDownloader
 		}
 
 		/// <summary>
-		/// Perform a search with the specified settings
+		/// Perform a search with the specified settings.
+		/// If the window is held in a queue, defer the search until the window is shown.
 		/// </summary>
 		public void Search(string artist, string album)
 		{
-			mArtist.Text = artist;
-			mAlbum.Text = album;
-			StartSearch();
+			Artist = artist;
+			Album = album;
+			if (IsVisible)
+			{
+				StartSearch();
+			}
+			else
+			{
+				this.IsVisibleChanged += SearchOnShown;
+			}
+		}
+
+		private void SearchOnShown(object sender, DependencyPropertyChangedEventArgs e)
+		{
+			if ((bool)e.NewValue) //If this window has just been shown
+			{
+				//Stop listening to the event
+				this.IsVisibleChanged -= SearchOnShown;
+				//and kick off the search
+				StartSearch();
+			}
 		}
 
 		/// <summary>
@@ -197,7 +232,7 @@ namespace AlbumArtDownloader
 		/// </summary>
 		private void StartSearch()
 		{
-			mSearchParameters = new SearchParameters(mArtist.Text, mAlbum.Text);
+			mSearchParameters = new SearchParameters(Artist, Album);
 
 			mDefaultSaveFolder.AddPatternToHistory();
 			foreach (Source source in mSources)
@@ -239,7 +274,7 @@ namespace AlbumArtDownloader
 					if(performSearch)
 					{
 						source.SearchCompleted += OnSourceSearchCompleted; //Hook the complete event to know when to hide the Stop All button
-						source.Search(mArtist.Text, mAlbum.Text);
+						source.Search(Artist, Album);
 
 						mSearchParameters.AddSource(source);
 					}
@@ -282,7 +317,7 @@ namespace AlbumArtDownloader
 			defaultPathBinding.Path = new PropertyPath(ArtPathPatternBox.PathPatternProperty);
 			defaultPathBinding.Mode = BindingMode.OneWay;
 			defaultPathBinding.Converter = new AlbumArtDefaultFilePathPatternSubstitution();
-			defaultPathBinding.ConverterParameter = new string[] { mArtist.Text, mAlbum.Text };
+			defaultPathBinding.ConverterParameter = new string[] { Artist, Album };
 			BindingOperations.SetBinding(art, AlbumArt.DefaultFilePathPatternProperty, defaultPathBinding);
 		}
 
@@ -591,19 +626,19 @@ namespace AlbumArtDownloader
 		{
 			get
 			{
-				if (String.IsNullOrEmpty(mArtist.Text))
+				if (String.IsNullOrEmpty(Artist))
 				{
-					if (String.IsNullOrEmpty(mAlbum.Text))
+					if (String.IsNullOrEmpty(Album))
 					{
 						return "Search";
 					}
-					return "Search: " + mAlbum.Text;
+					return "Search: " + Album;
 				}
-				else if(String.IsNullOrEmpty(mAlbum.Text))
+				else if(String.IsNullOrEmpty(Album))
 				{
-					return "Search: " + mArtist.Text;
+					return "Search: " + Artist;
 				}
-				return String.Format("Search: {0} / {1}", mArtist.Text, mAlbum.Text);
+				return String.Format("Search: {0} / {1}", Artist, Album);
 			}
 		}
 		#endregion

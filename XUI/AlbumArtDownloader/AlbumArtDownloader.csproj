@@ -36,7 +36,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>.\bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;_EPHEMERAL_SETTINGS _ERROR_REPORTING</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;EPHEMERAL_SETTINGS _ERROR_REPORTING</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>false</DebugSymbols>
@@ -78,6 +78,7 @@
     <Page Include="About.xaml" />
     <Page Include="ArtSearchWindow.xaml" />
     <Page Include="CommandArgsHelp.xaml" />
+    <Page Include="QueueManager.xaml" />
     <Page Include="FileBrowser.xaml" />
     <Page Include="FoobarBrowser.xaml" />
     <Page Include="LocalFilesSourceSettings.xaml" />
@@ -108,6 +109,10 @@
       <DependentUpon>CommandArgsHelp.xaml</DependentUpon>
     </Compile>
     <Compile Include="Common.cs" />
+    <Compile Include="SearchQueue.cs" />
+    <Compile Include="QueueManager.xaml.cs">
+      <DependentUpon>QueueManager.xaml</DependentUpon>
+    </Compile>
     <Compile Include="FileSearcher.cs" />
     <Compile Include="IAppWindow.cs" />
     <Compile Include="InstanceMutex.cs" />

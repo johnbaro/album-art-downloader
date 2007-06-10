@@ -69,9 +69,9 @@
 				<ColumnDefinition Width="Auto"/>
 			</Grid.ColumnDefinitions>
 			<Label Target="{Binding ElementName=mArtist}">A_rtist:</Label>
-			<TextBox Name="mArtist" Grid.Column="1"/>
+			<TextBox Name="mArtist" Grid.Column="1" Text="{Binding ElementName=this, Path=Artist, UpdateSourceTrigger=PropertyChanged}"/>
 			<Label Grid.Row="1" Target="{Binding ElementName=mAlbum}">A_lbum:</Label>
-			<TextBox Grid.Row="1" Name="mAlbum" Grid.Column="1"/>
+			<TextBox Grid.Row="1" Name="mAlbum" Grid.Column="1" Text="{Binding ElementName=this, Path=Album, UpdateSourceTrigger=PropertyChanged}"/>
 			<Button Name="mSearch" Margin="5" Padding="5,0,5,0" Grid.Column="2" Grid.RowSpan="2" Command="ApplicationCommands.Find" IsDefault="True">
 				<StackPanel Orientation="Horizontal">
 					<Image Source="search.ico" Margin="0,4,0,0"/>

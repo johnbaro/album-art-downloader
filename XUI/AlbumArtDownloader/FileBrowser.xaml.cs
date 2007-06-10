@@ -243,7 +243,6 @@ namespace AlbumArtDownloader
 					rootedArtFileSearchPattern = Path.Combine(album.BasePath, artFileSearchPattern);
 				}
 
-				//TODO: Some sort of queueing?
 				ArtSearchWindow searchWindow = Common.NewSearchWindow(this);
 				searchWindow.Top += i * sSearchWindowCascadeOffset;
 				searchWindow.Left += i * sSearchWindowCascadeOffset;

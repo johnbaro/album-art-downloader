@@ -17,7 +17,29 @@ namespace AlbumArtDownloader
 		}
 		public static ArtSearchWindow NewSearchWindow(IAppWindow existingWindow)
 		{
-			return (ArtSearchWindow)ShowNewWindow(new ArtSearchWindow(), existingWindow);
+			return NewSearchWindow(existingWindow, false);
+		}
+		/// <param name="forceShown">If true, the new search window will be immediately shown, rather than queued.</param>
+		public static ArtSearchWindow NewSearchWindow(IAppWindow existingWindow, bool forceShown)
+		{
+			//Enqueue rather than opening the new window directly
+			ArtSearchWindow newWindow = new ArtSearchWindow();
+			SetupNewWindow(newWindow, existingWindow);
+			SearchQueue searchQueue = ((App)Application.Current).SearchQueue;
+			searchQueue.EnqueueSearchWindow(newWindow);
+
+			if (forceShown)
+			{
+				//Ensure the new window is shown immediately, rather than queued.
+				searchQueue.ForceSearchWindow(newWindow);
+			}
+			else if (searchQueue.Queue.Count == 1)
+			{
+				//This is the first item enqueued, so show the queue manager window
+				searchQueue.ShowManagerWindow();
+			}
+
+			return newWindow;
 		}
 
 		public static FileBrowser NewFileBrowser()
@@ -39,6 +61,14 @@ namespace AlbumArtDownloader
 		}
 
 		private static IAppWindow ShowNewWindow(IAppWindow newWindow, IAppWindow oldWindow)
+		{
+			SetupNewWindow(newWindow, oldWindow);
+
+			newWindow.Show();
+			return newWindow;
+		}
+
+		private static void SetupNewWindow(IAppWindow newWindow, IAppWindow oldWindow)
 		{
 			if (oldWindow != null)
 			{
@@ -63,9 +93,6 @@ namespace AlbumArtDownloader
 					newWindow.Top = SystemParameters.PrimaryScreenHeight - newWindow.Height;
 				}
 			}
-
-			newWindow.Show();
-			return newWindow;
 		}
 		#endregion
 

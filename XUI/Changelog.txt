@@ -1,4 +1,5 @@
-0.6 Script Cache DLL creation made compatible with running without admin privileges on Vista
+0.6 Basic Search Queueing system added
+    Script Cache DLL creation made compatible with running without admin privileges on Vista
      Note: If you are upgrading from a previous version, the "boo script cache.dll" file in
            your scripts folder should be deleted.
     Fixed bug where the same path would be used for all search windows when opening multiple

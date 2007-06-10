@@ -21,6 +21,7 @@ namespace AlbumArtDownloader
 			}
 
 			public static RoutedUICommand NewFoobarBrowser = new RoutedUICommand("New Foobar Browser...", "NewFoobarBrowser", typeof(Commands));
+			public static RoutedUICommand ShowQueueManager = new RoutedUICommand("Queue Manager", "ShowQueueManager", typeof(Commands));
 			public static RoutedUICommand About = new RoutedUICommand("About...", "About", typeof(Commands));
 			public static RoutedUICommand Exit = new RoutedUICommand("E_xit", "Exit", typeof(Commands));
 		}
@@ -30,6 +31,7 @@ namespace AlbumArtDownloader
 			CommandManager.RegisterClassCommandBinding(typeof(Window), new CommandBinding(ApplicationCommands.New, new ExecutedRoutedEventHandler(NewSearchWindowExec)));
 			CommandManager.RegisterClassCommandBinding(typeof(Window), new CommandBinding(Commands.NewFileBrowser, new ExecutedRoutedEventHandler(NewFileBrowserExec)));
 			CommandManager.RegisterClassCommandBinding(typeof(Window), new CommandBinding(Commands.NewFoobarBrowser, new ExecutedRoutedEventHandler(NewFoobarBrowserExec)));
+			CommandManager.RegisterClassCommandBinding(typeof(Window), new CommandBinding(Commands.ShowQueueManager, new ExecutedRoutedEventHandler(ShowQueueManagerExec)));
 			CommandManager.RegisterClassCommandBinding(typeof(Window), new CommandBinding(ApplicationCommands.Close, new ExecutedRoutedEventHandler(CloseExec)));
 			CommandManager.RegisterClassCommandBinding(typeof(Window), new CommandBinding(Commands.Exit, new ExecutedRoutedEventHandler(ExitExec)));
 			CommandManager.RegisterClassCommandBinding(typeof(Window), new CommandBinding(Commands.About, new ExecutedRoutedEventHandler(AboutExec)));
@@ -52,20 +54,33 @@ namespace AlbumArtDownloader
 			if (windowList != null)
 			{
 				windowList.Items.Clear();
-				int iWindow = 0;
-				IAppWindow thisWindow = Window.GetWindow(windowList) as IAppWindow;
+
+				//Add the Queue Manager window back in
+				windowList.Items.Add(mQueueManager);
+				windowList.Items.Add(new Separator());
 				
-				if(thisWindow != null)
+				int iWindow = 0;
+				Window thisWindow = Window.GetWindow(windowList);
+				IAppWindow thisAppWindow = thisWindow as IAppWindow;
+
+				if (thisAppWindow != null)
 				{
+					//The queue manager is not the active window
+					mQueueManager.IsChecked = false;
+
 					//Add this window as the first in the list.
-					MenuItem thisWindowMenuItem = CreateWindowMenuItem(thisWindow, ++iWindow);
+					MenuItem thisWindowMenuItem = CreateWindowMenuItem(thisAppWindow, ++iWindow);
 					thisWindowMenuItem.IsChecked = true; //This is the active window
 					windowList.Items.Add(thisWindowMenuItem);
+				}
+				else if(thisWindow is QueueManager)
+				{
+					mQueueManager.IsChecked = true;
 				}
 
 				foreach (Window window in Application.Current.Windows)
 				{
-					if (window is IAppWindow && window != thisWindow) //Don't add this window again, it's already added.
+					if (window.IsVisible && window is IAppWindow && window != thisAppWindow) //Don't add this window again, it's already added.
 					{
 						windowList.Items.Add(CreateWindowMenuItem((IAppWindow)window, ++iWindow));
 					}
@@ -86,7 +101,7 @@ namespace AlbumArtDownloader
 		#region Standard Handlers
 		private static void NewSearchWindowExec(object sender, ExecutedRoutedEventArgs e)
 		{
-			Common.NewSearchWindow(sender as IAppWindow);
+			Common.NewSearchWindow(sender as IAppWindow, true);
 		}
 		private static void NewFileBrowserExec(object sender, ExecutedRoutedEventArgs e)
 		{
@@ -104,7 +119,12 @@ namespace AlbumArtDownloader
 		}
 		private static void ExitExec(object sender, ExecutedRoutedEventArgs e)
 		{
+			((App)Application.Current).SearchQueue.Queue.Clear(); //The queued windows won't open during a shutdown anyway, but this makes things crystal clear.
 			Application.Current.Shutdown();
+		}
+		private static void ShowQueueManagerExec(object sender, ExecutedRoutedEventArgs e)
+		{
+			((App)Application.Current).SearchQueue.ShowManagerWindow();
 		}
 		private static void AboutExec(object sender, ExecutedRoutedEventArgs e)
 		{
