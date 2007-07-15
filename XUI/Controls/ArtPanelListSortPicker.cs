@@ -32,16 +32,16 @@ namespace AlbumArtDownloader.Controls
 		public override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();
-
+			
 			if (SortField != null)
 			{
 				SortField.ItemsSource = sSortFields;
-				SortField.SelectionChanged += new SelectionChangedEventHandler(UpdateToSortDescription);
+				SortField.SelectionChanged += UpdateToSortDescription;
 			}
 			if (SortDirection != null)
 			{
-				SortDirection.Checked += new RoutedEventHandler(UpdateToSortDescription);
-				SortDirection.Unchecked += new RoutedEventHandler(UpdateToSortDescription);
+				SortDirection.Checked += UpdateToSortDescription;
+				SortDirection.Unchecked += UpdateToSortDescription;
 			}
 
 			UpdateFromSortDescription();

@@ -77,7 +77,7 @@ namespace AlbumArtDownloader
 					//Initialise the MediaInfo tag reader
 					sMediaInfo = new MediaInfoLib.MediaInfo();
 					AssemblyName assemblyName = Assembly.GetEntryAssembly().GetName();
-					if (String.IsNullOrEmpty(sMediaInfo.Option("Info_Version", String.Format("0.7.4.7;{0};{1}", assemblyName.Name, assemblyName.Version))))
+					if (String.IsNullOrEmpty(sMediaInfo.Option("Info_Version", String.Format("0.7.5.0;{0};{1}", assemblyName.Name, assemblyName.Version))))
 					{
 						sMediaInfoState = MediaInfoState.Error;
 					}
@@ -454,11 +454,18 @@ namespace AlbumArtDownloader
 					SetProgressText("Searching... " + file.Name);
 
 					string artistName, albumName;
-					sMediaInfo.Open(file.FullName);
 					try
 					{
-						artistName = sMediaInfo.Get(MediaInfoLib.StreamKind.General, 0, "Artist");
-						albumName = sMediaInfo.Get(MediaInfoLib.StreamKind.General, 0, "Album");
+						sMediaInfo.Open(file.FullName);
+						try
+						{
+							artistName = sMediaInfo.Get(MediaInfoLib.StreamKind.General, 0, "Artist");
+							albumName = sMediaInfo.Get(MediaInfoLib.StreamKind.General, 0, "Album");
+						}
+						finally
+						{
+							sMediaInfo.Close();
+						}
 					}
 					catch (Exception e)
 					{
@@ -468,10 +475,7 @@ namespace AlbumArtDownloader
 						System.Diagnostics.Trace.Unindent();
 						continue;
 					}
-					finally
-					{
-						sMediaInfo.Close();
-					}
+					
 					if (!(String.IsNullOrEmpty(artistName) && String.IsNullOrEmpty(albumName))) //No point adding it if no artist or album could be found.
 					{
 						Dispatcher.Invoke(DispatcherPriority.DataBind, new ThreadStart(delegate

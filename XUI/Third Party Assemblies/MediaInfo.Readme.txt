@@ -1,6 +1,6 @@
 MediaInfo.Dll - http://mediainfo.sourceforge.net
 -------------
-This Dll is freeware
+This Dll is freeware (LGPLv3)
 You can distribute as you want (Internet, CD in books...)
 MediaInfo.dll is the only one important file, which you must put in your software folder
 

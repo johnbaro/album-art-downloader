@@ -119,7 +119,7 @@
 					</GridViewColumn>
 					<controls:SortableGridViewColumn Header="Artist" SortPropertyName="Artist" DisplayMemberBinding="{Binding Artist}" Width="200"/>
 					<controls:SortableGridViewColumn Header="Album" SortPropertyName="Name" DisplayMemberBinding="{Binding Name}" Width="200"/>
-					<controls:SortableGridViewColumn Header="Artwork Status" SortPropertyName="ArtFileStatus" Width="200">
+					<controls:SortableGridViewColumn Header="Artwork Status" SortPropertyName="ArtFileStatus" Width="193">
 						<controls:SortableGridViewColumn.CellTemplate>
 							<DataTemplate>
 								<StackPanel Orientation="Horizontal">

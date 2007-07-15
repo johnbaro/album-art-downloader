@@ -75,15 +75,18 @@ namespace AlbumArtDownloader
 		public static BitmapSource ConvertBitmapToBitmapSource(Bitmap bitmap)
 		{
 			BitmapSource bitmapSource = null;
-			IntPtr hBitmap = bitmap.GetHbitmap();
-			try
+			if (bitmap != null)
 			{
-				bitmapSource = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
-				   hBitmap, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
-			}
-			finally
-			{
-				DeleteObject(hBitmap);
+				IntPtr hBitmap = bitmap.GetHbitmap();
+				try
+				{
+					bitmapSource = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
+					   hBitmap, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+				}
+				finally
+				{
+					DeleteObject(hBitmap);
+				}
 			}
 			return bitmapSource;
 		}

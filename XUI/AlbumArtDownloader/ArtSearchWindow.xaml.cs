@@ -389,6 +389,7 @@ namespace AlbumArtDownloader
 			foreach (Source source in mSources)
 			{
 				source.AbortSearch();
+				source.Results.Clear(); //Clear the results to ensure all the images are disposed
 			}
 			base.OnClosed(e);
 		}

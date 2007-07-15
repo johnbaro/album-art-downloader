@@ -1,3 +1,7 @@
+0.7 Stability improvements:
+     Plugged some memory leaks
+     Updated to version 0.7.5.0 of the MediaInfo tag reading library
+     
 0.6 Basic Search Queueing system added
     Script Cache DLL creation made compatible with running without admin privileges on Vista
      Note: If you are upgrading from a previous version, the "boo script cache.dll" file in

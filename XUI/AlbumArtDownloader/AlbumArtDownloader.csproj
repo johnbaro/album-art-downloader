@@ -109,6 +109,8 @@
       <DependentUpon>CommandArgsHelp.xaml</DependentUpon>
     </Compile>
     <Compile Include="Common.cs" />
+    <Compile Include="ObservableCollectionOfDisposables.cs" />
+    <Compile Include="PropertyChangedEventManager.cs" />
     <Compile Include="SearchQueue.cs" />
     <Compile Include="QueueManager.xaml.cs">
       <DependentUpon>QueueManager.xaml</DependentUpon>

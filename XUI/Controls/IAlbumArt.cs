@@ -7,7 +7,7 @@ namespace AlbumArtDownloader.Controls
 	/// <summary>
 	/// The ItemsSource of ArtPanelList should be an enumerable of objects implementing this interface.
 	/// </summary>
-	public interface IAlbumArt : INotifyPropertyChanged
+	public interface IAlbumArt : INotifyPropertyChanged, IDisposable
 	{
 		string ResultName { get; }
 		string FilePath { get; set; }

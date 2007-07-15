@@ -33,6 +33,12 @@ namespace AlbumArtDownloader
 			mFullSizeCallbackParameter = fullSizeCallbackParameter;
 		}
 
+		public void Dispose()
+		{
+			BitmapImage = null; //This will dispose of the bitmap
+			//No need for finaliser patten, as the Bitmap should finalise itself.
+		}
+
 		#region Dependency Properties
 		public static readonly DependencyProperty DefaultFilePathPatternProperty = DependencyProperty.Register("DefaultFilePathPattern", typeof(string), typeof(AlbumArt), new FrameworkPropertyMetadata(String.Empty, new PropertyChangedCallback(OnDefaultFilePathPatternChanged)));
 		public string DefaultFilePathPattern
@@ -93,6 +99,9 @@ namespace AlbumArtDownloader
 			{
 				if (value != mBitmapImage)
 				{
+					if(mBitmapImage != null)
+						mBitmapImage.Dispose(); //Dispose of the old bitmap first
+
 					mBitmapImage = value;
 
 					//Reset the cached image source and codec info (they will be recreated from the new bitmap), and notify of the change.

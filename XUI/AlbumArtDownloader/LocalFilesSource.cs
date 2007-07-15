@@ -12,7 +12,7 @@ using System.Windows;
 
 namespace AlbumArtDownloader
 {
-	internal class LocalFilesSource : Source
+	internal class LocalFilesSource : Source, IWeakEventListener
 	{
 		[DllImport("gdiplus.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
 		internal static extern int GdipCreateBitmapFromFile(string filename, out IntPtr bitmap);
@@ -24,8 +24,24 @@ namespace AlbumArtDownloader
 			//Ensure GDI+ is initialised
 			Pen pen = Pens.Black;
 
-			Properties.Settings.Default.PropertyChanged += OnPropertyChanged;
+			//Weak event pattern for listening to property changed.
+			PropertyChangedEventManager.AddListener(Properties.Settings.Default, this);
 		}
+
+		#region Weak Event Listener
+		bool IWeakEventListener.ReceiveWeakEvent(Type managerType, object sender, EventArgs e)
+		{
+			if (managerType == typeof(PropertyChangedEventManager))
+			{
+				OnPropertyChanged(sender, (System.ComponentModel.PropertyChangedEventArgs)e);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		#endregion
 
 		public override string Name
 		{

@@ -12,6 +12,7 @@ using System.Collections.ObjectModel;
 using AlbumArtDownloader.Scripts;
 using System.Drawing;
 using System.Windows.Controls;
+using System.Collections.Specialized;
 
 namespace AlbumArtDownloader
 {
@@ -20,7 +21,7 @@ namespace AlbumArtDownloader
 		public event PropertyChangedEventHandler PropertyChanged;
 		public event EventHandler SearchCompleted;
 
-		private ObservableCollection<IAlbumArt> mResults = new ObservableCollection<IAlbumArt>();
+		private ObservableCollectionOfDisposables<IAlbumArt> mResults;
 		private SourceSettings mSettings;
 		private Control mCustomSettingsUI; 
 
@@ -28,10 +29,13 @@ namespace AlbumArtDownloader
 
 		public Source()
 		{
+			mResults = new ObservableCollectionOfDisposables<IAlbumArt>();
+
 			mCustomSettingsUI = CreateCustomSettingsUI();
 			if(mCustomSettingsUI != null)
 				mCustomSettingsUI.DataContext = this;
 		}
+
 		/// <summary>
 		/// Override this to create the custom settings UI control to be displayed
 		/// to allow editing of custom settings for the source.
