@@ -11,7 +11,7 @@ class RevHQ:
 	static SourceCreator as string:
 		get: return "Alex Vallat"
 	static SourceVersion as string:
-		get: return "0.1"
+		get: return "0.2"
 	static def GetThumbs(coverart,artist,album):
 		if(String.IsNullOrEmpty(album)):
 			return //Can't search without the album title to search for
@@ -24,14 +24,16 @@ class RevHQ:
 		
 		if (resultMatches.Count == 0):
 		  //Only one match was found by RevHQ, and it's showing it right now
-		  coverart.EstimatedCount = 1
 		  
 		  artistRegex = Regex("<A HREF=\"/store\\.revhq\\?Page=search&BandId=[^\"]+\">(?<artist>[^<]+)</A>", RegexOptions.Singleline)
-		  foundArtist = artistRegex.Matches(resultsPage)[0].Groups["artist"].Value //Expecting only one match
-		  
-		  if (String.IsNullOrEmpty(artist) or foundArtist.IndexOf(artist, StringComparison.OrdinalIgnoreCase) >= 0):
-			  //Artist matches too (or no artist specified)
-			  ProcessResultPage(resultsPage, foundArtist, coverart)
+		  artistMatches = artistRegex.Matches(resultsPage)
+		  if(artistMatches.Count > 0):
+		    coverart.EstimatedCount = 1
+		    foundArtist = artistMatches[0].Groups["artist"].Value //Expecting only one match
+  		  
+		    if (String.IsNullOrEmpty(artist) or foundArtist.IndexOf(artist, StringComparison.OrdinalIgnoreCase) >= 0):
+			    //Artist matches too (or no artist specified)
+			    ProcessResultPage(resultsPage, foundArtist, coverart)
 			  
 		else:
 		  //Multiple matches found
