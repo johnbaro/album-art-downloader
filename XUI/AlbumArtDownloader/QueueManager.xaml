@@ -19,6 +19,8 @@
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/HyperlinkButton.generic.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
+			
+			<BooleanToVisibilityConverter x:Key="mBooleanToVisibilityConverter"/>
 		</ResourceDictionary>
 	</Window.Resources>
 	<Grid Margin="5">
@@ -34,9 +36,14 @@
 		<TextBlock Grid.Row="1" TextWrapping="Wrap">New searches will be held in the queue while existing search windows are still open.
 		Close the existing search windows to let queued searches run.</TextBlock>
 
-		<StackPanel Grid.Row="2" Orientation="Horizontal">
+		<Grid Grid.Row="2">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition Width="*"/>
+			</Grid.ColumnDefinitions>
 			<Label Target="{Binding ElementName=mNumberOfWindows}">Simultaneous search windows:</Label>
-			<TextBox Name="mNumberOfWindows" Margin="2" Padding="2" MinWidth="30">
+			<TextBox Grid.Column="1" Name="mNumberOfWindows" Margin="2" Padding="2" MinWidth="30">
 				<TextBox.Text>
 					<Binding Path="SearchQueue.SimulataneousWindowsAllowed" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
 						<Binding.ValidationRules>
@@ -45,7 +52,11 @@
 					</Binding>
 				</TextBox.Text>
 			</TextBox>
-		</StackPanel>
+			<Button Margin="0,0,8,2" Grid.Column="2" HorizontalAlignment="Right" VerticalAlignment="Bottom" Style="{StaticResource HyperlinkButton}"
+				Command="ApplicationCommands.Stop" Visibility="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled, Converter={StaticResource mBooleanToVisibilityConverter}}"
+				Content="Cancel All"/>
+		</Grid>
+		
 		<ListBox Name="mQueueDisplay" Grid.Row="3" 
 				 HorizontalContentAlignment="Stretch"
 				 ItemsSource="{Binding Path=SearchQueue.Queue, Mode=OneWay}"

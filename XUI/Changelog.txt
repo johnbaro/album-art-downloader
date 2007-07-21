@@ -1,4 +1,5 @@
 0.8 Added Drag and Drop support to drop files and folders on to the File Browser window
+    Cancel All button in Queue Manager window
 
 0.7 Stability improvements:
      Plugged some memory leaks

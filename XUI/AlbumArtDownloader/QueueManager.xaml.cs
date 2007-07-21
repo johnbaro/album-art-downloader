@@ -18,7 +18,10 @@ namespace AlbumArtDownloader
 		{
 			InitializeComponent();
 
+			//ApplicationCommands.Delete cancels a single (selected) search.
+			//ApplicationCommands.Stop cancels all searches (clears the queue).
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Delete, new ExecutedRoutedEventHandler(DeleteExec), new CanExecuteRoutedEventHandler(DeleteCanExec)));
+			CommandBindings.Add(new CommandBinding(ApplicationCommands.Stop, new ExecutedRoutedEventHandler(StopExec), new CanExecuteRoutedEventHandler(StopCanExec)));
 		}
 
 		private void DeleteExec(object sender, ExecutedRoutedEventArgs e)
@@ -46,11 +49,23 @@ namespace AlbumArtDownloader
 				e.CanExecute = false;
 		}
 
+		private void StopExec(object sender, ExecutedRoutedEventArgs e)
+		{
+			IList<ArtSearchWindow> searchQueue = ((App)Application.Current).SearchQueue.Queue;
+			while (searchQueue.Count > 0)
+			{
+				RemoveFromQueue(searchQueue[0]);
+			}
+		}
+
+		private void StopCanExec(object sender, CanExecuteRoutedEventArgs e)
+		{
+			e.CanExecute = ((App)Application.Current).SearchQueue.Queue.Count > 0;
+		}
+
 		private void RemoveFromQueue(ArtSearchWindow searchWindow)
 		{
 			((App)Application.Current).SearchQueue.CancelSearchWindow(searchWindow);
 		}
-
-		
 	}
 }
