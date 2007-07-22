@@ -256,6 +256,26 @@ namespace AlbumArtDownloader
 		private static readonly int sSearchWindowCascadeOffset = 20;
 		private void GetArtworkExec(object sender, ExecutedRoutedEventArgs e)
 		{
+			//Warn if there are a lot of selected items
+			if (mResults.SelectedItems.Count > Properties.Settings.Default.EnqueueWarning)
+			{
+				EnqueueWarning enqueueWarning = new EnqueueWarning();
+				enqueueWarning.Owner = this;
+				enqueueWarning.NumberToEnqueue = mResults.SelectedItems.Count;
+
+				if (!enqueueWarning.ShowDialog().GetValueOrDefault())
+				{
+					//Cancelled
+					return;
+				}
+
+				//Trim the selection back to the number to enqueue
+				while (mResults.SelectedItems.Count > enqueueWarning.NumberToEnqueue)
+				{
+					mResults.SelectedItems.RemoveAt(mResults.SelectedItems.Count - 1);
+				}
+			}
+
 			//Don't substitute placeholders, but do substitute recursive path matching with the simplest solution to it, just putting saving to the immediate subfolder
 			string artFileSearchPattern = mImagePathPattern.Replace("\\**\\","\\");
 			int i = 0;

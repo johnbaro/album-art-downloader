@@ -57,6 +57,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\ThirdParty Assemblies\Boo.Lang.Parser.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationDesignMarkup, Version=0.0.4031.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Drawing" />
@@ -78,6 +79,9 @@
     <Page Include="About.xaml" />
     <Page Include="ArtSearchWindow.xaml" />
     <Page Include="CommandArgsHelp.xaml" />
+    <Page Include="EnqueueWarning.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="QueueManager.xaml" />
     <Page Include="FileBrowser.xaml" />
     <Page Include="FoobarBrowser.xaml" />
@@ -109,6 +113,9 @@
       <DependentUpon>CommandArgsHelp.xaml</DependentUpon>
     </Compile>
     <Compile Include="Common.cs" />
+    <Compile Include="EnqueueWarning.xaml.cs">
+      <DependentUpon>EnqueueWarning.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ObservableCollectionOfDisposables.cs" />
     <Compile Include="PropertyChangedEventManager.cs" />
     <Compile Include="SearchQueue.cs" />
@@ -204,6 +211,9 @@
   <ItemGroup>
     <Resource Include="ArtMissing.png" />
     <Resource Include="ArtPresent.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Arrow.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
