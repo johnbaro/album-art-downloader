@@ -603,7 +603,7 @@ namespace AlbumArtDownloader
 		private AlbumArt GetAlbumArt(ExecutedRoutedEventArgs e)
 		{
 			FrameworkElement source = e.OriginalSource as FrameworkElement;
-			if (!(source is Controls.ArtPanel)) //If the source isn't the panel itself, then it must come from some control in the panels template.
+			if (source != null && !(source is Controls.ArtPanel)) //If the source isn't the panel itself, then it must come from some control in the panels template.
 				source = source.TemplatedParent as Controls.ArtPanel;
 
 			if (source == null)

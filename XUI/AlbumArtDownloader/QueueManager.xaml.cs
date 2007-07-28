@@ -22,6 +22,8 @@ namespace AlbumArtDownloader
 			//ApplicationCommands.Stop cancels all searches (clears the queue).
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Delete, new ExecutedRoutedEventHandler(DeleteExec), new CanExecuteRoutedEventHandler(DeleteCanExec)));
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Stop, new ExecutedRoutedEventHandler(StopExec), new CanExecuteRoutedEventHandler(StopCanExec)));
+
+			mQueueDisplay.MouseDoubleClick += new MouseButtonEventHandler(OnQueueDoubleClick);
 		}
 
 		private void DeleteExec(object sender, ExecutedRoutedEventArgs e)
@@ -66,6 +68,29 @@ namespace AlbumArtDownloader
 		private void RemoveFromQueue(ArtSearchWindow searchWindow)
 		{
 			((App)Application.Current).SearchQueue.CancelSearchWindow(searchWindow);
+		}
+
+		private void OnQueueDoubleClick(object sender, MouseButtonEventArgs e)
+		{
+			FrameworkElement source = e.OriginalSource as FrameworkElement;
+			if (source != null)
+			{
+				//If the source is deep in the visual tree, go up to its top level parent first
+				while (source.Parent is FrameworkElement)
+				{
+					source = (FrameworkElement)source.Parent;
+				}
+				//Find the top level templated parent
+				while (source.TemplatedParent is FrameworkElement)
+				{
+					source = (FrameworkElement)source.TemplatedParent;
+				}
+				ArtSearchWindow searchWindow = mQueueDisplay.ItemContainerGenerator.ItemFromContainer(source) as ArtSearchWindow;
+				if (searchWindow != null)
+				{
+					((App)Application.Current).SearchQueue.ForceSearchWindow(searchWindow);
+				}
+			}
 		}
 	}
 }
