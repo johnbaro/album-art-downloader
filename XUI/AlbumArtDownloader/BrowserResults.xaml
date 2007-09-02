@@ -1,0 +1,104 @@
+﻿<controls:SortableListView 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:local="clr-namespace:AlbumArtDownloader"
+    xmlns:controls="clr-namespace:AlbumArtDownloader.Controls;assembly=AlbumArtDownloader.Controls"
+
+    x:Class="AlbumArtDownloader.BrowserResults"
+    
+    DataContext="{Binding RelativeSource={RelativeSource Self}}"
+
+    ColumnHeaderSortedAscendingTemplate="ColumnHeaderSortedAscendingTemplate"
+    ColumnHeaderSortedDescendingTemplate="ColumnHeaderSortedDescendingTemplate"
+    ColumnHeaderNotSortedTemplate="ColumnHeaderNotSortedTemplate">
+    
+    <controls:SortableListView.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/HyperlinkButton.generic.xaml"/>
+                <ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/SortableColumnHeader.generic.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <controls:FileNameConverter x:Key="mFileNameConverter"/>
+            
+            <Style TargetType="{x:Type GridViewColumnHeader}">
+                <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            </Style>
+        </ResourceDictionary>
+    </controls:SortableListView.Resources>
+    <controls:SortableListView.View>
+        <GridView>
+            <GridViewColumn>
+                <GridViewColumn.Header>
+                    <GridViewColumnHeader Command="ApplicationCommands.SelectAll">
+                        <CheckBox ToolTip="Select All" IsChecked="{Binding Path=AllSelected}" Margin="2,0,2,0"/>
+                    </GridViewColumnHeader>
+                </GridViewColumn.Header>
+                <GridViewColumn.CellTemplate>
+                    <DataTemplate>
+                        <CheckBox IsChecked="{Binding Path=IsSelected, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"/>
+                    </DataTemplate>
+                </GridViewColumn.CellTemplate>
+            </GridViewColumn>
+            <controls:SortableGridViewColumn Header="Artist" SortPropertyName="Artist" DisplayMemberBinding="{Binding Artist}" Width="200"/>
+            <controls:SortableGridViewColumn Header="Album" SortPropertyName="Name" DisplayMemberBinding="{Binding Name}" Width="200"/>
+            <controls:SortableGridViewColumn Header="Artwork Status" SortPropertyName="ArtFileStatus" Width="176">
+                <controls:SortableGridViewColumn.CellTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <Image Margin="0,0,2,0">
+                                <Image.Style>
+                                    <Style TargetType="{x:Type Image}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ArtFileStatus}" Value="Searching">
+                                                <Setter Property="Source" Value="search.ico"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding ArtFileStatus}" Value="Present">
+                                                <Setter Property="Source" Value="ArtPresent.png"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding ArtFileStatus}" Value="Missing">
+                                                <Setter Property="Source" Value="ArtMissing.png"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Image.Style>
+                            </Image>
+                            <TextBlock>
+                                <TextBlock.Style>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ArtFileStatus}" Value="Searching">
+                                                <Setter Property="Text" Value="Searching..."/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding ArtFileStatus}" Value="Present">
+                                                <Setter Property="Text" Value="Found:"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding ArtFileStatus}" Value="Missing">
+                                                <Setter Property="Text" Value="Not Present"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                            <Button Margin="4,0,0,0"
+										Command="{x:Static local:BrowserResults+Commands.ShowInExplorer}" CommandParameter="{Binding ArtFile}"
+										Content="{Binding ArtFile, Converter={StaticResource mFileNameConverter}}" 
+										ToolTip="{Binding ArtFile}">
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource HyperlinkButton}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding ArtFileStatus}" Value="Present">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </StackPanel>
+                    </DataTemplate>
+                </controls:SortableGridViewColumn.CellTemplate>
+            </controls:SortableGridViewColumn>
+        </GridView>
+    </controls:SortableListView.View>
+</controls:SortableListView>

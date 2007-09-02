@@ -24,6 +24,9 @@ namespace AlbumArtDownloader.Controls
 			double actualWidth = (double)values[1]; //Included seperately so that updates are triggered when the width changes
 			string path = (string)values[2];
 
+			if (actualWidth == 0)
+				return String.Empty;
+
 			Typeface textBlockTypeFace = Utilities.GetTypeface(textBlock);
 			
 			StringBuilder result = new StringBuilder(path);
@@ -34,11 +37,34 @@ namespace AlbumArtDownloader.Controls
 				FormattedText formattedText = new FormattedText(result.ToString(), culture, textBlock.FlowDirection, textBlockTypeFace, textBlock.FontSize, null);
 				if (formattedText.Width <= actualWidth)
 				{
-					//Small enough.
-					return result.ToString();
+					if (maxChars == path.Length || (actualWidth - formattedText.Width < textBlock.FontSize))
+					{
+						//Close enough.
+						return result.ToString();
+					}
+					else
+					{
+						//Shrunk too far, so grow back a bit
+						maxChars++;
+					}
 				}
-				//Not small enough, so shrink by one
-				PathCompactPathEx(result, path, --maxChars, 0);
+				else
+				{
+					//Not small enough. Attempt a guess at a better size, by making the string the same proportion smaller as the width is.
+					int previousMaxChars = maxChars;
+					maxChars = (int)(maxChars / (formattedText.Width / actualWidth));
+					if (maxChars == previousMaxChars)
+					{
+						//The reduction is less than one character, so reduce by one and return the result
+						maxChars--;
+
+						PathCompactPathEx(result, path, maxChars, 0);
+						return result.ToString();
+					}
+				}
+
+				PathCompactPathEx(result, path, maxChars, 0);
+
 			} while (maxChars > 0);
 			
 			return result.ToString();

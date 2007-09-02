@@ -53,8 +53,6 @@ namespace AlbumArtDownloader.Controls
 
 		public override void OnApplyTemplate()
 		{
-			InformationLocation = InformationLocation.Bottom;
-
 			base.OnApplyTemplate();
 
 			if (Information != null)

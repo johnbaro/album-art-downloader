@@ -46,6 +46,7 @@
     <Compile Include="ArtPanelListSortPicker.cs" />
     <Compile Include="CompareConverter.cs" />
     <Compile Include="ArtPathPatternBox.cs" />
+    <Compile Include="NotNullConverter.cs" />
     <Compile Include="FileNameConverter.cs" />
     <Compile Include="LimitBox.cs" />
     <Compile Include="Enums.cs" />

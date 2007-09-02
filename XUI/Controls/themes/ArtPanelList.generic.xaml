@@ -9,6 +9,8 @@
 		<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/SimpleList.generic.xaml"/>
 	</ResourceDictionary.MergedDictionaries>
 
+	<local:NotNullConverter x:Key="mNotNullConverter"/>
+
 	<Style TargetType="{x:Type local:ArtPanelList}" BasedOn="{StaticResource SimpleList}">
 		<Setter Property="Template">
 			<Setter.Value>
@@ -32,7 +34,7 @@
 			<Setter.Value>
 				<DataTemplate>
 					<local:ArtPanel
-							Name="PART_ArtPanel" 
+							Name="PART_ArtPanel"
 							Width="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ArtPanelList}}, Path=PanelWidth, Mode=TwoWay}"
 							ThumbSize="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ArtPanelList}}, Path=ThumbSize, Mode=TwoWay}"
 							InformationLocation="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ArtPanelList}}, Path=InformationLocation, Mode=TwoWay}"
@@ -46,7 +48,20 @@
 							IsSaved="{Binding IsSaved}"
 							IsSaving="{Binding IsSaving}"
 							IsDownloading="{Binding IsDownloading}"
-						/>
+						>
+						<!-- Performance tweak: keep the panel collapsed until it becomes properly bound to the ArtPanelList -->
+						<local:ArtPanel.Style>
+							<Style TargetType="{x:Type local:ArtPanel}">
+								<Setter Property="Visibility" Value="Collapsed"/>
+								<Style.Triggers>
+									<DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ArtPanelList}}, Converter={StaticResource mNotNullConverter}, Mode=OneWay}"
+												 Value="True">
+										<Setter Property="Visibility" Value="Visible"/>
+									</DataTrigger>
+								</Style.Triggers>	
+							</Style>
+						</local:ArtPanel.Style>
+					</local:ArtPanel>
 				</DataTemplate>
 			</Setter.Value>
 		</Setter>

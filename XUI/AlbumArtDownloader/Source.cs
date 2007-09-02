@@ -377,7 +377,7 @@ namespace AlbumArtDownloader
 
 				if (thumbnailBitmap != null)
 				{
-					mDispatcher.Invoke(DispatcherPriority.Input, new ThreadStart(delegate
+					mDispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
 					{
 						mSource.Results.Add(new AlbumArt(mSource,
 							thumbnailBitmap,

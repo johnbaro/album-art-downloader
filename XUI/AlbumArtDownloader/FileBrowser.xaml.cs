@@ -25,50 +25,30 @@ namespace AlbumArtDownloader
 		private static MediaInfoLib.MediaInfo sMediaInfo;
 		private static MediaInfoState sMediaInfoState;
 
-		public static class Commands
-		{
-			public static RoutedUICommand SelectMissing = new RoutedUICommand("Select Missing", "SelectMissing", typeof(Commands));
-			public static RoutedUICommand GetArtwork = new RoutedUICommand("Get Artwork", "GetArtwork", typeof(Commands));
-			/// <summary>Displays the file passed in as the parameter to the command in Windows Explorer</summary>
-			public static RoutedUICommand ShowInExplorer = new RoutedUICommand("Show in Explorer", "ShowInExplorer", typeof(Commands));
-		}
-
 		private Thread mMediaFileSearchThread;
 		private Queue<SearchThreadParameters> mMediaFileSearchQueue = new Queue<SearchThreadParameters>();
 		private AutoResetEvent mMediaFileSearchTrigger = new AutoResetEvent(false);
 		private ObservableAlbumCollection mAlbums = new ObservableAlbumCollection();
-
-		private Thread mArtFileSearchThread;
-		private Queue<Album> mArtFileSearchQueue = new Queue<Album>();
-		private AutoResetEvent mArtFileSearchTrigger = new AutoResetEvent(false);
-		private string mImagePathPattern; //This is held separately to the value of mImagePathPatternBox.PathPattern, so it will be constant during a search.
 
 		public FileBrowser()
 		{
 			InitializeComponent();
 			LoadSettings();
 
-			mResults.ItemsSource = mAlbums;
 			mBrowse.Click += new RoutedEventHandler(OnBrowseForFilePath);
 
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Find, new ExecutedRoutedEventHandler(FindExec)));
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Stop, new ExecutedRoutedEventHandler(StopExec)));
-			CommandBindings.Add(new CommandBinding(ApplicationCommands.SelectAll, new ExecutedRoutedEventHandler(SelectAllExec)));
-			CommandBindings.Add(new CommandBinding(Commands.SelectMissing, new ExecutedRoutedEventHandler(SelectMissingExec)));
-			CommandBindings.Add(new CommandBinding(Commands.GetArtwork, new ExecutedRoutedEventHandler(GetArtworkExec), new CanExecuteRoutedEventHandler(GetArtworkCanExec)));
-			CommandBindings.Add(new CommandBinding(Commands.ShowInExplorer, new ExecutedRoutedEventHandler(ShowInExplorerExec)));
 
 			IsVisibleChanged += new DependencyPropertyChangedEventHandler(OnIsVisibleChanged);
 
-			mAlbums.CollectionChanged += new NotifyCollectionChangedEventHandler(OnAlbumsCollectionChanged);
-
-			mResults.SelectionChanged += new SelectionChangedEventHandler(OnSelectionChanged);
-			mResults.MouseDoubleClick += new MouseButtonEventHandler(OnResultsDoubleClicked);
+			mResults.Albums = mAlbums;
 			mResults.DragEnter += new DragEventHandler(OnResultsDragEnter);
 			mResults.Drop += new DragEventHandler(OnResultsDragDrop);
+			mResults.ProgressTextChanged += new EventHandler(OnResultsProgressTextChanged);
+			mResults.StateChanged += new EventHandler(OnResultsStateChanged);
 
 			CreateMediaFileSearchThread();
-			CreateArtFileSearchThread();
 		}
 
 		private void OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -112,11 +92,7 @@ namespace AlbumArtDownloader
 				mMediaFileSearchThread.Abort();
 				mMediaFileSearchThread = null;
 			}
-			if (mArtFileSearchThread != null)
-			{
-				mArtFileSearchThread.Abort();
-				mArtFileSearchThread = null;
-			}
+			mResults.Dispose(); //Closes down the search thread
 			base.OnClosed(e);
 		}
 
@@ -226,197 +202,6 @@ namespace AlbumArtDownloader
 		{
 			AbortSearch();
 		}
-
-		private void SelectAllExec(object sender, ExecutedRoutedEventArgs e)
-		{
-			AllSelected = !AllSelected.GetValueOrDefault(true); //Mimic behaviour of clicking on the checkbox.
-		}
-
-		private void SelectMissingExec(object sender, ExecutedRoutedEventArgs e)
-		{
-			mResults.SelectAll(); //Adding items to the selection programatically is irritatingly difficult, so remove them instead.
-			for (int i = 0; i < mResults.Items.Count; i++)
-			{
-				Album album = (Album)mResults.Items[i];
-				if (album.ArtFileStatus != ArtFileStatus.Missing)
-				{
-					mResults.SelectedItems.Remove(album);
-				}
-			}
-		}
-
-		private void GetArtworkCanExec(object sender, CanExecuteRoutedEventArgs e)
-		{
-			e.CanExecute = mResults.SelectedItems.Count > 0; //Can't execute if there aren't any selected items.
-		}
-
-		/// <summary>
-		/// When creating new multiple search windows, offset each by this amount so that they aren't all on top of each other.
-		/// </summary>
-		private static readonly int sSearchWindowCascadeOffset = 20;
-		private void GetArtworkExec(object sender, ExecutedRoutedEventArgs e)
-		{
-			//Warn if there are a lot of selected items
-			if (mResults.SelectedItems.Count > Properties.Settings.Default.EnqueueWarning)
-			{
-				EnqueueWarning enqueueWarning = new EnqueueWarning();
-				enqueueWarning.Owner = this;
-				enqueueWarning.NumberToEnqueue = mResults.SelectedItems.Count;
-
-				if (!enqueueWarning.ShowDialog().GetValueOrDefault())
-				{
-					//Cancelled
-					return;
-				}
-
-				//Trim the selection back to the number to enqueue
-				while (mResults.SelectedItems.Count > enqueueWarning.NumberToEnqueue)
-				{
-					mResults.SelectedItems.RemoveAt(mResults.SelectedItems.Count - 1);
-				}
-			}
-
-			//Don't substitute placeholders, but do substitute recursive path matching with the simplest solution to it, just putting saving to the immediate subfolder
-			string artFileSearchPattern = mImagePathPattern.Replace("\\**\\","\\");
-			int i = 0;
-			foreach (Album album in mResults.SelectedItems)
-			{
-				//If the image path is relative, get an absolute path for it.
-				string rootedArtFileSearchPattern;
-				if (Path.IsPathRooted(artFileSearchPattern))
-				{
-					rootedArtFileSearchPattern = artFileSearchPattern;
-				}
-				else
-				{
-					rootedArtFileSearchPattern = Path.Combine(album.BasePath, artFileSearchPattern);
-				}
-
-				ArtSearchWindow searchWindow = Common.NewSearchWindow(this);
-				searchWindow.Top += i * sSearchWindowCascadeOffset;
-				searchWindow.Left += i * sSearchWindowCascadeOffset;
-
-				//TODO: Neater laying out of windows which would go off the screen. Note how Firefox handles this, for example, when opening lots of new non-maximised windows.
-				//TODO: Multimonitor support.
-				if (searchWindow.Left + searchWindow.Width > SystemParameters.PrimaryScreenWidth)
-				{
-					//For the present, just make sure that the window doesn't leave the screen.
-					searchWindow.Left = SystemParameters.PrimaryScreenWidth - searchWindow.Width;
-				}
-				if (searchWindow.Top + searchWindow.Height > SystemParameters.PrimaryScreenHeight)
-				{
-					searchWindow.Top = SystemParameters.PrimaryScreenHeight - searchWindow.Height;
-				}
-
-				searchWindow.SetDefaultSaveFolderPattern(rootedArtFileSearchPattern, true); //Default save to the location where the image was searched for.
-				searchWindow.Search(album.Artist, album.Name); //Kick off the search.
-				searchWindow.Closed += new EventHandler(delegate(object win, EventArgs ev)
-				  {
-					  QueueAlbumForArtFileSearch(album);
-				  }); //Watch for the window being closed to update the status of the artwork
-
-				i++;
-			}
-		}
-
-		private void OnResultsDoubleClicked(object sender, MouseButtonEventArgs e)
-		{
-			DependencyObject parent = e.OriginalSource as DependencyObject;
-			while (parent != null)
-			{
-				if (parent is ListViewItem)
-				{
-					//A list item was double clicked on, so get artwork for it
-					e.Handled = true;
-					System.Diagnostics.Debug.Assert(mResults.SelectedItems.Count == 1, "Expecting only the double clicked item to be selected");
-					GetArtworkExec(null, null);
-					return;
-				}
-				else if (parent == sender)
-				{
-					//A list item was not double clicked on, something else was
-					break;
-				}
-				parent = VisualTreeHelper.GetParent(parent);
-			}
-			//Do nothing for double click happening elsewhere.
-		}
-
-		private void ShowInExplorerExec(object sender, ExecutedRoutedEventArgs e)
-		{
-			if (e.Parameter is string)
-			{
-				//TODO: Validation that this is a file path?
-				System.Diagnostics.Process.Start("explorer.exe", String.Format("/select,{0}", e.Parameter));
-			}
-		}
-		#endregion
-
-		#region Select All
-		private bool mSettingAllSelected = false; //Flag to prevent listening to IsSelected changes when setting them all
-		private bool? mAllSelected = false;
-		/// <summary>
-		/// This can be set to true, to enable all sources, false, to disable them all,
-		/// or null to leave them as they are. It will return true if all sources are
-		/// Selected, false if they are all disabled, or null if they are mixed.
-		/// </summary>
-		public bool? AllSelected
-		{
-			get
-			{
-				return mAllSelected;
-			}
-			set
-			{
-				if (value != mAllSelected)
-				{
-					if (value.HasValue)
-					{
-						mSettingAllSelected = true;
-						if (value.Value)
-						{
-							mResults.SelectAll();
-						}
-						else
-						{
-							mResults.SelectedItems.Clear();
-						}
-						mSettingAllSelected = false;
-					}
-					mAllSelected = value;
-					NotifyPropertyChanged("AllSelected");
-				}
-			}
-		}
-		private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
-		{
-			if (!mSettingAllSelected) //Ignore selection change while setting selection from AllSelected setter.
-			{
-				if (e.RemovedItems.Count > 0)
-				{
-					//Check to see if there is now nothing selected
-					if (mResults.SelectedItems.Count == 0)
-					{
-						mAllSelected = false; //Don't change through the accessor, so it doesn't bother trying to reapply the selection
-						NotifyPropertyChanged("AllSelected");
-						return;
-					}
-				}
-				if (e.AddedItems.Count > 0)
-				{
-					//Check to see if there is now all selected
-					if (mResults.SelectedItems.Count == mResults.Items.Count)
-					{
-						mAllSelected = true; //Don't change through the accessor, so it doesn't bother trying to reapply the selection
-						NotifyPropertyChanged("AllSelected");
-						return;
-					}
-				}
-				//Not all items are selected, so set property as mixed.
-				mAllSelected = null;
-				NotifyPropertyChanged("AllSelected");
-			}
-		}
 		#endregion
 
 		#region Media File Searching
@@ -449,18 +234,12 @@ namespace AlbumArtDownloader
 			mMediaFileSearchThread.Abort();
 			mMediaFileSearchThread = null;
 			CreateMediaFileSearchThread();
-			
-			ClearArtFileSearchQueue();
-			
-			//Restart the art file search thread
-			mArtFileSearchThread.Abort();
-			mArtFileSearchThread = null;
-			CreateArtFileSearchThread();
+			mResults.AbortSearch();
 		}
 
 		private void EnqueueMediaFileSearch(SearchThreadParameters parameters)
 		{
-			mImagePathPattern = mImagePathPatternBox.PathPattern; //Keep this in a variable for the ArtFileSearchWorker to refer to.
+			mResults.ImagePathPattern = mImagePathPatternBox.PathPattern; //Set this once, rather than binding, so it is kept constant for a search.
 			
 			lock (mMediaFileSearchQueue)
 			{
@@ -507,7 +286,6 @@ namespace AlbumArtDownloader
 
 						SetProgressText("Searching...");
 
-						//TODO: Enqueing of individual files too
 						DirectoryInfo root = null;
 						try
 						{
@@ -547,26 +325,13 @@ namespace AlbumArtDownloader
 					} while (true);
 					//Will break out here when there are no more searches queued
 
-					//Check to see if status should be set to Done or Finding Art
-					bool artSearchComplete;
-					lock (mArtFileSearchQueue)
-					{
-						artSearchComplete = mArtFileSearchQueue.Count == 0;
-					}
-
+					//Finished with the FindingFiles state, so now set the state to whatever the results state is (either FindingArt, or Done).
 					Dispatcher.BeginInvoke(DispatcherPriority.DataBind, new ThreadStart(delegate
 					{
 						if (State != BrowserState.Error)
 						{
-							if (artSearchComplete)
-							{
-								State = BrowserState.Done;
-							}
-							else
-							{
-								State = BrowserState.FindingArt;
-								ProgressText = "Finding art...";
-							}
+							ProgressText = mResults.ProgressText;
+							State = mResults.State;
 						}
 					}));
 					//Return and wait until new searches are queued
@@ -618,6 +383,40 @@ namespace AlbumArtDownloader
 			}
 		}
 
+		private void OnResultsStateChanged(object sender, EventArgs e)
+		{
+			switch (mResults.State)
+			{
+				case BrowserState.Ready: //Not interested.
+				case BrowserState.FindingArt:
+					//Not interested, this will be set by SearchWorker when it finishes.
+					break;
+				case BrowserState.Done:
+					//If we're currently FindingArt, then this does mean we're now done
+					if (State == BrowserState.FindingArt)
+						State = BrowserState.Done;
+					break;
+				case BrowserState.Error:
+				case BrowserState.Stopped:
+					//Inidicate this state
+					State = mResults.State;
+					break;
+				case BrowserState.FindingFiles:
+					System.Diagnostics.Debug.Fail("Unexpected state: Results should not be finding files");
+					break;
+				default:
+					System.Diagnostics.Debug.Fail("Unexpected state");
+					break;
+			}
+		}
+
+		private void OnResultsProgressTextChanged(object sender, EventArgs e)
+		{
+			//Not binding, as we want to be able to update the progress text here directly too, but if the results indicates the progress text it would like displayed, we oblige here.
+			if (!String.IsNullOrEmpty(mResults.ProgressText))
+				ProgressText = mResults.ProgressText;
+		}
+
 		/// <summary>
 		/// Update the progress text, safe to call from the search worker thread.
 		/// </summary>
@@ -642,122 +441,6 @@ namespace AlbumArtDownloader
 			}));
 		}
 
-		#endregion
-
-		#region ArtFile Searching
-		private void OnAlbumsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-		{
-			switch (e.Action)
-			{
-				case NotifyCollectionChangedAction.Add:
-					foreach (Album album in e.NewItems)
-					{
-						QueueAlbumForArtFileSearch(album);
-					}
-					break;
-				case NotifyCollectionChangedAction.Reset:
-					ClearArtFileSearchQueue();
-					break;
-			}
-		}
-		
-		private void QueueAlbumForArtFileSearch(Album album)
-		{
-			album.ArtFileStatus = ArtFileStatus.Queued;
-			lock (mArtFileSearchQueue)
-			{
-				mArtFileSearchQueue.Enqueue(album);
-			}
-			mArtFileSearchTrigger.Set();
-		}
-
-		private void ClearArtFileSearchQueue()
-		{
-			lock (mArtFileSearchQueue)
-			{
-				foreach (Album album in mArtFileSearchQueue)
-				{
-					album.ArtFileStatus = ArtFileStatus.Unknown;
-				}
-				mArtFileSearchQueue.Clear();
-			}
-		}
-
-		private void CreateArtFileSearchThread()
-		{
-			System.Diagnostics.Debug.Assert(mArtFileSearchThread == null, "An art file search thread already exists!");
-			mArtFileSearchThread = new Thread(new ThreadStart(ArtFileSearchWorker));
-			mArtFileSearchThread.Name = "Art File Searcher";
-			mArtFileSearchThread.Start();
-		}
-
-		private void ArtFileSearchWorker()
-		{
-			try
-			{
-				do
-				{
-					mArtFileSearchTrigger.WaitOne(); //Wait until there is work to do
-
-					do //Loop through all the queued art.
-					{
-						Album album;
-						lock (mArtFileSearchQueue)
-						{
-							if (mArtFileSearchQueue.Count == 0)
-							{
-								break; //Nothing to search for, so go back and wait until there is.
-							}
-							else
-							{
-								album = mArtFileSearchQueue.Dequeue();
-							}
-						}
-						System.Diagnostics.Debug.Assert(album.ArtFileStatus == ArtFileStatus.Queued, "Expecting the album to be queued for searching");
-						album.ArtFileStatus = ArtFileStatus.Searching;
-						try
-						{
-							SetProgressText(String.Format("Finding art... {0} / {1}", album.Artist, album.Name));
-
-							string artFileSearchPattern = Common.SubstitutePlaceholders(mImagePathPattern, album.Artist, album.Name);
-
-							if (!Path.IsPathRooted(artFileSearchPattern))
-							{
-								artFileSearchPattern = Path.Combine(album.BasePath, artFileSearchPattern);
-							}
-							foreach (string artFile in Common.ResolvePathPattern(artFileSearchPattern))
-							{
-								album.ArtFile = artFile;
-								album.ArtFileStatus = ArtFileStatus.Present;
-								break; //Only use the first art file that matches, if there are multiple matches.
-							}
-						}
-						catch(Exception)
-						{
-							album.ArtFileStatus = ArtFileStatus.Unknown; //It might not be missing, we just haven't found it before hitting an exception
-						}
-						if (album.ArtFileStatus != ArtFileStatus.Present) //If it wasn't found, then it's missing.
-							album.ArtFileStatus = ArtFileStatus.Missing;
-					} while (true);
-
-					Dispatcher.BeginInvoke(DispatcherPriority.DataBind, new ThreadStart(delegate
-					{
-						if (State == BrowserState.FindingArt) //If only finding art, then that has now been done, and the state is now Done.
-						{
-							State = BrowserState.Done;
-						}
-					}));
-				} while (true);
-			}
-			catch (ThreadAbortException)
-			{
-				Dispatcher.BeginInvoke(DispatcherPriority.DataBind, new ThreadStart(delegate
-				{
-					State = BrowserState.Stopped;
-				}));
-				return;
-			}
-		}
 		#endregion
 
 		#region Property Notification
