@@ -1,16 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Input;
-using System.Threading;
-using System.Windows.Threading;
+using System.ComponentModel;
 using System.IO;
 using System.Reflection;
-using System.Collections.Specialized;
-using System.ComponentModel;
-using System.Windows.Media;
+using System.Threading;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace AlbumArtDownloader
 {
@@ -282,9 +278,8 @@ namespace AlbumArtDownloader
 						Dispatcher.Invoke(DispatcherPriority.DataBind, new ThreadStart(delegate
 						{
 							State = BrowserState.FindingFiles;
+							ProgressText = "Searching...";
 						}));
-
-						SetProgressText("Searching...");
 
 						DirectoryInfo root = null;
 						try
@@ -318,7 +313,7 @@ namespace AlbumArtDownloader
 							}
 							catch (Exception e)
 							{
-								SetErrorState(String.Format("Error occurred while searching: {0}", e.Message));
+								SetErrorState("Error occurred while searching: " + e.Message);
 								continue;
 							}
 						}
@@ -349,7 +344,10 @@ namespace AlbumArtDownloader
 
 		private void ReadMediaFile(FileInfo file)
 		{
-			SetProgressText("Searching... " + file.Name);
+			Dispatcher.BeginInvoke(DispatcherPriority.DataBind, new ThreadStart(delegate
+			{
+				ProgressText = "Searching... " + file.Name;
+			}));
 
 			string artistName, albumName;
 			try
@@ -418,17 +416,6 @@ namespace AlbumArtDownloader
 		}
 
 		/// <summary>
-		/// Update the progress text, safe to call from the search worker thread.
-		/// </summary>
-		private void SetProgressText(string text)
-		{
-			Dispatcher.BeginInvoke(DispatcherPriority.DataBind, new ThreadStart(delegate
-			{
-				ProgressText = text;
-			}));
-		}
-
-		/// <summary>
 		/// Sets the error state, with error message. Safe to call from the search worker thread.
 		/// </summary>
 		private void SetErrorState(string message)
@@ -440,7 +427,6 @@ namespace AlbumArtDownloader
 				State = BrowserState.Error;
 			}));
 		}
-
 		#endregion
 
 		#region Property Notification

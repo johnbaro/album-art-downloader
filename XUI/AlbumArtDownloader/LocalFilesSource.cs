@@ -1,13 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Text;
-using AlbumArtDownloader.Controls;
+using System.Collections.Specialized;
+using System.Configuration;
 using System.Drawing;
 using System.IO;
-using System.Text.RegularExpressions;
-using System.Collections.Specialized;
 using System.Runtime.InteropServices;
-using System.Configuration;
 using System.Windows;
 
 namespace AlbumArtDownloader

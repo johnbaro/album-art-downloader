@@ -86,3 +86,15 @@ Options:
               If other parameters are not
               specified, then a search window
               will not be shown initially.
+
+ /foobarBrowser [search]                      (/foobarBrowser search)
+              Opens a Foobar Browser window. If
+              the search parameter is present,
+              starts searching the foobar media
+              library immediately. If the search
+              parameter is omitted, the browser
+              window is just opened.          (/foobarBrowser)
+              
+              If other parameters are not
+              specified, then a search window
+              will not be shown initially.

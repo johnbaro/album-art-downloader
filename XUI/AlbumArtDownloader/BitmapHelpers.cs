@@ -1,9 +1,9 @@
 using System;
 using System.Drawing;
 using System.IO;
-using System.Windows.Media.Imaging;
 using System.Net;
 using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace AlbumArtDownloader
 {

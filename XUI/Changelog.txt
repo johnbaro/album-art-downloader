@@ -1,5 +1,6 @@
 0.9 Added Foobar2000 library browser
     Improved performance of search results thumbnails list
+    Fixed Coveralia and Yes24 scripts which had become out of date
 
 0.8 Added Drag and Drop support to drop files and folders on to the File Browser window
     Cancel All button in Queue Manager window

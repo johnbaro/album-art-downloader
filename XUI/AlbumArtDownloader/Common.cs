@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Windows;
-using System.Text.RegularExpressions;
 using System.IO;
-using NetMatters;
+using System.Text.RegularExpressions;
+using System.Windows;
 
 namespace AlbumArtDownloader
 {

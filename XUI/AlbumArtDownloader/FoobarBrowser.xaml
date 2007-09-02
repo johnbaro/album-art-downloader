@@ -1,22 +1,232 @@
 ﻿<Window x:Class="AlbumArtDownloader.FoobarBrowser"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-   
+    xmlns:Win32="clr-namespace:Microsoft.Win32;assembly=presentationframework"
+    
 	xmlns:local="clr-namespace:AlbumArtDownloader"
+	xmlns:properties="clr-namespace:AlbumArtDownloader.Properties"
+	xmlns:controls="clr-namespace:AlbumArtDownloader.Controls;assembly=AlbumArtDownloader.Controls"
+
+	DataContext="{Binding RelativeSource={RelativeSource Self}}"
 		
 	Title="Foobar Browser" Background="{x:Static SystemColors.ControlBrush}"
 	Icon="AlbumArtDownloader.ico"
-	Height="300" Width="300"
-    >
+	Width="640" Height="400" ResizeMode="CanResizeWithGrip"
+	
+    properties:WindowSettings.Save="True"
+	>
+	<Window.Resources>
+		<ResourceDictionary>
+			<ResourceDictionary.MergedDictionaries>
+				<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/HyperlinkButton.generic.xaml"/>
+				<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/HyperlinkExpander.generic.xaml"/>
+				<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/Statusbar.generic.xaml"/>
+			</ResourceDictionary.MergedDictionaries>
+
+			<controls:StringFormatterConverter x:Key="mStringFormatterConverter"/>
+			<controls:TooltipEnabledOnOverflowConverter x:Key="mTooltipEnabledOnOverflowConverter"/>
+
+			<properties:Settings x:Key="mSettings"/>
+		</ResourceDictionary>
+	</Window.Resources>
 	<Grid Margin="5">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="*"/>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
-		
+
 		<local:Menu Margin="-5,-6,-5,5"/>
-		<TextBlock Grid.Row="2" FontSize="18" FontStyle="Italic" Foreground="{x:Static SystemColors.ControlDarkDarkBrush}" VerticalAlignment="Center" HorizontalAlignment="Center">
-			Foobar browser goes here...
-		</TextBlock>
+
+		<Grid Grid.Row="1">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="Auto"/>
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="Auto"/>
+			</Grid.ColumnDefinitions>
+			<TextBlock Padding="0,0,0,4">Foobar2000 status:</TextBlock>
+			<Border Grid.Row="1" BorderBrush="{x:Static SystemColors.ControlDarkBrush}" BorderThickness="1" Padding="2">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="*"/>
+					</Grid.ColumnDefinitions>
+					<Button Content="Foobar2000 COM Automation Server" Command="GoToPage" CommandParameter="http://www.hydrogenaudio.org/forums/index.php?showtopic=39946">
+						<Button.Style>
+							<Style TargetType="{x:Type Button}" BasedOn="{StaticResource HyperlinkButton}">
+								<Setter Property="Visibility" Value="Collapsed"/>
+								<Style.Triggers>
+									<DataTrigger Binding="{Binding FoobarPresent}" Value="False">
+										<Setter Property="Visibility" Value="Visible"/>
+									</DataTrigger>
+								</Style.Triggers>
+							</Style>
+						</Button.Style>
+					</Button>
+					<TextBlock Grid.Column="1">
+						<TextBlock.Style>
+							<Style TargetType="{x:Type TextBlock}">
+								<Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+								<Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=Text}"/>
+								<Setter Property="ToolTipService.IsEnabled">
+									<Setter.Value>
+										<MultiBinding Converter="{StaticResource mTooltipEnabledOnOverflowConverter}" Mode="OneWay">
+											<Binding RelativeSource="{RelativeSource Self}" Mode="OneWay"/>
+											<Binding Path="ActualWidth" RelativeSource="{RelativeSource Self}" Mode="OneWay"/>
+											<Binding Path="ToolTip" RelativeSource="{RelativeSource Self}" Mode="OneWay"/>
+										</MultiBinding>
+									</Setter.Value>
+								</Setter>
+
+								<Setter Property="Text" Value="{Binding FoobarVersion}"/>
+								<Style.Triggers>
+									<DataTrigger Binding="{Binding FoobarPresent}" Value="False">
+										<Setter Property="Text" Value=" must be installed before the Foobar2000 library can be accessed."/>
+									</DataTrigger>
+								</Style.Triggers>
+							</Style>
+						</TextBlock.Style>
+					</TextBlock>
+				</Grid>
+			</Border>
+			<Button Name="mSearch" Padding="5,-5,5,-5" Margin="5,0,0,0" Grid.Column="2" Grid.RowSpan="2" Command="ApplicationCommands.Find" IsDefault="True">
+				<StackPanel Orientation="Horizontal">
+					<Image Source="search.ico" Margin="0,4,0,0"/>
+					<Label>_Search</Label>
+				</StackPanel>
+			</Button>
+		</Grid>
+		<Expander Padding="5,5,0,0" Grid.Row="2"
+				  Header="Options..." BorderBrush="{x:Static SystemColors.ControlDarkBrush}">
+			<Expander.Style>
+				<Style TargetType="{x:Type Expander}" BasedOn="{StaticResource HyperlinkExpander}">
+					<Setter Property="Margin" Value="0,2,0,0"/>
+					<Style.Triggers>
+						<Trigger Property="IsExpanded" Value="True">
+							<Setter Property="Margin" Value="0,2,0,5"/>
+						</Trigger>
+					</Style.Triggers>
+				</Style>
+			</Expander.Style>
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
+				<Label Target="{Binding ElementName=mImagePathPatternBox}" Padding="0,4,0,4">Specify path to find _images:</Label>
+				<controls:ArtPathPatternBox Name="mImagePathPatternBox" Grid.Row="1" PathPattern="{Binding Source={StaticResource mSettings}, Path=Default.FileBrowseImagePath}">
+					<controls:ArtPathPatternBox.AdditionalPlaceholders>
+						<controls:PatternPlaceholder MenuItemHeader="_Subfolders" ToolTip="Matches subfolders recursively at this point in the path" Placeholder="\**\"/>
+					</controls:ArtPathPatternBox.AdditionalPlaceholders>
+					<controls:ArtPathPatternBox.BrowseDialog>
+						<Win32:OpenFileDialog Title="Path to find images" ValidateNames="False" CheckFileExists="False" CheckPathExists="False" Filter="All Files (*.*)|*.*"/>
+					</controls:ArtPathPatternBox.BrowseDialog>
+				</controls:ArtPathPatternBox>
+			</Grid>
+		</Expander>
+		<local:BrowserResults Grid.Row="3" x:Name="mResults"/>
+		<Grid Grid.Row="4" Margin="4,4,0,4">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto"/>
+				<RowDefinition Height="*"/>
+			</Grid.RowDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*"/>
+				<ColumnDefinition Width="Auto"/>
+			</Grid.ColumnDefinitions>
+			<TextBlock Grid.Row="0" Margin="0,0,0,4">
+				<TextBlock.Text>
+					<MultiBinding Converter="{StaticResource mStringFormatterConverter}" ConverterParameter="{}{0} of {1} albums selected" Mode="OneWay">
+						<Binding ElementName="mResults" Path="SelectedItems.Count"/>
+						<Binding ElementName="mResults" Path="Items.Count"/>
+					</MultiBinding>
+				</TextBlock.Text>
+			</TextBlock>
+			<Button Grid.Row="1" VerticalAlignment="Top" Style="{StaticResource HyperlinkButton}"
+					Command="{x:Static local:BrowserResults+Commands.SelectMissing}" CommandTarget="{Binding ElementName=mResults}" Content="Select all albums with missing artwork"/>
+			<Button Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Padding="10,-4,10,-4"
+					Command="{x:Static local:BrowserResults+Commands.GetArtwork}" CommandTarget="{Binding ElementName=mResults}" Content="Get Artwork for Selection..."/>
+		</Grid>
+		<StatusBar Grid.Row="5" Margin="-5,0,-5,-5" Padding="5,2,5,2">
+			<StatusBarItem DockPanel.Dock="Right">
+				<Button Padding="10,-3,10,-1" Margin="0,-3,10,-5"
+						Command="ApplicationCommands.Stop" Content="Stop">
+					<Button.Style>
+						<Style TargetType="{x:Type Button}">
+							<Setter Property="Visibility" Value="Collapsed"/>
+							<Style.Triggers>
+								<DataTrigger Binding="{Binding State}" Value="FindingFiles">
+									<Setter Property="Visibility" Value="Visible"/>
+								</DataTrigger>
+								<DataTrigger Binding="{Binding State}" Value="FindingArt">
+									<Setter Property="Visibility" Value="Visible"/>
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</Button.Style>
+				</Button>
+			</StatusBarItem>
+			<StatusBarItem DockPanel.Dock="Right">
+				<ProgressBar Value="{Binding Progress, Mode=OneWay}" Maximum="{Binding ProgressMax, Mode=OneWay}"
+							 Width="100" Margin="5,-4,2,-6">
+					<ProgressBar.Style>
+						<Style TargetType="{x:Type ProgressBar}">
+							<Setter Property="Visibility" Value="Collapsed"/>
+							<Style.Triggers>
+								<DataTrigger Binding="{Binding State}" Value="FindingFiles">
+									<Setter Property="Visibility" Value="Visible"/>
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</ProgressBar.Style>
+				</ProgressBar>
+			</StatusBarItem>
+			<StatusBarItem>
+				<TextBlock>
+					<TextBlock.Style>
+						<Style TargetType="{x:Type TextBlock}">
+							<Setter Property="TextTrimming" Value="CharacterEllipsis"/>
+							<Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=Text}"/>
+							<Setter Property="ToolTipService.IsEnabled">
+								<Setter.Value>
+									<MultiBinding Converter="{StaticResource mTooltipEnabledOnOverflowConverter}" Mode="OneWay">
+										<Binding RelativeSource="{RelativeSource Self}" Mode="OneWay"/>
+										<Binding Path="ActualWidth" RelativeSource="{RelativeSource Self}" Mode="OneWay"/>
+										<Binding Path="ToolTip" RelativeSource="{RelativeSource Self}" Mode="OneWay"/>
+									</MultiBinding>
+								</Setter.Value>
+							</Setter>
+							<Style.Triggers>
+								<DataTrigger Binding="{Binding State}" Value="Ready">
+									<Setter Property="Text" Value="Ready"/>
+								</DataTrigger>
+								<DataTrigger Binding="{Binding State}" Value="FindingFiles">
+									<Setter Property="Text" Value="{Binding ProgressText}"/>
+								</DataTrigger>
+								<DataTrigger Binding="{Binding State}" Value="FindingArt">
+									<Setter Property="Text" Value="{Binding ProgressText}"/>
+								</DataTrigger>
+								<DataTrigger Binding="{Binding State}" Value="Done">
+									<Setter Property="Text" Value="Done"/>
+								</DataTrigger>
+								<DataTrigger Binding="{Binding State}" Value="Stopped">
+									<Setter Property="Text" Value="Stopped"/>
+								</DataTrigger>
+								<DataTrigger Binding="{Binding State}" Value="Error">
+									<Setter Property="Text" Value="{Binding ErrorText}"/>
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</TextBlock.Style>
+				</TextBlock>
+			</StatusBarItem>
+			
+		</StatusBar>
 	</Grid>
 </Window>

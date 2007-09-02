@@ -1,11 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
-using AlbumArtDownloader.Controls;
 using System.ComponentModel;
-using System.Windows.Threading;
+using AlbumArtDownloader.Controls;
 
 namespace AlbumArtDownloader
 {

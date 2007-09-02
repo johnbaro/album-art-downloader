@@ -1,12 +1,11 @@
 using System;
-using System.Windows;
+using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Reflection;
-using AlbumArtDownloader.Scripts;
-using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.ServiceModel;
+using System.Windows;
+using AlbumArtDownloader.Scripts;
 
 namespace AlbumArtDownloader
 {
@@ -109,7 +108,8 @@ namespace AlbumArtDownloader
 			}
 
 			bool? autoClose = null;
-			bool showSearchWindow = false, showFileBrowser = false;
+			bool showSearchWindow = false, showFileBrowser = false, showFoobarBrowser = false;
+			bool startFoobarBrowserSearch = false;
 			string artist = null, album = null, path = null, localImagesPath = null, fileBrowser = null;
 			List<String> useSources = new List<string>();
 			List<String> excludeSources = new List<string>();
@@ -202,6 +202,10 @@ namespace AlbumArtDownloader
 							fileBrowser = parameter.Value;
 							showFileBrowser = true;
 							break;
+						case "foobarbrowser":
+							startFoobarBrowserSearch = parameter.Value.Equals("search", StringComparison.InvariantCultureIgnoreCase);
+							showFoobarBrowser = true;
+							break;
 						default:
 							errorMessage = "Unexpected command line parameter: " + parameter.Name;
 							break;
@@ -216,7 +220,7 @@ namespace AlbumArtDownloader
 				return false;
 			}
 
-			if (!showFileBrowser && !showSearchWindow) //If no windows will be shown, show the search window
+			if (!showFileBrowser && !showFoobarBrowser && !showSearchWindow) //If no windows will be shown, show the search window
 				showSearchWindow = true;
 
 			if (showFileBrowser)
@@ -226,6 +230,16 @@ namespace AlbumArtDownloader
 				if (!String.IsNullOrEmpty(fileBrowser))
 				{
 					browserWindow.Search(fileBrowser, AlbumArtDownloader.Properties.Settings.Default.FileBrowseSubfolders, AlbumArtDownloader.Properties.Settings.Default.FileBrowseImagePath); //TODO: Should the browse subfolders flag be a command line parameter?
+				}
+			}
+
+			if (showFoobarBrowser)
+			{
+				FoobarBrowser browserWindow = new FoobarBrowser();
+				browserWindow.Show();
+				if (startFoobarBrowserSearch)
+				{
+					browserWindow.Search(AlbumArtDownloader.Properties.Settings.Default.FileBrowseImagePath); //TODO: Should foobar browser have a separate path setting?
 				}
 			}
 

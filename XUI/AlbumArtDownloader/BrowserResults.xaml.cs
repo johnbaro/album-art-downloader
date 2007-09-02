@@ -1,15 +1,15 @@
 ﻿using System;
-using System.Windows.Input;
-using AlbumArtDownloader.Controls;
-using System.Windows.Media;
+using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.IO;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
-using System.ComponentModel;
-using System.Collections.Specialized;
-using System.Threading;
+using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Threading;
-using System.IO;
-using System.Collections.Generic;
+using AlbumArtDownloader.Controls;
 
 namespace AlbumArtDownloader
 {

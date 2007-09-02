@@ -1,14 +1,13 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.Text;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
 using System.Windows.Documents;
-using System.Runtime.InteropServices;
-using System.ComponentModel;
-using System.Collections.Specialized;
-using System.Collections;
+using System.Windows.Input;
 
 namespace AlbumArtDownloader.Controls
 {

@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows;
-using System.Configuration;
 using System.ComponentModel;
+using System.Configuration;
+using System.Windows;
 
 namespace AlbumArtDownloader
 {

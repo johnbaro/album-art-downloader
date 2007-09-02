@@ -1,12 +1,12 @@
 using System;
-using System.Windows;
-using System.Windows.Input;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Text;
 using System.IO;
-using Boo.Lang.Compiler.IO;
+using System.Text;
+using System.Windows;
+using System.Windows.Input;
 using Boo.Lang.Compiler;
+using Boo.Lang.Compiler.IO;
 using Boo.Lang.Compiler.Pipelines;
 
 namespace AlbumArtDownloader
