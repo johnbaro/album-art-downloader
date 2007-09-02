@@ -1,3 +1,6 @@
+0.9 Added Foobar2000 library browser
+    Improved performance of search results thumbnails list
+
 0.8 Added Drag and Drop support to drop files and folders on to the File Browser window
     Cancel All button in Queue Manager window
     Warning added, if queueing large number of searches from the File Browser
