@@ -162,7 +162,7 @@ namespace AlbumArtDownloader.Controls
 			if (art.ImageWidth != mPreviousImageWidth ||
 				art.ImageHeight != mPreviousImageHeight)
 			{
-				RefreshFilter();
+				//RefreshFilter();
 			}
 		}
 		#endregion

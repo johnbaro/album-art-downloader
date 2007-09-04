@@ -2,7 +2,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
+    <ProductVersion>9.0.20706</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{2B91641F-5C14-4880-B00E-A7C76A41DE43}</ProjectGuid>
     <OutputType>Library</OutputType>
@@ -56,6 +56,7 @@
     <EmbeddedResource Include="testThumbnail.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="testHuge.jpg" />
     <Content Include="testFullsize.png" />
     <Content Include="testThumbnail.png" />
   </ItemGroup>

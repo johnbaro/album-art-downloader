@@ -57,6 +57,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\ThirdParty Assemblies\Boo.Lang.Parser.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Windows.Design.Markup, Version=0.0.4032.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Drawing" />
@@ -81,6 +82,9 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CommandArgsHelp.xaml" />
+    <Page Include="ArtPreviewWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="EnqueueWarning.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -118,6 +122,9 @@
       <DependentUpon>CommandArgsHelp.xaml</DependentUpon>
     </Compile>
     <Compile Include="Common.cs" />
+    <Compile Include="ArtPreviewWindow.xaml.cs">
+      <DependentUpon>ArtPreviewWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="EnqueueWarning.xaml.cs">
       <DependentUpon>EnqueueWarning.xaml</DependentUpon>
     </Compile>
@@ -229,6 +236,16 @@
       <WrapperTool>tlbimp</WrapperTool>
       <Isolated>False</Isolated>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="save.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ZoomIn.png" />
+    <Resource Include="ZoomOut.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Hand.cur" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

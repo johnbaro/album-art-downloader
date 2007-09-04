@@ -11,7 +11,7 @@ namespace AlbumArtDownloader.Controls
 	/// <summary>
 	/// Compacts a file path to fit the size available
 	/// </summary>
-	internal class PathCompacterConverter : IMultiValueConverter
+	public class PathCompacterConverter : IMultiValueConverter
 	{
 		[DllImport("shlwapi.dll", CharSet = CharSet.Auto)]
 		static extern bool PathCompactPathEx([Out] StringBuilder pszOut, string szPath, int cchMax, int dwFlags);
@@ -20,9 +20,9 @@ namespace AlbumArtDownloader.Controls
 		{
 			TextBlock textBlock = (TextBlock)values[0];
 			double actualWidth = (double)values[1]; //Included seperately so that updates are triggered when the width changes
-			string path = (string)values[2];
+			string path = values[2] as string;
 
-			if (actualWidth == 0)
+			if (actualWidth == 0 || String.IsNullOrEmpty(path))
 				return String.Empty;
 
 			Typeface textBlockTypeFace = Utilities.GetTypeface(textBlock);

@@ -43,6 +43,19 @@ namespace AlbumArtDownloader.Controls
 		public ArtPanel()
 		{
 			CommandBindings.Add(new CommandBinding(Commands.ToggleInformationLocation, new ExecutedRoutedEventHandler(ToggleInformationLocationExec)));
+
+			SetBinding(ImagePopupWidthProperty, new Binding()
+			{
+				Source = this,
+				Path = new PropertyPath(ImageWidthProperty),
+				Mode = BindingMode.OneWay
+			});
+			SetBinding(ImagePopupHeightProperty, new Binding()
+			{
+				Source = this,
+				Path = new PropertyPath(ImageHeightProperty),
+				Mode = BindingMode.OneWay
+			});
 		}
 
 		public override void OnApplyTemplate()
@@ -222,9 +235,12 @@ namespace AlbumArtDownloader.Controls
 			RaiseFullSizeImageRequestedEvent();
 			if (ImagePopup != null && !ImagePopup.IsOpen)
 			{
+				CoerceValue(ImagePopupWidthProperty);
+				CoerceValue(ImagePopupHeightProperty);
 				ImagePopup.IsOpen = true;
 			}
 		}
+
 
 		private void CloseImagePopup()
 		{
@@ -232,6 +248,66 @@ namespace AlbumArtDownloader.Controls
 			{
 				ImagePopup.IsOpen = false;
 			}
+		}
+
+		public static readonly DependencyProperty ImagePopupWidthProperty = DependencyProperty.Register("ImagePopupWidth", typeof(double), typeof(ArtPanel), new FrameworkPropertyMetadata(null, new CoerceValueCallback(CoerceImagePopupWidth)));
+		/// <summary>The width to show the image in the popup (restricted on screen size)</summary>
+		public double ImagePopupWidth
+		{
+			get { return (double)GetValue(ImagePopupWidthProperty); }
+			set { SetValue(ImagePopupWidthProperty, value); }
+		}
+		private static object CoerceImagePopupWidth(DependencyObject sender, object value)
+		{
+			double maxWidth = ((ArtPanel)sender).CalculateMaxImagePopupSize().Width;
+			if ((double)value > maxWidth)
+				value = maxWidth;
+
+			return value;
+		}
+
+		public static readonly DependencyProperty ImagePopupHeightProperty = DependencyProperty.Register("ImagePopupHeight", typeof(double), typeof(ArtPanel), new FrameworkPropertyMetadata(null, new CoerceValueCallback(CoerceImagePopupHeight)));
+		/// <summary>The height to show the image in the popup (restricted on screen size)</summary>		
+		public double ImagePopupHeight
+		{
+			get { return (double)GetValue(ImagePopupHeightProperty); }
+			set { SetValue(ImagePopupHeightProperty, value); }
+		}
+		private static object CoerceImagePopupHeight(DependencyObject sender, object value)
+		{
+			double maxHeight = ((ArtPanel)sender).CalculateMaxImagePopupSize().Height;
+			if ((double)value > maxHeight)
+				value = maxHeight;
+			
+			return value;
+		}
+
+		/// <summary>
+		/// Calculates the maximum allowable image popup size, whilst keeping within the restrictions for WPF Popup, and
+		/// maintaining the image aspect ratio.
+		/// </summary>
+		private Size CalculateMaxImagePopupSize()
+		{
+			//TODO: Multimonitor support
+
+			double imageAspectRatio = ImageWidth / ImageHeight;
+			
+			//Popup may not take up more than 75% screen area (matches WPF Popup restriction)
+			double maxArea = 0.75 * SystemParameters.PrimaryScreenHeight * SystemParameters.PrimaryScreenWidth;
+
+			//Max width, then is sqrt of max area x aspect ratio. Or screen width (less a small amount for borders), whichever is smaller.
+			double maxWidth = Math.Min( SystemParameters.PrimaryScreenWidth - 10D,
+										Math.Sqrt(maxArea * imageAspectRatio));
+
+			double maxHeight = maxWidth / imageAspectRatio;
+			//Don't allow the height to exceed the screen height (less a small amount for borders)
+			if (maxHeight > SystemParameters.PrimaryScreenHeight - 10D)
+			{
+				maxHeight = SystemParameters.PrimaryScreenHeight - 10D;
+				maxWidth = maxHeight * imageAspectRatio; //This should always be a decrease, as maxHeight was decreased.
+			}
+
+			return new Size(maxWidth, maxHeight);
 		}
 		#endregion
 
@@ -472,21 +548,32 @@ namespace AlbumArtDownloader.Controls
 			set { SetValue(ImageProperty, value); }
 		}
 
-		public static readonly DependencyProperty ImageWidthProperty = DependencyProperty.Register("ImageWidth", typeof(double), typeof(ArtPanel));
+		public static readonly DependencyProperty ImageWidthProperty = DependencyProperty.Register("ImageWidth", typeof(double), typeof(ArtPanel), new FrameworkPropertyMetadata(new PropertyChangedCallback(OnImageWidthChanged)));
 		/// <summary>The width of the full sized image, or -1 if unknown</summary>
 		public double ImageWidth
 		{
 			get { return (double)GetValue(ImageWidthProperty); }
 			set { SetValue(ImageWidthProperty, value); }
 		}
+		private static void OnImageWidthChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+		{
+			//When the image width changes, the popup height needs to be re-coerced too, as it is dependent on aspect ratio
+			sender.CoerceValue(ImagePopupHeightProperty);
+		}
 
-		public static readonly DependencyProperty ImageHeightProperty = DependencyProperty.Register("ImageHeight", typeof(double), typeof(ArtPanel));
+		public static readonly DependencyProperty ImageHeightProperty = DependencyProperty.Register("ImageHeight", typeof(double), typeof(ArtPanel), new FrameworkPropertyMetadata(new PropertyChangedCallback(OnImageHeightChanged)));
 		/// <summary>The height of the full sized image, or -1 if unknown</summary>		
 		public double ImageHeight
 		{
 			get { return (double)GetValue(ImageHeightProperty); }
 			set { SetValue(ImageHeightProperty, value); }
 		}
+		private static void OnImageHeightChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+		{
+			//When the image height changes, the popup width needs to be re-coerced too, as it is dependent on aspect ratio
+			sender.CoerceValue(ImagePopupWidthProperty);
+		}
+
 
 		public static readonly DependencyProperty ThumbSizeProperty = DependencyProperty.Register("ThumbSize", typeof(double), typeof(ArtPanel), new FrameworkPropertyMetadata(50D, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, null, new CoerceValueCallback(CoerceThumbSize)));
 		/// <summary>The size to show the thumbnail at</summary>

@@ -161,7 +161,8 @@
 													<RowDefinition Height="Auto"/>
 													<RowDefinition Height="*"/>
 												</Grid.RowDefinitions>
-												<Image Grid.RowSpan="2" Source="{TemplateBinding Image}" Width="{TemplateBinding ImageWidth}" Height="{TemplateBinding ImageHeight}" Stretch="Fill" MinWidth="{Binding ElementName=PART_ImageDisplay, Path=ActualWidth}" MinHeight="{Binding ElementName=PART_ImageDisplay, Path=ActualHeight}">
+												<Image Grid.RowSpan="2" Source="{TemplateBinding Image}" Width="{TemplateBinding ImagePopupWidth}" Height="{TemplateBinding ImagePopupHeight}" Stretch="Fill" 
+													   MinWidth="{Binding ElementName=PART_ImageDisplay, Path=ActualWidth}" MinHeight="{Binding ElementName=PART_ImageDisplay, Path=ActualHeight}">
 													<Image.Style>
 														<Style TargetType="{x:Type Image}">
 															<Style.Triggers>

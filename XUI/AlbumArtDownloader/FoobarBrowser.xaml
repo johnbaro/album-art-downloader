@@ -226,7 +226,6 @@
 					</TextBlock.Style>
 				</TextBlock>
 			</StatusBarItem>
-			
 		</StatusBar>
 	</Grid>
 </Window>
