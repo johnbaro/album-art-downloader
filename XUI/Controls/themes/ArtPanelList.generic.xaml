@@ -38,16 +38,7 @@
 							Width="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ArtPanelList}}, Path=PanelWidth, Mode=TwoWay}"
 							ThumbSize="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ArtPanelList}}, Path=ThumbSize, Mode=TwoWay}"
 							InformationLocation="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ArtPanelList}}, Path=InformationLocation, Mode=TwoWay}"
-							Image="{Binding Image}"
-							ResultName="{Binding ResultName}"
-							SourceName="{Binding SourceName}"
-							ImageWidth="{Binding ImageWidth}"
-							ImageHeight="{Binding ImageHeight}"
-							FilePath="{Binding FilePath}"
-							IsCustomFilePath="{Binding IsCustomFilePath}"
-							IsSaved="{Binding IsSaved}"
-							IsSaving="{Binding IsSaving}"
-							IsDownloading="{Binding IsDownloading}"
+							AlbumArt="{Binding}"
 						>
 						<!-- Performance tweak: keep the panel collapsed until it becomes properly bound to the ArtPanelList -->
 						<local:ArtPanel.Style>

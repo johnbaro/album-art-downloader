@@ -3,6 +3,7 @@
     Improved handling of larger-than-screen preview popups
     Fixed Coveralia and Yes24 scripts which had become out of date
     Updated to version 0.7.5.2 of the MediaInfo tag reading library
+    Persistant Preview window (right click on a result and choose "Preview...")
     
     Known issues:
     The preview popups can display incorrectly (large black areas) when the size of the

@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace AlbumArtDownloader.Controls
 {
@@ -15,6 +16,16 @@ namespace AlbumArtDownloader.Controls
 	[TemplatePart(Name = "PART_ArtPanel", Type = typeof(ArtPanel))]
 	public class ArtPanelList : ItemsControl
 	{
+		/// <summary>This is the delay after an image's size changes before a re-sort and re-filter takes place.
+		/// This gives further changes a chance to occur before a costly refresh is done.</summary>
+		private static readonly TimeSpan sRefreshDelay = TimeSpan.FromMilliseconds(1000);
+
+		public static class Commands
+		{
+			public static RoutedUICommand ToggleInformationLocation = new RoutedUICommand("ToggleInformationLocation", "ToggleInformationLocation", typeof(Commands));
+			public static RoutedUICommand Preview = new RoutedUICommand("Preview", "Preview", typeof(Commands));
+		}
+
 		static ArtPanelList()
 		{
 			DefaultStyleKeyProperty.OverrideMetadata(typeof(ArtPanelList), new FrameworkPropertyMetadata(typeof(ArtPanelList)));
@@ -24,10 +35,17 @@ namespace AlbumArtDownloader.Controls
 			ItemsSourceProperty.OverrideMetadata(typeof(ArtPanelList), new FrameworkPropertyMetadata(baseMetadata.DefaultValue, baseMetadata.PropertyChangedCallback, new CoerceValueCallback(CoerceItemsSource)));
 		}
 
+		private DispatcherTimer mRefreshFilterTimer;
+		
 		public ArtPanelList()
 		{
 			CommandBindings.Add(new CommandBinding(EditingCommands.AlignJustify, new ExecutedRoutedEventHandler(AlignJustifyCommandHandler)));
-			AddHandler(ArtPanel.FullSizeImageRequestedEvent, new RoutedEventHandler(OnFullSizeImageRequested));
+			AddHandler(ArtPanel.ImageSizeChangedEvent, new RoutedEventHandler(OnImageSizeChanged));
+
+			mRefreshFilterTimer = new DispatcherTimer(DispatcherPriority.DataBind, Dispatcher);
+			mRefreshFilterTimer.Interval = sRefreshDelay;
+			mRefreshFilterTimer.Tick += OnRefreshFilterTimerTick;
+			//Note, this will start off stopped, and be started in OnImageSizeChanged
 		}
 
 		#region Mouse shifting
@@ -147,21 +165,18 @@ namespace AlbumArtDownloader.Controls
 		}
 		#endregion
 
-		#region Full Size Image download
-		private double mPreviousImageWidth, mPreviousImageHeight;
-		private void OnFullSizeImageRequested(object sender, RoutedEventArgs e)
+		#region Image Size Changed
+		private void OnImageSizeChanged(object sender, RoutedEventArgs e)
 		{
-			IAlbumArt art = ((IAlbumArt)ItemContainerGenerator.ItemFromContainer(((FrameworkElement)e.OriginalSource).TemplatedParent));
-			mPreviousImageWidth = art.ImageWidth;
-			mPreviousImageHeight = art.ImageHeight;
-			art.RetrieveFullSizeImage(new System.Threading.WaitCallback(OnFullSizeImageDownloaded));
+			//If the timer is already running, this will reset the time on it. If one isn't, it will start it.
+			mRefreshFilterTimer.Stop();
+			mRefreshFilterTimer.Start();
 		}
-		private void OnFullSizeImageDownloaded(object sender)
+		private void OnRefreshFilterTimerTick(object sender, EventArgs e)
 		{
-			IAlbumArt art = (IAlbumArt)sender;
-			if (art.ImageWidth != mPreviousImageWidth ||
-				art.ImageHeight != mPreviousImageHeight)
+			if (!mInRefresh) //If already refreshing, then don't refresh again, but don't stop the timer, so we get asked again later.
 			{
+				mRefreshFilterTimer.Stop();
 				//RefreshFilter();
 			}
 		}
@@ -363,21 +378,37 @@ namespace AlbumArtDownloader.Controls
 			}
 		}
 
+		private bool mInRefresh;
 		private bool mNeedsRefresh;
 		private void RefreshFilter()
 		{
-			if (Suspended)
+			if (mInRefresh)
 			{
-				mNeedsRefresh = true; //Perform the refresh when suspension is lifted
+				//Already refreshing, so schedule another refresh for when this one finishes
+				mRefreshFilterTimer.Start();
+				return;
 			}
-			else
+
+			mInRefresh = true;
+			try
 			{
-				//Perform it immediately
-				Items.Filter = Items.Filter; //Causes a refresh. Note that .Refresh doesn't.
-				mNeedsRefresh = false;
+				if (Suspended)
+				{
+					mNeedsRefresh = true; //Perform the refresh when suspension is lifted
+				}
+				else
+				{
+					//Perform it immediately
+					Items.Filter = Items.Filter; //Causes a refresh. Note that .Refresh doesn't.
+					mNeedsRefresh = false;
+				}
+			}
+			finally
+			{
+				mInRefresh = false;
 			}
 		}
-		#endregion
+		
 		/// <summary>
 		/// Wrapper around an <see cref="INotifyCollectionChanged"/> that can suspend
 		/// the notifications that the collection has changed, batch them up, then
@@ -473,6 +504,24 @@ namespace AlbumArtDownloader.Controls
 				}
 			}
 			#endregion
+		}
+		#endregion
+
+		/// <summary>
+		/// Gets the IAlbumArt that corresponds to the source of the a RoutedEvent that came from it.
+		/// </summary>
+		/// <param name="e"></param>
+		/// <returns></returns>
+		public IAlbumArt GetSourceAlbumArt(ExecutedRoutedEventArgs e)
+		{
+			FrameworkElement source = e.OriginalSource as FrameworkElement;
+			if (source != null && !(source is ArtPanel)) //If the source isn't the panel itself, then it must come from some control in the panels template.
+				source = source.TemplatedParent as ArtPanel;
+
+			if (source == null)
+				return null; //Couldn't find an art panel that triggered this command.
+
+			return (IAlbumArt)ItemContainerGenerator.ItemFromContainer(source.TemplatedParent);
 		}
 	}
 }

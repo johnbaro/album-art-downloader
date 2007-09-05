@@ -51,6 +51,7 @@ namespace AlbumArtDownloader
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Find, new ExecutedRoutedEventHandler(FindExec)));
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Save, new ExecutedRoutedEventHandler(SaveExec)));
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.SaveAs, new ExecutedRoutedEventHandler(SaveAsExec)));
+			CommandBindings.Add(new CommandBinding(AlbumArtDownloader.Controls.ArtPanelList.Commands.Preview, new ExecutedRoutedEventHandler(PreviewExec)));
 
 			//Stop All is bound only when doing a search (so the Stop All button only appears while searching)
 			mStopAllCommandBinding = new CommandBinding(ApplicationCommands.Stop, new ExecutedRoutedEventHandler(StopExec));
@@ -569,7 +570,7 @@ namespace AlbumArtDownloader
 
 		private void SaveExec(object sender, ExecutedRoutedEventArgs e)
 		{
-			AlbumArt albumArt = GetAlbumArt(e);
+			AlbumArt albumArt = (AlbumArt)mResultsViewer.GetSourceAlbumArt(e);
 			if (albumArt != null)
 			{
 				if (AutoClose)
@@ -584,7 +585,7 @@ namespace AlbumArtDownloader
 
 		private void SaveAsExec(object sender, ExecutedRoutedEventArgs e)
 		{
-			AlbumArt albumArt = GetAlbumArt(e);
+			AlbumArt albumArt = (AlbumArt)mResultsViewer.GetSourceAlbumArt(e);
 			if (albumArt != null)
 			{
 				albumArt.PropertyChanged -= AutoCloseOnSave; //No auto-close for SaveAs operation.
@@ -593,16 +594,15 @@ namespace AlbumArtDownloader
 			}
 		}
 
-		private AlbumArt GetAlbumArt(ExecutedRoutedEventArgs e)
+		private void PreviewExec(object sender, ExecutedRoutedEventArgs e)
 		{
-			FrameworkElement source = e.OriginalSource as FrameworkElement;
-			if (source != null && !(source is Controls.ArtPanel)) //If the source isn't the panel itself, then it must come from some control in the panels template.
-				source = source.TemplatedParent as Controls.ArtPanel;
-
-			if (source == null)
-				return null; //Couldn't find an art panel that triggered this command.
-
-			return (AlbumArt)mResultsViewer.ItemContainerGenerator.ItemFromContainer(source.TemplatedParent);
+			IAlbumArt albumArt = mResultsViewer.GetSourceAlbumArt(e);
+			if (albumArt != null)
+			{
+				albumArt.RetrieveFullSizeImage();
+				//Show persistant preview window
+				Common.NewPreviewWindow(this).AlbumArt = albumArt;
+			}
 		}
 
 		#region IAppWindow

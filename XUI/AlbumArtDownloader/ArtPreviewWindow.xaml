@@ -100,19 +100,18 @@
 						</MultiBinding>
 					</TextBlock.Text>
 				</TextBlock>
-				<Grid Name="mFilePathEditor" Margin="-5,-3,5,0" Grid.Column="1" Grid.Row="1" Visibility="Hidden">
+				<Grid Name="mFilePathEditor" Margin="0,-3,5,0" Grid.Column="1" Grid.Row="1" Visibility="Hidden">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="*"/>
 						<ColumnDefinition Width="Auto"/>
 					</Grid.ColumnDefinitions>
-					<TextBox Name="mFilePathTextBox" FontSize="10" VerticalAlignment="Top"/>
+					<TextBox Name="mFilePathTextBox" VerticalAlignment="Top"/>
 					<Button Name="mFilePathBrowse" Grid.Column="1" Content="..." FontSize="10" Height="{Binding ElementName=mFilePathTextBox, Path=ActualHeight, Mode=OneWay}" Style="{x:Null}"/>
 				</Grid>
 				<Button Style="{StaticResource ToolbarButton}" Command="ApplicationCommands.Save" Grid.Column="2">
 					<Image Source="pack://application:,,,/AlbumArtDownloader.Controls;component/themes/save.png" Stretch="None" ToolTip="Save"/>
 				</Button>
 				<Image Grid.Column="2" Grid.Row="1" VerticalAlignment="Top" Source="pack://application:,,,/AlbumArtDownloader.Controls;component/themes/wait.png" Stretch="None" Visibility="{Binding IsSaving, Converter={StaticResource mBooleanToVisibilityConverter}}" ToolTip="Saving..." Cursor="Wait"/>
-				<Image Grid.Column="2" Grid.Row="1" VerticalAlignment="Top" Source="pack://application:,,,/AlbumArtDownloader.Controls;component/themes/tick.png" Stretch="None" Visibility="{Binding IsSaved, Converter={StaticResource mBooleanToVisibilityConverter}}" ToolTip="Already Saved"/>
 				
 				<Border Grid.Column="3" Grid.RowSpan="3" BorderBrush="{x:Static SystemColors.ControlDarkBrush}" BorderThickness="1,0,0,0" Margin="5,3,5,3"/>
 				
@@ -132,7 +131,13 @@
 		</Border>
 		<ScrollViewer Name="mImageScroller" Grid.Row="2" Cursor="Hand.cur"
 					  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-			<Image Source="{Binding Image}" Stretch="None">
+			<ScrollViewer.ContextMenu>
+				<ContextMenu>
+					<MenuItem Command="ApplicationCommands.Save" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=OneTime}"/>
+					<MenuItem Command="ApplicationCommands.SaveAs" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=OneTime}"/>
+				</ContextMenu>
+			</ScrollViewer.ContextMenu>
+			<Image Source="{Binding Image, NotifyOnTargetUpdated=True}" Stretch="None" TargetUpdated="ZoomToFit">
 				<Image.LayoutTransform>
 					<ScaleTransform ScaleX="{Binding ElementName=this, Path=Zoom, Mode=OneWay}" ScaleY="{Binding ElementName=this, Path=Zoom, Mode=OneWay}"/>
 				</Image.LayoutTransform>

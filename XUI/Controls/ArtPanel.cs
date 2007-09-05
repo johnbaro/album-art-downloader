@@ -21,17 +21,12 @@ namespace AlbumArtDownloader.Controls
 	[TemplatePart(Name = "PART_FilePathEditor", Type = typeof(FrameworkElement))]
 	[TemplatePart(Name = "PART_FilePathBrowse", Type = typeof(Button))]
 	[TemplatePart(Name = "PART_FilePathTextBox", Type = typeof(TextBox))]
-	public class ArtPanel : Control
+	internal class ArtPanel : Control
 	{
 		[System.Runtime.InteropServices.DllImport("user32.dll", ExactSpelling = true)]
 		private static extern int GetDoubleClickTime(); 
 
 		private static readonly double sKeyboardSizingStep = 5d;
-
-		public static class Commands
-		{
-			public static RoutedUICommand ToggleInformationLocation = new RoutedUICommand("ToggleInformationLocation", "ToggleInformationLocation", typeof(Commands));
-		}
 
 		static ArtPanel()
 		{
@@ -42,18 +37,25 @@ namespace AlbumArtDownloader.Controls
 
 		public ArtPanel()
 		{
-			CommandBindings.Add(new CommandBinding(Commands.ToggleInformationLocation, new ExecutedRoutedEventHandler(ToggleInformationLocationExec)));
+			CommandBindings.Add(new CommandBinding(ArtPanelList.Commands.ToggleInformationLocation, new ExecutedRoutedEventHandler(ToggleInformationLocationExec)));
 
 			SetBinding(ImagePopupWidthProperty, new Binding()
 			{
 				Source = this,
-				Path = new PropertyPath(ImageWidthProperty),
+				Path = new PropertyPath("AlbumArt.ImageWidth"),
 				Mode = BindingMode.OneWay
 			});
 			SetBinding(ImagePopupHeightProperty, new Binding()
 			{
 				Source = this,
-				Path = new PropertyPath(ImageHeightProperty),
+				Path = new PropertyPath("AlbumArt.ImageHeight"),
+				Mode = BindingMode.OneWay
+			});
+			//IsSaved held separately to the AlbumArt.IsSaved as it can be coerced based on whether the file path editor is active
+			SetBinding(IsSavedProperty, new Binding()
+			{
+				Source = this,
+				Path = new PropertyPath("AlbumArt.IsSaved"),
 				Mode = BindingMode.OneWay
 			});
 		}
@@ -168,20 +170,6 @@ namespace AlbumArtDownloader.Controls
 			}
 		}
 
-		#region Full Size Image requesting
-		public static readonly RoutedEvent FullSizeImageRequestedEvent = EventManager.RegisterRoutedEvent("FullSizeImageRequested", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(ArtPanel));
-		public event RoutedEventHandler FullSizeImageRequested
-		{
-			add { AddHandler(FullSizeImageRequestedEvent, value); }
-			remove { RemoveHandler(FullSizeImageRequestedEvent, value); }
-		}
-		private void RaiseFullSizeImageRequestedEvent()
-		{
-			RoutedEventArgs newEventArgs = new RoutedEventArgs(FullSizeImageRequestedEvent);
-			RaiseEvent(newEventArgs);
-		}
-		#endregion
-
 		#region Image Popup
 		private void ImageDisplay_PreviewKeyUp(object sender, KeyEventArgs e)
 		{
@@ -232,7 +220,7 @@ namespace AlbumArtDownloader.Controls
 
 		private void ShowImagePopup()
 		{
-			RaiseFullSizeImageRequestedEvent();
+			AlbumArt.RetrieveFullSizeImage();
 			if (ImagePopup != null && !ImagePopup.IsOpen)
 			{
 				CoerceValue(ImagePopupWidthProperty);
@@ -250,12 +238,21 @@ namespace AlbumArtDownloader.Controls
 			}
 		}
 
-		public static readonly DependencyProperty ImagePopupWidthProperty = DependencyProperty.Register("ImagePopupWidth", typeof(double), typeof(ArtPanel), new FrameworkPropertyMetadata(null, new CoerceValueCallback(CoerceImagePopupWidth)));
+		public static readonly DependencyProperty ImagePopupWidthProperty = DependencyProperty.Register("ImagePopupWidth", typeof(double), typeof(ArtPanel), new FrameworkPropertyMetadata(new PropertyChangedCallback(OnImagePopupWidthChanged), new CoerceValueCallback(CoerceImagePopupWidth)));
 		/// <summary>The width to show the image in the popup (restricted on screen size)</summary>
 		public double ImagePopupWidth
 		{
 			get { return (double)GetValue(ImagePopupWidthProperty); }
 			set { SetValue(ImagePopupWidthProperty, value); }
+		}
+		private static void OnImagePopupWidthChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+		{
+			//When the width changes, the height needs to be re-coerced too, as it is dependent on aspect ratio
+			sender.CoerceValue(ArtPanel.ImagePopupHeightProperty);
+			
+			//We happen to know that this will occur when the image size changes (as it is bound to that), so raise the event
+			if ((double)e.OldValue != 0) //Don't bother raising an event for the first time the width is assigned, only for when it changes
+				((ArtPanel)sender).RaiseImageSizeChangedEvent();
 		}
 		private static object CoerceImagePopupWidth(DependencyObject sender, object value)
 		{
@@ -266,12 +263,21 @@ namespace AlbumArtDownloader.Controls
 			return value;
 		}
 
-		public static readonly DependencyProperty ImagePopupHeightProperty = DependencyProperty.Register("ImagePopupHeight", typeof(double), typeof(ArtPanel), new FrameworkPropertyMetadata(null, new CoerceValueCallback(CoerceImagePopupHeight)));
+		public static readonly DependencyProperty ImagePopupHeightProperty = DependencyProperty.Register("ImagePopupHeight", typeof(double), typeof(ArtPanel), new FrameworkPropertyMetadata(new PropertyChangedCallback(OnImagePopupHeightChanged), new CoerceValueCallback(CoerceImagePopupHeight)));
 		/// <summary>The height to show the image in the popup (restricted on screen size)</summary>		
 		public double ImagePopupHeight
 		{
 			get { return (double)GetValue(ImagePopupHeightProperty); }
 			set { SetValue(ImagePopupHeightProperty, value); }
+		}
+		private static void OnImagePopupHeightChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+		{
+			//When the height changes, the width needs to be re-coerced too, as it is dependent on aspect ratio
+			sender.CoerceValue(ArtPanel.ImagePopupWidthProperty);
+
+			//We happen to know that this will occur when the image size changes (as it is bound to that), so raise the event
+			if ((double)e.OldValue != 0) //Don't bother raising an event for the first time the height is assigned, only for when it changes
+				((ArtPanel)sender).RaiseImageSizeChangedEvent();
 		}
 		private static object CoerceImagePopupHeight(DependencyObject sender, object value)
 		{
@@ -290,7 +296,11 @@ namespace AlbumArtDownloader.Controls
 		{
 			//TODO: Multimonitor support
 
-			double imageAspectRatio = ImageWidth / ImageHeight;
+			double imageAspectRatio = 1; //If no album art yet, then assume it will be square.
+			if (AlbumArt != null)
+			{
+				imageAspectRatio = AlbumArt.ImageWidth / AlbumArt.ImageHeight;
+			}
 			
 			//Popup may not take up more than 75% screen area (matches WPF Popup restriction)
 			double maxArea = 0.75 * SystemParameters.PrimaryScreenHeight * SystemParameters.PrimaryScreenWidth;
@@ -308,6 +318,24 @@ namespace AlbumArtDownloader.Controls
 			}
 
 			return new Size(maxWidth, maxHeight);
+		}
+		#endregion
+
+		#region Image size changing event
+		//This event is provided as routed event so that the ArtPanelList can listen to all image size changes with one handler.
+		public static readonly RoutedEvent ImageSizeChangedEvent = EventManager.RegisterRoutedEvent("ImageSizeChanged", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(ArtPanel));
+		/// <summary>
+		/// This event occurs when the size of the AlbumArt image changes, usually due to the full size image being downloaded.
+		/// </summary>
+		public event RoutedEventHandler ImageSizeChanged
+		{
+			add { AddHandler(ImageSizeChangedEvent, value); }
+			remove { RemoveHandler(ImageSizeChangedEvent, value); }
+		}
+		private void RaiseImageSizeChangedEvent()
+		{
+			RoutedEventArgs newEventArgs = new RoutedEventArgs(ImageSizeChangedEvent);
+			RaiseEvent(newEventArgs);
 		}
 		#endregion
 
@@ -500,7 +528,7 @@ namespace AlbumArtDownloader.Controls
 			}
 			if (FilePathTextBox != null)
 			{
-				FilePathTextBox.Text = FilePath;
+				FilePathTextBox.Text = AlbumArt.FilePath;
 				FilePathTextBox.SelectAll();
 				FilePathTextBox.Focus();
 			}
@@ -511,17 +539,12 @@ namespace AlbumArtDownloader.Controls
 			if (FilePathDisplay != null && FilePathEditor != null)
 			{
 				if (confirm)
-					FilePath = FilePathTextBox.Text;
-
-				BindingExpression bindingExpression = GetBindingExpression(FilePathProperty);
-				if (bindingExpression != null)
-				{
-					bindingExpression.UpdateTarget(); //Update in case of reverting to default
-				}
+					AlbumArt.FilePath = FilePathTextBox.Text;
 
 				FilePathDisplay.Visibility = Visibility.Visible;
 				FilePathEditor.Visibility = Visibility.Hidden;
 			}
+			CoerceValue(IsSavedProperty);
 		}
 
 		private void FilePathBrowse_Click(object sender, RoutedEventArgs e)
@@ -539,41 +562,31 @@ namespace AlbumArtDownloader.Controls
 		}
 		#endregion
 
-		#region Dependency Proprties
-		public static readonly DependencyProperty ImageProperty = DependencyProperty.Register("Image", typeof(ImageSource), typeof(ArtPanel));
-		/// <summary>The Image. This is the thumbnail, until the full sized image is downloaded. Then it is the full sized image.</summary>
-		public ImageSource Image
+		#region Properties
+		public static readonly DependencyProperty AlbumArtProperty = DependencyProperty.Register("AlbumArt", typeof(IAlbumArt), typeof(ArtPanel));
+		/// <summary>The AlbumArt that this panel displays</summary>
+		public IAlbumArt AlbumArt
 		{
-			get { return (ImageSource)GetValue(ImageProperty); }
-			set { SetValue(ImageProperty, value); }
+			get { return (IAlbumArt)GetValue(AlbumArtProperty); }
+			set { SetValue(AlbumArtProperty, value); }
 		}
 
-		public static readonly DependencyProperty ImageWidthProperty = DependencyProperty.Register("ImageWidth", typeof(double), typeof(ArtPanel), new FrameworkPropertyMetadata(new PropertyChangedCallback(OnImageWidthChanged)));
-		/// <summary>The width of the full sized image, or -1 if unknown</summary>
-		public double ImageWidth
+		public static readonly DependencyProperty IsSavedProperty = DependencyProperty.Register("IsSaved", typeof(bool), typeof(ArtPanel), new FrameworkPropertyMetadata(false, null, new CoerceValueCallback(CoerceIsSaved)));
+		/// <summary>True if the image has already been saved to the location specified by <see cref="FilePath"/></summary>
+		public bool IsSaved
 		{
-			get { return (double)GetValue(ImageWidthProperty); }
-			set { SetValue(ImageWidthProperty, value); }
+			get { return (bool)GetValue(IsSavedProperty); }
+			set { SetValue(IsSavedProperty, value); }
 		}
-		private static void OnImageWidthChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+		private static object CoerceIsSaved(DependencyObject sender, object value)
 		{
-			//When the image width changes, the popup height needs to be re-coerced too, as it is dependent on aspect ratio
-			sender.CoerceValue(ImagePopupHeightProperty);
-		}
+			ArtPanel artPanel = (ArtPanel)sender;
+			if (artPanel.FilePathEditor != null && artPanel.FilePathTextBox != null &&
+				artPanel.FilePathEditor.Visibility == Visibility.Visible && artPanel.FilePathTextBox.Text != artPanel.AlbumArt.FilePath)
+				return false; //Always appear unsaved when editing
 
-		public static readonly DependencyProperty ImageHeightProperty = DependencyProperty.Register("ImageHeight", typeof(double), typeof(ArtPanel), new FrameworkPropertyMetadata(new PropertyChangedCallback(OnImageHeightChanged)));
-		/// <summary>The height of the full sized image, or -1 if unknown</summary>		
-		public double ImageHeight
-		{
-			get { return (double)GetValue(ImageHeightProperty); }
-			set { SetValue(ImageHeightProperty, value); }
+			return value;
 		}
-		private static void OnImageHeightChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
-		{
-			//When the image height changes, the popup width needs to be re-coerced too, as it is dependent on aspect ratio
-			sender.CoerceValue(ImagePopupWidthProperty);
-		}
-
 
 		public static readonly DependencyProperty ThumbSizeProperty = DependencyProperty.Register("ThumbSize", typeof(double), typeof(ArtPanel), new FrameworkPropertyMetadata(50D, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, null, new CoerceValueCallback(CoerceThumbSize)));
 		/// <summary>The size to show the thumbnail at</summary>
@@ -593,71 +606,6 @@ namespace AlbumArtDownloader.Controls
 				return artPanel.ActualWidth - artPanel.PanelResizer.ActualWidth - 10;
 			}
 			return value;
-		}
-
-		public static readonly DependencyProperty ResultNameProperty = DependencyProperty.Register("ResultName", typeof(string), typeof(ArtPanel));
-		/// <summary>The name of the search result</summary>
-		public string ResultName
-		{
-			get { return (string)GetValue(ResultNameProperty); }
-			set { SetValue(ResultNameProperty, value); }
-		}
-
-		public static readonly DependencyProperty SourceNameProperty = DependencyProperty.Register("SourceName", typeof(string), typeof(ArtPanel));
-		/// <summary>The SourceName used to find this search result</summary>
-		public string SourceName
-		{
-			get { return (string)GetValue(SourceNameProperty); }
-			set { SetValue(SourceNameProperty, value); }
-		}
-
-		public static readonly DependencyProperty FilePathProperty = DependencyProperty.Register("FilePath", typeof(string), typeof(ArtPanel), new FrameworkPropertyMetadata(String.Empty, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault | FrameworkPropertyMetadataOptions.AffectsMeasure));
-		/// <summary>The file name where the full sized art should be saved</summary>
-		public string FilePath
-		{
-			get { return (string)GetValue(FilePathProperty); }
-			set { SetValue(FilePathProperty, value); }
-		}
-
-		public static readonly DependencyProperty IsCustomFilePathProperty = DependencyProperty.Register("IsCustomFilePath", typeof(bool), typeof(ArtPanel));
-		/// <summary>True if the file path has been set specifically for this result, rather than constructed from a generic pattern</summary>
-		public bool IsCustomFilePath
-		{
-			get { return (bool)GetValue(IsCustomFilePathProperty); }
-			set { SetValue(IsCustomFilePathProperty, value); }
-		}
-
-		public static readonly DependencyProperty IsSavedProperty = DependencyProperty.Register("IsSaved", typeof(bool), typeof(ArtPanel), new FrameworkPropertyMetadata(false, null, new CoerceValueCallback(CoerceIsSaved)));
-		/// <summary>True if the image has already been saved to the location specified by <see cref="FilePath"/></summary>
-		public bool IsSaved
-		{
-			get { return (bool)GetValue(IsSavedProperty); }
-			set { SetValue(IsSavedProperty, value); }
-		}
-		private static object CoerceIsSaved(DependencyObject sender, object value)
-		{
-			ArtPanel artPanel = (ArtPanel)sender;
-			if (artPanel.FilePathEditor != null && artPanel.FilePathTextBox != null &&
-				artPanel.FilePathEditor.Visibility == Visibility.Visible && artPanel.FilePathTextBox.Text != artPanel.FilePath)
-				return false; //Always appear unsaved when editing
-
-			return value;
-		}
-
-		public static readonly DependencyProperty IsSavingProperty = DependencyProperty.Register("IsSaving", typeof(bool), typeof(ArtPanel));
-		/// <summary>True if the image has already been saved to the location specified by <see cref="FilePath"/></summary>
-		public bool IsSaving
-		{
-			get { return (bool)GetValue(IsSavingProperty); }
-			set { SetValue(IsSavingProperty, value); }
-		}
-
-		public static readonly DependencyProperty IsDownloadingProperty = DependencyProperty.Register("IsDownloading", typeof(bool), typeof(ArtPanel));
-		/// <summary>True if the full sized image is currently being downloaded</summary>
-		public bool IsDownloading
-		{
-			get { return (bool)GetValue(IsDownloadingProperty); }
-			set { SetValue(IsDownloadingProperty, value); }
 		}
 
 		public static readonly DependencyProperty InformationLocationProperty = DependencyProperty.Register("InformationLocation", typeof(InformationLocation), typeof(ArtPanel), new FrameworkPropertyMetadata(InformationLocation.Right, FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, new PropertyChangedCallback(OnInformationLocationChanged)));

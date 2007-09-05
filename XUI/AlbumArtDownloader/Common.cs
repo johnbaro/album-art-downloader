@@ -58,6 +58,15 @@ namespace AlbumArtDownloader
 			return (FoobarBrowser)ShowNewWindow(new FoobarBrowser(), existingWindow);
 		}
 
+		public static ArtPreviewWindow NewPreviewWindow()
+		{
+			return NewPreviewWindow(null);
+		}
+		public static ArtPreviewWindow NewPreviewWindow(IAppWindow existingWindow)
+		{
+			return (ArtPreviewWindow)ShowNewWindow(new ArtPreviewWindow(), existingWindow);
+		}
+
 		private static IAppWindow ShowNewWindow(IAppWindow newWindow, IAppWindow oldWindow)
 		{
 			SetupNewWindow(newWindow, oldWindow);

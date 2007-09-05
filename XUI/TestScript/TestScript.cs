@@ -53,7 +53,7 @@ namespace TestScript
 			results.Add(@"http://www.google.com/invalid", "Not valid url", null);
 			 */
 
-			int numberOfResults = 2;
+			int numberOfResults = 50;
 			results.EstimatedCount = numberOfResults;
 			Random rnd = new Random();
 			for (int i = 0; i < numberOfResults; i++)

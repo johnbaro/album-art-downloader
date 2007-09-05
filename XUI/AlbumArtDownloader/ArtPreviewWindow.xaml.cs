@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using AlbumArtDownloader.Controls;
-using System.Windows.Controls;
 
 namespace AlbumArtDownloader
 {
-	public partial class ArtPreviewWindow : System.Windows.Window
+	public partial class ArtPreviewWindow : System.Windows.Window, IAppWindow
 	{
 		/// <summary>This value is how close to 1:1 the zoom has to be before being snapped to 1:1</summary>
 		private static readonly double sZoomSnapping = 1.2;
@@ -21,6 +22,7 @@ namespace AlbumArtDownloader
 			InitializeComponent();
 
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Save, new ExecutedRoutedEventHandler(SaveExec)));
+			CommandBindings.Add(new CommandBinding(ApplicationCommands.SaveAs, new ExecutedRoutedEventHandler(SaveAsExec)));
 			CommandBindings.Add(new CommandBinding(NavigationCommands.IncreaseZoom, new ExecutedRoutedEventHandler(IncreaseZoomExec)));
 			CommandBindings.Add(new CommandBinding(NavigationCommands.DecreaseZoom, new ExecutedRoutedEventHandler(DecreaseZoomExec)));
 
@@ -29,8 +31,19 @@ namespace AlbumArtDownloader
 			mImageScroller.MouseMove += new MouseEventHandler(OnMouseMove);
 			mImageScroller.PreviewMouseLeftButtonUp += new MouseButtonEventHandler(OnMouseUp);
 
+			mFilePathDisplay.TextInput += new TextCompositionEventHandler(FilePathDisplay_TextInput);
+			mFilePathDisplay.MouseLeftButtonDown += new MouseButtonEventHandler(FilePathDisplay_MouseLeftButtonDown);
+			mFilePathTextBox.PreviewLostKeyboardFocus += new KeyboardFocusChangedEventHandler(FilePathTextBox_LostKeyboardFocus);
+			mFilePathBrowse.PreviewLostKeyboardFocus += new KeyboardFocusChangedEventHandler(FilePathBrowse_LostKeyboardFocus);
+			mFilePathTextBox.KeyDown += new KeyEventHandler(FilePathTextBox_KeyDown);
+			mFilePathBrowse.Click += new RoutedEventHandler(FilePathBrowse_Click);
+
 			//DEBUG: Create a test album art
-			AlbumArt albumArt = new AlbumArt(new LocalFilesSource(), new System.Drawing.Bitmap(@"C:\Documents and Settings\Family Vallat\My Documents\Alexander\foobar2000\CoverDownloader\AlbumArtDownloader\XUI\TestScript\testFullsize.png"), "Test", 100, 100, null);
+			AlbumArt albumArt = new AlbumArt(new LocalFilesSource(), 
+											new System.Drawing.Bitmap(@"C:\Documents and Settings\Family Vallat\My Documents\Alexander\foobar2000\CoverDownloader\AlbumArtDownloader\XUI\TestScript\testFullsize.png"),
+											"Test", 100, 100,
+											new System.Drawing.Bitmap(@"C:\Documents and Settings\Family Vallat\My Documents\Alexander\foobar2000\CoverDownloader\AlbumArtDownloader\XUI\TestScript\testHuge.jpg"));
+
 			albumArt.DefaultFilePathPattern = "Hello";
 			AlbumArt = albumArt;
 		}
@@ -68,8 +81,30 @@ namespace AlbumArtDownloader
 		#region Command Handlers
 		private void SaveExec(object sender, ExecutedRoutedEventArgs e)
 		{
-			//TODO: Save album art, add a handler to close once saved.
+			AlbumArt albumArt = (AlbumArt)AlbumArt;
+			if (albumArt != null)
+			{
+				albumArt.PropertyChanged += AutoCloseOnSave;
+				albumArt.Save();
+			}
 		}
+		private void SaveAsExec(object sender, ExecutedRoutedEventArgs e)
+		{
+			AlbumArt albumArt = (AlbumArt)AlbumArt;
+			if (albumArt != null)
+			{
+				albumArt.PropertyChanged += AutoCloseOnSave; //No auto-close for SaveAs operation.
+				albumArt.SaveAs();
+			}
+		}
+		private void AutoCloseOnSave(object sender, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == "IsSaved" && ((AlbumArt)sender).IsSaved)
+			{
+				Close();
+			}
+		}
+
 		private void IncreaseZoomExec(object sender, ExecutedRoutedEventArgs e)
 		{
 			Zoom *= sZoomButtonFactor;
@@ -113,6 +148,7 @@ namespace AlbumArtDownloader
 			}
 		}
 
+		#region Properties
 		public static readonly DependencyProperty AlbumArtProperty = DependencyProperty.Register("AlbumArt", typeof(IAlbumArt), typeof(ArtPreviewWindow));
 		/// <summary>The AlbumArt to preview</summary>
 		public IAlbumArt AlbumArt
@@ -146,16 +182,120 @@ namespace AlbumArtDownloader
 			ScrollViewer scrollViewer = ((ArtPreviewWindow)sender).mImageScroller;
 
 			double deltaZoom = (double)e.NewValue / (double)e.OldValue;
-			if (scrollViewer.ComputedHorizontalScrollBarVisibility == Visibility.Visible)
+	
+			double halfViewportWidth = scrollViewer.ViewportWidth / 2;
+			scrollViewer.ScrollToHorizontalOffset((scrollViewer.HorizontalOffset + halfViewportWidth) * deltaZoom - halfViewportWidth);
+
+			double halfViewportHeight = scrollViewer.ViewportHeight / 2;
+			scrollViewer.ScrollToVerticalOffset((scrollViewer.VerticalOffset + halfViewportHeight) * deltaZoom - halfViewportHeight);
+		}
+		#endregion
+
+		private void ZoomToFit(object sender, EventArgs e)
+		{
+			if (AlbumArt != null && AlbumArt.Image != null && !Double.IsNaN(AlbumArt.Image.Width) && !Double.IsNaN(AlbumArt.Image.Height))
 			{
-				double halfViewportWidth = scrollViewer.ViewportWidth / 2;
-				scrollViewer.ScrollToHorizontalOffset((scrollViewer.HorizontalOffset + halfViewportWidth) * deltaZoom - halfViewportWidth);
-			}
-			if (scrollViewer.ComputedVerticalScrollBarVisibility == Visibility.Visible)
-			{
-				double halfViewportHeight = scrollViewer.ViewportHeight / 2;
-				scrollViewer.ScrollToVerticalOffset((scrollViewer.VerticalOffset + halfViewportHeight) * deltaZoom - halfViewportHeight);
+				double fitHorizontal = mImageScroller.ViewportWidth / AlbumArt.Image.Width;
+				double fitVertical = mImageScroller.ViewportHeight / AlbumArt.Image.Height;
+				Zoom = Math.Min(fitHorizontal, fitVertical);
 			}
 		}
+
+		#region File path editing
+		
+		private void FilePathDisplay_TextInput(object sender, TextCompositionEventArgs e)
+		{
+			ShowFilePathEdit();
+
+			if (e.Text != " " && e.Text != "\r")
+			{
+				mFilePathTextBox.Text = e.Text;
+				mFilePathTextBox.CaretIndex = e.Text.Length;
+			}
+			e.Handled = true;
+		}
+
+		private void FilePathDisplay_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+		{
+			e.Handled = true;
+			ShowFilePathEdit();
+		}
+		private void FilePathTextBox_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+		{
+			if (e.NewFocus != null && e.NewFocus == mFilePathBrowse)
+			{
+				//The only other thing that can be focused without closing the editor
+				return;
+			}
+			HideFilePathEdit(true);
+		}
+		private void FilePathBrowse_LostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+		{
+			if (e.NewFocus != null && e.NewFocus == mFilePathTextBox)
+			{
+				//The only other thing that can be focused without closing the editor
+				return;
+			}
+			HideFilePathEdit(true);
+		}
+		private void FilePathTextBox_KeyDown(object sender, KeyEventArgs e)
+		{
+			if (e.Key == Key.Escape)
+			{
+				//Cancel the edit
+				HideFilePathEdit(false);
+				e.Handled = true;
+			}
+			else if (e.Key == Key.Enter)
+			{
+				//Confirm the edit
+				HideFilePathEdit(true);
+				e.Handled = true;
+			}
+		}
+
+		private void ShowFilePathEdit()
+		{
+			mFilePathDisplay.Visibility = Visibility.Hidden;
+			mFilePathEditor.Visibility = Visibility.Visible;
+			mFilePathTextBox.Text = AlbumArt.FilePath;
+			mFilePathTextBox.SelectAll();
+			mFilePathTextBox.Focus();
+		}
+
+		private void HideFilePathEdit(bool confirm)
+		{
+			if (confirm)
+				AlbumArt.FilePath = mFilePathTextBox.Text;
+
+			mFilePathDisplay.Visibility = Visibility.Visible;
+			mFilePathEditor.Visibility = Visibility.Hidden;
+		}
+
+		private void FilePathBrowse_Click(object sender, RoutedEventArgs e)
+		{
+			HideFilePathEdit(true);
+			ApplicationCommands.SaveAs.Execute(null, this);
+		}
+		#endregion
+
+
+		#region IAppWindow Members
+		//No settings to load
+		void IAppWindow.SaveSettings() {}
+		void IAppWindow.LoadSettings() {}
+
+		string IAppWindow.Description
+		{
+			get 
+			{
+				string description = "Preview";
+				if(AlbumArt != null)
+					description += ": " + AlbumArt.ResultName;
+
+				return description;
+			}
+		}
+		#endregion
 	}
 }

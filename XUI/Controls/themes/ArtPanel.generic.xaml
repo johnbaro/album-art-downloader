@@ -101,6 +101,7 @@
 						</Grid.ColumnDefinitions>
 						<Grid.ContextMenu>
 							<ContextMenu>
+								<MenuItem Header="_Preview..." Command="{x:Static local:ArtPanelList+Commands.Preview}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=OneTime}"/>
 								<MenuItem Command="ApplicationCommands.Save" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=OneTime}"/>
 								<MenuItem Command="ApplicationCommands.SaveAs" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=OneTime}"/>
 							</ContextMenu>
@@ -124,23 +125,23 @@
 										<TextBlock Grid.Row="1" Style="{StaticResource LabelStyle}">Size:</TextBlock>
 										<TextBlock Grid.Row="2" Style="{StaticResource LabelStyle}">Source:</TextBlock>
 
-										<TextBlock Grid.Row="0" Style="{StaticResource DefaultText}" Grid.Column="0" Grid.ColumnSpan="2" FontWeight="Bold" Text="{TemplateBinding ResultName}"/>
+										<TextBlock Grid.Row="0" Style="{StaticResource DefaultText}" Grid.Column="0" Grid.ColumnSpan="2" FontWeight="Bold" Text="{Binding Path=AlbumArt.ResultName, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"/>
 										<TextBlock Grid.Row="1"  Grid.Column="1">
 											<TextBlock.Style>
 												<Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource DefaultText}">
 													<Setter Property="Text">
 														<Setter.Value>
 															<MultiBinding Converter="{StaticResource mStringFormatterConverter}" ConverterParameter="{}{0} x {1}" Mode="OneWay">
-																<Binding Path="ImageWidth" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
-																<Binding Path="ImageHeight" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
+																<Binding Path="AlbumArt.ImageWidth" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
+																<Binding Path="AlbumArt.ImageHeight" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
 															</MultiBinding>
 														</Setter.Value>
 													</Setter>
 													<Style.Triggers>
 														<MultiDataTrigger>
 															<MultiDataTrigger.Conditions>
-																<Condition Binding="{Binding Path=ImageWidth, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Value="-1" />
-																<Condition Binding="{Binding Path=ImageHeight, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Value="-1" />
+																<Condition Binding="{Binding Path=AlbumArt.ImageWidth, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Value="-1" />
+																<Condition Binding="{Binding Path=AlbumArt.ImageHeight, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Value="-1" />
 															</MultiDataTrigger.Conditions>
 															<Setter Property="Text" Value="Unknown"/>
 														</MultiDataTrigger>
@@ -148,7 +149,7 @@
 												</Style>
 											</TextBlock.Style>
 										</TextBlock>
-										<TextBlock Grid.Row="2" Style="{StaticResource DefaultText}" Grid.Column="1" Text="{TemplateBinding SourceName}"/>
+										<TextBlock Grid.Row="2" Style="{StaticResource DefaultText}" Grid.Column="1" Text="{Binding Path=AlbumArt.SourceName, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"/>
 									</Grid>
 								</ToolTip>
 							</Grid.ToolTip>
@@ -161,12 +162,12 @@
 													<RowDefinition Height="Auto"/>
 													<RowDefinition Height="*"/>
 												</Grid.RowDefinitions>
-												<Image Grid.RowSpan="2" Source="{TemplateBinding Image}" Width="{TemplateBinding ImagePopupWidth}" Height="{TemplateBinding ImagePopupHeight}" Stretch="Fill" 
+												<Image Grid.RowSpan="2" Source="{Binding Path=AlbumArt.Image, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Width="{TemplateBinding ImagePopupWidth}" Height="{TemplateBinding ImagePopupHeight}" Stretch="Fill" 
 													   MinWidth="{Binding ElementName=PART_ImageDisplay, Path=ActualWidth}" MinHeight="{Binding ElementName=PART_ImageDisplay, Path=ActualHeight}">
 													<Image.Style>
 														<Style TargetType="{x:Type Image}">
 															<Style.Triggers>
-																<DataTrigger Binding="{Binding IsDownloading, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Value="True">
+																<DataTrigger Binding="{Binding AlbumArt.IsDownloading, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Value="True">
 																	<Setter Property="Cursor" Value="Wait"/>
 																</DataTrigger>
 															</Style.Triggers>
@@ -174,7 +175,7 @@
 													</Image.Style>
 												</Image>
 
-												<StackPanel Orientation="Horizontal" Visibility="{TemplateBinding IsDownloading, Converter={StaticResource mBooleanToVisibilityConverter}}">
+												<StackPanel Orientation="Horizontal" Visibility="{Binding Path=AlbumArt.IsDownloading, Converter={StaticResource mBooleanToVisibilityConverter}, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}">
 													<StackPanel.Background>
 														<SolidColorBrush Color="White" Opacity="0.6"/>
 													</StackPanel.Background>
@@ -191,12 +192,12 @@
 								</Border>
 							</Popup>
 
-							<Image Name="PART_ImageDisplay" Source="{TemplateBinding Image}" Focusable="True">
+							<Image Name="PART_ImageDisplay" Source="{Binding Path=AlbumArt.Image, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Focusable="True">
 								<Image.Style>
 									<Style TargetType="{x:Type Image}">
 										<Setter Property="Cursor" Value="Hand"/>
 										<Style.Triggers>
-											<DataTrigger Binding="{Binding IsDownloading, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Value="True">
+											<DataTrigger Binding="{Binding AlbumArt.IsDownloading, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Value="True">
 												<Setter Property="Cursor" Value="Wait"/>
 											</DataTrigger>
 										</Style.Triggers>
@@ -204,7 +205,7 @@
 								</Image.Style>
 							</Image>
 
-							<Image Visibility="{TemplateBinding IsDownloading, Converter={StaticResource mBooleanToVisibilityConverter}}" Source="downloading.png" HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="None" ToolTip="Full size image is being downloaded..." Cursor="Wait"/>
+							<Image Visibility="{Binding Path=AlbumArt.IsDownloading, Converter={StaticResource mBooleanToVisibilityConverter}, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Source="downloading.png" HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="None" ToolTip="Full size image is being downloaded..." Cursor="Wait"/>
 							<ResizeGrip Name="PART_ImageResizer" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,-1,-1" Cursor="SizeNWSE" Focusable="False"/>
 						</Grid>
 
@@ -240,23 +241,23 @@
 							<TextBlock Grid.Row="2" Style="{StaticResource LabelStyle}">Source:</TextBlock>
 							<TextBlock Grid.Row="3" Style="{StaticResource LabelStyle}">File:</TextBlock>
 
-							<TextBlock Tag="ResultName" Grid.Row="0" Style="{StaticResource ValueStyle}" Grid.ColumnSpan="1" Text="{TemplateBinding ResultName}"/>
+							<TextBlock Tag="ResultName" Grid.Row="0" Style="{StaticResource ValueStyle}" Grid.ColumnSpan="1" Text="{Binding Path=AlbumArt.ResultName, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"/>
 							<TextBlock Tag="ImageWidth" Grid.Row="1">
 								<TextBlock.Style>
 									<Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource ValueStyle}">
 										<Setter Property="Text">
 											<Setter.Value>
 												<MultiBinding Converter="{StaticResource mStringFormatterConverter}" ConverterParameter="{}{0} x {1}" Mode="OneWay">
-													<Binding Path="ImageWidth" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
-													<Binding Path="ImageHeight" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
+													<Binding Path="AlbumArt.ImageWidth" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
+													<Binding Path="AlbumArt.ImageHeight" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
 												</MultiBinding>
 											</Setter.Value>
 										</Setter>
 										<Style.Triggers>
 											<MultiDataTrigger>
 												<MultiDataTrigger.Conditions>
-													<Condition Binding="{Binding Path=ImageWidth, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Value="-1" />
-													<Condition Binding="{Binding Path=ImageHeight, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Value="-1" />
+													<Condition Binding="{Binding Path=AlbumArt.ImageWidth, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Value="-1" />
+													<Condition Binding="{Binding Path=AlbumArt.ImageHeight, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Value="-1" />
 												</MultiDataTrigger.Conditions>
 												<Setter Property="Text" Value="Unknown"/>
 											</MultiDataTrigger>
@@ -264,17 +265,17 @@
 									</Style>
 								</TextBlock.Style>
 							</TextBlock>
-							<TextBlock Tag="SourceName" Grid.Row="2" Style="{StaticResource ValueStyle}" Text="{TemplateBinding SourceName}"/>
+							<TextBlock Tag="SourceName" Grid.Row="2" Style="{StaticResource ValueStyle}" Text="{Binding Path=AlbumArt.SourceName, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"/>
 							<Grid Grid.Row="3" Grid.Column="1">
 								<Grid.ColumnDefinitions>
 									<ColumnDefinition Width="*"/>
 									<ColumnDefinition Width="Auto"/>
 								</Grid.ColumnDefinitions>
-								<TextBlock Focusable="True" Name="PART_FilePathDisplay" Margin="0,0,5,0" Grid.Column="0" Grid.ColumnSpan="1" Cursor="IBeam" ToolTip="{TemplateBinding FilePath}">
+								<TextBlock Focusable="True" Name="PART_FilePathDisplay" Margin="0,0,5,0" Grid.Column="0" Grid.ColumnSpan="1" Cursor="IBeam" ToolTip="{Binding Path=AlbumArt.FilePath, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}">
 									<TextBlock.Style>
 										<Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource ValueStyle}">
 											<Style.Triggers>
-												<DataTrigger Binding="{Binding IsCustomFilePath, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Value="False">
+												<DataTrigger Binding="{Binding AlbumArt.IsCustomFilePath, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Value="False">
 													<Setter Property="Foreground" Value="Gray"/>
 												</DataTrigger>
 											</Style.Triggers>
@@ -284,7 +285,7 @@
 										<MultiBinding Converter="{StaticResource mPathCompacterConverter}" Mode="OneWay">
 											<Binding RelativeSource="{RelativeSource Self}"  Mode="OneWay"/>
 											<Binding Path="ActualWidth" RelativeSource="{RelativeSource Self}"  Mode="OneWay"/>
-											<Binding Path="FilePath" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
+											<Binding Path="AlbumArt.FilePath" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
 										</MultiBinding>
 									</TextBlock.Text>
 								</TextBlock>
@@ -299,13 +300,13 @@
 								<Button Command="ApplicationCommands.Save" Style="{StaticResource FadeButton}" VerticalAlignment="Top" Grid.Column="1">
 									<Image Source="save.png" Stretch="None" ToolTip="Save"/>
 								</Button>
-								<Image VerticalAlignment="Top" Grid.Column="1" Source="wait.png" Stretch="None" Visibility="{TemplateBinding IsSaving, Converter={StaticResource mBooleanToVisibilityConverter}}" ToolTip="Saving..." Cursor="Wait"/>
+								<Image VerticalAlignment="Top" Grid.Column="1" Source="wait.png" Stretch="None" Visibility="{Binding Path=AlbumArt.IsSaving, Converter={StaticResource mBooleanToVisibilityConverter}, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" ToolTip="Saving..." Cursor="Wait"/>
 								<Image VerticalAlignment="Top" Grid.Column="1" Source="tick.png" Stretch="None" Visibility="{TemplateBinding IsSaved, Converter={StaticResource mBooleanToVisibilityConverter}}" ToolTip="Already Saved"/>
 							</Grid>
 							<Button Grid.Column="2" HorizontalAlignment="Right"
 										Grid.Row="4" VerticalAlignment="Bottom"
 										ToolTip="Show information below thumbnail"
-										Command="{x:Static local:ArtPanel+Commands.ToggleInformationLocation}">
+										Command="{x:Static local:ArtPanelList+Commands.ToggleInformationLocation}">
 								<Button.Style>
 									<Style TargetType="{x:Type Button}" BasedOn="{StaticResource FadeButton}">
 										<Setter Property="Visibility" Value="Collapsed"/>
@@ -322,7 +323,7 @@
 							<Button Grid.Column="3" HorizontalAlignment="Right"
 									Grid.Row="0" VerticalAlignment="Top"
 									ToolTip="Show information besides thumbnail"
-									Command="{x:Static local:ArtPanel+Commands.ToggleInformationLocation}">
+									Command="{x:Static local:ArtPanelList+Commands.ToggleInformationLocation}">
 								<Button.Style>
 									<Style TargetType="{x:Type Button}" BasedOn="{StaticResource FadeButton}">
 										<Setter Property="Visibility" Value="Collapsed"/>

@@ -100,9 +100,6 @@ namespace AlbumArtDownloader
 		/// </summary>
 		private bool ProcessCommandArgs(string[] args)
 		{
-			new ArtPreviewWindow().Show();
-			return true;
-
 			Arguments arguments = new Arguments(args);
 			if (arguments.Contains("?"))
 			{
