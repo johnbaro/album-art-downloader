@@ -16,7 +16,7 @@ namespace AlbumArtDownloader.Properties
 			private WindowSettings windowSettings;
 
 			public WindowApplicationSettings(WindowSettings windowSettings)
-				: base(windowSettings.window.PersistId.ToString())
+				: base(windowSettings.window.GetType().Name)
 			{
 				this.windowSettings = windowSettings;
 			}

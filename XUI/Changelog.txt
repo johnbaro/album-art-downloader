@@ -4,6 +4,10 @@
     Fixed Coveralia and Yes24 scripts which had become out of date
     Updated to version 0.7.5.2 of the MediaInfo tag reading library
     Persistant Preview window (right click on a result and choose "Preview...")
+    Added command line parameter for setting the sorting to use for results
+    All sources now limit the results returned to the first 10 by default.
+    Fixed bug where all windows would share a single remembered size.
+     Windows of different types now remember their size independently.
     
     Known issues:
     The preview popups can display incorrectly (large black areas) when the size of the

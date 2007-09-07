@@ -129,8 +129,20 @@
 				</Button>
 			</Grid>
 		</Border>
-		<ScrollViewer Name="mImageScroller" Grid.Row="2" Cursor="Hand.cur"
+		<ScrollViewer Name="mImageScroller" Grid.Row="2"
 					  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+			<ScrollViewer.Style>
+				<Style TargetType="{x:Type ScrollViewer}">
+					<Style.Triggers>
+						<Trigger Property="ComputedHorizontalScrollBarVisibility" Value="Visible">
+							<Setter Property="Cursor" Value="Hand.cur"/>
+						</Trigger>
+						<Trigger Property="ComputedVerticalScrollBarVisibility" Value="Visible">
+							<Setter Property="Cursor" Value="Hand.cur"/>
+						</Trigger>
+					</Style.Triggers>
+				</Style>
+			</ScrollViewer.Style>
 			<ScrollViewer.ContextMenu>
 				<ContextMenu>
 					<MenuItem Command="ApplicationCommands.Save" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=OneTime}"/>

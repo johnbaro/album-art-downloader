@@ -82,6 +82,7 @@ namespace AlbumArtDownloader
 				{
 					bitmapSource = System.Windows.Interop.Imaging.CreateBitmapSourceFromHBitmap(
 					   hBitmap, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+					bitmapSource.Freeze();
 				}
 				finally
 				{

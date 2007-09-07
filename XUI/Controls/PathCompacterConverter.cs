@@ -25,17 +25,15 @@ namespace AlbumArtDownloader.Controls
 			if (actualWidth == 0 || String.IsNullOrEmpty(path))
 				return String.Empty;
 
-			Typeface textBlockTypeFace = Utilities.GetTypeface(textBlock);
-			
 			StringBuilder result = new StringBuilder(path);
 			int maxChars = path.Length; //Start at full length, and shrink to fit
 			do
 			{
 				//Check the size
-				FormattedText formattedText = new FormattedText(result.ToString(), culture, textBlock.FlowDirection, textBlockTypeFace, textBlock.FontSize, null);
-				if (formattedText.Width <= actualWidth)
+				double textWidth = Utilities.GetTextWidth(result.ToString(), textBlock, culture);
+				if (textWidth <= actualWidth)
 				{
-					if (maxChars == path.Length || (actualWidth - formattedText.Width < textBlock.FontSize))
+					if (maxChars == path.Length || (actualWidth - textWidth < textBlock.FontSize))
 					{
 						//Close enough.
 						return result.ToString();
@@ -50,7 +48,7 @@ namespace AlbumArtDownloader.Controls
 				{
 					//Not small enough. Attempt a guess at a better size, by making the string the same proportion smaller as the width is.
 					int previousMaxChars = maxChars;
-					maxChars = (int)(maxChars / (formattedText.Width / actualWidth));
+					maxChars = (int)(maxChars / (textWidth / actualWidth));
 					if (maxChars == previousMaxChars)
 					{
 						//The reduction is less than one character, so reduce by one and return the result

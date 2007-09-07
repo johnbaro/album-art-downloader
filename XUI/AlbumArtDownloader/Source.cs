@@ -386,7 +386,7 @@ namespace AlbumArtDownloader
 				if (mSource.UseMaximumResults && mSource.Results.Count >= mSource.MaximumResults)
 				{
 					//Break out of this search
-					Thread.CurrentThread.Abort();
+					mSource.AbortSearch();
 				}
 			}
 		}

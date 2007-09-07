@@ -2,6 +2,7 @@ using System;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
+using System.Collections.Generic;
 
 namespace AlbumArtDownloader.Controls
 {
@@ -33,8 +34,7 @@ namespace AlbumArtDownloader.Controls
 				string text = (string)values[2];
 
 				//Check the size
-				FormattedText formattedText = new FormattedText(text, culture, textBlock.FlowDirection, Utilities.GetTypeface(textBlock), textBlock.FontSize, null);
-				return formattedText.Width > actualWidth;
+				return Utilities.GetTextWidth(text, textBlock, culture) > actualWidth;
 			}
 			return false;
 		}

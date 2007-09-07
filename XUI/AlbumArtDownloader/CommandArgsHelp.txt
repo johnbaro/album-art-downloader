@@ -62,6 +62,22 @@ Options:
               Append "off" to disable closing (/autoclose off)
               the search window after saving,
               if this option is on by default.
+ 
+ /sort (name|size|source)[+|-]
+              Sets the sorting to use for the (/sort size-)
+              results.
+              May be abbreviated to /o        (/o size-)
+              
+              The first character may be - to
+              indicate descending search, or
+              + to indicate ascending. If it
+              is omitted, ascending is assumed.
+              
+              The field to sort by must be one
+              of:
+               name (may be abbreviated to n) (/o n+)
+               size (may be abbreviated to s)
+               source (may be abbreviated to o)
 
  /sources     Searches only the specified     (/sources "Amazon,Coveralia")
               sources. Others are disabled.

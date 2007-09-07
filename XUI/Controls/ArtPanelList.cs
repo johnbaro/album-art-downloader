@@ -35,17 +35,10 @@ namespace AlbumArtDownloader.Controls
 			ItemsSourceProperty.OverrideMetadata(typeof(ArtPanelList), new FrameworkPropertyMetadata(baseMetadata.DefaultValue, baseMetadata.PropertyChangedCallback, new CoerceValueCallback(CoerceItemsSource)));
 		}
 
-		private DispatcherTimer mRefreshFilterTimer;
-		
 		public ArtPanelList()
 		{
 			CommandBindings.Add(new CommandBinding(EditingCommands.AlignJustify, new ExecutedRoutedEventHandler(AlignJustifyCommandHandler)));
 			AddHandler(ArtPanel.ImageSizeChangedEvent, new RoutedEventHandler(OnImageSizeChanged));
-
-			mRefreshFilterTimer = new DispatcherTimer(DispatcherPriority.DataBind, Dispatcher);
-			mRefreshFilterTimer.Interval = sRefreshDelay;
-			mRefreshFilterTimer.Tick += OnRefreshFilterTimerTick;
-			//Note, this will start off stopped, and be started in OnImageSizeChanged
 		}
 
 		#region Mouse shifting
@@ -168,16 +161,23 @@ namespace AlbumArtDownloader.Controls
 		#region Image Size Changed
 		private void OnImageSizeChanged(object sender, RoutedEventArgs e)
 		{
-			//If the timer is already running, this will reset the time on it. If one isn't, it will start it.
-			mRefreshFilterTimer.Stop();
-			mRefreshFilterTimer.Start();
-		}
-		private void OnRefreshFilterTimerTick(object sender, EventArgs e)
-		{
-			if (!mInRefresh) //If already refreshing, then don't refresh again, but don't stop the timer, so we get asked again later.
+			IAlbumArt albumArt = ((ArtPanel)e.OriginalSource).AlbumArt; //Or should this get it from the ItemContainerGenerator?
+
+			//As this panel's size has changed, it must be removed and re-added, so the list re-filters and re-sorts it
+			if (ItemsSource is IList)
 			{
-				mRefreshFilterTimer.Stop();
-				//RefreshFilter();
+				IList itemsSource = (IList)ItemsSource;
+				itemsSource.Remove(albumArt);
+				itemsSource.Add(albumArt);
+			}
+			else if (ItemsSource == null) //If there is no items source, then Items might be directly assigned
+			{
+				Items.Remove(albumArt);
+				Items.Add(albumArt);
+			}
+			else
+			{
+				System.Diagnostics.Debug.Fail("Can't re-add the album art for re-sorting and filtering, as ItemsSource is not an IList");
 			}
 		}
 		#endregion
@@ -370,45 +370,9 @@ namespace AlbumArtDownloader.Controls
 				SuspendedNotificationCollection suspender = ItemsSource as SuspendedNotificationCollection;
 				if (suspender != null)
 					suspender.Suspended = value;
-
-				if (!value && mNeedsRefresh)
-				{
-					RefreshFilter();
-				}
 			}
 		}
 
-		private bool mInRefresh;
-		private bool mNeedsRefresh;
-		private void RefreshFilter()
-		{
-			if (mInRefresh)
-			{
-				//Already refreshing, so schedule another refresh for when this one finishes
-				mRefreshFilterTimer.Start();
-				return;
-			}
-
-			mInRefresh = true;
-			try
-			{
-				if (Suspended)
-				{
-					mNeedsRefresh = true; //Perform the refresh when suspension is lifted
-				}
-				else
-				{
-					//Perform it immediately
-					Items.Filter = Items.Filter; //Causes a refresh. Note that .Refresh doesn't.
-					mNeedsRefresh = false;
-				}
-			}
-			finally
-			{
-				mInRefresh = false;
-			}
-		}
-		
 		/// <summary>
 		/// Wrapper around an <see cref="INotifyCollectionChanged"/> that can suspend
 		/// the notifications that the collection has changed, batch them up, then

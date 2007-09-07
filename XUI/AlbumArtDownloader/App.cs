@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Configuration;
 using System.IO;
 using System.Reflection;
@@ -110,7 +111,9 @@ namespace AlbumArtDownloader
 			bool? autoClose = null;
 			bool showSearchWindow = false, showFileBrowser = false, showFoobarBrowser = false;
 			bool startFoobarBrowserSearch = false;
-			string artist = null, album = null, path = null, localImagesPath = null, fileBrowser = null;
+			string artist = null, album = null, path = null, localImagesPath = null, fileBrowser = null, sortField = null;
+			ListSortDirection sortDirection = ListSortDirection.Ascending;
+
 			List<String> useSources = new List<string>();
 			List<String> excludeSources = new List<string>();
 			string errorMessage = null;
@@ -206,6 +209,38 @@ namespace AlbumArtDownloader
 							startFoobarBrowserSearch = parameter.Value.Equals("search", StringComparison.InvariantCultureIgnoreCase);
 							showFoobarBrowser = true;
 							break;
+						case "sort":
+						case "o":
+							string sortName = null;
+							if (parameter.Value.EndsWith("-"))
+							{
+								sortDirection = ListSortDirection.Descending;
+							}
+							else if (parameter.Value.EndsWith("+"))
+							{
+								sortDirection = ListSortDirection.Ascending;
+							}
+							sortName = parameter.Value.TrimEnd('-', '+');
+
+							switch (sortName.ToLower())
+							{
+								case "name":
+								case "n":
+									sortField = "ResultName";
+									break;
+								case "size":
+								case "s":
+									sortField = "ImageWidth";
+									break;
+								case "source":
+								case "o":
+									sortField = "SourceName";
+									break;
+								default:
+									errorMessage = "Unexpected sort field: " + sortName;
+									break;
+							}
+							break;
 						default:
 							errorMessage = "Unexpected command line parameter: " + parameter.Name;
 							break;
@@ -218,6 +253,12 @@ namespace AlbumArtDownloader
 			{
 				ShowCommandArgs(errorMessage);
 				return false;
+			}
+
+			if(!String.IsNullOrEmpty(sortField))
+			{
+				//Set the sort
+				AlbumArtDownloader.Properties.Settings.Default.ResultsSorting = new SortDescription(sortField, sortDirection);
 			}
 
 			if (!showFileBrowser && !showFoobarBrowser && !showSearchWindow) //If no windows will be shown, show the search window

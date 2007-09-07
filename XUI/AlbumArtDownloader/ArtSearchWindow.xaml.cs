@@ -83,6 +83,8 @@ namespace AlbumArtDownloader
 		}
 		
 		#region Auto Download Full Size Images
+		private AutoResetEvent mWaitForImage = new AutoResetEvent(false);
+
 		/// <summary>
 		/// Thread worker for downloading full size images
 		/// </summary>
@@ -121,16 +123,25 @@ namespace AlbumArtDownloader
 			} while (true);
 		}
 
-		private AutoResetEvent mWaitForImage = new AutoResetEvent(false);
 		private void FullSizeImageDownloadCompleted(object sender)
 		{
 			mWaitForImage.Set();
-			//Causes a refresh. Note that .Refresh doesn't.
-			mResultsViewer.Items.Filter = mResultsViewer.Items.Filter;
 		}
 
 		private void OnAutoDownloadFullSizeImagesChanged(object sender, RoutedEventArgs e)
 		{
+			if (Properties.Settings.Default.AutoDownloadFullSizeImages == AutoDownloadFullSizeImages.Always)
+			{
+				//Re-queue all images, to ensure they all get a chance at being auto-downloaded, even if they were skipped from having had a non-unknown size before.
+				lock (mResultsToAutoDownloadFullSizeImages)
+				{
+					mResultsToAutoDownloadFullSizeImages.Clear();
+					foreach (AlbumArt albumArt in mSources.CombinedResults)
+					{
+						mResultsToAutoDownloadFullSizeImages.Enqueue(albumArt);
+					}
+				}
+			}
 			mAutoDownloadFullSizeImagesTrigger.Set();
 		}
 

@@ -54,7 +54,7 @@ namespace AlbumArtDownloader
 			}
 		}
 
-		[DefaultSettingValueAttribute("False")]
+		[DefaultSettingValueAttribute("True")]
 		[UserScopedSetting]
 		public bool UseMaximumResults
 		{
