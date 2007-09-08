@@ -384,8 +384,10 @@ namespace AlbumArtDownloader.Controls
 			public event NotifyCollectionChangedEventHandler CollectionChanged;
 
 			private IList mWrappedCollection;
-			private Queue<NotifyCollectionChangedEventArgs> mQueuedChanges = new Queue<NotifyCollectionChangedEventArgs>();
-
+			private bool mResetPending = false;
+			private ArrayList mAddedItems = new ArrayList();
+			private ArrayList mRemovedItems = new ArrayList();
+			
 			public SuspendedNotificationCollection(IList collection)
 			{
 				mWrappedCollection = collection;
@@ -401,8 +403,39 @@ namespace AlbumArtDownloader.Controls
 			{
 				if (Suspended)
 				{
-					//Batch up the change for later use
-					mQueuedChanges.Enqueue(e);
+					if (!mResetPending) //If we're going to reset anyway, it hardly matters what else chagnes
+					{
+						//Batch up the change for later use
+						switch (e.Action)
+						{
+							case NotifyCollectionChangedAction.Add:
+								foreach (object item in e.NewItems)
+								{
+									mAddedItems.Add(item);
+									mRemovedItems.Remove(item);
+								}
+								break;
+							case NotifyCollectionChangedAction.Remove:
+								foreach (object item in e.OldItems)
+								{
+									mRemovedItems.Add(item);
+									mAddedItems.Remove(item);
+								} 
+								break;
+							case NotifyCollectionChangedAction.Move:
+							case NotifyCollectionChangedAction.Replace:
+								System.Diagnostics.Debug.Fail("Moving and replacing not supported yet");
+								break;
+							case NotifyCollectionChangedAction.Reset:
+								mResetPending = true; //Trumps all other changes
+								mAddedItems.Clear();
+								mRemovedItems.Clear();
+								break;
+							default:
+								System.Diagnostics.Debug.Fail("Unknown collection changed action");
+								break;
+						}
+					}
 				}
 				else
 				{
@@ -432,10 +465,25 @@ namespace AlbumArtDownloader.Controls
 						if (!mSuspended)
 						{
 							//Raise all the enqued changes
-							while (mQueuedChanges.Count > 0)
+							if (mResetPending)
 							{
-								RaiseCollectionChanged(mQueuedChanges.Dequeue());
+								RaiseCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
 							}
+							else
+							{
+								//Range actions are not currently supported by the WPF controls, so have to raise an event for each one.
+								foreach (object item in mRemovedItems)
+								{
+									RaiseCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item));
+								}
+								foreach (object item in mRemovedItems)
+								{
+									RaiseCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item));
+								}
+							}
+							mResetPending = false;
+							mAddedItems.Clear();
+							mRemovedItems.Clear();
 						}
 					}
 				}

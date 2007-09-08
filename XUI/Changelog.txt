@@ -6,8 +6,11 @@
     Persistant Preview window (right click on a result and choose "Preview...")
     Added command line parameter for setting the sorting to use for results
     All sources now limit the results returned to the first 10 by default.
-    Fixed bug where all windows would share a single remembered size.
-     Windows of different types now remember their size independently.
+    Fixed bug where all windows would share a single remembered size, so
+     windows of different types now remember their size independently.
+    Added re-use of existing search window from the command line, if "Open
+     Results in New Window" option is turned off, and there is only one search
+     window currently open, and search terms are passed on the command line.
     
     Known issues:
     The preview popups can display incorrectly (large black areas) when the size of the

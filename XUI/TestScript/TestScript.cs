@@ -61,6 +61,7 @@ namespace TestScript
 				Bitmap thumbnail = new Bitmap(typeof(TestScript), "testThumbnail.jpg");
 				Bitmap fullSize = new Bitmap(typeof(TestScript), "testFullsize.jpg");
 				results.Add(thumbnail, i.ToString(), rnd.Next(10, 1000), rnd.Next(10, 1000), fullSize);
+				System.Threading.Thread.Sleep(1000);
 			}
 		}
 

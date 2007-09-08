@@ -286,7 +286,19 @@ namespace AlbumArtDownloader
 
 			if (showSearchWindow)
 			{
-				ArtSearchWindow searchWindow = new ArtSearchWindow();
+				ArtSearchWindow searchWindow = null;
+				if ( (artist != null || album != null) && //If doing a new search
+					 !AlbumArtDownloader.Properties.Settings.Default.OpenResultsInNewWindow && //And the option is to open results in the same window
+					 Windows.Count == 1) //And only one window is open
+				{
+					searchWindow = Windows[0] as ArtSearchWindow; //And if that window is an ArtSearchWindow, then re-use it
+				}
+
+				if (searchWindow == null)
+				{
+					searchWindow = new ArtSearchWindow();
+					SearchQueue.EnqueueSearchWindow(searchWindow);
+				}
 
 				if (autoClose.HasValue)
 					searchWindow.OverrideAutoClose(autoClose.Value);
@@ -299,7 +311,6 @@ namespace AlbumArtDownloader
 				if (excludeSources.Count > 0)
 					searchWindow.ExcludeSources(excludeSources);
 
-				SearchQueue.EnqueueSearchWindow(searchWindow);
 					
 				if (artist != null || album != null)
 				{

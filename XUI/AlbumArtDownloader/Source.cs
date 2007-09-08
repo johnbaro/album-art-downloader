@@ -280,28 +280,32 @@ namespace AlbumArtDownloader
 			public string Artist { get { return mArtist; } }
 			public string Album { get { return mAlbum; } }
 		}
+		private object mSearchThreadInstanceLock = new object();
 		private void SearchWorker(object state)
 		{
 			SearchThreadParameters parameters = (SearchThreadParameters)state;
 
-			try
+			lock (mSearchThreadInstanceLock) //Don't allow more than one instance of this search. If a search has been aborted, it must finish aborting before it re-starts
 			{
-				parameters.Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(delegate
+				try
 				{
-					Results.Clear();
-					IsSearching = true;
-				}));
+					parameters.Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(delegate
+					{
+						Results.Clear();
+						IsSearching = true;
+					}));
 
-				SearchInternal(parameters.Artist, parameters.Album, new ScriptResults(this, parameters.Dispatcher));
-			}
-			finally
-			{
-				parameters.Dispatcher.BeginInvoke(DispatcherPriority.Normal, new ThreadStart(delegate
+					SearchInternal(parameters.Artist, parameters.Album, new ScriptResults(this, parameters.Dispatcher));
+				}
+				finally
 				{
-					IsSearching = false;
-					RaiseSearchCompleted();
-				}));
-				SettingsChanged = false;
+					parameters.Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(delegate
+					{
+						IsSearching = false;
+						RaiseSearchCompleted();
+					}));
+					SettingsChanged = false;
+				}
 			}
 		}
 
