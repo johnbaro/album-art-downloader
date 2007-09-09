@@ -37,15 +37,6 @@ namespace AlbumArtDownloader
 			mFilePathBrowse.PreviewLostKeyboardFocus += new KeyboardFocusChangedEventHandler(FilePathBrowse_LostKeyboardFocus);
 			mFilePathTextBox.KeyDown += new KeyEventHandler(FilePathTextBox_KeyDown);
 			mFilePathBrowse.Click += new RoutedEventHandler(FilePathBrowse_Click);
-
-			//DEBUG: Create a test album art
-			AlbumArt albumArt = new AlbumArt(new LocalFilesSource(), 
-											new System.Drawing.Bitmap(@"C:\Documents and Settings\Family Vallat\My Documents\Alexander\foobar2000\CoverDownloader\AlbumArtDownloader\XUI\TestScript\testFullsize.png"),
-											"Test", 100, 100,
-											new System.Drawing.Bitmap(@"C:\Documents and Settings\Family Vallat\My Documents\Alexander\foobar2000\CoverDownloader\AlbumArtDownloader\XUI\TestScript\testHuge.jpg"));
-
-			albumArt.DefaultFilePathPattern = "Hello";
-			AlbumArt = albumArt;
 		}
 
 		#region Drag panning
