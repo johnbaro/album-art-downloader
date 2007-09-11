@@ -10,7 +10,7 @@ class Discogs:
 	static SourceCreator as string:
 		get: return "Alex Vallat"
 	static SourceVersion as string:
-		get: return "0.3"
+		get: return "0.4"
 	static def GetThumbs(coverart,artist,album):
 		query as string = artist + " " + album
 		query.Replace(' ','+')
@@ -19,7 +19,7 @@ class Discogs:
 		//Get obids
 		obidRegex = Regex("<a href=\"/release/(?<obid>\\d+)\"><span[^>]+>(?:</?em>|(?<name>[^<]+))+</span>", RegexOptions.Multiline)
 		obidMatches = obidRegex.Matches(obidResults)
-		coverart.SetCountEstimate(obidMatches.Count) //Probably more than this, as some releases might have multiple images
+		coverart.EstimatedCount = obidMatches.Count //Probably more than this, as some releases might have multiple images
 
 		for obidMatch as Match in obidMatches:
 			//Construct the release name by joining up all the captures of the "name" group
@@ -34,8 +34,11 @@ class Discogs:
 			
 			imageRegex = Regex("<img src=\"(?<url>http://www\\.discogs\\.com/image/R-\\d+-\\d+.(?:jpe?g|gif|png))\" width=\"(?<width>\\d+)\" height=\"(?<height>\\d+)\"")
 			imageMatches = imageRegex.Matches(imageResults)
+			
+			coverart.EstimatedCount += imageMatches.Count - 1 //Adjust count by how many images for this release
+			
 			for imageMatch as Match in imageMatches:
-				coverart.AddThumb(imageMatch.Groups["url"].Value, releaseName, Int32.Parse(imageMatch.Groups["width"].Value), Int32.Parse(imageMatch.Groups["height"].Value), imageMatch.Groups["url"].Value)
+				coverart.Add(imageMatch.Groups["url"].Value, releaseName, Int32.Parse(imageMatch.Groups["width"].Value), Int32.Parse(imageMatch.Groups["height"].Value), null)
 		
 	static def GetResult(param):
 		return param

@@ -1,3 +1,7 @@
+0.9.1
+    Added iTunes Music Shop search script, and included ICSharpCode.SharpZipLib.dll
+     which is required by it.
+
 0.9 Added Foobar2000 library browser
     Improved performance of search results thumbnails list
     Improved handling of larger-than-screen preview popups
