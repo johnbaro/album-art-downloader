@@ -354,7 +354,7 @@ namespace AlbumArtDownloader
 			}
 			catch (Exception e)
 			{
-				MessageBox.Show(String.Format("Could not save image '{0}':\n\n{1}", Path.GetFileName(FilePath), e.Message), "Album Art Downloader", MessageBoxButton.OK, MessageBoxImage.Error);
+				MessageBox.Show(String.Format("Could not save image '{0}':\n\n{1}", FilePath, e.Message), "Album Art Downloader", MessageBoxButton.OK, MessageBoxImage.Error);
 				return;
 			}
 

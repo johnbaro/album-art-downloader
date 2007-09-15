@@ -21,11 +21,11 @@
 				<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/HyperlinkButton.generic.xaml"/>
 				<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/HyperlinkExpander.generic.xaml"/>
 				<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/Statusbar.generic.xaml"/>
+				<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/OverflowTextBlock.generic.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 
 			<controls:StringFormatterConverter x:Key="mStringFormatterConverter"/>
-			<controls:TooltipEnabledOnOverflowConverter x:Key="mTooltipEnabledOnOverflowConverter"/>
-
+			
 			<Win32:OpenFileDialog x:Key="mFilePathBrowser" Title="Specify folder to search for audio files" ValidateNames="False" CheckFileExists="False" CheckPathExists="True" Filter="Folders|."/>
 			<properties:Settings x:Key="mSettings"/>
 		</ResourceDictionary>
@@ -138,18 +138,7 @@
 			<StatusBarItem>
 				<TextBlock>
 					<TextBlock.Style>
-						<Style TargetType="{x:Type TextBlock}">
-							<Setter Property="TextTrimming" Value="CharacterEllipsis"/>
-							<Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=Text}"/>
-							<Setter Property="ToolTipService.IsEnabled">
-								<Setter.Value>
-									<MultiBinding Converter="{StaticResource mTooltipEnabledOnOverflowConverter}" Mode="OneWay">
-										<Binding RelativeSource="{RelativeSource Self}" Mode="OneWay"/>
-										<Binding Path="ActualWidth" RelativeSource="{RelativeSource Self}" Mode="OneWay"/>
-										<Binding Path="ToolTip" RelativeSource="{RelativeSource Self}" Mode="OneWay"/>
-									</MultiBinding>
-								</Setter.Value>
-							</Setter>
+						<Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource OverflowTextBlock}">
 							<Style.Triggers>
 								<DataTrigger Binding="{Binding State}" Value="Ready">
 									<Setter Property="Text" Value="Ready"/>

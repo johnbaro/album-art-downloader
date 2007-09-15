@@ -46,6 +46,7 @@
     <Compile Include="ArtPanelListSortPicker.cs" />
     <Compile Include="CompareConverter.cs" />
     <Compile Include="ArtPathPatternBox.cs" />
+    <Compile Include="SizeRestrainer.cs" />
     <Compile Include="LogarithmicScaleConverter.cs" />
     <Compile Include="NotNullConverter.cs" />
     <Compile Include="FileNameConverter.cs" />
@@ -69,6 +70,9 @@
     <Page Include="themes\ArtPanelList.generic.xaml" />
     <Page Include="themes\ArtPanelListSortPicker.generic.xaml" />
     <Page Include="themes\ArtPathPatternBox.generic.xaml" />
+    <Page Include="themes\OverflowTextBlock.generic.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="themes\SortableColumnHeader.generic.xaml" />
     <Page Include="themes\StatusBar.generic.xaml" />
     <Page Include="themes\LimitBox.generic.xaml" />

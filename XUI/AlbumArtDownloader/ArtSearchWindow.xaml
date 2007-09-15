@@ -236,7 +236,7 @@
 					Command="ApplicationCommands.Stop" Visibility="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled, Converter={StaticResource mBooleanToVisibilityConverter}}"
 					Content="Stop All"/>
 			<ItemsControl Grid.Row="3" Grid.ColumnSpan="2" Name="mSourcesViewer" Style="{StaticResource SimpleList}"
-						  ScrollViewer.VerticalScrollBarVisibility="Auto">
+						  ScrollViewer.VerticalScrollBarVisibility="Auto" MinWidth="180">
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
 						<controls:SourcePanel Source="{Binding}"/>

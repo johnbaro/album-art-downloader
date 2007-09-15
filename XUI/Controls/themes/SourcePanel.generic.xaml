@@ -7,6 +7,7 @@
 
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/HyperlinkButton.generic.xaml"/>
+		<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/OverflowTextBlock.generic.xaml"/>
 	</ResourceDictionary.MergedDictionaries>
 
 	<local:StringFormatterConverter x:Key="mStringFormatterConverter"/>
@@ -39,14 +40,16 @@
 									</MultiBinding>
 								</TextBlock.Text>
 							</TextBlock>
-							<TextBlock Name="versionInfo" Grid.Row="1" Grid.Column="1" FontStyle="Italic" Foreground="Silver">
-								<TextBlock.Text>
-									<MultiBinding Converter="{StaticResource mStringFormatterConverter}" ConverterParameter="{}v{0} by {1}" Mode="OneWay">
-										<Binding Path="Source.Version" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
-										<Binding Path="Source.Author" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
-									</MultiBinding>
-								</TextBlock.Text>
-							</TextBlock>
+							<local:SizeRestrainer Grid.Row="1" Grid.Column="1">
+								<TextBlock Name="versionInfo" FontStyle="Italic" Foreground="Silver" Style="{StaticResource OverflowTextBlock}">
+									<TextBlock.Text>
+										<MultiBinding Converter="{StaticResource mStringFormatterConverter}" ConverterParameter="{}v{0} by {1}" Mode="OneWay">
+											<Binding Path="Source.Version" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
+											<Binding Path="Source.Author" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
+										</MultiBinding>
+									</TextBlock.Text>
+								</TextBlock>
+							</local:SizeRestrainer>
 							<ToggleButton Name="optionsToggle" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Right"
 									 Foreground="#FF7F9DB9" Margin="0,3,0,-3">
 								<ToggleButton.Style>

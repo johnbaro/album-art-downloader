@@ -1,3 +1,7 @@
+	Fixed bug where invalid characters in the Save path would cause a crash
+	Version and Author information for sources no longer widens the source list, instead
+	 it overflows with a tooltip when it won't fit.
+	 
 0.9.1
     Added iTunes Music Shop search script, and included ICSharpCode.SharpZipLib.dll
      which is required by it.

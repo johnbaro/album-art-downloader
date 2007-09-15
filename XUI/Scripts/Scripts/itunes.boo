@@ -7,9 +7,9 @@ import util
 class iTMS:
 	static def GetPageSecret(url as string):
 		request as System.Net.HttpWebRequest = System.Net.HttpWebRequest.Create(url)
-		request.UserAgent="iTunes/7.0 (Macintosh; U; PPC Mac OS X 10.4.7)"
-		request.Headers.Add("X-Apple-Tz","7200")
-		request.Headers.Add("X-Apple-Store-Front","143457")
+		request.UserAgent = "iTunes/7.4 (Macintosh; U; PPC Mac OS X 10.4.7)"
+		request.Headers.Add("X-Apple-Tz","-21600")
+		request.Headers.Add("X-Apple-Store-Front","143441")
 		request.Headers.Add("Accept-Language","en-us, en;q=0.50")
 		request.Headers.Add("Accept-Encoding","gzip, x-aes-cbc")
 		response = request.GetResponse()
@@ -17,7 +17,7 @@ class iTMS:
 	static SourceName as string:
 		get: return "iTunes Music Store"
 	static SourceVersion as string:
-		get: return "0.3"
+		get: return "0.4"
 	static SourceCreator as string:
 		get: return "david_dl, Alex Vallat"
 	static def GetThumbs(coverart,artist,album):

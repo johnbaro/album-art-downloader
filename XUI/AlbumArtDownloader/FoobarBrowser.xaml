@@ -21,11 +21,11 @@
 				<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/HyperlinkButton.generic.xaml"/>
 				<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/HyperlinkExpander.generic.xaml"/>
 				<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/Statusbar.generic.xaml"/>
+				<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/OverflowTextBlock.generic.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 
 			<controls:StringFormatterConverter x:Key="mStringFormatterConverter"/>
-			<controls:TooltipEnabledOnOverflowConverter x:Key="mTooltipEnabledOnOverflowConverter"/>
-
+			
 			<properties:Settings x:Key="mSettings"/>
 		</ResourceDictionary>
 	</Window.Resources>
@@ -71,19 +71,7 @@
 					</Button>
 					<TextBlock Grid.Column="1">
 						<TextBlock.Style>
-							<Style TargetType="{x:Type TextBlock}">
-								<Setter Property="TextTrimming" Value="CharacterEllipsis"/>
-								<Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=Text}"/>
-								<Setter Property="ToolTipService.IsEnabled">
-									<Setter.Value>
-										<MultiBinding Converter="{StaticResource mTooltipEnabledOnOverflowConverter}" Mode="OneWay">
-											<Binding RelativeSource="{RelativeSource Self}" Mode="OneWay"/>
-											<Binding Path="ActualWidth" RelativeSource="{RelativeSource Self}" Mode="OneWay"/>
-											<Binding Path="ToolTip" RelativeSource="{RelativeSource Self}" Mode="OneWay"/>
-										</MultiBinding>
-									</Setter.Value>
-								</Setter>
-
+							<Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource OverflowTextBlock}">
 								<Setter Property="Text" Value="{Binding FoobarVersion}"/>
 								<Style.Triggers>
 									<DataTrigger Binding="{Binding FoobarPresent}" Value="False">
@@ -190,18 +178,7 @@
 			<StatusBarItem>
 				<TextBlock>
 					<TextBlock.Style>
-						<Style TargetType="{x:Type TextBlock}">
-							<Setter Property="TextTrimming" Value="CharacterEllipsis"/>
-							<Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=Text}"/>
-							<Setter Property="ToolTipService.IsEnabled">
-								<Setter.Value>
-									<MultiBinding Converter="{StaticResource mTooltipEnabledOnOverflowConverter}" Mode="OneWay">
-										<Binding RelativeSource="{RelativeSource Self}" Mode="OneWay"/>
-										<Binding Path="ActualWidth" RelativeSource="{RelativeSource Self}" Mode="OneWay"/>
-										<Binding Path="ToolTip" RelativeSource="{RelativeSource Self}" Mode="OneWay"/>
-									</MultiBinding>
-								</Setter.Value>
-							</Setter>
+						<Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource OverflowTextBlock}">
 							<Style.Triggers>
 								<DataTrigger Binding="{Binding State}" Value="Ready">
 									<Setter Property="Text" Value="Ready"/>
