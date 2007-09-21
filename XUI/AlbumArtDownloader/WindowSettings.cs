@@ -128,7 +128,14 @@ namespace AlbumArtDownloader.Properties
 		{
 			this.Settings.WindowState = this.window.WindowState;
 			this.Settings.Location = this.window.RestoreBounds;
-			this.Settings.Save();
+			try
+			{
+				this.Settings.Save();
+			}
+			catch (Exception e)
+			{
+				System.Diagnostics.Trace.TraceError("Could not save window state settings: " + e.Message);
+			}
 		}
 		#endregion
 

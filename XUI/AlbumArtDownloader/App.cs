@@ -23,6 +23,25 @@ namespace AlbumArtDownloader
 			try
 			{
 #endif
+			#region Config File Problem detection
+			try
+			{
+				string appVersion = AlbumArtDownloader.Properties.Settings.Default.ApplicationVersion;
+				System.Diagnostics.Trace.TraceInformation("Successfully read application version from settings: " + appVersion);
+			}
+			catch (ConfigurationErrorsException ex)
+			{
+				System.Diagnostics.Trace.TraceError("Could not load settings: " + ex.Message);
+				
+				//Show the self-service config file problem solver
+				if (new ConfigFileProblem(ex).ShowDialog().GetValueOrDefault())
+				{
+					System.Diagnostics.Process.Start(Assembly.GetEntryAssembly().Location, Common.GetCommandArgs());
+				}
+				return;
+			}
+			#endregion
+
 			const string channelUri = "net.pipe://localhost/AlbumArtDownloader/SingleInstance";
 			if (!InstanceMutex.QueryPriorInstance(args, channelUri))
 			{
@@ -55,7 +74,7 @@ namespace AlbumArtDownloader
 			base.OnStartup(e);
 
 			UpgradeSettings();
-
+			
 #if EPHEMERAL_SETTINGS
 			AlbumArtDownloader.Properties.Settings.Default.Reset();
 #endif
@@ -481,10 +500,25 @@ namespace AlbumArtDownloader
 		protected override void OnExit(ExitEventArgs e)
 		{
 			//Save all the settings
-			AlbumArtDownloader.Properties.Settings.Default.Save();
+			try
+			{
+				AlbumArtDownloader.Properties.Settings.Default.Save();
+			}
+			catch (Exception ex)
+			{
+				System.Diagnostics.Trace.TraceError("Could not save main settings: " + ex.Message);
+			}
+
 			foreach (SourceSettings sourceSettings in mSourceSettings.Values)
 			{
-				sourceSettings.Save();
+				try
+				{
+					sourceSettings.Save();
+				}
+				catch (Exception ex)
+				{
+					System.Diagnostics.Trace.TraceError("Could not save source settings: " + ex.Message);
+				}
 			}
 
 			base.OnExit(e);

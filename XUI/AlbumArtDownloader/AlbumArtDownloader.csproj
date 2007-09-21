@@ -85,6 +85,10 @@
     <Page Include="ArtPreviewWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="ConfigFileProblem.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="EnqueueWarning.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -124,6 +128,9 @@
     <Compile Include="Common.cs" />
     <Compile Include="ArtPreviewWindow.xaml.cs">
       <DependentUpon>ArtPreviewWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ConfigFileProblem.xaml.cs">
+      <DependentUpon>ConfigFileProblem.xaml</DependentUpon>
     </Compile>
     <Compile Include="EnqueueWarning.xaml.cs">
       <DependentUpon>EnqueueWarning.xaml</DependentUpon>

@@ -234,5 +234,44 @@ namespace AlbumArtDownloader
 			}
 		}
 		#endregion
+
+		/// <summary>
+		/// Gets the command args this app was started with, as executed, not parsed into args[]
+		/// </summary>
+		public static string GetCommandArgs() //Surely this should not be that tricky?
+		{
+			string commandLine = Environment.CommandLine;
+
+			//Find either the space, which is a the delimeter, or a " mark, which bounds spaces
+			int pos = 0;
+			do
+			{
+				if (pos >= commandLine.Length)
+					return String.Empty; //No command line args
+
+				pos = commandLine.IndexOfAny(new char[] { ' ', '"' }, pos);
+				if (pos == -1)
+					return String.Empty; //No command line args
+
+				if (commandLine[pos] == '"')
+				{
+					//Find the closing " mark. " marks can't be escaped in path names
+					pos = commandLine.IndexOf('"', pos + 1) + 1;
+					if (pos == 0)
+					{
+						//No command line args. Probably malformed command line too.
+						System.Diagnostics.Trace.TraceWarning("Could not find closing \" mark in command line: " + commandLine);
+						return String.Empty;
+					}
+					//Otherwise, go round again to find another quote, or alternatively a space
+				}
+				else
+				{
+					System.Diagnostics.Debug.Assert(commandLine[pos] == ' ', "Expecting a space here, if not a \" mark");
+					//Everything past this point should now be the command args, as this is an unquoted space
+					return commandLine.Substring(pos + 1);
+				}
+			} while (true);
+		}
 	}
 }

@@ -9,7 +9,7 @@ class iTMS:
 		request as System.Net.HttpWebRequest = System.Net.HttpWebRequest.Create(url)
 		request.UserAgent = "iTunes/7.4 (Macintosh; U; PPC Mac OS X 10.4.7)"
 		request.Headers.Add("X-Apple-Tz","-21600")
-		request.Headers.Add("X-Apple-Store-Front","143441")
+		request.Headers.Add("X-Apple-Store-Front","143457")
 		request.Headers.Add("Accept-Language","en-us, en;q=0.50")
 		request.Headers.Add("Accept-Encoding","gzip, x-aes-cbc")
 		response = request.GetResponse()
@@ -41,6 +41,9 @@ class iTMS:
 		if url.Length>0:
 			url = System.Text.RegularExpressions.Regex("\\.enc\\.jpg\\?.*").Replace(url, "")
 			coverart.SetCountEstimate(1)
-			coverart.AddThumb(url + ".170x170-75.jpg", albumname, -1, -1, url + ".jpg")
-	static def GetResult(param):
-		return param
+			coverart.AddThumb(url + ".170x170-75.jpg", albumname, -1, -1, url)
+	static def GetResult(url):
+		try:
+			return GetPageSecret(url + ".jpg");
+		except e:
+			return GetPageSecret(url + ".tif");

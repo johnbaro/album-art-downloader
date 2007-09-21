@@ -299,8 +299,15 @@ namespace AlbumArtDownloader
 			//Update the values
 			Dispatcher.Invoke(DispatcherPriority.DataBind, new ThreadStart(delegate
 			{
-				ImageWidth = Math.Round(Image.Width);
-				ImageHeight = Math.Round(Image.Height);
+				if (Image != null) //Image should *never* be null, but this might be what's causing reported crashes at this location.
+				{
+					ImageWidth = Math.Round(Image.Width);
+					ImageHeight = Math.Round(Image.Height);
+				}
+				else
+				{
+					System.Diagnostics.Debug.Fail("Image was unexpectedly null");
+				}
 				IsDownloading = false;
 
 				mIsFullSize = true;
