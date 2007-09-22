@@ -357,6 +357,34 @@ namespace AlbumArtDownloader
 				{
 					artistName = sMediaInfo.Get(MediaInfoLib.StreamKind.General, 0, "Artist");
 					albumName = sMediaInfo.Get(MediaInfoLib.StreamKind.General, 0, "Album");
+
+					#region Workaround for MediaInfo bug: http://sourceforge.net/tracker/index.php?func=detail&aid=1799859&group_id=86862&atid=581181
+					if (String.IsNullOrEmpty(artistName) || String.IsNullOrEmpty(albumName))
+					{
+						for (int i = 0; i < sMediaInfo.Count_Get(MediaInfoLib.StreamKind.General, 0); i++)
+						{
+							string name = sMediaInfo.Get(MediaInfoLib.StreamKind.General, 0, i, MediaInfoLib.InfoKind.Name);
+							if(String.IsNullOrEmpty(artistName) && name.Equals("artist", StringComparison.OrdinalIgnoreCase))
+							{
+								artistName = sMediaInfo.Get(MediaInfoLib.StreamKind.General, 0, i);
+								if (!String.IsNullOrEmpty(artistName) && !String.IsNullOrEmpty(albumName))
+								{
+									//Both artist and album are found now
+									break;
+								}
+							}
+							else if (String.IsNullOrEmpty(albumName) && name.Equals("album", StringComparison.OrdinalIgnoreCase))
+							{
+								albumName = sMediaInfo.Get(MediaInfoLib.StreamKind.General, 0, i);
+								if (!String.IsNullOrEmpty(artistName) && !String.IsNullOrEmpty(albumName))
+								{
+									//Both artist and album are found now
+									break;
+								}
+							}
+						}
+					}
+					#endregion
 				}
 				finally
 				{
