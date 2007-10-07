@@ -267,7 +267,19 @@ namespace AlbumArtDownloader
 				{
 					string artistName = track.FormatTitle("%artist%");
 					string albumName = track.FormatTitle("%album%");
-					string path = System.IO.Path.GetDirectoryName(track.FormatTitle("%path%"));
+					string path = track.FormatTitle("%path%");
+					try
+					{
+						path = System.IO.Path.GetDirectoryName(path);
+					}
+					catch (Exception e)
+					{
+						System.Diagnostics.Trace.WriteLine("Could not get file path for \""+artistName + "\" / \"" + albumName + "\": " + path);
+						System.Diagnostics.Trace.Indent();
+						System.Diagnostics.Trace.WriteLine(e.Message);
+						System.Diagnostics.Trace.Unindent();
+						continue; //skip this one, can't find the path.
+					}
 					
 					Dispatcher.Invoke(DispatcherPriority.DataBind, new ThreadStart(delegate
 					{

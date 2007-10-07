@@ -9,7 +9,7 @@ class iTMS:
 		request as System.Net.HttpWebRequest = System.Net.HttpWebRequest.Create(url)
 		request.UserAgent = "iTunes/7.4 (Macintosh; U; PPC Mac OS X 10.4.7)"
 		request.Headers.Add("X-Apple-Tz","-21600")
-		request.Headers.Add("X-Apple-Store-Front","143457")
+		request.Headers.Add("X-Apple-Store-Front","143441")
 		request.Headers.Add("Accept-Language","en-us, en;q=0.50")
 		request.Headers.Add("Accept-Encoding","gzip, x-aes-cbc")
 		response = request.GetResponse()

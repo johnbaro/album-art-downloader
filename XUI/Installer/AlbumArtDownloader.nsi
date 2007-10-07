@@ -1,5 +1,5 @@
 !define PRODUCT_NAME "Album Art Downloader XUI"
-!define PRODUCT_VERSION "0.10"
+!define PRODUCT_VERSION "0.10.1"
 !define PRODUCT_WEB_SITE "https://sourceforge.net/projects/album-art"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\AlbumArt.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
@@ -54,9 +54,10 @@ File "..\Scripts\Scripts\util.boo"
 SectionEnd
 
 SectionGroup "Image Download Scripts"
-Section "iTunes Music Shop"
-  File "..\Scripts\Scripts\iTunes.boo"
-SectionEnd
+#iTunes script currently blocked by apple, so don't include it
+#Section "iTunes Music Shop"
+#  File "..\Scripts\Scripts\iTunes.boo"
+#SectionEnd
 Section "Amazon (US)"
   File "..\Scripts\Scripts\amazon.boo"
 SectionEnd
