@@ -13,7 +13,7 @@ class CoverParadies:
 	static SourceCreator as string:
 		get: return "Alex Vallat"
 	static SourceVersion as string:
-		get: return "0.3"
+		get: return "0.4"
 	static def GetThumbs(coverart,artist,album):
 		query as string = artist + " " + album
 		query.Replace(' ','+')
@@ -30,11 +30,11 @@ class CoverParadies:
 			albumPage = GetPage(String.Format("http://www.cover-paradies.to/?Module=ViewEntry&ID={0}", resultMatch.Groups["ID"].Value))
 			
 			//Get the title for that album
-			titleRegex = Regex("<div class=\"BoxHeadline\"><img[^>]+>\\s*(?<title>[^<]+)<", RegexOptions.Singleline)
+			titleRegex = Regex("<div class=\"Area_Title\">\\s*(?<title>[^<]+)<", RegexOptions.Singleline)
 			title = titleRegex.Matches(albumPage)[0].Groups["title"].Value //Expecting only one match
 			
 			//Get all the images for the album
-			imagesRegex = Regex("ID=(?<fullSizeID>\\d+)\"><img [^>]+? src=\"\\.(?<thumb>[^\"]+)\" [^>]+? class=\"EntryThumb\".+?<a [^>]+>(?<imageName>[^<]+)</a>.+?: (?<width>\\d+) x (?<height>\\d+) px", RegexOptions.Singleline)
+			imagesRegex = Regex("ID=(?<fullSizeID>\\d+)\"><img [^>]+? src=\"(?<thumb>[^\"]+)\" [^>]+? class=\"EntryThumb\".+?<a [^>]+>(?<imageName>[^<]+)</a>.+?: (?<width>\\d+) x (?<height>\\d+) px", RegexOptions.Singleline)
 			imageMatches = imagesRegex.Matches(albumPage)
 			
 			for imageMatch as Match in imageMatches:
@@ -43,7 +43,7 @@ class CoverParadies:
 				else:
 					imageTitle = title
 					
-				coverart.AddThumb(String.Format("http://www.cover-paradies.to{0}", imageMatch.Groups["thumb"].Value), imageTitle, Int32.Parse(imageMatch.Groups["width"].Value), Int32.Parse(imageMatch.Groups["height"].Value), imageMatch.Groups["fullSizeID"].Value)		
+				coverart.AddThumb(imageMatch.Groups["thumb"].Value, imageTitle, Int32.Parse(imageMatch.Groups["width"].Value), Int32.Parse(imageMatch.Groups["height"].Value), imageMatch.Groups["fullSizeID"].Value)		
 
 	static def Post(url as String, content as String):
 		request = System.Net.HttpWebRequest.Create(url)
@@ -58,5 +58,5 @@ class CoverParadies:
 		return System.IO.StreamReader(streamresponse).ReadToEnd()
 			
 	static def GetResult(param):
-		return String.Format("http://www.cover-paradies.to/res/exe/DLElement.exe.php?ID={0}", param)
+		return String.Format("http://www.cover-paradies.to/res/exe/GetElement.php?ID={0}", param)
 
