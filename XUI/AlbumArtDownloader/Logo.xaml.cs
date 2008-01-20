@@ -25,7 +25,14 @@ namespace AlbumArtDownloader
 			//TODO: Validation that this is a web address?
 			if (e.Parameter is string)
 			{
-				System.Diagnostics.Process.Start((string)e.Parameter);
+				try
+				{
+					System.Diagnostics.Process.Start((string)e.Parameter);
+				}
+				catch (Exception ex)
+				{
+					System.Diagnostics.Trace.TraceError("Could open web address: {0}\n\t{1}", e.Parameter, ex.Message);
+				}
 			}
 		}
 	}

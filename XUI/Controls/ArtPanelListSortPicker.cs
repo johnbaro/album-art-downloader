@@ -11,6 +11,7 @@ namespace AlbumArtDownloader.Controls
 	public class ArtPanelListSortPicker : Control
 	{
 		private static readonly SortFieldItem[] sSortFields = new SortFieldItem[] { 
+												new SortFieldItem("None", ""), 
 												new SortFieldItem("Name", "ResultName"), 
 												new SortFieldItem("Size", "ImageWidth"), 
 												new SortFieldItem("Source", "SourceName")};
@@ -81,10 +82,15 @@ namespace AlbumArtDownloader.Controls
 					string fieldName = SortDescription.PropertyName;
 					int index = Math.Max(0, Array.FindIndex<SortFieldItem>(sSortFields, new Predicate<SortFieldItem>(delegate(SortFieldItem item) { return item.FieldName == fieldName; })));
 					SortField.SelectedIndex = index;
-				}
-				if (SortDirection != null)
-				{
-					SortDirection.IsChecked = SortDescription.Direction == ListSortDirection.Descending;
+					if(index == 0)
+					{
+						SortDirection.Visibility = Visibility.Hidden;
+					}
+					else
+					{
+						SortDirection.Visibility = Visibility.Visible;
+						SortDirection.IsChecked = SortDescription.Direction == ListSortDirection.Descending;
+					}
 				}
 			}
 			finally

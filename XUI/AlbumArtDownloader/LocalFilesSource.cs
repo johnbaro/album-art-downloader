@@ -6,39 +6,45 @@ using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.ComponentModel;
 
 namespace AlbumArtDownloader
 {
-	internal class LocalFilesSource : Source, IWeakEventListener
+	internal class LocalFilesSource : Source
 	{
 		[DllImport("gdiplus.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
 		internal static extern int GdipCreateBitmapFromFile(string filename, out IntPtr bitmap);
 		[DllImport("gdiplus.dll", ExactSpelling = true)]
 		private static extern int GdipDisposeImage(HandleRef image);
 
-		public LocalFilesSource()
+		private DependencyObject mDefaultFilePathHolder;
+		private DependencyProperty mDefaultFilePathProperty;
+		/// <summary>
+		/// The default file path, used as a fallback to determine the default image search path
+		/// </summary>
+		private string mCachedDefaultFilePath;
+		
+		public LocalFilesSource(DependencyObject defaultFilePathHolder, DependencyProperty defaultFilePathProperty)
 		{
 			//Ensure GDI+ is initialised
 			Pen pen = Pens.Black;
 
-			//Weak event pattern for listening to property changed.
-			PropertyChangedEventManager.AddListener(Properties.Settings.Default, this);
+			//Listen for default file path changing
+			mDefaultFilePathHolder = defaultFilePathHolder;
+			mDefaultFilePathProperty = defaultFilePathProperty;
+
+			DependencyPropertyDescriptor.FromProperty(mDefaultFilePathProperty, mDefaultFilePathHolder.GetType()).AddValueChanged(mDefaultFilePathHolder, OnDefaultFilePathChanged);
+			mCachedDefaultFilePath = (string)mDefaultFilePathHolder.GetValue(mDefaultFilePathProperty);
 		}
 
-		#region Weak Event Listener
-		bool IWeakEventListener.ReceiveWeakEvent(Type managerType, object sender, EventArgs e)
+		private void OnDefaultFilePathChanged(object sender, EventArgs e)
 		{
-			if (managerType == typeof(PropertyChangedEventManager))
+			mCachedDefaultFilePath = (string)mDefaultFilePathHolder.GetValue(mDefaultFilePathProperty);
+			if (!UseSearchPathPattern)
 			{
-				OnPropertyChanged(sender, (System.ComponentModel.PropertyChangedEventArgs)e);
-				return true;
-			}
-			else
-			{
-				return false;
+				NotifyPropertyChanged("SearchPathPattern"); //This will change too, as it is coerced by the DefaultFilePath value.
 			}
 		}
-		#endregion
 
 		public override string Name
 		{
@@ -126,7 +132,7 @@ namespace AlbumArtDownloader
 				else
 				{
 					//If not using a custom search path pattern, use a pattern based on the location to save images to
-					return Properties.Settings.Default.DefaultSavePath
+					return mCachedDefaultFilePath
 												.Replace("%name%", "*")
 												.Replace("%extension%", "*")
 												.Replace("%source%", "*")
@@ -168,12 +174,6 @@ namespace AlbumArtDownloader
 					NotifyPropertyChanged("SearchPathPattern"); //This will change too, as it is coerced by this value.
 				}
 			}
-		}
-
-		private void OnPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-		{
-			if(!UseSearchPathPattern && e.PropertyName == "DefaultSavePath")
-				NotifyPropertyChanged("SearchPathPattern"); //This will change too, as it is coerced by this value.
 		}
 
 		#region Settings

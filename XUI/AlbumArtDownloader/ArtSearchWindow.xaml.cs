@@ -63,7 +63,9 @@ namespace AlbumArtDownloader
 			{
 				mSources.Add(new ScriptSource(script));
 			}
-			mSources.Add(new LocalFilesSource());
+			//Keep local files source default search path synched by passing in the DependencyObject and Property that contains it (like a binding, only without a dependency object)
+			LocalFilesSource localFilesSource = new LocalFilesSource(mDefaultSaveFolder, ArtPathPatternBox.PathPatternProperty);
+			mSources.Add(localFilesSource);
 
 			LoadSettings();
 			//Initial value of AutoClose is taken from settings. May be overriden by command line parameters

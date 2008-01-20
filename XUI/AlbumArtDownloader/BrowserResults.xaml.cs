@@ -35,6 +35,7 @@ namespace AlbumArtDownloader
 			Albums = new ObservableAlbumCollection(); //Have one by default
 
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.SelectAll, new ExecutedRoutedEventHandler(SelectAllExec)));
+			CommandBindings.Add(new CommandBinding(ApplicationCommands.Delete, new ExecutedRoutedEventHandler(DeleteExec)));
 			CommandBindings.Add(new CommandBinding(Commands.SelectMissing, new ExecutedRoutedEventHandler(SelectMissingExec)));
 			CommandBindings.Add(new CommandBinding(Commands.GetArtwork, new ExecutedRoutedEventHandler(GetArtworkExec), new CanExecuteRoutedEventHandler(GetArtworkCanExec)));
 			CommandBindings.Add(new CommandBinding(Commands.ShowInExplorer, new ExecutedRoutedEventHandler(ShowInExplorerExec)));
@@ -53,6 +54,14 @@ namespace AlbumArtDownloader
 		}
 
 		#region Command Handlers
+		private void DeleteExec(object sender, ExecutedRoutedEventArgs e)
+		{
+			foreach (Album selectedAlbum in new System.Collections.ArrayList(SelectedItems)) //Take copy of selected items list in case it is changed during removal
+			{
+				Albums.Remove(selectedAlbum);
+			}
+		}
+
 		private void SelectAllExec(object sender, ExecutedRoutedEventArgs e)
 		{
 			AllSelected = !AllSelected.GetValueOrDefault(true); //Mimic behaviour of clicking on the checkbox.
@@ -103,7 +112,14 @@ namespace AlbumArtDownloader
 			}
 
 			//Don't substitute placeholders, but do substitute recursive path matching with the simplest solution to it, just putting saving to the immediate subfolder
-			string artFileSearchPattern = ImagePathPattern.Replace("\\**\\", "\\");
+			string artFileSearchPattern = ImagePathPattern.Replace("\\**\\", "\\").Replace("/**/", "/");
+			//Also replace a wildcarded extension
+			if (artFileSearchPattern.EndsWith(".*"))
+			{
+				artFileSearchPattern = artFileSearchPattern.Substring(0, artFileSearchPattern.Length - 2) + ".%extension%";
+			}
+			//Replace other wildcards with the simplest solution: ""
+			artFileSearchPattern = artFileSearchPattern.Replace("*", "");
 			int i = 0;
 			foreach (Album album in SelectedItems)
 			{
@@ -399,6 +415,12 @@ namespace AlbumArtDownloader
 						QueueAlbumForArtFileSearch(album);
 					}
 					break;
+				case NotifyCollectionChangedAction.Remove:
+					foreach (Album album in e.OldItems)
+					{
+						CancelQueuedAlbum(album);
+					}
+					break;
 				case NotifyCollectionChangedAction.Reset:
 					ClearArtFileSearchQueue();
 					break;
@@ -413,6 +435,26 @@ namespace AlbumArtDownloader
 				mArtFileSearchQueue.Enqueue(album);
 			}
 			mArtFileSearchTrigger.Set();
+		}
+
+		private void CancelQueuedAlbum(Album album)
+		{
+			album.ArtFileStatus = ArtFileStatus.Unknown;
+			lock (mArtFileSearchQueue)
+			{
+				if (mArtFileSearchQueue.Contains(album))
+				{
+					Album[] queue = mArtFileSearchQueue.ToArray();
+					mArtFileSearchQueue.Clear();
+					foreach (Album queuedAlbum in queue)
+					{
+						if (queuedAlbum != album)
+						{
+							mArtFileSearchQueue.Enqueue(queuedAlbum);
+						}
+					}
+				}
+			}
 		}
 
 		private void ClearArtFileSearchQueue()
@@ -475,6 +517,17 @@ namespace AlbumArtDownloader
 							{
 								album.ArtFile = artFile;
 								album.ArtFileStatus = ArtFileStatus.Present;
+
+								try
+								{
+									album.ArtFileSize = new FileInfo(artFile).Length;
+								}
+								catch (Exception) 
+								{
+									//Ignore exceptions when reading the filesize, it isn't important
+									album.ArtFileSize = 0;
+								} 
+
 								break; //Only use the first art file that matches, if there are multiple matches.
 							}
 						}

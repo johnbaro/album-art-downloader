@@ -42,10 +42,19 @@ namespace AlbumArtDownloader
 			}
 			#endregion
 
-			const string channelUri = "net.pipe://localhost/AlbumArtDownloader/SingleInstance";
-			if (!InstanceMutex.QueryPriorInstance(args, channelUri))
+			if (Array.Exists(args, new Predicate<string>(delegate(string arg) { return arg.Substring(1).Equals("separateInstance", StringComparison.OrdinalIgnoreCase); })))
 			{
-				InstanceMutex.RunAppAsServiceHost(new AlbumArtDownloader.App(), channelUri);
+				//Start a separate process instance
+				new AlbumArtDownloader.App().Run();
+			}
+			else
+			{
+				//Start a single-instance process, or connect to an existing one
+				const string channelUri = "net.pipe://localhost/AlbumArtDownloader/SingleInstance";
+				if (!InstanceMutex.QueryPriorInstance(args, channelUri))
+				{
+					InstanceMutex.RunAppAsServiceHost(new AlbumArtDownloader.App(), channelUri);
+				}
 			}
 #if ERROR_REPORTING
 			}
@@ -259,6 +268,9 @@ namespace AlbumArtDownloader
 									errorMessage = "Unexpected sort field: " + sortName;
 									break;
 							}
+							break;
+						case "separateinstance":
+							//This will already have been handled earlier, in Main()
 							break;
 						default:
 							errorMessage = "Unexpected command line parameter: " + parameter.Name;

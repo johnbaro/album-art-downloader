@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{73A3D999-3113-43E8-BF01-A6605BFDFE0C}"
 	ProjectSection(SolutionItems) = preProject
+		Installer\AlbumArtDownloader.nsi = Installer\AlbumArtDownloader.nsi
 		Changelog.txt = Changelog.txt
+		Installer\CreateZip.bat = Installer\CreateZip.bat
 		Proxy Configuration - AlbumArt.exe.config = Proxy Configuration - AlbumArt.exe.config
 		Trace Output - AlbumArt.exe.config = Trace Output - AlbumArt.exe.config
 	EndProjectSection

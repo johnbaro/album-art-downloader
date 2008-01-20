@@ -311,7 +311,12 @@ namespace AlbumArtDownloader.Controls
 		{
 			ArtPanelList artPanelList = (ArtPanelList)sender;
 			artPanelList.Items.SortDescriptions.Clear();
-			artPanelList.Items.SortDescriptions.Add((SortDescription)e.NewValue);
+
+			SortDescription sortDescription = (SortDescription)e.NewValue;
+			if (!String.IsNullOrEmpty(sortDescription.PropertyName))
+			{
+				artPanelList.Items.SortDescriptions.Add(sortDescription);
+			}
 		}
 
 		public static readonly DependencyProperty InformationLocationProperty = DependencyProperty.Register("InformationLocation", typeof(InformationLocation), typeof(ArtPanelList), new FrameworkPropertyMetadata(InformationLocation.Right, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));

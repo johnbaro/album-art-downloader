@@ -10,7 +10,7 @@ class Coveralia:
 	static SourceCreator as string:
 		get: return "Alex Vallat"
 	static SourceVersion as string:
-		get: return "0.5"
+		get: return "0.6"
 	static def GetThumbs(coverart,artist,album):
 		query as string = artist + " " + album
 		query.Replace(' ','+')
@@ -28,7 +28,7 @@ class Coveralia:
 			labelRegex = Regex("<span class=\"disco1\"><a[^>]+>(?<artist>[^<]+)</a>\\s*</span>\\s*<br>\\s*<span class=\"disco2\">(?<album>[^<]+)", RegexOptions.Multiline)
 			labelMatch = labelRegex.Match(resultPage) //Expecting one match
 			
-			imagePageRegex = Regex("<a href=\"/caratulas/(?<imageName>[^\"]+)\"><img src=\"/audio/thumbs/(?<thumbID>[^\"]+)\"")
+			imagePageRegex = Regex("<a href=\"/caratulas/(?<imageName>[^\"]+)\"><img src=\"http://images.coveralia.com/audio/thumbs/(?<thumbID>[^\"]+)\"")
 			imagePageMatches = imagePageRegex.Matches(resultPage)
 			
 			coverart.EstimatedCount += imagePageMatches.Count - 3 //Adjust estimated count based on number of matches found here
@@ -38,11 +38,11 @@ class Coveralia:
 				fullSizeImagePage = GetPage(String.Format("http://www.coveralia.com/caratulas/{0}", imagePageMatch.Groups["imageName"].Value))
 				
 				//Width and Height in the html are not the actual width and height of the image, they are always around 500, so ignore them.
-				fullSizeImageRegex = Regex("src=\"(?<url>http://www\\.coveralia\\.com/audio/[^\"]+)\"")
+				fullSizeImageRegex = Regex("src=\"(?<url>http://images\\.coveralia\\.com/audio/[^\"]+)\"")
 				fullSizeImageMatch = fullSizeImageRegex.Match(fullSizeImagePage) //Expecting only one match
 				
 				if fullSizeImageMatch.Success:
-					coverart.Add(String.Format("http://www.coveralia.com/audio/thumbs/{0}", imagePageMatch.Groups["thumbID"].Value), labelMatch.Groups["artist"].Value + " - " + labelMatch.Groups["album"].Value, fullSizeImageMatch.Groups["url"].Value)
+					coverart.Add(String.Format("http://images.coveralia.com/audio/thumbs/{0}", imagePageMatch.Groups["thumbID"].Value), labelMatch.Groups["artist"].Value + " - " + labelMatch.Groups["album"].Value, fullSizeImageMatch.Groups["url"].Value)
 		
 	static def GetResult(param):
 		return param

@@ -56,6 +56,8 @@ namespace AlbumArtDownloader
 
 		/// <summary>
 		/// The art file, or null if none has been found
+		/// <remarks>Note that this will not automatically set <see cref="ArtFileSize"/>, that must
+		/// be set separately if required.</remarks>
 		/// </summary>
 		private string mArtFile;
 		public string ArtFile
@@ -67,6 +69,23 @@ namespace AlbumArtDownloader
 				{
 					mArtFile = value;
 					NotifyPropertyChanged("ArtFile");
+				}
+			}
+		}
+
+		/// <summary>
+		/// The art file filesize in bytes, or 0 if none has been found
+		/// </summary>
+		private long mArtFileSize;
+		public long ArtFileSize
+		{
+			get { return mArtFileSize; }
+			set
+			{
+				if (value != mArtFileSize)
+				{
+					mArtFileSize = value;
+					NotifyPropertyChanged("ArtFileSize");
 				}
 			}
 		}

@@ -1,3 +1,19 @@
+0.11 Upgraded to MediaInfo version 0.7.5.7
+     Added /separateInstance parameter, for optional prevention of the single instance
+      behaviour. Use of this parameter is not generally recommended.
+     Added ability to remove items from the File/Foobar browser using the Delete key
+     Added art file size column to File/Foobar browser
+     Added background colouring to the File/Foobar browser rows to help indicate artwork
+      status (missing gives a red highlight, present gives green)
+     Added the ability to view the results unsorted (in the order in which they are found)
+     Fixed bug where local files search would not be searching the right location when
+      the search window was launched from the file or foobar browser.
+     Fixed bug where the default save path would be populated with wildcards from the
+      file or foobar browser.
+     Fixed scripts:
+       Coveralia
+       CoverIsland
+     
 0.10 Added workaround for mediainfo bug with FLAC tag casing
      Failing to save settings will no longer crash
      Failing to load settings will no longer crash, and will provide options for recovery

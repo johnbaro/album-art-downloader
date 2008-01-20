@@ -114,3 +114,11 @@ Options:
               If other parameters are not
               specified, then a search window
               will not be shown initially.
+
+ /separateInstance                            (/separateInstance)
+              Starts a new instance as a new
+              process, which will neither re-use
+              nor be re-used by any other
+              instance of the application.
+              
+              (not recommended)

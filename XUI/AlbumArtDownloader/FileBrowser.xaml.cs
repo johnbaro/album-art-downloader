@@ -58,7 +58,7 @@ namespace AlbumArtDownloader
 					//Initialise the MediaInfo tag reader
 					sMediaInfo = new MediaInfoLib.MediaInfo();
 					AssemblyName assemblyName = Assembly.GetEntryAssembly().GetName();
-					if (String.IsNullOrEmpty(sMediaInfo.Option("Info_Version", String.Format("0.7.5.0;{0};{1}", assemblyName.Name, assemblyName.Version))))
+					if (String.IsNullOrEmpty(sMediaInfo.Option("Info_Version", String.Format("0.7.5.7;{0};{1}", assemblyName.Name, assemblyName.Version))))
 					{
 						sMediaInfoState = MediaInfoState.Error;
 					}

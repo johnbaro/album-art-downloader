@@ -46,6 +46,7 @@
     <Compile Include="ArtPanelListSortPicker.cs" />
     <Compile Include="CompareConverter.cs" />
     <Compile Include="ArtPathPatternBox.cs" />
+    <Compile Include="FileSizeConverter.cs" />
     <Compile Include="SizeRestrainer.cs" />
     <Compile Include="LogarithmicScaleConverter.cs" />
     <Compile Include="NotNullConverter.cs" />
