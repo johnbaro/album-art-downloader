@@ -2,6 +2,7 @@
      Added queue length indication to Queue Manager
      Added /minSize and /maxSize parameters to control image size filtering
      Fixed bug where multiple identical un-named parameters would be ignored
+     Added command line interface (aad.exe)
      
 0.11 Upgraded to MediaInfo version 0.7.5.7
      Added /separateInstance parameter, for optional prevention of the single instance

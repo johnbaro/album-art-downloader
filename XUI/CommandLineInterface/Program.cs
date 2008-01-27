@@ -164,9 +164,12 @@ namespace AlbumArtDownloader
 			}
 
 			//Check if search-like parameters have been used without search terms
-			if (String.IsNullOrEmpty(artist) && String.IsNullOrEmpty(album) && warnIfNoSearch)
+			if (String.IsNullOrEmpty(artist) && String.IsNullOrEmpty(album))
 			{
-				Console.WriteLine("No search terms were specified. Use /album and /artist to search for album art.");
+				if(warnIfNoSearch)
+				{
+					Console.WriteLine("No search terms were specified. Use /album and /artist to search for album art.");
+				}
 				return 0; //This is successful, if not useful.
 			}
 
@@ -234,6 +237,8 @@ namespace AlbumArtDownloader
 		/// </summary>
 		private static bool Search(IEnumerable<IScript> scripts, string artist, string album, string path, int? minSize, int? maxSize, int targetSequence)
 		{
+			//Replace the artist and album placeholders in the path
+			path = path.Replace("%artist%", artist).Replace("%album%", album);
 			int sequence = 0;
 			foreach (IScript script in scripts) //Try each script in turn
 			{

@@ -1,5 +1,5 @@
 !define PRODUCT_NAME "Album Art Downloader XUI"
-!define PRODUCT_VERSION "0.11"
+!define PRODUCT_VERSION "0.12"
 !define PRODUCT_WEB_SITE "https://sourceforge.net/projects/album-art"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\AlbumArt.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
@@ -43,6 +43,12 @@ Section "!Album Art Downloader"
   File "..\AlbumArtDownloader\bin\Release\*.dll"
   CreateDirectory "$SMPROGRAMS\Album Art Downloader"
   CreateShortCut "$SMPROGRAMS\Album Art Downloader\Album Art Downloader.lnk" "$INSTDIR\AlbumArt.exe"
+SectionEnd
+
+Section "Command Line Interface (aad.exe)"
+  SetOutPath "$INSTDIR"
+  File "..\CommandLineInterface\bin\Release\aad.exe"
+  File "..\CommandLineInterface\bin\Release\*.dll"
 SectionEnd
 
 Section -ScriptsPath
@@ -133,8 +139,10 @@ FunctionEnd
 Section Uninstall
   Delete "$INSTDIR\uninst.exe"
   Delete "$INSTDIR\AlbumArt.exe"
+  Delete "$INSTDIR\aad.exe"
   Delete "$INSTDIR\License.txt"
   Delete "$INSTDIR\errorlog.txt"
+  Delete "$INSTDIR\AlbumArtDownloader.ico"
   Delete "$INSTDIR\*.dll"
   Delete "$INSTDIR\Scripts\*.boo"
   RMDir "$INSTDIR\Scripts"

@@ -280,11 +280,12 @@ namespace AlbumArtDownloader
 					ReportCompilerIssue("error", error.LexicalInfo, error.Code, error.Message);
 				}
 
+				Console.WriteLine();
 				return result;
 			}
 			catch (Exception exception)
 			{
-				Console.WriteLine(String.Format("\nError: {0}", exception.Message));
+				Console.WriteLine(String.Format("\nError: {0}\n", exception.Message));
 				return false;
 			}
 		}
