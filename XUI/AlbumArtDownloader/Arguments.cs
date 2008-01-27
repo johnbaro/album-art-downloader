@@ -44,7 +44,7 @@ namespace AlbumArtDownloader
 		}
 		private void AddParameter(string name, string value)
 		{
-			this.Add(new Parameter(name, value));
+			this.Add(new Parameter(name, value, this.Count));
 		}
 
 		/// <summary>
@@ -84,10 +84,13 @@ namespace AlbumArtDownloader
 	{
 		private string mName;
 		private string mValue;
-		public Parameter(string name, string value)
+		private int mIndex;
+		
+		public Parameter(string name, string value, int index)
 		{
 			mName = name;
 			mValue = value;
+			mIndex = index;
 		}
 
 		public string Name
@@ -97,6 +100,10 @@ namespace AlbumArtDownloader
 		public string Value
 		{
 			get { return mValue; }
+		}
+		public int Index
+		{
+			get { return mIndex; }
 		}
 	}
 }

@@ -141,6 +141,7 @@ namespace AlbumArtDownloader
 			bool startFoobarBrowserSearch = false;
 			string artist = null, album = null, path = null, localImagesPath = null, fileBrowser = null, sortField = null;
 			ListSortDirection sortDirection = ListSortDirection.Ascending;
+			int? minSize = null, maxSize = null;
 
 			List<String> useSources = new List<string>();
 			List<String> excludeSources = new List<string>();
@@ -154,7 +155,7 @@ namespace AlbumArtDownloader
 					showSearchWindow = true;
 
 					//For un-named parameters, use compatibility mode: 3 args,  "<artist>" "<album>" "<path to save image>"
-					switch (arguments.IndexOf(parameter))
+					switch (parameter.Index)
 					{
 						case 0:
 							artist = parameter.Value;
@@ -269,6 +270,28 @@ namespace AlbumArtDownloader
 									break;
 							}
 							break;
+						case "minsize":
+						case "mn":
+							try
+							{
+								minSize = Int32.Parse(parameter.Value);
+							}
+							catch(Exception e)
+							{
+								errorMessage = "The /minSize parameter must be a number: " + parameter.Value + "\n  " + e.Message;
+							}
+							break;
+						case "maxsize":
+						case "mx":
+							try
+							{
+								maxSize = Int32.Parse(parameter.Value);
+							}
+							catch (Exception e)
+							{
+								errorMessage = "The /maxSize parameter must be a number: " + parameter.Value + "\n  " + e.Message;
+							}
+							break;
 						case "separateinstance":
 							//This will already have been handled earlier, in Main()
 							break;
@@ -290,6 +313,34 @@ namespace AlbumArtDownloader
 			{
 				//Set the sort
 				AlbumArtDownloader.Properties.Settings.Default.ResultsSorting = new SortDescription(sortField, sortDirection);
+			}
+			if (minSize.HasValue)
+			{
+				if (minSize.Value == 0)
+				{
+					//0 would have no effect, so assume it means no filtering.
+					AlbumArtDownloader.Properties.Settings.Default.UseMinimumImageSize = false;
+				}
+				else
+				{
+					//Set the minimum size
+					AlbumArtDownloader.Properties.Settings.Default.MinimumImageSize = minSize.Value;
+					AlbumArtDownloader.Properties.Settings.Default.UseMinimumImageSize = true;
+				}
+			}
+			if (maxSize.HasValue)
+			{
+				if (maxSize.Value == 0)
+				{
+					//0 would result in no images at all, so assume it means no filtering.
+					AlbumArtDownloader.Properties.Settings.Default.UseMinimumImageSize = false;
+				}
+				else
+				{
+					//Set the minimum size
+					AlbumArtDownloader.Properties.Settings.Default.MaximumImageSize = maxSize.Value;
+					AlbumArtDownloader.Properties.Settings.Default.UseMaximumImageSize = true;
+				}
 			}
 
 			if (!showFileBrowser && !showFoobarBrowser && !showSearchWindow) //If no windows will be shown, show the search window

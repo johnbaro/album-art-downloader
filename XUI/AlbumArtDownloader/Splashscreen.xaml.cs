@@ -167,8 +167,8 @@ namespace AlbumArtDownloader
 					}
 				}
 
-				mBackgroundWorker.ReportProgress(-1, string.Format("Found {0} files, [{1}]...", readableFiles.Count, FormatFileListForDisplay(readableFiles)));
-				mBackgroundWorker.ReportProgress(-1, string.Format("Loading references; [{0}]...", string.Join(", ", references.ToArray())));
+				mBackgroundWorker.ReportProgress(-1, string.Format("Found {0} files: [{1}]...", readableFiles.Count, FormatFileListForDisplay(readableFiles)));
+				mBackgroundWorker.ReportProgress(-1, string.Format("Loading references: [{0}]...", string.Join(", ", references.ToArray())));
 
 				BooCompiler compiler = new BooCompiler();
 				compiler.Parameters.Ducky = true; //Required to allow late-binding to "coverart" parameter

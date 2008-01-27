@@ -26,10 +26,10 @@ Page instfiles
 
 Function .oninit
   #Check for .net presence
-  ReadRegStr $0 HKLM "SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.0\Setup" "InstallSuccess"
+  ReadRegStr $0 HKLM "SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.5" "Install"
   StrCmp $0 "1" dotnetok
-  MessageBox MB_ICONEXCLAMATION|MB_YESNO "The Microsoft .NET Framework version 3.0 is not installed.$\nPlease download and install the framework before installing ${PRODUCT_NAME}.$\n$\nWould you like to visit the download page now?" IDNO +2
-  ExecShell "open" "http://www.microsoft.com/downloads/thankyou.aspx?familyId=10CC340B-F857-4A14-83F5-25634C3BF043&displayLang=en"
+  MessageBox MB_ICONEXCLAMATION|MB_YESNO "The Microsoft .NET Framework version 3.5 is not installed.$\nPlease download and install the framework before installing ${PRODUCT_NAME}.$\n$\nWould you like to visit the download page now?" IDNO +2
+  ExecShell "open" "http://www.microsoft.com/downloads/details.aspx?FamilyId=333325FD-AE52-4E35-B531-508D977D32A6"
   Abort
   dotnetok:
 FunctionEnd

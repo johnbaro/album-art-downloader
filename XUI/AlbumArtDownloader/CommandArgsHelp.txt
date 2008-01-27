@@ -63,6 +63,19 @@ Options:
               the search window after saving,
               if this option is on by default.
  
+ /sources     Searches only the specified     (/sources "Amazon,Coveralia")
+              sources. Others are disabled.
+              Separate sources with commas.
+              May be abbreviated to /s
+
+ /exclude     Does not search the specified   (/exclude "Local Files,Google")
+              sources. Separate sources with
+              commas.
+              May be abbreviated to /es
+              For backwards compatibilty, the
+              parameter "/ae off" can also be
+              used to exclude "Local Files".
+
  /sort (name|size|source)[+|-]
               Sets the sorting to use for the (/sort size-)
               results.
@@ -79,18 +92,19 @@ Options:
                size (may be abbreviated to s)
                source (may be abbreviated to o)
 
- /sources     Searches only the specified     (/sources "Amazon,Coveralia")
-              sources. Others are disabled.
-              Separate sources with commas.
-              May be abbreviated to /s
-
- /exclude     Does not search the specified   (/exclude "Local Files,Google")
-              sources. Separate sources with
-              commas.
-              May be abbreviated to /es
-              For backwards compatibilty, the
-              parameter "/ae off" can also be
-              used to exclude "Local Files".
+ /minSize     Specifies the minimum size of   (/minSize 300)
+              image, in pixels, to filter the 
+              results by. Both horizontal and
+              vertical dimensions must be over
+              this value.
+              May be abbreviated to /mn       (/mn 300)
+              
+ /maxSize     Specifies the maximum size of   (/maxSize 1000)
+              image, in pixels, to filter the 
+              results by. Either horizontal or
+              vertical dimensions may be under
+              this value.
+              May be abbreviated to /mx       (/mx 1000)              
 
  /fileBrowser                                 (/fileBrowser "\Music")
               Opens a File Browser window. If

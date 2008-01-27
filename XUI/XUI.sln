@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Scripts", "Scripts\Scripts.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestScript", "TestScript\TestScript.csproj", "{2B91641F-5C14-4880-B00E-A7C76A41DE43}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CommandLineInterface", "CommandLineInterface\CommandLineInterface.csproj", "{8C712A2B-6650-41B1-8CA6-C7019688558A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,10 @@ Global
 		{2B91641F-5C14-4880-B00E-A7C76A41DE43}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2B91641F-5C14-4880-B00E-A7C76A41DE43}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2B91641F-5C14-4880-B00E-A7C76A41DE43}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C712A2B-6650-41B1-8CA6-C7019688558A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C712A2B-6650-41B1-8CA6-C7019688558A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C712A2B-6650-41B1-8CA6-C7019688558A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C712A2B-6650-41B1-8CA6-C7019688558A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

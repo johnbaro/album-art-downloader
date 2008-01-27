@@ -1,0 +1,61 @@
+Usage: {0} [options]
+
+Option names may be preceded by a / or a -
+Options:
+
+ /artist      Artist to search for            (/artist "Artist Name")
+              May be abbreviated to /ar       (/ar "Artist Name")
+              Parameter name may be omitted
+              if this is the first parameter  ("Artist Name")
+
+ /album       Album to search for             (/album "Album Name")
+              May be abbreviated to /al       (/al "Album Name")
+              Parameter name may be omitted
+              if this is the second parameter ("Artist Name" "Album Name")
+
+ /path        Default path to save art as     (/path "\Art\Folder.jpg")
+              May be abbreviated to /p        (/p "\Art\Folder.jpg")
+              Parameter name may be omitted
+              if this is the third parameter
+
+              The following variables can be used in paths:
+               %artist%     Artist searched for
+               %album%      Album searched for
+               %name%       Name of the image found
+               %extension%  Default file extension for the image
+               %source%     Name of the source where image was found
+               %size%       Dimensions of the image
+               %sequence%   A sequence number for the image, corresponding to
+                             the number passed to /sequence, or "1" by default
+
+ /sources     Specifies the sources to search,    (/sources "Amazon,Coveralia")
+              in the order to search them.
+              Separate sources with commas.
+              If omitted, all available sources
+              except those excluded by the /exclude
+              option are searched.
+              May be abbreviated to /s            (/s "Amazon,Coveralia")
+
+ /exclude     Does not search the specified     (/exclude "Local Files,Google")
+              sources. Separate sources with
+              commas.
+              May be abbreviated to /es         (/es "Local Files,Google")
+
+ /minSize     Specifies the minimum size of   (/minSize 300)
+              image, in pixels, to use.
+              Both horizontal and vertical
+              dimensions must conform.
+              May be abbreviated to /mn       (/mn 300)
+              
+ /maxSize     Specifies the maximum size of   (/maxSize 1000)
+              image, in pixels, to use.
+              The smallest dimension of the
+              image must conform.
+              May be abbreviated to /mx       (/mx 1000)              
+              
+ /sequence    Specifies which result to use, if   (/sequence 2)
+              more than one are found. For
+              example, passing 2 as the value
+              here would ignore the first result
+              found, and use the second.
+              May be abbreviated to /seq          (/seq 2)
