@@ -49,10 +49,10 @@ namespace AlbumArtDownloader.Controls
 					//Not small enough. Attempt a guess at a better size, by making the string the same proportion smaller as the width is.
 					int previousMaxChars = maxChars;
 					maxChars = (int)(maxChars / (textWidth / actualWidth));
-					if (maxChars == previousMaxChars)
+					if (previousMaxChars - maxChars <= 1)
 					{
-						//The reduction is less than one character, so reduce by one and return the result
-						maxChars--;
+						//The reduction is less than or equal to one character, so reduce by one and return the result
+						maxChars = previousMaxChars - 1;
 
 						PathCompactPathEx(result, path, maxChars, 0);
 						return result.ToString();

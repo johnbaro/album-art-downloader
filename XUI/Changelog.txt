@@ -1,3 +1,6 @@
+0.12.1 Fixed rare GUI freezing bug
+     Fixed minor uninstaller bug (not removing aad.exe cached script file)
+
 0.12 Upgraded to .NET Framework 3.5
      Added queue length indication to Queue Manager
      Added /minSize and /maxSize parameters to control image size filtering

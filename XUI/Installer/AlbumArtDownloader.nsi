@@ -154,12 +154,20 @@ Section Uninstall
 
   #delete local app data
   FindFirst $0 $1 "$LOCALAPPDATA\AlbumArtDownloader\AlbumArt.exe_*"
-  loop:
-    StrCmp $1 "" done
+  loopAlbumArt:
+    StrCmp $1 "" doneAlbumArt
     RMDir /r "$LOCALAPPDATA\AlbumArtDownloader\$1"
     FindNext $0 $1
-    Goto loop
-  done:
+    Goto loopAlbumArt
+  doneAlbumArt:
+
+  FindFirst $0 $1 "$LOCALAPPDATA\AlbumArtDownloader\aad.exe_*"
+  loopAAD:
+    StrCmp $1 "" doneAAD
+    RMDir /r "$LOCALAPPDATA\AlbumArtDownloader\$1"
+    FindNext $0 $1
+    Goto loopAAD
+  doneAAD:
 
   RMDir "$LOCALAPPDATA\AlbumArtDownloader"
 
