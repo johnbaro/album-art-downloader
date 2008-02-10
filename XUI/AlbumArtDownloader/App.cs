@@ -129,7 +129,11 @@ namespace AlbumArtDownloader
 		/// </summary>
 		private bool ProcessCommandArgs(string[] args)
 		{
-			Arguments arguments = new Arguments(args);
+			//valuedParameters is a list of parameters which must have values - they can not be just switches.
+			string[] valuedParameters = { "artist", "ar", "album", "al", "path", "p", "localimagespath", 
+										  "sources", "s", "exclude", "es", "sort", "o", "minsize", "mn",
+										  "maxsize", "mx" };
+			Arguments arguments = new Arguments(args, valuedParameters);
 			if (arguments.Contains("?"))
 			{
 				ShowCommandArgs();
@@ -146,16 +150,21 @@ namespace AlbumArtDownloader
 			List<String> useSources = new List<string>();
 			List<String> excludeSources = new List<string>();
 			string errorMessage = null;
-
+			bool skipNext = false;
 			foreach (Parameter parameter in arguments)
 			{
+				if (skipNext)
+				{
+					skipNext = false;
+					continue;
+				}
 				//Check un-named parameters
 				if (parameter.Name == null)
 				{
 					showSearchWindow = true;
 
 					//For un-named parameters, use compatibility mode: 3 args,  "<artist>" "<album>" "<path to save image>"
-					switch (parameter.Index)
+					switch (arguments.IndexOf(parameter))
 					{
 						case 0:
 							artist = parameter.Value;

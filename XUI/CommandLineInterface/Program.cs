@@ -20,7 +20,11 @@ namespace AlbumArtDownloader
 				Console.WriteLine(Assembly.GetEntryAssembly().GetName().Version);
 				Console.WriteLine();
 
-				Arguments arguments = new Arguments(args);
+				//valuedParameters is a list of parameters which must have values - they can not be just switches.
+				string[] valuedParameters = { "artist", "ar", "album", "al", "path", "p", 
+											  "sources", "s", "exclude", "es", "minsize", "mn",
+											  "maxsize", "mx", "sequence", "seq" };
+				Arguments arguments = new Arguments(args, valuedParameters);
 				if (arguments.Contains("?") || arguments.Count == 0)
 				{
 					ShowCommandArgs();
@@ -62,7 +66,7 @@ namespace AlbumArtDownloader
 				if (parameter.Name == null)
 				{
 					//For un-named parameters, use compatibility mode: 3 args,  "<artist>" "<album>" "<path to save image>"
-					switch (parameter.Index)
+					switch (arguments.IndexOf(parameter))
 					{
 						case 0:
 							artist = parameter.Value;

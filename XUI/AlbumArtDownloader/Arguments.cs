@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace AlbumArtDownloader
 {
@@ -8,15 +9,20 @@ namespace AlbumArtDownloader
 	/// </summary>
 	public class Arguments : List<Parameter>
 	{
-		public Arguments(string[] args)
+		public Arguments(string[] args) : this(args, new string[0]) { }
+		/// <param name="valuedParameters">A list of parameter names which must be followed by values.</param>
+		public Arguments(string[] args, IEnumerable<string> valuedParameters)
 		{
 			//Parameter switches start with - or /, and apply to the next arg, unless the next arg is also a switch.
 			//For example /param1 "Hello There" /param2 /param3 Fred is 3 parameters: param1 = "Hello There", param2 = "", param3 = "Fred"
 			//Parameters can also be passed without switches preceding them, in which case they have no name, and are accessible only by index, not by name.
+			//Paremeters whose name appears in valuedParameters are always follwed by a value, even if the next arg would otherwise be a switch.
+			//For example /param1 /hello would be parsed as param1 = "/hello" if "param1" was in valuedParameters.
 			string paramName = null;
 			foreach (string arg in args)
 			{
-				if (arg.Length > 0 && (arg[0] == '-' || arg[0] == '/')) //This is a switch
+				if ((paramName == null || !valuedParameters.Contains(paramName, StringComparer.OrdinalIgnoreCase)) && //If there is an existing parameter, and it is a Valued parameter, then don't treat it as a switch
+					arg.Length > 0 && (arg[0] == '-' || arg[0] == '/')) //This is a switch
 				{
 					if (paramName != null)
 					{
@@ -44,7 +50,7 @@ namespace AlbumArtDownloader
 		}
 		private void AddParameter(string name, string value)
 		{
-			this.Add(new Parameter(name, value, this.Count));
+			this.Add(new Parameter(name, value));
 		}
 
 		/// <summary>
@@ -80,17 +86,15 @@ namespace AlbumArtDownloader
 	/// <summary>
 	/// A parameter passed through the command line arguments
 	/// </summary>
-	public struct Parameter
+	public class Parameter
 	{
 		private string mName;
 		private string mValue;
-		private int mIndex;
 		
-		public Parameter(string name, string value, int index)
+		public Parameter(string name, string value)
 		{
 			mName = name;
 			mValue = value;
-			mIndex = index;
 		}
 
 		public string Name
@@ -100,10 +104,7 @@ namespace AlbumArtDownloader
 		public string Value
 		{
 			get { return mValue; }
-		}
-		public int Index
-		{
-			get { return mIndex; }
+			internal set { mValue = value; }
 		}
 	}
 }

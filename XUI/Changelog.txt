@@ -1,4 +1,8 @@
-0.12.1 Fixed rare GUI freezing bug
+0.13 Changed foobar browser to use %album artist% instead of %artist%
+     Fixed bug with parameter values starting with -
+     Upgraded to MediaInfo version 0.7.5.9
+0.12.1
+     Fixed rare GUI freezing bug
      Fixed minor uninstaller bug (not removing aad.exe cached script file)
 
 0.12 Upgraded to .NET Framework 3.5

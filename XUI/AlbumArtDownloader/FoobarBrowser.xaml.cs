@@ -265,7 +265,7 @@ namespace AlbumArtDownloader
 				}));
 				foreach (Foobar2000.Track07 track in mediaLibrary)
 				{
-					string artistName = track.FormatTitle("%artist%");
+					string artistName = track.FormatTitle("%album artist%");
 					string albumName = track.FormatTitle("%album%");
 					string path = track.FormatTitle("%path%");
 					try
