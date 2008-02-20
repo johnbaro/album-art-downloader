@@ -361,7 +361,11 @@ namespace AlbumArtDownloader
 				browserWindow.Show();
 				if (!String.IsNullOrEmpty(fileBrowser))
 				{
-					browserWindow.Search(fileBrowser, AlbumArtDownloader.Properties.Settings.Default.FileBrowseSubfolders, AlbumArtDownloader.Properties.Settings.Default.FileBrowseImagePath); //TODO: Should the browse subfolders flag be a command line parameter?
+					browserWindow.Search(fileBrowser,
+											AlbumArtDownloader.Properties.Settings.Default.FileBrowseSubfolders, //TODO: Should the browse subfolders flag be a command line parameter?
+											AlbumArtDownloader.Properties.Settings.Default.FileBrowseImagePath,
+											AlbumArtDownloader.Properties.Settings.Default.FileBrowseUsePathPattern ? AlbumArtDownloader.Properties.Settings.Default.FileBrowsePathPattern : null
+											); 
 				}
 			}
 

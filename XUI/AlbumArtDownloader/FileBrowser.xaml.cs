@@ -7,6 +7,7 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using System.Text.RegularExpressions;
 
 namespace AlbumArtDownloader
 {
@@ -181,7 +182,10 @@ namespace AlbumArtDownloader
 			{
 				foreach (string filename in (string[])e.Data.GetData(DataFormats.FileDrop))
 				{
-					EnqueueMediaFileSearch(new SearchThreadParameters(filename, mIncludeSubfolders.IsChecked.GetValueOrDefault()));
+					EnqueueMediaFileSearch(new SearchThreadParameters(filename, 
+																		mIncludeSubfolders.IsChecked.GetValueOrDefault(),
+																		mUseFilePathPattern.IsChecked.GetValueOrDefault() ? mFilePathPattern.PathPattern : null
+																		));
 				}
 			}
 		}
@@ -191,7 +195,10 @@ namespace AlbumArtDownloader
 		private void FindExec(object sender, ExecutedRoutedEventArgs e)
 		{
 			mImagePathPatternBox.AddPatternToHistory();
-			Search(mFilePathBox.Text, mIncludeSubfolders.IsChecked.GetValueOrDefault(), mImagePathPatternBox.PathPattern);
+			Search(mFilePathBox.Text,
+					mIncludeSubfolders.IsChecked.GetValueOrDefault(),
+					mImagePathPatternBox.PathPattern,
+					mUseFilePathPattern.IsChecked.GetValueOrDefault() ? mFilePathPattern.PathPattern : null);
 		}
 
 		private void StopExec(object sender, ExecutedRoutedEventArgs e)
@@ -202,9 +209,18 @@ namespace AlbumArtDownloader
 
 		#region Media File Searching
 		/// <summary>
-		/// Begins an asynchronous search for files.
+		/// Begins an asynchronous search for files, reading artist and album information from ID3 tags
 		/// </summary>
 		public void Search(string rootPath, bool includeSubfolders, string imagePathPattern)
+		{
+			Search(rootPath, includeSubfolders, imagePathPattern, null);
+		}
+		/// <summary>
+		/// Begins an asynchronous search for files, reading artist and album information from the file
+		/// path, according to <paramref name="filePathPattern"/>. If <paramref name="filePathPattern"/> is
+		/// null, uses ID3 tags instead
+		/// </summary>
+		public void Search(string rootPath, bool includeSubfolders, string imagePathPattern, string filePathPattern)
 		{
 			//Ensure UI is synched
 			mFilePathBox.Text = rootPath;
@@ -214,7 +230,7 @@ namespace AlbumArtDownloader
 			AbortSearch(); //Abort any existing search
 			mAlbums.Clear(); //Clear existing results
 
-			EnqueueMediaFileSearch(new SearchThreadParameters(rootPath, includeSubfolders));
+			EnqueueMediaFileSearch(new SearchThreadParameters(rootPath, includeSubfolders, filePathPattern));
 		}
 
 		/// <summary>
@@ -235,8 +251,6 @@ namespace AlbumArtDownloader
 
 		private void EnqueueMediaFileSearch(SearchThreadParameters parameters)
 		{
-			mResults.ImagePathPattern = mImagePathPatternBox.PathPattern; //Set this once, rather than binding, so it is kept constant for a search.
-			
 			lock (mMediaFileSearchQueue)
 			{
 				mMediaFileSearchQueue.Enqueue(parameters);
@@ -260,6 +274,11 @@ namespace AlbumArtDownloader
 				{
 					mMediaFileSearchTrigger.WaitOne(); //Wait until there is work to do
 
+					Dispatcher.Invoke(DispatcherPriority.DataBind, new ThreadStart(delegate
+					{
+						mResults.ImagePathPattern = mImagePathPatternBox.PathPattern; //Set this once, rather than binding, so it is kept constant for a search.
+					}));
+
 					do //Loop through all the queued searches.
 					{
 						SearchThreadParameters parameters;
@@ -281,6 +300,17 @@ namespace AlbumArtDownloader
 							ProgressText = "Searching...";
 						}));
 
+						Regex pathPattern = null;
+						try
+						{
+							pathPattern = parameters.CreatePathPatternRegex(); //This will be null if no path pattern is used (ID3's used instead)
+						}
+						catch (ArgumentException e)
+						{
+							SetErrorState("Error parsing file pattern regular expression: " + e.Message);
+							continue;
+						}
+						
 						DirectoryInfo root = null;
 						try
 						{
@@ -299,16 +329,16 @@ namespace AlbumArtDownloader
 						if ((root.Attributes & FileAttributes.Directory) != FileAttributes.Directory)
 						{
 							//This isn't a directory, so try reading it as a single media file
-							ReadMediaFile(new FileInfo(root.FullName));
+							ReadMediaFile(new FileInfo(root.FullName), pathPattern);
 						}
 						else
 						{
-							//It is a director, so read its contents
+							//It is a directory, so read its contents
 							try
 							{
 								foreach (FileInfo file in NetMatters.FileSearcher.GetFiles(root, "*", parameters.IncludeSubfolders ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly))
 								{
-									ReadMediaFile(file);
+									ReadMediaFile(file, pathPattern);
 								}
 							}
 							catch (Exception e)
@@ -342,34 +372,50 @@ namespace AlbumArtDownloader
 			}
 		}
 
-		private void ReadMediaFile(FileInfo file)
+		/// <param name="filePathPattern">Use null to use the ID3 tags instead</param>
+		private void ReadMediaFile(FileInfo file, Regex filePathPattern)
 		{
 			Dispatcher.BeginInvoke(DispatcherPriority.DataBind, new ThreadStart(delegate
 			{
 				ProgressText = "Searching... " + file.Name;
 			}));
 
-			string artistName, albumName;
-			try
+			string artistName = null;
+			string albumName = null;
+			if (filePathPattern == null)
 			{
-				sMediaInfo.Open(file.FullName);
+				//Read ID3 Tags
 				try
 				{
-					artistName = sMediaInfo.Get(MediaInfoLib.StreamKind.General, 0, "Artist");
-					albumName = sMediaInfo.Get(MediaInfoLib.StreamKind.General, 0, "Album");
+					sMediaInfo.Open(file.FullName);
+					try
+					{
+						artistName = sMediaInfo.Get(MediaInfoLib.StreamKind.General, 0, "Artist");
+						albumName = sMediaInfo.Get(MediaInfoLib.StreamKind.General, 0, "Album");
+					}
+					finally
+					{
+						sMediaInfo.Close();
+					}
 				}
-				finally
+				catch (Exception e)
 				{
-					sMediaInfo.Close();
+					System.Diagnostics.Trace.WriteLine("Could not get artist and album information for file: " + file.FullName);
+					System.Diagnostics.Trace.Indent();
+					System.Diagnostics.Trace.WriteLine(e.Message);
+					System.Diagnostics.Trace.Unindent();
+					return; //If this media file couldn't be read, just go on to the next one.
 				}
 			}
-			catch (Exception e)
+			else
 			{
-				System.Diagnostics.Trace.WriteLine("Could not get artist and album information for file: " + file.FullName);
-				System.Diagnostics.Trace.Indent();
-				System.Diagnostics.Trace.WriteLine(e.Message);
-				System.Diagnostics.Trace.Unindent();
-				return; //If this media file couldn't be read, just go on to the next one.
+				//Read from file path
+				Match match = filePathPattern.Match(file.FullName);
+				if (match.Success)
+				{
+					artistName = match.Groups["artist"].Value;
+					albumName = match.Groups["album"].Value;
+				}
 			}
 
 			if (!(String.IsNullOrEmpty(artistName) && String.IsNullOrEmpty(albumName))) //No point adding it if no artist or album could be found.
@@ -442,17 +488,49 @@ namespace AlbumArtDownloader
 		#endregion
 
 		#region Search Thread Parameters
-		private struct SearchThreadParameters
+		private class SearchThreadParameters
 		{
-			private string mRootPath;
-			private bool mIncludeSubfolders;
-			public SearchThreadParameters(string rootPath, bool includeSubfolders)
+			/// <param name="pathPattern">Use null to indicate that ID3 tag matching should be used instead.</param>
+			public SearchThreadParameters(string rootPath, bool includeSubfolders, string pathPattern)
 			{
-				mRootPath = rootPath;
-				mIncludeSubfolders = includeSubfolders;
+				RootPath = rootPath;
+				IncludeSubfolders = includeSubfolders;
+				PathPattern = pathPattern;
 			}
-			public string RootPath { get { return mRootPath; } }
-			public bool IncludeSubfolders { get { return mIncludeSubfolders; } }
+			public string RootPath { get ; private set; }
+			public bool IncludeSubfolders { get ; private set; }
+			public string PathPattern { get; private set; }
+
+			/// <summary>
+			/// Creates a regular expression from PathPattern that will match with named
+			/// groups "artist" and "album".
+			/// </summary>
+			/// <returns></returns>
+			public Regex CreatePathPatternRegex()
+			{
+				if (PathPattern == null)
+					return null; //No path matching (use ID3 tags)
+
+				string regex = Regex.Escape(PathPattern) + "$"; //Start by escaping the whole thing, and requiring it to be the end of the path.
+				regex = Regex.Replace(regex, @"(\\\\|/)", @"[\\/]"); //Replace all / or \ characters with [\/] to allow matching either path character
+				regex = Regex.Replace(regex, @"\\(\*|\?)", @"[^\\/]$1?"); //Replace * (and ?) with [^\/]*? to match within the path segment only, and non-greedy
+				//Restore literal regex parts
+
+				Match literalRegexParts = Regex.Match(PathPattern, "\"\\s*([^\"]+?)\\s*\"");
+				regex = Regex.Replace(regex, "\"[^\"]+\"", new MatchEvaluator(
+					delegate(Match match)
+					{
+						//Read the value of the corresponding literal regex part
+						string result = literalRegexParts.Groups[1].Value;
+						//Prepare the next literal regex part ready for the next replacement.
+						literalRegexParts = literalRegexParts.NextMatch();
+						return result;
+					}
+				));
+
+				regex = Regex.Replace(regex, "%(artist|album)%", @"(?<$1>[^\\/]+?)"); //Replace artist and album placeholders with capturing groups matching non-greedy in the path segment only.
+				return new Regex(regex, RegexOptions.IgnoreCase | RegexOptions.ExplicitCapture | RegexOptions.Compiled);
+			}
 		}
 		#endregion
 	}

@@ -90,11 +90,11 @@ namespace AlbumArtDownloader
 			}
 
 			//Construct the file path
-			string path = String.Format(pathPattern.Replace("%name%", "{0}").Replace("%source%", "{1}").Replace("%size%", "{2} x {3}").Replace("%extension%", "{4}").Replace("%sequence%", "{5}"),
-										mName,
-										mScript.Name,
-										mWidth, mHeight,
-										extension);
+			string path = pathPattern.Replace("%name%", Program.MakeSafeForPath(mName))
+									 .Replace("%source%", Program.MakeSafeForPath(mScript.Name))
+									 .Replace("%size%", String.Format("{0} x {1}", mWidth, mHeight))
+									 .Replace("%extension%", extension)
+									 .Replace("%sequence%", sequence.ToString());
 
 			//Ensure path is absolute, if relative
 			path = Path.GetFullPath(path);

@@ -122,8 +122,8 @@ namespace AlbumArtDownloader
 		/// </summary>
 		public static string SubstitutePlaceholders(string pathPattern, string artist, string album)
 		{
-			return pathPattern.Replace("%artist%", artist)
-								.Replace("%album%", album)
+			return pathPattern.Replace("%artist%", Common.MakeSafeForPath(artist))
+								.Replace("%album%", Common.MakeSafeForPath(album))
 							//Replace these too, just in case path pattern was copied and pasted with them in, for example
 								.Replace("%name%", "*")
 								.Replace("%extension%", "*")
@@ -272,6 +272,32 @@ namespace AlbumArtDownloader
 					return commandLine.Substring(pos + 1);
 				}
 			} while (true);
+		}
+
+		/// <summary>
+		/// Ensures that a string is safe to be part of a file path by replacing all illegal
+		/// characters with underscores.
+		/// </summary>
+		public static string MakeSafeForPath(string value)
+		{
+			char[] invalid = Path.GetInvalidFileNameChars();
+			char[] valueChars = value.ToCharArray();
+
+			bool valueChanged = false;
+			int invalidIndex = -1;
+			while ((invalidIndex = value.IndexOfAny(invalid, invalidIndex + 1)) >= 0)
+			{
+				valueChars[invalidIndex] = '_';
+				valueChanged = true;
+			}
+			if (valueChanged)
+			{
+				return new string(valueChars);
+			}
+			else //Don't perform the construction of the new string if not required
+			{
+				return value;
+			}
 		}
 	}
 }

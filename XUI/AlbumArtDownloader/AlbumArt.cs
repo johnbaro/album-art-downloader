@@ -69,12 +69,11 @@ namespace AlbumArtDownloader
 				albumArt.IsCustomFilePath = false;
 
 				//Construct the default file path
-				string defaultFilePathFormat = albumArt.DefaultFilePathPattern.Replace("%name%", "{0}").Replace("%source%", "{1}").Replace("%size%", "{2} x {3}").Replace("%extension%", "{4}");
-				return String.Format(defaultFilePathFormat, 
-					albumArt.ResultName, 
-					albumArt.SourceName, 
-					albumArt.ImageWidth, albumArt.ImageHeight,
-					albumArt.ImageCodecInfo.FilenameExtension.Split(';')[0].Substring(2).ToLower()); //Use the first filename extension of the codec, with *. removed from it, in lower case
+				return albumArt.DefaultFilePathPattern
+								.Replace("%name%", Common.MakeSafeForPath(albumArt.ResultName))
+								.Replace("%source%", Common.MakeSafeForPath(albumArt.SourceName))
+								.Replace("%size%", String.Format("{0} x {1}", albumArt.ImageWidth, albumArt.ImageHeight))
+								.Replace("%extension%", albumArt.ImageCodecInfo.FilenameExtension.Split(';')[0].Substring(2).ToLower()); //Use the first filename extension of the codec, with *. removed from it, in lower case
 			}
 			else
 			{

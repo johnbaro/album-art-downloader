@@ -50,39 +50,55 @@
 				<ColumnDefinition Width="*"/>
 				<ColumnDefinition Width="Auto"/>
 			</Grid.ColumnDefinitions>
-			<TextBlock Padding="0,0,0,4">Foobar2000 status:</TextBlock>
+			<TextBlock Padding="0,0,0,4">
+				<TextBlock.Style>
+					<Style TargetType="{x:Type TextBlock}">
+						<Setter Property="Text" Value="Search for media in:"/>
+						<Style.Triggers>
+							<DataTrigger Binding="{Binding FoobarPresent}" Value="False">
+								<Setter Property="Text" Value="Foobar2000 status:"/>
+							</DataTrigger>
+						</Style.Triggers>
+					</Style>
+				</TextBlock.Style>
+			</TextBlock>
 			<Border Grid.Row="1" BorderBrush="{x:Static SystemColors.ControlDarkBrush}" BorderThickness="1" Padding="2">
+				<Border.Style>
+					<Style TargetType="{x:Type Border}">
+						<Setter Property="Visibility" Value="Collapsed"/>
+						<Style.Triggers>
+							<DataTrigger Binding="{Binding FoobarPresent}" Value="False">
+								<Setter Property="Visibility" Value="Visible"/>
+							</DataTrigger>
+						</Style.Triggers>
+					</Style>
+				</Border.Style>
 				<Grid>
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="Auto"/>
 						<ColumnDefinition Width="*"/>
 					</Grid.ColumnDefinitions>
-					<Button Content="Foobar2000 COM Automation Server" Command="GoToPage" CommandParameter="http://www.hydrogenaudio.org/forums/index.php?showtopic=39946">
-						<Button.Style>
-							<Style TargetType="{x:Type Button}" BasedOn="{StaticResource HyperlinkButton}">
-								<Setter Property="Visibility" Value="Collapsed"/>
-								<Style.Triggers>
-									<DataTrigger Binding="{Binding FoobarPresent}" Value="False">
-										<Setter Property="Visibility" Value="Visible"/>
-									</DataTrigger>
-								</Style.Triggers>
-							</Style>
-						</Button.Style>
-					</Button>
-					<TextBlock Grid.Column="1">
-						<TextBlock.Style>
-							<Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource OverflowTextBlock}">
-								<Setter Property="Text" Value="{Binding FoobarVersion}"/>
-								<Style.Triggers>
-									<DataTrigger Binding="{Binding FoobarPresent}" Value="False">
-										<Setter Property="Text" Value=" must be installed before the Foobar2000 library can be accessed."/>
-									</DataTrigger>
-								</Style.Triggers>
-							</Style>
-						</TextBlock.Style>
-					</TextBlock>
+					<Button Style="{StaticResource HyperlinkButton}" Content="Foobar2000 COM Automation Server"
+							Command="GoToPage" CommandParameter="http://www.hydrogenaudio.org/forums/index.php?showtopic=39946"/>
+					<TextBlock Grid.Column="1" Style="{StaticResource OverflowTextBlock}"
+							   Text=" must be installed before the Foobar2000 library can be accessed."/>
 				</Grid>
 			</Border>
+			<ComboBox Grid.Row="1" IsEditable="False"
+					  ItemsSource="{Binding FoobarPlaylists}"
+					  SelectedIndex="{Binding SelectedPlaylistIndex, Mode=TwoWay}"
+					  DisplayMemberPath="Name">
+				<ComboBox.Style>
+					<Style TargetType="{x:Type ComboBox}">
+						<Setter Property="Visibility" Value="Visible"/>
+						<Style.Triggers>
+							<DataTrigger Binding="{Binding FoobarPresent}" Value="False">
+								<Setter Property="Visibility" Value="Collapsed"/>
+							</DataTrigger>
+						</Style.Triggers>
+					</Style>
+				</ComboBox.Style>
+			</ComboBox>
 			<Button Name="mSearch" Padding="5,-5,5,-5" Margin="5,0,0,0" Grid.Column="2" Grid.RowSpan="2" Command="ApplicationCommands.Find" IsDefault="True">
 				<StackPanel Orientation="Horizontal">
 					<Image Source="search.ico" Margin="0,4,0,0"/>
@@ -181,7 +197,16 @@
 						<Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource OverflowTextBlock}">
 							<Style.Triggers>
 								<DataTrigger Binding="{Binding State}" Value="Ready">
-									<Setter Property="Text" Value="Ready"/>
+									<Setter Property="Text">
+										<Setter.Value>
+											<MultiBinding Converter="{StaticResource mStringFormatterConverter}" ConverterParameter="{}Ready - {0}">
+												<Binding Path="FoobarVersion"/>
+											</MultiBinding>
+										</Setter.Value>
+									</Setter>
+								</DataTrigger>
+								<DataTrigger Binding="{Binding FoobarPresent}" Value="False">
+									<Setter Property="Text" Value="Could not connect to Foobar2000 automation server"/>
 								</DataTrigger>
 								<DataTrigger Binding="{Binding State}" Value="FindingFiles">
 									<Setter Property="Text" Value="{Binding ProgressText}"/>

@@ -209,7 +209,7 @@ namespace AlbumArtDownloader.Controls
 		{
 			mPlaceholdersMenu.Clear();
 			MenuItem browse = MenuButton.TryFindResource("PART_BrowseMenuItem") as MenuItem;
-			if (browse != null)
+			if (browse != null && Commands.Browse.CanExecute(null, this))
 			{
 				PlaceholdersMenu.Add(browse);
 				PlaceholdersMenu.Add(new Separator());

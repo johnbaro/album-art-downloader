@@ -6,6 +6,9 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using System.Collections.Specialized;
+using System.Windows.Data;
+using System.Linq;
 
 namespace AlbumArtDownloader
 {
@@ -16,8 +19,9 @@ namespace AlbumArtDownloader
 	public partial class FoobarBrowser : System.Windows.Window, INotifyPropertyChanged, IAppWindow
 	{
 		Foobar2000.Application07Class mFoobar;
+		PlaylistsCollection mPlaylists;
 
-		private Thread mReadMediaLibraryThread;
+		private Thread mReadFoobarThread;
 		private ObservableAlbumCollection mAlbums = new ObservableAlbumCollection();
 
 		public FoobarBrowser()
@@ -48,15 +52,22 @@ namespace AlbumArtDownloader
 		{
 			try
 			{
+				if (mPlaylists != null)
+					mPlaylists.Dispose();
+
 				mFoobar = new Foobar2000.Application07Class();
+				mPlaylists = new PlaylistsCollection(mFoobar);
 			}
-			catch (COMException ex)
+			catch (Exception ex)
 			{
 				mFoobar = null;
+				mPlaylists = null;
 				System.Diagnostics.Trace.TraceWarning("Foobar2000 COM server could not be instantiated: " + ex.Message);
 			}
 			NotifyPropertyChanged("FoobarPresent");
 			NotifyPropertyChanged("FoobarVersion");
+			NotifyPropertyChanged("FoobarPlaylists");
+			SelectedPlaylistIndex = 0; //Should always be "Entire Library"
 		}
 
 		protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
@@ -68,6 +79,7 @@ namespace AlbumArtDownloader
 		{
 			AbortSearch();
 			mResults.Dispose(); //Closes down the search thread
+			mPlaylists.Dispose();
 			base.OnClosed(e);
 		}
 
@@ -171,6 +183,30 @@ namespace AlbumArtDownloader
 				}
 			}
 		}
+
+		public IList<Foobar2000.Playlist07> FoobarPlaylists
+		{
+			get { return mPlaylists; }
+		}
+
+		private int mSelectedPlaylistIndex = 0;
+		public int SelectedPlaylistIndex
+		{
+			get { return mSelectedPlaylistIndex; }
+			set
+			{
+				if (value != mSelectedPlaylistIndex)
+				{
+					mSelectedPlaylistIndex = value;
+					NotifyPropertyChanged("SelectedPlaylistIndex");
+				}
+			}
+		}
+		
+		private Foobar2000.Playlist07 SelectedPlaylist
+		{
+			get { return mPlaylists[SelectedPlaylistIndex]; }
+		}
 		#endregion
 
 		#region Command Handlers
@@ -200,38 +236,41 @@ namespace AlbumArtDownloader
 			mImagePathPatternBox.PathPattern = imagePathPattern;
 			mResults.ImagePathPattern = imagePathPattern; //Set this once, rather than binding, so it is kept constant for a search.
 
+			//Ensure a playlist is selected (choose Entire Library if none is)
+			SelectedPlaylistIndex = Math.Max(SelectedPlaylistIndex, 0);
+			
 			AbortSearch(); //Abort any existing search
 			mAlbums.Clear(); //Clear existing results
 			
-			//Test that the foobar library can be accessed
+			//Test that the selected playlist can be accessed
 			try
 			{
-				mFoobar.MediaLibrary.GetHashCode();
+				SelectedPlaylist.GetTracks(null);
 			}
 			catch (COMException)
 			{
-				//Couldn't be accessed. Try reconnecting
+				//Couldn't be accessed. Try reconnecting (this will reset to Entire Library too)
 				ConnectToFoobar();
 
 				//Lets try that again now.
 				try
 				{
-					mFoobar.MediaLibrary.GetHashCode();
+					SelectedPlaylist.GetTracks(null);
 				}
 				catch (COMException e)
 				{
 					//OK, really give up now.
-					SetErrorState("Could not read media library: " + e.Message);
+					SetErrorState("Could not read from Foobar: " + e.Message);
 					return;
 				}
 			}
 
 			//Should be OK, so try reading the library
 		
-			System.Diagnostics.Debug.Assert(mReadMediaLibraryThread == null, "A media library reader thread already exists!");
-			mReadMediaLibraryThread = new Thread(new ThreadStart(ReadMediaLibraryWorker));
-			mReadMediaLibraryThread.Name = "Read Foobar Media Library";
-			mReadMediaLibraryThread.Start();
+			System.Diagnostics.Debug.Assert(mReadFoobarThread == null, "A media library reader thread already exists!");
+			mReadFoobarThread = new Thread(new ThreadStart(ReadFoobarWorker));
+			mReadFoobarThread.Name = "Read Foobar";
+			mReadFoobarThread.Start();
 		}
 
 		/// <summary>
@@ -240,30 +279,30 @@ namespace AlbumArtDownloader
 		public void AbortSearch()
 		{
 			//Abort the media file searching
-			if (mReadMediaLibraryThread != null)
+			if (mReadFoobarThread != null)
 			{
-				mReadMediaLibraryThread.Abort();
-				mReadMediaLibraryThread = null;
+				mReadFoobarThread.Abort();
+				mReadFoobarThread = null;
 			}
 
 			mResults.AbortSearch();
 		}
 
-		private void ReadMediaLibraryWorker()
+		private void ReadFoobarWorker()
 		{
 			try
 			{
-				var mediaLibrary = mFoobar.MediaLibrary.GetTracks(null);
+				Foobar2000.Tracks07 tracks = SelectedPlaylist.GetTracks(null);
 				//Now searching for something, so set the state to indicate that.
 				//Also set the count of albums, for the progress bar
 				Dispatcher.Invoke(DispatcherPriority.DataBind, new ThreadStart(delegate
 				{
 					State = BrowserState.FindingFiles;
 					Progress = 0;
-					ProgressMax = mediaLibrary.Count;
+					ProgressMax = tracks.Count;
 					ProgressText = "Reading Media Library...";
 				}));
-				foreach (Foobar2000.Track07 track in mediaLibrary)
+				foreach (Foobar2000.Track07 track in tracks)
 				{
 					string artistName = track.FormatTitle("%album artist%");
 					string albumName = track.FormatTitle("%album%");
@@ -307,7 +346,18 @@ namespace AlbumArtDownloader
 			}
 			catch (Exception e)
 			{
-				SetErrorState(String.Format("Error occurred while reading media library: {0}", e.Message));
+				uint hResult = (uint)System.Runtime.InteropServices.Marshal.GetHRForException(e);
+
+				if (e is COMException || 
+					(hResult == 0x800706BE || //RPC failed
+					 hResult == 0x80004002)) //No interface
+				{
+					SetErrorState("Lost connection to Foobar automation server while reading media library");
+				}
+				else
+				{
+					SetErrorState(String.Format("Error occurred while reading media library: {0}", e.Message));
+				}
 			}
 		}
 
@@ -372,5 +422,239 @@ namespace AlbumArtDownloader
 		}
 		#endregion
 
+		/// <summary>
+		/// Wrapper for observable collection of foobar playlists, plus an "Entire Library" item inserted at the top
+		/// </summary>
+		private class PlaylistsCollection : INotifyCollectionChanged, IList<Foobar2000.Playlist07>, IDisposable
+		{
+			private Dispatcher mDispatcher;
+			private Foobar2000.Playlists07 mPlaylists;
+			private Foobar2000.Playlist07 mEntireLibrary;
+
+			public PlaylistsCollection(Foobar2000.Application07 foobar)
+			{
+				mDispatcher = Dispatcher.CurrentDispatcher;
+				mPlaylists = foobar.Playlists;
+				mEntireLibrary = new EntireLibraryMockPlaylist(foobar);
+
+				mPlaylists.PlaylistAdded += OnPlaylistAdded;
+				mPlaylists.PlaylistRemoved += OnPlaylistRemoved;
+				mPlaylists.PlaylistsReordered += OnPlaylistsReordered;
+			}
+
+			#region Disposal
+			~PlaylistsCollection()
+			{
+				Dispose(false);
+			}
+
+			public void Dispose()
+			{
+				Dispose(true);
+				GC.SuppressFinalize(this);
+			}
+
+			protected virtual void Dispose(bool disposing)
+			{
+				if (mPlaylists != null)
+				{
+					try
+					{
+						mPlaylists.PlaylistAdded -= OnPlaylistAdded;
+						mPlaylists.PlaylistRemoved -= OnPlaylistRemoved;
+						mPlaylists.PlaylistsReordered -= OnPlaylistsReordered;
+					}
+					catch (Exception) { }
+					mPlaylists = null;
+				}
+			}
+			#endregion
+
+			#region Playlist event response
+			private void OnPlaylistsReordered(int lFirstIndex, int lLastIndex)
+			{
+				RaiseCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+			}
+
+			private void OnPlaylistRemoved(int lIndex, Foobar2000.Playlist07 oPlaylist)
+			{
+				RaiseCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, oPlaylist, lIndex+ 1));
+			}
+
+			private void OnPlaylistAdded(int lIndex, Foobar2000.Playlist07 oPlaylist, string strName)
+			{
+				RaiseCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, oPlaylist, lIndex + 1));
+			}
+
+			public event NotifyCollectionChangedEventHandler CollectionChanged;
+			private void RaiseCollectionChanged(NotifyCollectionChangedEventArgs e)
+			{
+				NotifyCollectionChangedEventHandler temp = CollectionChanged;
+				if (temp != null)
+				{
+					mDispatcher.BeginInvoke(DispatcherPriority.DataBind, new ThreadStart(delegate 
+					{
+						try
+						{
+							temp(this, e);
+						}
+						catch (ArgumentOutOfRangeException ex)
+						{
+							System.Diagnostics.Trace.TraceWarning("Error occurred when updating playlists collection, probably due to Foobar being closed: " + ex.Message);
+							//Do a general reset
+							temp(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+						}
+						catch (InvalidOperationException ex)
+						{
+							System.Diagnostics.Trace.TraceWarning("Error occurred when updating playlists collection: " + ex.Message);
+							Thread.Sleep(500); //Wait a bit, then try a general reset
+							temp(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+						}
+					}));
+				}
+			}
+			#endregion
+
+			#region Implemented IList<> members
+			public IEnumerator<Foobar2000.Playlist07> GetEnumerator()
+			{
+				List<Foobar2000.Playlist07> result = new List<Foobar2000.Playlist07>(Count);
+				result.Add(mEntireLibrary);
+				try
+				{
+					result.AddRange(mPlaylists.Cast<Foobar2000.Playlist07>());
+				}
+				catch (COMException)
+				{
+					//If Foobar is not responsive, can't enumerate its playlists, so just return the Entire Library entry
+					return result.GetRange(0, 1).GetEnumerator();
+				}
+				return result.GetEnumerator();
+			}
+			System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+			{
+				return (System.Collections.IEnumerator)GetEnumerator();
+			}
+
+			public int Count 
+			{
+				get
+				{
+					int innerCount = 0;
+					try
+					{
+						innerCount = mPlaylists.Count;
+					}
+					catch (COMException) { } //If Foobar stops responding, treat as having 0 count
+
+					return innerCount + 1; //+1 for the Entire Playlist entry
+				} 
+			}
+			
+			public Foobar2000.Playlist07 this[int index]
+			{
+				get
+				{
+					if (index == 0)
+						return mEntireLibrary;
+
+					return mPlaylists[index - 1];
+				}
+				set
+				{
+					throw new NotImplementedException();
+				}
+			}
+
+			public bool IsReadOnly
+			{
+				get { return true; }
+			}
+			#endregion
+
+			#region Unimplemented IList<> members
+			public int IndexOf(Foobar2000.Playlist07 item)
+			{
+				throw new NotImplementedException();
+			}
+
+			public void Insert(int index, Foobar2000.Playlist07 item)
+			{
+				throw new NotImplementedException();
+			}
+
+			public void RemoveAt(int index)
+			{
+				throw new NotImplementedException();
+			}
+
+			public void Add(Foobar2000.Playlist07 item)
+			{
+				throw new NotImplementedException();
+			}
+
+			public void Clear()
+			{
+				throw new NotImplementedException();
+			}
+
+			public bool Contains(Foobar2000.Playlist07 item)
+			{
+				throw new NotImplementedException();
+			}
+
+			public void CopyTo(Foobar2000.Playlist07[] array, int arrayIndex)
+			{
+				throw new NotImplementedException();
+			}
+
+			public bool Remove(Foobar2000.Playlist07 item)
+			{
+				throw new NotImplementedException();
+			}
+			#endregion
+
+			/// <summary>
+			/// Class to mock a <see cref="Foobar2000.Playlist07"/> that has the
+			/// entire library as its track listing.
+			/// </summary>
+			private class EntireLibraryMockPlaylist : Foobar2000.Playlist07
+			{
+				private Foobar2000.MediaLibrary07 mMediaLibrary;
+				public EntireLibraryMockPlaylist(Foobar2000.Application07 foobar)
+				{
+					mMediaLibrary = foobar.MediaLibrary;
+				}
+
+				public Foobar2000.Tracks07 GetSortedTracks(string strSortFormat, object strQuery)
+				{
+					return mMediaLibrary.GetSortedTracks(strSortFormat, strQuery);
+				}
+
+				public Foobar2000.Tracks07 GetTracks(object strQuery)
+				{
+					return mMediaLibrary.GetTracks(strQuery);
+				}
+
+				public int Index
+				{
+					get { return -1; }
+				}
+
+				public string Name
+				{
+					get
+					{
+						return "Entire Library";
+					}
+					set { throw new NotImplementedException(); }
+				}
+
+				public bool DoDefaultAction(int lItemIndex)
+				{
+					throw new NotImplementedException();
+				}
+			}
+		}
 	}
 }

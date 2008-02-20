@@ -48,10 +48,20 @@ namespace AlbumArtDownloader
 				{
 					EndpointAddress address = new EndpointAddress(channelUri);
 					IPriorInstance instance = ChannelFactory<IPriorInstance>.CreateChannel(new NetNamedPipeBinding(), address);
-					instance.Signal(args);
-					((ICommunicationObject)instance).Close();
+					try
+					{
+						instance.Signal(args);
+					}
+					finally
+					{
+						((ICommunicationObject)instance).Close();
+					}
 
 					return true;
+				}
+				catch (FaultException)
+				{
+					return false;
 				}
 				catch (EndpointNotFoundException)
 				{

@@ -88,7 +88,7 @@ namespace AlbumArtDownloader
 			}
 
 			//TODO: Validation that this is a file path?
-			System.Diagnostics.Process.Start("explorer.exe", String.Format("/select,{0}", filename));
+			System.Diagnostics.Process.Start("explorer.exe", "/select," + filename);
 		}
 
 		private void ErrorReport(object sender, RoutedEventArgs e)

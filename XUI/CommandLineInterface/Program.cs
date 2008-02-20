@@ -242,7 +242,8 @@ namespace AlbumArtDownloader
 		private static bool Search(IEnumerable<IScript> scripts, string artist, string album, string path, int? minSize, int? maxSize, int targetSequence)
 		{
 			//Replace the artist and album placeholders in the path
-			path = path.Replace("%artist%", artist).Replace("%album%", album);
+			path = path.Replace("%artist%", MakeSafeForPath(artist))
+					   .Replace("%album%", MakeSafeForPath(album));
 			int sequence = 0;
 			foreach (IScript script in scripts) //Try each script in turn
 			{
@@ -279,6 +280,33 @@ namespace AlbumArtDownloader
 				}
 			}
 			return false; //No result found
+		}
+
+		//MakeSafeForPath copied from Common.cs
+		/// <summary>
+		/// Ensures that a string is safe to be part of a file path by replacing all illegal
+		/// characters with underscores.
+		/// </summary>
+		internal static string MakeSafeForPath(string value)
+		{
+			char[] invalid = Path.GetInvalidFileNameChars();
+			char[] valueChars = value.ToCharArray();
+
+			bool valueChanged = false;
+			int invalidIndex = 0;
+			while ((invalidIndex = value.IndexOfAny(invalid, invalidIndex + 1)) >= 0)
+			{
+				valueChars[invalidIndex] = '_';
+				valueChanged = true;
+			}
+			if (valueChanged)
+			{
+				return new string(valueChars);
+			}
+			else //Don't perform the construction of the new string if not required
+			{
+				return value;
+			}
 		}
 
 		private static bool CheckImageSize(int? minSize, int? maxSize, int size)

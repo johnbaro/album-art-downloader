@@ -332,8 +332,9 @@ namespace AlbumArtDownloader
 		{
 			public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
 			{
-				string pattern = ((string)value).Replace("%artist%", "{0}").Replace("%album%", "{1}");
-				return String.Format(pattern, (string[])parameter);
+				string[] parameters = (string[])parameter;
+				return ((string)value).Replace("%artist%", Common.MakeSafeForPath(parameters[0]))
+									  .Replace("%album%", Common.MakeSafeForPath(parameters[1]));
 			}
 
 			public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

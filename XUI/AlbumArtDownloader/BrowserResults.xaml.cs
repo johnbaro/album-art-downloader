@@ -191,7 +191,7 @@ namespace AlbumArtDownloader
 			if (e.Parameter is string)
 			{
 				//TODO: Validation that this is a file path?
-				System.Diagnostics.Process.Start("explorer.exe", String.Format("/select,{0}", e.Parameter));
+				System.Diagnostics.Process.Start("explorer.exe", "/select," + e.Parameter);
 			}
 		}
 		#endregion
