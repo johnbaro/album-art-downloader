@@ -49,8 +49,12 @@ namespace AlbumArtDownloader
 				{
 					mImage = GetBitmap(mThumbnail);
 				}
-				mWidth = mImage.Width;
-				mHeight = mImage.Height;
+
+				if (mImage != null)
+				{
+					mWidth = mImage.Width;
+					mHeight = mImage.Height;
+				}
 				mImageDownloaded = true;
 			}
 		}
