@@ -26,11 +26,28 @@ namespace AlbumArtDownloader
 		public static void RunAppAsServiceHost(IPriorInstance instance, string channelUri)
 		{
 			System.Diagnostics.Debug.Assert(mNamedMutex != null, "Expecting QueryPriorInstance to be called before RunAppAsServiceHost");
-			using (ServiceHost service = new ServiceHost(instance, new Uri(channelUri)))
+			ServiceHost service = new ServiceHost(instance, new Uri(channelUri));
+			try
 			{
-				service.AddServiceEndpoint(typeof(IPriorInstance), new NetNamedPipeBinding(), new Uri(channelUri));
-				service.Open();
+				try
+				{
+					service.AddServiceEndpoint(typeof(IPriorInstance), new NetNamedPipeBinding(), new Uri(channelUri));
+					service.Open();
+				}
+				catch (CommunicationException ex)
+				{
+					System.Diagnostics.Trace.TraceWarning("Could not start listening as a prior instance: " + ex.Message);
+					//Attempt a close, if at all possible
+					try { service.Close(); }
+					catch (Exception) { }
+					service = null;
+				}
 				instance.Run();
+			}
+			finally
+			{
+				if (service != null)
+					service.Close();
 			}
 			GC.KeepAlive(mNamedMutex); //Make sure the mutex sticks around until the app finishes running.
 		}
@@ -59,12 +76,9 @@ namespace AlbumArtDownloader
 
 					return true;
 				}
-				catch (FaultException)
+				catch (Exception ex)
 				{
-					return false;
-				}
-				catch (EndpointNotFoundException)
-				{
+					System.Diagnostics.Trace.TraceWarning("Could not communicate with existing prior instance: " + ex.Message);
 					return false;
 				}
 			}

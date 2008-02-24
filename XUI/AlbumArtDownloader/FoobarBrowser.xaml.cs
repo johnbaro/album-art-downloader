@@ -79,7 +79,12 @@ namespace AlbumArtDownloader
 		{
 			AbortSearch();
 			mResults.Dispose(); //Closes down the search thread
-			mPlaylists.Dispose();
+			
+			if (mPlaylists != null)
+			{
+				mPlaylists.Dispose();
+				mPlaylists = null;
+			}
 			base.OnClosed(e);
 		}
 

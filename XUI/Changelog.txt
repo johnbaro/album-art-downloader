@@ -1,3 +1,7 @@
+0.14.1
+     Fixed bug where closing foobar browser without com automation server installed
+      would cause a crash.
+     Improved single instance mechanism robustness
 0.14 Fixed bug with paths with {} characters
      Characters which can not be part of filenames are now automatically replaced
       by underscores when substituting placeholders.
