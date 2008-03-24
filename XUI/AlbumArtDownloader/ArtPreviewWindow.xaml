@@ -31,7 +31,7 @@
 
 		</ResourceDictionary>
 	</Window.Resources>
-	<Grid>
+	<Grid FocusManager.FocusedElement="{Binding ElementName=mImageScroller, Mode=OneTime}">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>
@@ -129,7 +129,7 @@
 				</Button>
 			</Grid>
 		</Border>
-		<ScrollViewer Name="mImageScroller" Grid.Row="2"
+		<ScrollViewer Name="mImageScroller" Grid.Row="2" Focusable="True" KeyboardNavigation.IsTabStop="True"
 					  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
 			<ScrollViewer.Style>
 				<Style TargetType="{x:Type ScrollViewer}">
@@ -145,10 +145,12 @@
 			</ScrollViewer.Style>
 			<ScrollViewer.ContextMenu>
 				<ContextMenu>
-					<MenuItem Command="ApplicationCommands.Save" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=OneTime}"/>
-					<MenuItem Command="ApplicationCommands.SaveAs" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=OneTime}"/>
+					<MenuItem Command="ApplicationCommands.Copy"/>
+					<MenuItem Command="ApplicationCommands.Save"/>
+					<MenuItem Command="ApplicationCommands.SaveAs"/>
 				</ContextMenu>
 			</ScrollViewer.ContextMenu>
+			
 			<Image Source="{Binding Image, NotifyOnTargetUpdated=True}" Stretch="None" TargetUpdated="ZoomToFit">
 				<Image.LayoutTransform>
 					<ScaleTransform ScaleX="{Binding ElementName=this, Path=Zoom, Mode=OneWay}" ScaleY="{Binding ElementName=this, Path=Zoom, Mode=OneWay}"/>

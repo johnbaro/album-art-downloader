@@ -49,6 +49,7 @@ namespace AlbumArtDownloader
 
 			//Commands:
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Find, new ExecutedRoutedEventHandler(FindExec)));
+			CommandBindings.Add(new CommandBinding(ApplicationCommands.Copy, new ExecutedRoutedEventHandler(CopyExec)));
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Save, new ExecutedRoutedEventHandler(SaveExec)));
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.SaveAs, new ExecutedRoutedEventHandler(SaveAsExec)));
 			CommandBindings.Add(new CommandBinding(AlbumArtDownloader.Controls.ArtPanelList.Commands.Preview, new ExecutedRoutedEventHandler(PreviewExec)));
@@ -72,6 +73,20 @@ namespace AlbumArtDownloader
 			AutoClose = Properties.Settings.Default.AutoClose;
 
 			this.Loaded += new RoutedEventHandler(OnLoaded);
+
+			//Tab auto-select all for Artist and Album boxes
+			mArtist.GotKeyboardFocus += OnAutoSelectTextBoxFocusChange;
+			mAlbum.GotKeyboardFocus += OnAutoSelectTextBoxFocusChange;
+		}
+
+		private void OnAutoSelectTextBoxFocusChange(object sender, KeyboardFocusChangedEventArgs e)
+		{
+			TextBox textBox = sender as TextBox;
+			//If the textbox gains focus, but not from app gaining focus, and not from mouse press, then select its contents
+			if (textBox != null && e.OldFocus != null && Mouse.LeftButton != MouseButtonState.Pressed)
+			{
+				textBox.SelectAll();
+			}
 		}
 
 		private void OnLoaded(object sender, RoutedEventArgs e)
@@ -581,6 +596,15 @@ namespace AlbumArtDownloader
 			}
 		}
 		#endregion
+
+		private void CopyExec(object sender, ExecutedRoutedEventArgs e)
+		{
+			AlbumArt albumArt = (AlbumArt)mResultsViewer.GetSourceAlbumArt(e);
+			if (albumArt != null)
+			{
+				albumArt.CopyToClipboard();
+			}
+		}
 
 		private void SaveExec(object sender, ExecutedRoutedEventArgs e)
 		{

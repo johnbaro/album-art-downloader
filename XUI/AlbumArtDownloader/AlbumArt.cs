@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using System.Linq;
 using Microsoft.Win32;
 
 namespace AlbumArtDownloader
@@ -132,16 +133,18 @@ namespace AlbumArtDownloader
 			{
 				if (mCachedImageCodecInfo == null)
 				{
-					//Find the codec
-					Guid bitmapFormatGuid = BitmapImage.RawFormat.Guid;
-					foreach (ImageCodecInfo info in ImageCodecInfo.GetImageEncoders())
+					if (BitmapImage != null)
 					{
-						if (info.FormatID == bitmapFormatGuid)
-						{
-							mCachedImageCodecInfo = info;
-							break;
-						}
+						//Find the codec					
+						Guid bitmapFormatGuid = BitmapImage.RawFormat.Guid;
+						mCachedImageCodecInfo = ImageCodecInfo.GetImageEncoders().First(codec => codec.FormatID == bitmapFormatGuid);
 					}
+				}
+				if (mCachedImageCodecInfo == null)
+				{
+					//Could not find the codec. Leave the cached codec info as null, to attempt to recalculate
+					Guid bmpFormatGuid = System.Drawing.Imaging.ImageFormat.Bmp.Guid;
+					return ImageCodecInfo.GetImageEncoders().First(codec => codec.FormatID == bmpFormatGuid);
 				}
 				return mCachedImageCodecInfo;
 			}
@@ -406,6 +409,32 @@ namespace AlbumArtDownloader
 			}
 			IsSaving = false;
 			IsSaved = true;
+		}
+		#endregion
+
+		#region Copy to Clipboard
+
+		/// <summary>
+		/// Begins an asynchronous Copy to Clipboard operation, including downloading the full size image.
+		/// </summary>
+		internal void CopyToClipboard()
+		{
+			RetrieveFullSizeImage(new WaitCallback(CopyToClipboardInternal));
+		}
+
+		private void CopyToClipboardInternal(object sender)
+		{
+			System.Diagnostics.Debug.Assert(mIsFullSize, "Full size image was not retrieved");
+			System.Diagnostics.Debug.Assert(Image is BitmapSource, "Image is not a BitmapSource");
+
+			try
+			{
+				Clipboard.SetImage((BitmapSource)Image);
+			}
+			catch (Exception e)
+			{
+				MessageBox.Show(String.Format("Unexpected faliure copying image to clipboard\n\n" + e.Message), "Album Art Downloader", MessageBoxButton.OK, MessageBoxImage.Error);
+			}
 		}
 		#endregion
 	}

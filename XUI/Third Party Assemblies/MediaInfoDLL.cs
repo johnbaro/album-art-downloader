@@ -101,7 +101,7 @@ namespace MediaInfoLib
 
         //MediaInfo class
         public MediaInfo() { Handle = MediaInfo_New(); }
-        ~MediaInfo() { MediaInfo_Delete(Handle); }
+        ~MediaInfo() { if(Handle != IntPtr.Zero) MediaInfo_Delete(Handle); }
         public int Open(String FileName) { return (int)MediaInfo_Open(Handle, FileName); }
         public void Close() { MediaInfo_Close(Handle); }
         public String Inform() { return Marshal.PtrToStringUni(MediaInfo_Inform(Handle, (IntPtr)0)); }

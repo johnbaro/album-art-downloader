@@ -1,9 +1,11 @@
 !define PRODUCT_NAME "Album Art Downloader XUI"
-!define PRODUCT_VERSION "0.14"
+!define PRODUCT_VERSION "0.15"
 !define PRODUCT_WEB_SITE "https://sourceforge.net/projects/album-art"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\AlbumArt.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
+
+!include x64.nsh
 
 SetCompressor lzma
 
@@ -64,12 +66,32 @@ SectionGroup "Image Download Scripts"
 #Section "iTunes Music Shop"
 #  File "..\Scripts\Scripts\iTunes.boo"
 #SectionEnd
-Section "Amazon (US)"
-  File "..\Scripts\Scripts\amazon.boo"
-SectionEnd
-Section "Amazon (DE)"
-  File "..\Scripts\Scripts\amazon_de.boo"
-SectionEnd
+SectionGroup "Amazon"
+        Section "Amazon (US)"
+	  File "..\Scripts\Scripts\amazon-common.boo"
+          File "..\Scripts\Scripts\amazon-com.boo"
+	SectionEnd
+	Section /o "Amazon (UK)"
+	  File "..\Scripts\Scripts\amazon-common.boo"
+	  File "..\Scripts\Scripts\amazon-co-uk.boo"
+	SectionEnd
+	Section /o "Amazon (CA)"
+	  File "..\Scripts\Scripts\amazon-common.boo"
+	  File "..\Scripts\Scripts\amazon-ca.boo"
+	SectionEnd
+	Section /o "Amazon (DE)"
+	  File "..\Scripts\Scripts\amazon-common.boo"
+	  File "..\Scripts\Scripts\amazon-de.boo"
+	SectionEnd
+	Section /o "Amazon (FR)"
+	  File "..\Scripts\Scripts\amazon-common.boo"
+	  File "..\Scripts\Scripts\amazon-fr.boo"
+	SectionEnd
+	Section /o "Amazon (JP)"
+	  File "..\Scripts\Scripts\amazon-common.boo"
+	  File "..\Scripts\Scripts\amazon-jp.boo"
+	SectionEnd
+SectionGroupEnd
 Section "Google"
   File "..\Scripts\Scripts\google.boo"
 SectionEnd
@@ -125,6 +147,15 @@ Section -Post
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
 SectionEnd
+
+Function .onInstSuccess
+  #Check for running on x64
+  ${If} ${RunningX64}
+    MessageBox MB_ICONEXCLAMATION|MB_YESNO "In order to use the File Browser functionality under 64 bit windows, the x64 version of MediaInfo must be installed.$\n$\nWould you like to visit the download page now?" IDNO +2
+    ExecShell "open" "http://downloads.sourceforge.net/album-art/AlbumArtDownloaderXUI-MediaInfoX64Upgrade.exe"
+  ${EndIf}
+FunctionEnd
+
 
 Function un.onUninstSuccess
   HideWindow

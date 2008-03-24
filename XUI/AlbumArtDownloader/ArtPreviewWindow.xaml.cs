@@ -21,6 +21,7 @@ namespace AlbumArtDownloader
 		{
 			InitializeComponent();
 
+			CommandBindings.Add(new CommandBinding(ApplicationCommands.Copy, new ExecutedRoutedEventHandler(CopyExec)));
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Save, new ExecutedRoutedEventHandler(SaveExec)));
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.SaveAs, new ExecutedRoutedEventHandler(SaveAsExec)));
 			CommandBindings.Add(new CommandBinding(NavigationCommands.IncreaseZoom, new ExecutedRoutedEventHandler(IncreaseZoomExec)));
@@ -43,6 +44,7 @@ namespace AlbumArtDownloader
 		private Point? mPreviousMousePosition;
 		private void OnMouseDown(object sender, MouseButtonEventArgs e)
 		{
+			mImageScroller.Focus();
 			if (e.OriginalSource is Image)
 			{
 				mPreviousMousePosition = e.GetPosition(mImageScroller);
@@ -70,6 +72,14 @@ namespace AlbumArtDownloader
 		#endregion
 
 		#region Command Handlers
+		private void CopyExec(object sender, ExecutedRoutedEventArgs e)
+		{
+			AlbumArt albumArt = (AlbumArt)AlbumArt;
+			if (albumArt != null)
+			{
+				albumArt.CopyToClipboard();
+			}
+		}
 		private void SaveExec(object sender, ExecutedRoutedEventArgs e)
 		{
 			AlbumArt albumArt = (AlbumArt)AlbumArt;

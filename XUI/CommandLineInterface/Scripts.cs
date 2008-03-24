@@ -52,7 +52,10 @@ namespace AlbumArtDownloader
 								//Check for types implementing IScript
 								if (typeof(IScript).IsAssignableFrom(type))
 								{
-									script = (IScript)Activator.CreateInstance(type);
+									if (!type.IsAbstract)
+									{
+										script = (IScript)Activator.CreateInstance(type);
+									}
 								}
 								//Check for static scripts (for backwards compatibility)
 								else if (type.Namespace == "CoverSources")

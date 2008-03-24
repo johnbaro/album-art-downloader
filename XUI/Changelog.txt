@@ -1,7 +1,14 @@
+0.15 Fixed bug with images whose formats can not be determined
+     Artist and Album text boxes now select their contents when tabbed to
+     Added Copy command to context menu for album art results
+     Better reporting of MediaInfo x86/x64 compatibility issues
+     Upgraded to MediaInfo version 0.7.6.1
+
 0.14.1
      Fixed bug where closing foobar browser without com automation server installed
       would cause a crash.
      Improved single instance mechanism robustness
+     
 0.14 Fixed bug with paths with {} characters
      Characters which can not be part of filenames are now automatically replaced
       by underscores when substituting placeholders.

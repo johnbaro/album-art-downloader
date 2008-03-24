@@ -57,23 +57,46 @@ namespace AlbumArtDownloader
 				if (sMediaInfoState == MediaInfoState.Uninitialised)
 				{
 					//Initialise the MediaInfo tag reader
-					sMediaInfo = new MediaInfoLib.MediaInfo();
-					AssemblyName assemblyName = Assembly.GetEntryAssembly().GetName();
-					if (String.IsNullOrEmpty(sMediaInfo.Option("Info_Version", String.Format("0.7.5.9;{0};{1}", assemblyName.Name, assemblyName.Version))))
+					try
 					{
-						sMediaInfoState = MediaInfoState.Error;
+						sMediaInfo = new MediaInfoLib.MediaInfo();
+					}
+					catch (DllNotFoundException)
+					{
+						OnErrorLoadingMediaInfo("MediaInfo.dll was not found. Please re-install Album Art Downloader to use File Browser functionality.");
+						return;
+					}
+					catch (BadImageFormatException)
+					{
+						if (IntPtr.Size == 8) //Size of pointer is 4 on x86, 8 or x64.
+						{
+							OnErrorLoadingMediaInfo("MediaInfo.dll could not be loaded. Please download the x64 version of MediaInfo to use File Browser functionality on 64 bit windows.");
+						}
+						else
+						{
+							OnErrorLoadingMediaInfo("MediaInfo.dll could not be loaded. Please re-install Album Art Downloader to use File Browser functionality.");
+						}
+						return;
+					}
+
+					AssemblyName assemblyName = Assembly.GetEntryAssembly().GetName();
+					if (String.IsNullOrEmpty(sMediaInfo.Option("Info_Version", String.Format("0.7.6.1;{0};{1}", assemblyName.Name, assemblyName.Version))))
+					{
+						OnErrorLoadingMediaInfo("The version of the MediaInfo.dll found is not compatible with the expected version. Please re-install the latest version of Album Art Downloader to use the File Browser functionality.");
 					}
 					else
 					{
 						sMediaInfoState = MediaInfoState.Initialised;
 					}
 				}
-				if (sMediaInfoState == MediaInfoState.Error)
-				{
-					MessageBox.Show("The version of the MediaInfo.dll found is not compatible with the expected version. Please re-install the latest version of Album Art Downloader to use the File Browser functionality", "DLL Version Mismatch", MessageBoxButton.OK, MessageBoxImage.Error);
-					this.Close();
-				}
 			}
+		}
+
+		private void OnErrorLoadingMediaInfo(string message)
+		{
+			MessageBox.Show(message, "Error Loading MediaInfo.dll", MessageBoxButton.OK, MessageBoxImage.Error);
+			sMediaInfoState = MediaInfoState.Error;
+			this.Close();
 		}
 
 		protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
