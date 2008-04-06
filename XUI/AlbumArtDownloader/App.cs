@@ -23,6 +23,28 @@ namespace AlbumArtDownloader
 			try
 			{
 #endif
+			#region .net framework problem detection
+
+			#endregion
+			bool foundNet35 = false;
+			try
+			{
+				foundNet35 = 1.Equals(Microsoft.Win32.Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.5", "Install", null));
+			}
+			catch (Exception e)
+			{
+				//If there was an exception, then it probably isn't installed
+				System.Diagnostics.Trace.TraceError("Could not find .net 3.5 framework: " + e.Message);
+			}
+			if(!foundNet35)
+			{
+				if(MessageBox.Show("The required Microsoft .NET Framework version 3.5 is not installed. Album Art Downloader XUI will now exit.\n\nWould you like to visit the download page now?", "Album Art Downloader XUI", MessageBoxButton.YesNo, MessageBoxImage.Stop) == MessageBoxResult.Yes)
+				{
+					System.Diagnostics.Process.Start("http://www.microsoft.com/downloads/details.aspx?FamilyId=333325FD-AE52-4E35-B531-508D977D32A6");
+				}
+				Environment.Exit(-1); //Ensure exit
+				return;
+			}
 			#region Config File Problem detection
 			try
 			{

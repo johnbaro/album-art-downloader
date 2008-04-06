@@ -1,3 +1,8 @@
+0.16 Better handling of file path errors when searching for files
+     Fixed strange MakeSafeForPath crash
+     Added detection for missing .net 3.5 framework at application startup
+     Added Album Art Exchange script
+     
 0.15 Fixed bug with images whose formats can not be determined
      Artist and Album text boxes now select their contents when tabbed to
      Added Copy command to context menu for album art results

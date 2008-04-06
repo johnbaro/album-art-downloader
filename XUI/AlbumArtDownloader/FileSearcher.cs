@@ -157,12 +157,34 @@ namespace NetMatters
 					// Add all child directories if that's what the user wants
 					if (searchOption == SearchOption.AllDirectories)
 					{
-						foreach (DirectoryInfo childDir in dir.GetDirectories())
+						try
 						{
-							if ((File.GetAttributes(childDir.FullName) & FileAttributes.ReparsePoint) == 0)
+							foreach (DirectoryInfo childDir in dir.GetDirectories())
 							{
-								directories.Push(childDir);
+								try
+								{
+									if ((File.GetAttributes(childDir.FullName) & FileAttributes.ReparsePoint) == 0)
+									{
+										directories.Push(childDir);
+									}
+								}
+								catch (Exception childDirEx)
+								{
+									//Can't get subfolders
+									System.Diagnostics.Trace.WriteLine("Can't search inside: " + childDir.Name);
+									System.Diagnostics.Trace.Indent();
+									System.Diagnostics.Trace.WriteLine(childDirEx.Message);
+									System.Diagnostics.Trace.Unindent();
+								}
 							}
+						}
+						catch (Exception e)
+						{
+							//Can't get subfolders
+							System.Diagnostics.Trace.WriteLine("Can't search inside: " + dirPath);
+							System.Diagnostics.Trace.Indent();
+							System.Diagnostics.Trace.WriteLine(e.Message);
+							System.Diagnostics.Trace.Unindent();
 						}
 					}
 				}

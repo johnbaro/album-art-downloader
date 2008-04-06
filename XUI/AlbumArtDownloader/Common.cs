@@ -280,6 +280,9 @@ namespace AlbumArtDownloader
 		/// </summary>
 		public static string MakeSafeForPath(string value)
 		{
+			if (String.IsNullOrEmpty(value))
+				return String.Empty;
+
 			char[] invalid = Path.GetInvalidFileNameChars();
 			char[] valueChars = value.ToCharArray();
 

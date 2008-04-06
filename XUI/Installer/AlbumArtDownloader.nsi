@@ -1,5 +1,5 @@
 !define PRODUCT_NAME "Album Art Downloader XUI"
-!define PRODUCT_VERSION "0.15"
+!define PRODUCT_VERSION "0.16"
 !define PRODUCT_WEB_SITE "https://sourceforge.net/projects/album-art"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\AlbumArt.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
@@ -121,6 +121,9 @@ Section "FreeCovers"
 SectionEnd
 Section "Rate Your Music"
   File "..\Scripts\Scripts\rateyourmusic.boo"
+SectionEnd
+Section "Album Art Exchange"
+  File "..\Scripts\Scripts\albumartexchange.boo"
 SectionEnd
 Section "PsyShop"
   File "..\Scripts\Scripts\psyshop.boo"
