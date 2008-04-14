@@ -33,6 +33,7 @@ namespace AlbumArtDownloader
 			{
 				mScript.Search(artist, album, results);
 			}
+			catch (ThreadInterruptedException) { } //Script was interrupted
 			catch (ThreadAbortException) { } //Script was cancelled
 			catch (Exception e)
 			{

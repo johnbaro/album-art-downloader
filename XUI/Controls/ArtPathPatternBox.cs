@@ -163,11 +163,24 @@ namespace AlbumArtDownloader.Controls
 			}
 		}
 
-		public static readonly DependencyProperty PathPatternProperty = DependencyProperty.Register("PathPattern", typeof(string), typeof(ArtPathPatternBox), new FrameworkPropertyMetadata(String.Empty, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+		public event DependencyPropertyChangedEventHandler PathPatternChanged;
+		public static readonly DependencyProperty PathPatternProperty = DependencyProperty.Register("PathPattern", typeof(string), typeof(ArtPathPatternBox), new FrameworkPropertyMetadata(String.Empty, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, new PropertyChangedCallback(OnPathPatternChanged)));
 		public string PathPattern
 		{
 			get { return (string)GetValue(PathPatternProperty); }
 			set { SetValue(PathPatternProperty, value); }
+		}
+		private static void OnPathPatternChanged(object sender, DependencyPropertyChangedEventArgs e)
+		{
+			((ArtPathPatternBox)sender).OnPathPatternChanged(e);
+		}
+		protected virtual void OnPathPatternChanged(DependencyPropertyChangedEventArgs e)
+		{
+			DependencyPropertyChangedEventHandler temp = PathPatternChanged;
+			if (temp != null)
+			{
+				temp(this, e);
+			}
 		}
 
 		private ObservableCollection<PatternPlaceholder> mAdditionalPlaceholders = new ObservableCollection<PatternPlaceholder>();

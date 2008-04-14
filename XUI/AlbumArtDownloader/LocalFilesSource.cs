@@ -17,33 +17,10 @@ namespace AlbumArtDownloader
 		[DllImport("gdiplus.dll", ExactSpelling = true)]
 		private static extern int GdipDisposeImage(HandleRef image);
 
-		private DependencyObject mDefaultFilePathHolder;
-		private DependencyProperty mDefaultFilePathProperty;
-		/// <summary>
-		/// The default file path, used as a fallback to determine the default image search path
-		/// </summary>
-		private string mCachedDefaultFilePath;
-		
-		public LocalFilesSource(DependencyObject defaultFilePathHolder, DependencyProperty defaultFilePathProperty)
+		public LocalFilesSource()
 		{
 			//Ensure GDI+ is initialised
 			Pen pen = Pens.Black;
-
-			//Listen for default file path changing
-			mDefaultFilePathHolder = defaultFilePathHolder;
-			mDefaultFilePathProperty = defaultFilePathProperty;
-
-			DependencyPropertyDescriptor.FromProperty(mDefaultFilePathProperty, mDefaultFilePathHolder.GetType()).AddValueChanged(mDefaultFilePathHolder, OnDefaultFilePathChanged);
-			mCachedDefaultFilePath = (string)mDefaultFilePathHolder.GetValue(mDefaultFilePathProperty);
-		}
-
-		private void OnDefaultFilePathChanged(object sender, EventArgs e)
-		{
-			mCachedDefaultFilePath = (string)mDefaultFilePathHolder.GetValue(mDefaultFilePathProperty);
-			if (!UseSearchPathPattern)
-			{
-				NotifyPropertyChanged("SearchPathPattern"); //This will change too, as it is coerced by the DefaultFilePath value.
-			}
 		}
 
 		public override string Name
@@ -132,7 +109,7 @@ namespace AlbumArtDownloader
 				else
 				{
 					//If not using a custom search path pattern, use a pattern based on the location to save images to
-					return mCachedDefaultFilePath
+					return DefaultFilePath
 												.Replace("%name%", "*")
 												.Replace("%extension%", "*")
 												.Replace("%source%", "*")
@@ -147,6 +124,27 @@ namespace AlbumArtDownloader
 
 					SettingsChanged = true;
 					NotifyPropertyChanged("SearchPathPattern");
+				}
+			}
+		}
+
+		private string mDefaultFilePath;
+		/// <summary>
+		/// The default file path, used as a fallback to determine the default image search path
+		/// </summary>
+		public string DefaultFilePath
+		{
+			get { return mDefaultFilePath; }
+			set
+			{
+				if (mDefaultFilePath != value)
+				{
+					mDefaultFilePath = value;
+					NotifyPropertyChanged("DefaultFilePath");
+					if (!UseSearchPathPattern)
+					{
+						NotifyPropertyChanged("SearchPathPattern"); //This will change too, as it is coerced by the DefaultFilePath value.
+					}
 				}
 			}
 		}

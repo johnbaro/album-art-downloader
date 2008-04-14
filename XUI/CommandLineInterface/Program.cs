@@ -54,6 +54,7 @@ namespace AlbumArtDownloader
 		{
 			string artist = null, album = null, path = null;
 			int? minSize = null, maxSize = null;
+			float minAspect = 0;
 			int sequence = 1;
 			List<String> useScripts = new List<string>();
 			List<String> excludeScripts = new List<string>();
@@ -121,6 +122,7 @@ namespace AlbumArtDownloader
 							{
 								errorMessage = "The /minSize parameter must be a number: " + parameter.Value + "\n  " + e.Message;
 							}
+							warnIfNoSearch = true;
 							break;
 						case "maxsize":
 						case "mx":
@@ -132,6 +134,23 @@ namespace AlbumArtDownloader
 							{
 								errorMessage = "The /maxSize parameter must be a number: " + parameter.Value + "\n  " + e.Message;
 							}
+							warnIfNoSearch = true;
+							break;
+						case "minaspect":
+						case "ma":
+							try
+							{
+								minAspect = Single.Parse(parameter.Value);
+							}
+							catch (Exception e)
+							{
+								errorMessage = "The /minAspect parameter must be a number: " + parameter.Value + "\n  " + e.Message;
+							}
+							if (minAspect > 1 || minAspect < 0)
+							{
+								errorMessage = "The /minAspect parameter must be a number between 0 and 1: " + parameter.Value;
+							}
+							warnIfNoSearch = true;
 							break;
 						case "sequence":
 						case "seq":
@@ -219,7 +238,7 @@ namespace AlbumArtDownloader
 			//perform the actual search
 			try
 			{
-				if (Search(scripts, artist, album, path, minSize, maxSize, sequence))
+				if (Search(scripts, artist, album, path, minSize, maxSize, minAspect, sequence))
 				{
 					return 0; //Success
 				}
@@ -239,7 +258,7 @@ namespace AlbumArtDownloader
 		/// <summary>
 		/// Perform the actual search, download and save of art
 		/// </summary>
-		private static bool Search(IEnumerable<IScript> scripts, string artist, string album, string path, int? minSize, int? maxSize, int targetSequence)
+		private static bool Search(IEnumerable<IScript> scripts, string artist, string album, string path, int? minSize, int? maxSize, float minAspect, int targetSequence)
 		{
 			//Replace the artist and album placeholders in the path
 			path = path.Replace("%artist%", MakeSafeForPath(artist))
@@ -263,7 +282,8 @@ namespace AlbumArtDownloader
 				{
 					//Valid if there is no limit specified, or the size is within the limit. Both limits must apply if both are present
 					if (CheckImageSize(minSize, maxSize, result.GetMinImageDimension(false)) && //Quick check of reported image dimensions
-						CheckImageSize(minSize, maxSize, result.GetMinImageDimension(true))) //Full check of actual downloaded image size, in case of lying sources
+						CheckImageSize(minSize, maxSize, result.GetMinImageDimension(true)) && //Full check of actual downloaded image size, in case of lying sources
+						result.GetImageAspectRatio(false) >= minAspect) //Image will already be downloaded, so just check the aspect ratio too.
 					{
 						if (++sequence == targetSequence) //Discard sequence-1 results.
 						{

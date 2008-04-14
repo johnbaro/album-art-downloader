@@ -67,6 +67,17 @@ namespace AlbumArtDownloader
 			return Math.Min(mWidth, mHeight);
 		}
 
+		public float GetImageAspectRatio(bool forceDownload)
+		{
+			if (mWidth < 0 || mHeight < 0 || forceDownload)
+				DownloadImage(); //Must download the image to determine the width and height;
+
+			if (mWidth == 0 || mHeight == 0) //No meaningful answer for 0-sized image, so return 0
+				return 0;
+
+			return (float)Math.Min(mWidth, mHeight) / (float)Math.Max(mWidth, mHeight);
+		}
+
 		public bool Save(string pathPattern, int sequence)
 		{
 			DownloadImage(); //Ensure image is downloaded

@@ -64,8 +64,11 @@ namespace AlbumArtDownloader
 			{
 				mSources.Add(new ScriptSource(script));
 			}
-			//Keep local files source default search path synched by passing in the DependencyObject and Property that contains it (like a binding, only without a dependency object)
-			LocalFilesSource localFilesSource = new LocalFilesSource(mDefaultSaveFolder, ArtPathPatternBox.PathPatternProperty);
+
+			LocalFilesSource localFilesSource = new LocalFilesSource();
+			localFilesSource.DefaultFilePath = mDefaultSaveFolder.PathPattern;
+			//Update the default file path if the pattern changes
+			mDefaultSaveFolder.PathPatternChanged += delegate(object sender, DependencyPropertyChangedEventArgs e) { localFilesSource.DefaultFilePath = (string)e.NewValue; };
 			mSources.Add(localFilesSource);
 
 			LoadSettings();
@@ -408,13 +411,40 @@ namespace AlbumArtDownloader
 
 		protected override void OnClosed(EventArgs e)
 		{
+			string winName = ((IAppWindow)this).Description;
+
+			//Tear down all the threads in the background
+			if (!ThreadPool.QueueUserWorkItem(TerminateThreads, winName))
+			{
+				System.Diagnostics.Trace.TraceError("Failed to queue thread termination work item - terminating synchronously");
+				//Attempt to tear down synchronously
+				TerminateThreads(winName);
+			}
+
+			//HACK: Absolutely outrageous slimy hack that stops other open windows becoming unresponsive for no good reason.
+			new System.Windows.Controls.Primitives.Popup() { Width = 0, Height = 0, IsOpen = true }.IsOpen = false;
+			
+			base.OnClosed(e);
+		}
+
+		private void TerminateThreads(object state)
+		{
+			string winName = state as string ?? String.Empty;
+			System.Diagnostics.Trace.TraceInformation("Starting thread tear-down for " + winName);
+
 			mAutoDownloadFullSizeImagesThread.Abort();
+			mAutoDownloadFullSizeImagesThread.Join();
 			foreach (Source source in mSources)
 			{
-				source.AbortSearch();
-				source.Results.Clear(); //Clear the results to ensure all the images are disposed
+				source.TerminateSearch();
+				//Dispose of the art in results (images need disposal)
+				foreach (IDisposable result in source.Results)
+				{
+					result.Dispose();
+				}
 			}
-			base.OnClosed(e);
+
+			System.Diagnostics.Trace.TraceInformation("Finished thread tear-down for " + winName);
 		}
 
 		#endregion
@@ -646,13 +676,21 @@ namespace AlbumArtDownloader
 		#region IAppWindow
 		public void LoadSettings()
 		{
+			System.Diagnostics.Trace.Write("Loading settings for: " + ((IAppWindow)this).Description + "... ");
+
 			LoadSourceSettings();
 			LoadDefaultSaveFolderHistory();
+
+			System.Diagnostics.Trace.WriteLine("done.");
 		}
 		public void SaveSettings()
 		{
+			System.Diagnostics.Trace.Write("Saving settings from: " + ((IAppWindow)this).Description + "... ");
+
 			SaveSourceSettings();
 			SaveDefaultSaveFolderHistory();
+
+			System.Diagnostics.Trace.WriteLine("done.");
 		}
 		string IAppWindow.Description
 		{

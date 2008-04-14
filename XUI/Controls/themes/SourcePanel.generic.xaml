@@ -40,6 +40,7 @@
 									</MultiBinding>
 								</TextBlock.Text>
 							</TextBlock>
+							
 							<local:SizeRestrainer Grid.Row="1" Grid.Column="1">
 								<TextBlock Name="versionInfo" FontStyle="Italic" Foreground="Silver" Style="{StaticResource OverflowTextBlock}">
 									<TextBlock.Text>
@@ -65,11 +66,12 @@
 								</ToggleButton.Style>
 							</ToggleButton>
 
-							<ProgressBar Name="searchProgress" Visibility="Hidden" Grid.Row="1" Grid.Column="1" Margin="2,3,2,1"
+							<ProgressBar Name="searchProgress" Grid.Row="1" Grid.Column="1" Margin="2,3,2,1"
 										 Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Source.Results.Count, Mode=OneWay}"
 										 Maximum="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Source.EstimatedResultsCount, Mode=OneWay}">
 								<ProgressBar.Style>
 									<Style TargetType="{x:Type ProgressBar}">
+										<Setter Property="Visibility" Value="Collapsed"/>
 										<Setter Property="ToolTip">
 											<Setter.Value>
 												<MultiBinding Converter="{StaticResource mStringFormatterConverter}" ConverterParameter="{}Retrieved {0} of {1} results..." Mode="OneWay">
@@ -79,16 +81,27 @@
 											</Setter.Value>
 										</Setter>
 										<Style.Triggers>
-											<DataTrigger Value="1">
-												<DataTrigger.Binding>
-													<MultiBinding Converter="{StaticResource mCompareConverter}" Mode="OneWay">
-														<Binding Path="Source.Results.Count" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
-														<Binding Path="Source.EstimatedResultsCount" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
-													</MultiBinding>
-												</DataTrigger.Binding>
+											<MultiDataTrigger>
+												<!-- Trigger for Results greater than Estimated Results (and control is visible) -->
+												<MultiDataTrigger.Conditions>
+													<Condition Value="1">
+														<Condition.Binding>
+															<MultiBinding Converter="{StaticResource mCompareConverter}" Mode="OneWay">
+																<Binding Path="Source.Results.Count" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
+																<Binding Path="Source.EstimatedResultsCount" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
+															</MultiBinding>
+														</Condition.Binding>
+													</Condition>
+													<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsVisible}" Value="True"/>
+												</MultiDataTrigger.Conditions>
 												<Setter Property="IsIndeterminate" Value="True"/>
-											</DataTrigger>
-											<DataTrigger Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Source.EstimatedResultsCount, Mode=OneWay}" Value="0">
+											</MultiDataTrigger>
+											<MultiDataTrigger>
+												<!-- Trigger for Results=0 (and control is visible) -->
+												<MultiDataTrigger.Conditions>
+													<Condition Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Source.EstimatedResultsCount, Mode=OneWay}" Value="0"/>
+													<Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsVisible}" Value="True"/>
+												</MultiDataTrigger.Conditions>
 												<Setter Property="ToolTip">
 													<Setter.Value>
 														<MultiBinding Converter="{StaticResource mStringFormatterConverter}" ConverterParameter="{}Retrieved {0} results so far..." Mode="OneWay">
@@ -97,7 +110,15 @@
 													</Setter.Value>
 												</Setter>
 												<Setter Property="IsIndeterminate" Value="True"/>
-											</DataTrigger>
+											</MultiDataTrigger>
+											<Trigger Property="IsVisible" Value="False">
+												<!-- Windows Vista will keep animating a progress bar even when it is not visible, so nuke the thing by giving it an empty control template -->
+												<Setter Property="Template">
+													<Setter.Value>
+														<ControlTemplate TargetType="{x:Type ProgressBar}" />
+													</Setter.Value>
+												</Setter>
+											</Trigger>
 										</Style.Triggers>
 									</Style>
 								</ProgressBar.Style>

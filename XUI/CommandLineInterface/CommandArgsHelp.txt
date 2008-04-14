@@ -51,7 +51,17 @@ Options:
               image, in pixels, to use.
               The smallest dimension of the
               image must conform.
-              May be abbreviated to /mx       (/mx 1000)              
+              May be abbreviated to /mx       (/mx 1000)
+
+ /minAspect   Specifies the minimum aspect ratio  (/minAspect 0.9)
+              of the image to use. This is how
+              square the image must be, where a
+              value of 1 represents perfectly
+              square (600 x 600, for example). An
+              image of size 600 x 300 would only
+              be allowed if /minAspect were 0.5
+              or lower.
+              May be abbreviated to /ma           (/ma 0.9)
               
  /sequence    Specifies which result to use, if   (/sequence 2)
               more than one are found. For

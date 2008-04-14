@@ -248,20 +248,41 @@ namespace AlbumArtDownloader
 		/// </summary>
 		public void Search(string artist, string album)
 		{
-			AbortSearch(); //Abort any existing search
+			TerminateSearch(); //Terminate any existing search
+			SettingsChanged = false; //Clear search settings changed (flag is to indicate change since search started)
 			mSearchThread = new Thread(new ParameterizedThreadStart(SearchWorker));
 			mSearchThread.Name = String.Format("{0} search", Name);
 			mSearchThread.Start(new SearchThreadParameters(Dispatcher.CurrentDispatcher, artist, album));
 		}
 
 		/// <summary>
-		/// Aborts an asynchronous search, if one is running.
+		/// Abort the search without raising completion events,
+		/// but waiting until the thread terminates.
 		/// </summary>
-		public void AbortSearch()
+		public void TerminateSearch() 
 		{
 			if (mSearchThread != null)
 			{
-				mSearchThread.Abort();
+				AbortSearch(true);
+				mSearchThread.Join();
+			}
+		}
+		
+		public void AbortSearch()
+		{
+			AbortSearch(false);
+		}
+
+		/// <summary>
+		/// Aborts an asynchronous search, if one is running.
+		/// <param name="withoutCompletion">If true, tear down the thread without raising completion events.</param>
+		/// </summary>
+		private void AbortSearch(bool withoutCompletion)
+		{
+			if (mSearchThread != null)
+			{
+				mSearchThread.Interrupt();
+				mSearchThread.Abort(withoutCompletion);
 			}
 		}
 
@@ -280,6 +301,7 @@ namespace AlbumArtDownloader
 			public string Artist { get { return mArtist; } }
 			public string Album { get { return mAlbum; } }
 		}
+
 		private object mSearchThreadInstanceLock = new object();
 		private void SearchWorker(object state)
 		{
@@ -287,6 +309,8 @@ namespace AlbumArtDownloader
 
 			lock (mSearchThreadInstanceLock) //Don't allow more than one instance of this search. If a search has been aborted, it must finish aborting before it re-starts
 			{
+				//Flag to indicate that the search thread should abort without raising completion events
+				bool abortThreadWithoutCompletion = false;
 				try
 				{
 					parameters.Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(delegate
@@ -297,14 +321,26 @@ namespace AlbumArtDownloader
 
 					SearchInternal(parameters.Artist, parameters.Album, new ScriptResults(this, parameters.Dispatcher));
 				}
+				catch(ThreadAbortException e)
+				{
+					abortThreadWithoutCompletion = (e.ExceptionState as bool?).GetValueOrDefault();
+				}
 				finally
 				{
-					parameters.Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(delegate
+					if (abortThreadWithoutCompletion)
 					{
-						IsSearching = false;
-						RaiseSearchCompleted();
-					}));
-					SettingsChanged = false;
+						//Don't use property setter, as no events should be raised.
+						mIsSearching = false;
+					}
+					else
+					{
+						//Signal completion
+						parameters.Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(delegate
+						{
+							IsSearching = false;
+							RaiseSearchCompleted();
+						}));
+					}
 				}
 			}
 		}
