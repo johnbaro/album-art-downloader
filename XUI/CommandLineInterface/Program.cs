@@ -280,10 +280,8 @@ namespace AlbumArtDownloader
 				}
 				foreach (ScriptResult result in scriptResults.Results)
 				{
-					//Valid if there is no limit specified, or the size is within the limit. Both limits must apply if both are present
-					if (CheckImageSize(minSize, maxSize, result.GetMinImageDimension(false)) && //Quick check of reported image dimensions
-						CheckImageSize(minSize, maxSize, result.GetMinImageDimension(true)) && //Full check of actual downloaded image size, in case of lying sources
-						result.GetImageAspectRatio(false) >= minAspect) //Image will already be downloaded, so just check the aspect ratio too.
+					if( CheckImageDimensions(result, minSize, maxSize, minAspect, false) && //Quick check of reported dimensions
+						CheckImageDimensions(result, minSize, maxSize, minAspect, true)) //Full check of downloaded image dimensions
 					{
 						if (++sequence == targetSequence) //Discard sequence-1 results.
 						{
@@ -302,6 +300,30 @@ namespace AlbumArtDownloader
 			return false; //No result found
 		}
 
+		private static bool CheckImageDimensions(ScriptResult result, int? minSize, int? maxSize, float minAspect, bool forceDownload)
+		{
+			//Valid if there is no limit specified, or the size is within the limit. Both limits must apply if both are present
+			//Check size
+			if (minSize.HasValue || maxSize.HasValue)
+			{
+				if (!CheckImageSize(minSize, maxSize, result.GetMinImageDimension(forceDownload)))
+					return false;
+			}
+			//Check aspect ratio
+			if (minAspect > 0)
+			{
+				if (result.GetImageAspectRatio(forceDownload) < minAspect)
+					return false;
+			}
+			//Passes both tests
+			return true;
+		}
+
+		private static bool CheckImageSize(int? minSize, int? maxSize, int size)
+		{
+			return	(!minSize.HasValue || size >= minSize.Value) &&
+					(!maxSize.HasValue || size <= maxSize.Value);
+		}
 		//MakeSafeForPath copied from Common.cs
 		/// <summary>
 		/// Ensures that a string is safe to be part of a file path by replacing all illegal
@@ -327,12 +349,6 @@ namespace AlbumArtDownloader
 			{
 				return value;
 			}
-		}
-
-		private static bool CheckImageSize(int? minSize, int? maxSize, int size)
-		{
-			return	(!minSize.HasValue || size >= minSize.Value) &&
-					(!maxSize.HasValue || size <= maxSize.Value);
 		}
 
 		private static void ShowCommandArgs()

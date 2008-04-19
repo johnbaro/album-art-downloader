@@ -3,6 +3,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:local="clr-namespace:AlbumArtDownloader.Controls"
 	xmlns:System="clr-namespace:System;assembly=mscorlib"
+	xmlns:ThemesClassic="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Classic"
 	>
 
 	<ResourceDictionary.MergedDictionaries>
@@ -53,6 +54,17 @@
 		</Style.Triggers>
 	</Style>
 
+	<Style x:Key="GridBumpLine" TargetType="{x:Type Line}">
+		<Setter Property="Y1" Value="1"/>
+		<Setter Property="Y2">
+			<Setter.Value>
+				<Binding Path="ActualHeight" RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type Canvas}}" Mode="OneWay"/>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="StrokeThickness" Value="2"/>
+		<Setter Property="StrokeDashArray" Value="1 1"/>
+	</Style>
+	
 	<Style TargetType="{x:Type local:ArtPanel}">
 		<Setter Property="Height" Value="Auto"/>
 		<Setter Property="Template">
@@ -108,9 +120,6 @@
 							</ContextMenu>
 						</Grid.ContextMenu>
 						<Grid Margin="5,5,5,5" Width="{Binding ThumbSize, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Height="{Binding RelativeSource={RelativeSource Self}, Path=Width, Mode=OneWay}" MinHeight="20" MinWidth="20" VerticalAlignment="Top">
-							<Grid.BitmapEffect>
-								<DropShadowBitmapEffect Color="Black" Direction="315" ShadowDepth="2" Softness="0.3"/>
-							</Grid.BitmapEffect>
 							<Grid.ToolTip>
 								<ToolTip>
 									<Grid>
@@ -181,11 +190,15 @@
 														<SolidColorBrush Color="White" Opacity="0.6"/>
 													</StackPanel.Background>
 													<Image Source="downloading.png" HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="None" ToolTip="Full size image is being downloaded..."/>
-													<TextBlock Padding="5,1,0,0" Foreground="Black" Text="Full size image is being downloaded...">
-														<TextBlock.BitmapEffect>
-															<DropShadowBitmapEffect Color="White" Direction="315" ShadowDepth="2" Softness="0.3"/>
-														</TextBlock.BitmapEffect>
-													</TextBlock>
+													<!-- BitmapEffects have serious performance implications, so until WPF fixes that, use two identical text blocks to make a white drop shadow.
+													<TextBlock.BitmapEffect>
+														<DropShadowBitmapEffect Color="White" Direction="315" ShadowDepth="2" Softness="0.3"/>
+													</TextBlock.BitmapEffect>
+													-->
+													<Grid Margin="5,1,0,0" >
+														<TextBlock Padding="1,1,0,0" Foreground="White" Text="Full size image is being downloaded..."/>
+														<TextBlock Foreground="Black" Text="Full size image is being downloaded..."/>
+													</Grid>
 												</StackPanel>
 											</Grid>
 										</Border>
@@ -193,6 +206,7 @@
 								</Border>
 							</Popup>
 
+							<ThemesClassic:SystemDropShadowChrome Width="{Binding ElementName=PART_ImageDisplay, Path=ActualWidth, Mode=OneWay}" Height="{Binding ElementName=PART_ImageDisplay, Path=ActualHeight, Mode=OneWay}"/>
 							<Image Name="PART_ImageDisplay" Source="{Binding Path=AlbumArt.Image, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Focusable="True">
 								<Image.Style>
 									<Style TargetType="{x:Type Image}">
@@ -205,11 +219,10 @@
 									</Style>
 								</Image.Style>
 							</Image>
-
+							
 							<Image Visibility="{Binding Path=AlbumArt.IsDownloading, Converter={StaticResource mBooleanToVisibilityConverter}, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Source="downloading.png" HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="None" ToolTip="Full size image is being downloaded..." Cursor="Wait"/>
 							<ResizeGrip Name="PART_ImageResizer" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,-1,-1" Cursor="SizeNWSE" Focusable="False"/>
 						</Grid>
-
 						<Grid Name="PART_Information" Margin="5,5,2,5">
 							<Grid.RowDefinitions>
 								<RowDefinition Height="Auto"/>
@@ -341,18 +354,10 @@
 						</Grid>
 
 						<Border Grid.Column="2" Grid.RowSpan="2" Name="PART_PanelResizer" HorizontalAlignment="Right" Width="10" Padding="6,5,1,6" Margin="-3,-1,2,0" Cursor="SizeWE">
-							<Rectangle Focusable="True">
-								<Rectangle.Fill>
-									<DrawingBrush ViewportUnits="Absolute" ViewboxUnits="Absolute" Viewport="0,0,4,4" Viewbox="0,0,4,4" TileMode="Tile">
-										<DrawingBrush.Drawing>
-											<DrawingGroup>
-												<GeometryDrawing Brush="White" Geometry="M1,1L1,3 3,3 3,1z"/>
-												<GeometryDrawing Brush="#FFC1BEB3" Geometry="M0,0L0,2 2,2 2,0z"/>
-											</DrawingGroup>
-										</DrawingBrush.Drawing>
-									</DrawingBrush>
-								</Rectangle.Fill>
-							</Rectangle>
+							<Canvas Focusable="True" SnapsToDevicePixels="True">
+								<Line Style="{StaticResource GridBumpLine}" Stroke="White" X1="2" X2="2" StrokeDashOffset="1.5"/>
+								<Line Style="{StaticResource GridBumpLine}" Stroke="#FFC1BEB3" X1="1" X2="1"/>
+							</Canvas>
 						</Border>
 					</Grid>
 				</ControlTemplate>

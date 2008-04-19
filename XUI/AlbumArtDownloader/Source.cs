@@ -248,41 +248,31 @@ namespace AlbumArtDownloader
 		/// </summary>
 		public void Search(string artist, string album)
 		{
-			TerminateSearch(); //Terminate any existing search
-			SettingsChanged = false; //Clear search settings changed (flag is to indicate change since search started)
-			mSearchThread = new Thread(new ParameterizedThreadStart(SearchWorker));
-			mSearchThread.Name = String.Format("{0} search", Name);
-			mSearchThread.Start(new SearchThreadParameters(Dispatcher.CurrentDispatcher, artist, album));
+			//Start a new search thread (which will take care of aborting the old one, and assigning itself as the current one)
+			new Thread(new ParameterizedThreadStart(SearchWorker)) { Name = String.Format("{0} search", Name) }.Start(new SearchThreadParameters(Dispatcher.CurrentDispatcher, artist, album));
 		}
 
 		/// <summary>
 		/// Abort the search without raising completion events,
-		/// but waiting until the thread terminates.
+		/// but waiting until the thread terminates synchronously.
 		/// </summary>
 		public void TerminateSearch() 
 		{
 			if (mSearchThread != null)
 			{
-				AbortSearch(true);
+				mSearchThread.Abort(true); //without completion
 				mSearchThread.Join();
 			}
 		}
 		
-		public void AbortSearch()
-		{
-			AbortSearch(false);
-		}
-
 		/// <summary>
-		/// Aborts an asynchronous search, if one is running.
-		/// <param name="withoutCompletion">If true, tear down the thread without raising completion events.</param>
+		/// Abort the search with raising completion events, asynchronously.
 		/// </summary>
-		private void AbortSearch(bool withoutCompletion)
+		public void AbortSearch()
 		{
 			if (mSearchThread != null)
 			{
-				mSearchThread.Interrupt();
-				mSearchThread.Abort(withoutCompletion);
+				ThreadPool.QueueUserWorkItem(new WaitCallback(mSearchThread.Abort), false); //with completion
 			}
 		}
 
@@ -302,45 +292,49 @@ namespace AlbumArtDownloader
 			public string Album { get { return mAlbum; } }
 		}
 
-		private object mSearchThreadInstanceLock = new object();
 		private void SearchWorker(object state)
 		{
 			SearchThreadParameters parameters = (SearchThreadParameters)state;
+			
+			//Flag to indicate that the search thread should abort without raising completion events
+			bool abortThreadWithoutCompletion = false;
 
-			lock (mSearchThreadInstanceLock) //Don't allow more than one instance of this search. If a search has been aborted, it must finish aborting before it re-starts
+			//If there is an existing search thread, terminate it
+			TerminateSearch();
+			//Become the new search thread
+			mSearchThread = Thread.CurrentThread;
+			//This can now be terminated itself, so catch abort exceptions
+			try
 			{
-				//Flag to indicate that the search thread should abort without raising completion events
-				bool abortThreadWithoutCompletion = false;
-				try
-				{
-					parameters.Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(delegate
-					{
-						Results.Clear();
-						IsSearching = true;
-					}));
+				SettingsChanged = false; //Clear search settings changed (flag is to indicate change since search started)
 
-					SearchInternal(parameters.Artist, parameters.Album, new ScriptResults(this, parameters.Dispatcher));
-				}
-				catch(ThreadAbortException e)
+				parameters.Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(delegate
 				{
-					abortThreadWithoutCompletion = (e.ExceptionState as bool?).GetValueOrDefault();
-				}
-				finally
+					Results.Clear();
+					IsSearching = true;
+				}));
+
+				SearchInternal(parameters.Artist, parameters.Album, new ScriptResults(this, parameters.Dispatcher));
+			}
+			catch (ThreadAbortException e)
+			{
+				abortThreadWithoutCompletion = (e.ExceptionState as bool?).GetValueOrDefault();
+			}
+			finally
+			{
+				if (abortThreadWithoutCompletion)
 				{
-					if (abortThreadWithoutCompletion)
+					//Don't use property setter, as no events should be raised.
+					mIsSearching = false;
+				}
+				else
+				{
+					//Signal completion, at high priority, as this will hold up thread tear-down if it has to wait.
+					parameters.Dispatcher.Invoke(DispatcherPriority.Send, new ThreadStart(delegate
 					{
-						//Don't use property setter, as no events should be raised.
-						mIsSearching = false;
-					}
-					else
-					{
-						//Signal completion
-						parameters.Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(delegate
-						{
-							IsSearching = false;
-							RaiseSearchCompleted();
-						}));
-					}
+						IsSearching = false;
+						RaiseSearchCompleted();
+					}));
 				}
 			}
 		}

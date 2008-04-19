@@ -39,6 +39,9 @@
   <ItemGroup>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="PresentationFramework.Classic">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>

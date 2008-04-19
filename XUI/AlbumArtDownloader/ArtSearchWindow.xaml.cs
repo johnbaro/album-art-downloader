@@ -62,7 +62,10 @@ namespace AlbumArtDownloader
 
 			foreach (IScript script in ((App)Application.Current).Scripts)
 			{
-				mSources.Add(new ScriptSource(script));
+				ScriptSource scriptSource = new ScriptSource(script);
+				mSources.Add(scriptSource);
+				//Hook the complete event to know when to hide the Stop All button
+				scriptSource.SearchCompleted += OnSourceSearchCompleted;
 			}
 
 			LocalFilesSource localFilesSource = new LocalFilesSource();
@@ -70,6 +73,7 @@ namespace AlbumArtDownloader
 			//Update the default file path if the pattern changes
 			mDefaultSaveFolder.PathPatternChanged += delegate(object sender, DependencyPropertyChangedEventArgs e) { localFilesSource.DefaultFilePath = (string)e.NewValue; };
 			mSources.Add(localFilesSource);
+			localFilesSource.SearchCompleted += OnSourceSearchCompleted;
 
 			LoadSettings();
 			//Initial value of AutoClose is taken from settings. May be overriden by command line parameters
@@ -264,7 +268,6 @@ namespace AlbumArtDownloader
 			{
 				if (source.IsEnabled)
 				{
-					source.SearchCompleted += OnSourceSearchCompleted; //Hook the complete event to know when to hide the Stop All button
 					source.Search(mSearchParameters.Artist, mSearchParameters.Album);
 					mSearchParameters.AddSource(source);
 				}
@@ -274,7 +277,10 @@ namespace AlbumArtDownloader
 					source.Results.Clear();
 				}
 			}
-			CommandBindings.Add(mStopAllCommandBinding);
+			if (!CommandBindings.Contains(mStopAllCommandBinding))
+			{
+				CommandBindings.Add(mStopAllCommandBinding);
+			}
 		}
 		/// <summary>
 		/// Alters the existing search to include or exclude additional sources
@@ -298,7 +304,6 @@ namespace AlbumArtDownloader
 					}
 					if(performSearch)
 					{
-						source.SearchCompleted += OnSourceSearchCompleted; //Hook the complete event to know when to hide the Stop All button
 						source.Search(Artist, Album);
 
 						mSearchParameters.AddSource(source);
@@ -587,7 +592,6 @@ namespace AlbumArtDownloader
 		#region Stop All
 		private void OnSourceSearchCompleted(object sender, EventArgs e)
 		{
-			((Source)sender).SearchCompleted -= OnSourceSearchCompleted; //Unhook the event, we only want one notification.
 			//Check to see if any sources are still searching
 			foreach (Source source in mSources)
 			{
@@ -600,18 +604,11 @@ namespace AlbumArtDownloader
 		}
 		private void StopExec(object sender, ExecutedRoutedEventArgs e)
 		{
-			//Stop all the sources (asynch, to avoid locking up UI)
+			//Stop all the sources
 			foreach (Source source in mSources)
 			{
-				Dispatcher.BeginInvoke(DispatcherPriority.Background, new ParameterizedThreadStart(AbortSource), source);
+				source.AbortSearch();
 			}
-		}
-		/// <summary>
-		/// Delegate to asynchronously abort the source
-		/// </summary>
-		private void AbortSource(object source)
-		{
-			((Source)source).AbortSearch();
 		}
 		#endregion
 

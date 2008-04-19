@@ -80,7 +80,7 @@ namespace AlbumArtDownloader
 					}
 
 					AssemblyName assemblyName = Assembly.GetEntryAssembly().GetName();
-					if (String.IsNullOrEmpty(sMediaInfo.Option("Info_Version", String.Format("0.7.6.1;{0};{1}", assemblyName.Name, assemblyName.Version))))
+					if (String.IsNullOrEmpty(sMediaInfo.Option("Info_Version", String.Format("0.7.6.3;{0};{1}", assemblyName.Name, assemblyName.Version))))
 					{
 						OnErrorLoadingMediaInfo("The version of the MediaInfo.dll found is not compatible with the expected version. Please re-install the latest version of Album Art Downloader to use the File Browser functionality.");
 					}

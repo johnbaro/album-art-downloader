@@ -1,3 +1,9 @@
+0.17 Fixed memory leak when closing search windows
+     Various performance improvements
+     Added /minAspect parameter to command line interface
+     Fixed GoogleImage and Coveralia scripts
+     Upgraded to MediaInfo version 0.7.6.3
+     
 0.16 Better handling of file path errors when searching for files
      Fixed strange MakeSafeForPath crash
      Added detection for missing .net 3.5 framework at application startup

@@ -10,20 +10,20 @@ class Coveralia:
 	static SourceCreator as string:
 		get: return "Alex Vallat"
 	static SourceVersion as string:
-		get: return "0.6"
+		get: return "0.7"
 	static def GetThumbs(coverart,artist,album):
 		query as string = artist + " " + album
 		query.Replace(' ','+')
 		resultResults = GetPage(String.Format("http://www.coveralia.com/mostrar.php?bus={0}&bust=2", EncodeUrl(query)))
 		
 		//Get results
-		resultRegex = Regex("<a href=\"(?<url>discos/[^\"]+)\" class=\"texto9\">", RegexOptions.Multiline)
+		resultRegex = Regex("<a href=\"(?<url>/discos/[^\"]+)\" class=\"texto9\">", RegexOptions.Multiline)
 		resultMatches = resultRegex.Matches(resultResults)
 		coverart.EstimatedCount = resultMatches.Count * 3 //Estimate each result has front, back and CD images
 
 		for resultMatch as Match in resultMatches:
 			//Get the result page
-			resultPage = GetPage(String.Format("http://www.coveralia.com/{0}", resultMatch.Groups["url"].Value))
+			resultPage = GetPage(String.Format("http://www.coveralia.com{0}", resultMatch.Groups["url"].Value))
 			
 			labelRegex = Regex("<span class=\"disco1\"><a[^>]+>(?<artist>[^<]+)</a>\\s*</span>\\s*<br>\\s*<span class=\"disco2\">(?<album>[^<]+)", RegexOptions.Multiline)
 			labelMatch = labelRegex.Match(resultPage) //Expecting one match
