@@ -10,6 +10,7 @@ namespace AlbumArtDownloader.Controls
 	public interface IAlbumArt : INotifyPropertyChanged, IDisposable
 	{
 		string ResultName { get; }
+		string InfoUri { get; }
 		string FilePath { get; set; }
 		ImageSource Image { get; }
 		double ImageHeight { get; }

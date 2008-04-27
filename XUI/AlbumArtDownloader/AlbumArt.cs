@@ -22,11 +22,12 @@ namespace AlbumArtDownloader
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
-		public AlbumArt(Source source, Bitmap thumbnail, string name, double width, double height, object fullSizeCallbackParameter)
+		public AlbumArt(Source source, Bitmap thumbnail, string name, string infoUri, double width, double height, object fullSizeCallbackParameter)
 		{
 			mSource = source;
 			BitmapImage = thumbnail;
 			ResultName = name;
+			InfoUri = infoUri;
 			ImageWidth = width;
 			ImageHeight = height;
 			mFullSizeCallbackParameter = fullSizeCallbackParameter;
@@ -193,6 +194,21 @@ namespace AlbumArtDownloader
 				}
 			}
 		}
+
+		private string mInfoUri;
+		public string InfoUri
+		{
+			get { return mInfoUri; }
+			internal set
+			{
+				if (mInfoUri != value)
+				{
+					mInfoUri = value;
+					NotifyPropertyChanged("InfoUri");
+				}
+			}
+		}
+
 		public string SourceName
 		{
 			get { return mSource.Name; }

@@ -110,4 +110,7 @@
     <Resource Include="themes\toggleDown.png" />
     <Resource Include="themes\toggleUp.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="themes\info.png" />
+  </ItemGroup>
 </Project>

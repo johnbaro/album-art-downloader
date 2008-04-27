@@ -134,16 +134,18 @@ namespace AlbumArtDownloader
 		}
 		private static void GoToPageExec(object sender, ExecutedRoutedEventArgs e)
 		{
-			if (e.Parameter is string)
+			string uriString = e.Parameter as String;
+			if (!String.IsNullOrEmpty(uriString))
 			{
-				//TODO: Validation that this is a web address?
 				try
 				{
-					System.Diagnostics.Process.Start((string)e.Parameter);
+					//Ensure that this the parameter is a Uri
+					Uri uri = new Uri(uriString, UriKind.Absolute);
+					System.Diagnostics.Process.Start(uri.AbsoluteUri);
 				}
 				catch (Exception ex)
 				{
-					System.Diagnostics.Trace.TraceError("Could open web address: {0}\n\t{1}", e.Parameter, ex.Message);
+					System.Diagnostics.Trace.TraceError("Could open web address: {0}\n\t{1}", uriString, ex.Message);
 				}
 			}
 			else if (e.Parameter is Window)

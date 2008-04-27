@@ -255,7 +255,23 @@
 							<TextBlock Grid.Row="2" Style="{StaticResource LabelStyle}">Source:</TextBlock>
 							<TextBlock Grid.Row="3" Style="{StaticResource LabelStyle}">File:</TextBlock>
 
-							<TextBlock Tag="ResultName" Grid.Row="0" Style="{StaticResource ValueStyle}" Grid.ColumnSpan="1" Text="{Binding Path=AlbumArt.ResultName, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"/>
+							<DockPanel Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2">
+								<Button DockPanel.Dock="Right" VerticalAlignment="Center"
+										Command="NavigationCommands.GoToPage" CommandParameter="{Binding Path=AlbumArt.InfoUri, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}">
+									<Button.Style>
+										<Style TargetType="{x:Type Button}" BasedOn="{StaticResource FadeButton}">
+											<Style.Triggers>
+												<Trigger Property="CommandParameter" Value="">
+													<Setter Property="Visibility" Value="Collapsed"/>
+												</Trigger>
+											</Style.Triggers>
+										</Style>
+									</Button.Style>
+									<Image Source="info.png" Stretch="None" ToolTip="{Binding Path=AlbumArt.InfoUri, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"/>
+								</Button>
+										
+								<TextBlock Tag="ResultName" Grid.Row="0" Style="{StaticResource ValueStyle}" Grid.ColumnSpan="1" Text="{Binding Path=AlbumArt.ResultName, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"/>
+							</DockPanel>
 							<TextBlock Tag="ImageWidth" Grid.Row="1">
 								<TextBlock.Style>
 									<Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource ValueStyle}">

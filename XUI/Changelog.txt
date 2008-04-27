@@ -1,3 +1,8 @@
+0.18 Added extra information link to results (where provided by the script)
+     Added installer option to add a "Browse for Album Art" to the context
+      menu for folders in Explorer.
+     Installer bug fixes
+     
 0.17 Fixed memory leak when closing search windows
      Various performance improvements
      Added /minAspect parameter to command line interface

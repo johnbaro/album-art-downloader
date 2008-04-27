@@ -8,7 +8,7 @@ abstract class Amazon(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "Amazon (.${Suffix})"
 	Version as string:
-		get: return "0.5"
+		get: return "0.6"
 	Author as string:
 		get: return "Alex Vallat"
 	abstract protected Suffix as string:
@@ -23,6 +23,7 @@ abstract class Amazon(AlbumArtDownloader.Scripts.IScript):
 		resultNodes=x.SelectNodes("a:ItemSearchResponse/a:Items/a:Item[a:LargeImage/a:URL]", n) //Only want results with large images
 		results.SetCountEstimate(resultNodes.Count)
 		for node in resultNodes:
+		  asin = node.SelectSingleNode("a:ASIN", n).InnerText
 		  title = node.SelectSingleNode("a:ItemAttributes/a:Title", n).InnerText //Can Title ever not exist? Assume it always exists.
 		  artistNode = node.SelectSingleNode("a:ItemAttributes/a:Artist", n)
 		  if artistNode != null:
@@ -43,7 +44,7 @@ abstract class Amazon(AlbumArtDownloader.Scripts.IScript):
 		  if thumbNode != null:
 		    thumbnail = thumbNode.InnerText
 		  
-		  results.AddThumb(thumbnail, title, width, height, fullsize);
+		  results.Add(thumbnail, title, "http://amazon.${Suffix}/dp/"+asin, width, height, fullsize);
 
 	def RetrieveFullSizeImage(fullSizeCallbackParameter):
 		return fullSizeCallbackParameter

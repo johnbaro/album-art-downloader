@@ -401,6 +401,10 @@ namespace AlbumArtDownloader
 			}
 			public void Add(object thumbnail, string name, int fullSizeImageWidth, int fullSizeImageHeight, object fullSizeImageCallback)
 			{
+				Add(thumbnail, name, String.Empty, fullSizeImageWidth, fullSizeImageHeight, fullSizeImageCallback);
+			}
+			public void Add(object thumbnail, string name, string infoUri, int fullSizeImageWidth, int fullSizeImageHeight, object fullSizeImageCallback)
+			{
 				//TODO: does downloading the thumbnail need to be asynch?
 				Bitmap thumbnailBitmap = BitmapHelpers.GetBitmap(thumbnail);
 
@@ -411,6 +415,7 @@ namespace AlbumArtDownloader
 						mSource.Results.Add(new AlbumArt(mSource,
 							thumbnailBitmap,
 							name,
+							infoUri,
 							fullSizeImageWidth,
 							fullSizeImageHeight,
 							fullSizeImageCallback));

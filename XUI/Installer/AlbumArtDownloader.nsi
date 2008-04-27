@@ -1,11 +1,23 @@
 !define PRODUCT_NAME "Album Art Downloader XUI"
-!define PRODUCT_VERSION "0.17"
-!define PRODUCT_WEB_SITE "https://sourceforge.net/projects/album-art"
+!define PRODUCT_VERSION "0.18"
+!define PRODUCT_WEB_SITE "http://sourceforge.net/projects/album-art"
+!define PRODUCT_SUPPORT "http://www.hydrogenaudio.org/forums/index.php?showtopic=57392"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\AlbumArt.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
 !define PRODUCT_UNINST_ROOT_KEY "HKLM"
 
 !include x64.nsh
+!include Sections.nsh
+!macro SecDisable SecId
+ !insertmacro UnselectSection ${SecId}
+ !insertmacro SetSectionFlag ${SecId} ${SF_RO}
+!macroend
+!define DisableSection '!insertmacro SecDisable'
+!macro SecEnable SecId
+ !insertmacro ClearSectionFlag ${SecId} ${SF_RO}
+!macroend
+!define EnableSection '!insertmacro SecEnable'
+
 
 SetCompressor lzma
 
@@ -36,16 +48,46 @@ Function .oninit
   dotnetok:
 FunctionEnd
 
-Section "!Album Art Downloader"
-  SetOutPath "$INSTDIR"
-  CreateDirectory "$INSTDIR\Scripts"
-  File "License.txt"
-  File "..\AlbumArtDownloader\AlbumArtDownloader.ico"
-  File "..\AlbumArtDownloader\bin\Release\AlbumArt.exe"
-  File "..\AlbumArtDownloader\bin\Release\*.dll"
-  CreateDirectory "$SMPROGRAMS\Album Art Downloader"
-  CreateShortCut "$SMPROGRAMS\Album Art Downloader\Album Art Downloader.lnk" "$INSTDIR\AlbumArt.exe"
-SectionEnd
+SectionGroup /e "Album Art Downloader"
+  Section "!Program files" ProgramFiles
+    SetOutPath "$INSTDIR"
+    CreateDirectory "$INSTDIR\Scripts"
+    File "License.txt"
+    File "..\AlbumArtDownloader\AlbumArtDownloader.ico"
+    File "..\AlbumArtDownloader\bin\Release\AlbumArt.exe"
+    File "..\AlbumArtDownloader\bin\Release\*.dll"
+  SectionEnd
+  Section "Add icon to Start Menu" StartMenu
+    CreateDirectory "$SMPROGRAMS\Album Art Downloader"
+    CreateShortCut "$SMPROGRAMS\Album Art Downloader\Album Art Downloader.lnk" "$INSTDIR\AlbumArt.exe"
+    CreateShortCut "$SMPROGRAMS\Album Art Downloader\Uninstall.lnk" "$INSTDIR\uninst.exe"
+  SectionEnd
+  Section /o "Add to Explorer context menu" ContextMenu
+    WriteRegStr HKCR "Folder\shell\AlbumArtDownloader" "" "Browse for Album Art..."
+    WriteRegStr HKCR "Folder\shell\AlbumArtDownloader\command" "" "$\"$INSTDIR\AlbumArt.exe$\" /fileBrowser $\"%1$\""
+  SectionEnd
+SectionGroupEnd
+
+Function .onSelChange
+#Make Add icon to StartMenu and Context Menu dependent on having Program Files selected.
+Push $R0
+
+  SectionGetFlags ${ProgramFiles} $R0
+  IntOp $R0 $R0 & ${SF_SELECTED}
+  StrCmp $R0 ${SF_SELECTED} EnableDependents
+  #DisableDependents
+  ${DisableSection} ${StartMenu}
+  ${DisableSection} ${ContextMenu}
+  Goto EnableDependentsEnd
+  #DisableDependentsEnd
+  
+  EnableDependents:
+  ${EnableSection} ${StartMenu}
+  ${EnableSection} ${ContextMenu}
+  EnableDependentsEnd:
+
+Pop $R0
+FunctionEnd
 
 Section "Command Line Interface (aad.exe)"
   SetOutPath "$INSTDIR"
@@ -136,19 +178,18 @@ Section "Artists.Trivialbeing (artist images)"
 SectionEnd
 SectionGroupEnd
 
-
-Section -AdditionalIcons
-  CreateShortCut "$SMPROGRAMS\Album Art Downloader\Uninstall.lnk" "$INSTDIR\uninst.exe"
-SectionEnd
-
 Section -Post
   WriteUninstaller "$INSTDIR\uninst.exe"
-  WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\*.exe"
+  WriteRegStr HKLM "${PRODUCT_DIR_REGKEY}" "" "$INSTDIR\AlbumArt.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayName" "$(^Name)"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "UninstallString" "$INSTDIR\uninst.exe"
-  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\*.exe"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayIcon" "$INSTDIR\AlbumArtDownloader.ico"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "DisplayVersion" "${PRODUCT_VERSION}"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "Publisher" "${PRODUCT_WEB_SITE}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "URLInfoAbout" "${PRODUCT_WEB_SITE}"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "HelpLink" "${PRODUCT_SUPPORT}"
+  WriteRegDword ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "NoModify" "1"
+  WriteRegDword ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "NoRepair" "1"
 SectionEnd
 
 Function .onInstSuccess
@@ -205,6 +246,7 @@ Section Uninstall
 
   RMDir "$LOCALAPPDATA\AlbumArtDownloader"
 
+  DeleteRegKey HKCR "Folder\shell\AlbumArtDownloader"
   DeleteRegKey ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}"
   DeleteRegKey HKLM "${PRODUCT_DIR_REGKEY}"
   SetAutoClose true
