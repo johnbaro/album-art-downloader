@@ -144,6 +144,7 @@ DownloadDotNET:
   DetailPrint "Completed .NET Framework install/update. Removing .NET Framework installer."
   Delete "$TEMP\dotnetfx.exe"
   DetailPrint ".NET Framework installer removed."
+  goto NewDotNet
 
 GiveUpDotNET:
   Abort "Installation cancelled by user."
