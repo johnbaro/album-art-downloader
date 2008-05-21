@@ -19,6 +19,7 @@ namespace AlbumArtDownloader.Controls
 		bool IsDownloading { get; }
 		bool IsSaved { get; }
 		bool IsSaving { get; }
+		bool IsSourceLocal { get; }
 		string SourceName { get; }
 
 		/// <summary>

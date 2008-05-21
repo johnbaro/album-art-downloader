@@ -5,18 +5,32 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Globalization;
 using System.Windows;
+using System.Reflection;
 
 namespace AlbumArtDownloader.Controls
 {
 	internal static class Utilities
 	{
-		public static IEnumerable<T> CastEnumerable<T>(IEnumerable enumerable)
-			where T: class
+		/// <summary>
+		/// Exposes the private ComboBox HighlightedItem functionality
+		/// to return the highlighted value of a combo box when open.
+		/// </summary>
+		public static object GetComboBoxHighlightedItem(ComboBox comboBox)
 		{
-			foreach (object item in enumerable)
+			//TODO: If WPF ever exposes this information properly, avoid using reflection on private members
+			try
 			{
-				yield return item as T;
+				PropertyInfo highlightedItemProperty = typeof(ComboBox).GetProperty("HighlightedItem", BindingFlags.Instance | BindingFlags.NonPublic);
+				if (highlightedItemProperty != null)
+				{
+					return highlightedItemProperty.GetValue(comboBox, null);
+				}
 			}
+			catch(Exception ex)
+			{
+				System.Diagnostics.Trace.TraceError("Could not access ComboBox.HighlightedItem property using reflection: " + ex.Message);
+			}
+			return null;
 		}
 
 		#region Text Measuring -  Formatted Text Caching

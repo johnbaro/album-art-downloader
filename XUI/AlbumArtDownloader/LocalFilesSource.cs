@@ -38,6 +38,31 @@ namespace AlbumArtDownloader
 			get { return typeof(LocalFilesSource).Assembly.GetName().Version.ToString(); }
 		}
 
+		public string GetSearchPath(string artist, string album)
+		{
+			string pathPattern = SearchPathPattern;
+			
+			//Replace %folder% and %filename% placeholders with the appropriate bits of the default file path
+			string folder, filename;
+			int lastSeparator = DefaultFilePath.LastIndexOfAny(new[] { '\\', '/' });
+			if (lastSeparator > -1)
+			{
+				folder = DefaultFilePath.Substring(0, lastSeparator);
+				filename = DefaultFilePath.Substring(lastSeparator + 1);
+			}
+			else
+			{
+				//No \'s in the path, so the whole thing is the filename and there is no folder part.
+				folder = "";
+				filename = DefaultFilePath;
+			}
+			pathPattern = pathPattern.Replace("%folder%", folder)
+							.Replace("%filename%", filename);
+
+			//Now replace all the other placeholders, and return the result
+			return Common.SubstitutePlaceholders(pathPattern, artist, album);
+		}
+
 		protected override void SearchInternal(string artist, string album, AlbumArtDownloader.Scripts.IScriptResults results)
 		{
 			//Add the pattern used to the history list.
@@ -46,7 +71,7 @@ namespace AlbumArtDownloader
 				((LocalFilesSourceSettings)CustomSettingsUI).mSearchPathPatternBox.AddPatternToHistory();
 			}));
 
-			string pathPattern = Common.SubstitutePlaceholders(SearchPathPattern, artist, album);
+			string pathPattern = GetSearchPath(artist, album);
 			
 			//Avoid duplicates
 			StringDictionary addedFiles = new StringDictionary();
@@ -71,7 +96,7 @@ namespace AlbumArtDownloader
 							//Create an in-memory copy so that the bitmap file isn't in use, and can be replaced
 							byte[] fileBytes = File.ReadAllBytes(filename); //Read the file, closing it after use
 							Bitmap bitmap = new Bitmap(new MemoryStream(fileBytes)); //NOTE: Do not dispose of MemoryStream, or it will cause later saving of the bitmap to throw a generic GDI+ error (annoyingly)
-							results.Add(bitmap, Path.GetFileName(filename), bitmap.Width, bitmap.Height, bitmap);
+							results.Add(bitmap, Path.GetFileName(filename), filename, bitmap.Width, bitmap.Height, bitmap);
 						}
 						else
 						{
@@ -102,19 +127,7 @@ namespace AlbumArtDownloader
 		{
 			get 
 			{
-				if (UseSearchPathPattern)
-				{
-					return mSearchPathPattern;
-				}
-				else
-				{
-					//If not using a custom search path pattern, use a pattern based on the location to save images to
-					return DefaultFilePath
-												.Replace("%name%", "*")
-												.Replace("%extension%", "*")
-												.Replace("%source%", "*")
-												.Replace("%size%", "*");
-				}
+				return mSearchPathPattern;
 			}
 			set 
 			{
@@ -130,7 +143,7 @@ namespace AlbumArtDownloader
 
 		private string mDefaultFilePath;
 		/// <summary>
-		/// The default file path, used as a fallback to determine the default image search path
+		/// The default file path, used to populate the %folder% and %filename% placeholders in SearchPathPattern
 		/// </summary>
 		public string DefaultFilePath
 		{
@@ -141,35 +154,6 @@ namespace AlbumArtDownloader
 				{
 					mDefaultFilePath = value;
 					NotifyPropertyChanged("DefaultFilePath");
-					if (!UseSearchPathPattern)
-					{
-						NotifyPropertyChanged("SearchPathPattern"); //This will change too, as it is coerced by the DefaultFilePath value.
-					}
-				}
-			}
-		}
-
-		private bool mUseSearchPathPattern;
-		/// <summary>
-		/// Whether or not to use a custom specified search path pattern.
-		/// If false, a pattern based on the location to save images to is used.
-		/// </summary>
-		public bool UseSearchPathPattern
-		{
-			get { return mUseSearchPathPattern; }
-			set 
-			{
-				if (mUseSearchPathPattern != value)
-				{
-					if (value)
-					{
-						//Ensure that the default path pattern is in the history list, so it can be selected
-						((LocalFilesSourceSettings)CustomSettingsUI).mSearchPathPatternBox.AddPatternToHistory();
-					}
-
-					mUseSearchPathPattern = value;
-					NotifyPropertyChanged("UseSearchPathPattern");
-					NotifyPropertyChanged("SearchPathPattern"); //This will change too, as it is coerced by this value.
 				}
 			}
 		}
@@ -177,10 +161,7 @@ namespace AlbumArtDownloader
 		#region Settings
 		protected override SourceSettings GetSettings()
 		{
-			if (String.IsNullOrEmpty(Name))
-				throw new InvalidOperationException("Cannot load settings for a source with no name");
-
-			return ((App)Application.Current).GetSourceSettings(Name, Settings.Creator);
+			return base.GetSettingsCore(Settings.Creator);
 		}
 
 		protected override void LoadSettingsInternal(SourceSettings settings)
@@ -189,8 +170,7 @@ namespace AlbumArtDownloader
 
 			Settings localFilesSourceSettings = (Settings)settings;
 			SearchPathPattern = localFilesSourceSettings.SearchPathPattern;
-			UseSearchPathPattern = localFilesSourceSettings.UseSearchPathPattern;
-
+			
 			LoadPathPatternHistory(localFilesSourceSettings);
 		}
 		
@@ -198,7 +178,6 @@ namespace AlbumArtDownloader
 		{
 			Settings localFilesSourceSettings = (Settings)settings;
 			localFilesSourceSettings.SearchPathPattern = mSearchPathPattern;
-			localFilesSourceSettings.UseSearchPathPattern = mUseSearchPathPattern;
 
 			SavePathPatternHistory(localFilesSourceSettings);
 
@@ -252,7 +231,17 @@ namespace AlbumArtDownloader
 			{
 			}
 
-			[DefaultSettingValueAttribute("")]
+			public override void Upgrade()
+			{
+				base.Upgrade();
+				if (String.IsNullOrEmpty(SearchPathPattern))
+				{
+					//Previous setting was to not use the search path pattern, so replicate that.
+					SearchPathPattern = "%folder%\\%filename%";
+				}
+			}
+
+			[DefaultSettingValueAttribute("%folder%\\%filename%")]
 			[UserScopedSetting]
 			public string SearchPathPattern
 			{
@@ -263,20 +252,6 @@ namespace AlbumArtDownloader
 				set
 				{
 					this["SearchPathPattern"] = value;
-				}
-			}
-
-			[DefaultSettingValueAttribute("False")]
-			[UserScopedSetting]
-			public bool UseSearchPathPattern
-			{
-				get
-				{
-					return ((bool)(this["UseSearchPathPattern"]));
-				}
-				set
-				{
-					this["UseSearchPathPattern"] = value;
 				}
 			}
 

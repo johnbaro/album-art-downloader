@@ -10,4 +10,17 @@ namespace AlbumArtDownloader.Controls
 		Right,
 		Bottom,
 	}
+
+	/// <summary>
+	/// How to group the results
+	/// </summary>
+	public enum Grouping
+	{
+		/// <summary>No grouping</summary>
+		None,
+		/// <summary>2 groups: Local results, and Online results</summary>
+		Local,
+		/// <summary>Grouped by result source name</summary>
+		Source
+	}
 }

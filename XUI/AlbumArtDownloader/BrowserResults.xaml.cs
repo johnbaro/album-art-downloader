@@ -111,15 +111,23 @@ namespace AlbumArtDownloader
 				}
 			}
 
-			//Don't substitute placeholders, but do substitute recursive path matching with the simplest solution to it, just putting saving to the immediate subfolder
-			string artFileSearchPattern = ImagePathPattern.Replace("\\**\\", "\\").Replace("/**/", "/");
-			//Also replace a wildcarded extension
+			//The art file search pattern is used as the default path to save the found image to, but first:
+			// *In case of alternates, use the first alternate only.
+			string artFileSearchPattern = ImagePathPattern.Split(new[] {'|'}, 2)[0];
+			// *Don't substitute placeholders, but do substitute recursive path matching with the simplest solution to it, just putting saving to the immediate subfolder
+			artFileSearchPattern = artFileSearchPattern.Replace("**\\", "").Replace("**/", "");
+			// *Also replace a wildcarded extension
 			if (artFileSearchPattern.EndsWith(".*"))
 			{
 				artFileSearchPattern = artFileSearchPattern.Substring(0, artFileSearchPattern.Length - 2) + ".%extension%";
 			}
-			//Replace other wildcards with the simplest solution: ""
-			artFileSearchPattern = artFileSearchPattern.Replace("*", "");
+			// *If the pattern ends in just a wildcard, replace with %name%.%extension%
+			else if (artFileSearchPattern.EndsWith("*"))
+			{
+				artFileSearchPattern = artFileSearchPattern.Substring(0, artFileSearchPattern.Length - 1) + "%name%.%extension%";
+			}
+			//Replace other wildcards with the %name%, so that for local files search they become wildcards again
+			artFileSearchPattern = artFileSearchPattern.Replace("*", "%name%");
 			int i = 0;
 			foreach (Album album in SelectedItems)
 			{
@@ -507,28 +515,36 @@ namespace AlbumArtDownloader
 						{
 							ProgressText = String.Format("Finding art... {0} / {1}", album.Artist, album.Name);
 
-							string artFileSearchPattern = Common.SubstitutePlaceholders(ImagePathPattern, album.Artist, album.Name);
-
-							if (!Path.IsPathRooted(artFileSearchPattern))
+							foreach (string imagePathPatternAlternate in ImagePathPattern.Split('|'))
 							{
-								artFileSearchPattern = Path.Combine(album.BasePath, artFileSearchPattern);
-							}
-							foreach (string artFile in Common.ResolvePathPattern(artFileSearchPattern))
-							{
-								album.ArtFile = artFile;
-								album.ArtFileStatus = ArtFileStatus.Present;
+								string artFileSearchPattern = Common.SubstitutePlaceholders(imagePathPatternAlternate, album.Artist, album.Name);
 
-								try
+								if (!Path.IsPathRooted(artFileSearchPattern))
 								{
-									album.ArtFileSize = new FileInfo(artFile).Length;
+									artFileSearchPattern = Path.Combine(album.BasePath, artFileSearchPattern);
 								}
-								catch (Exception) 
+								foreach (string artFile in Common.ResolvePathPattern(artFileSearchPattern))
 								{
-									//Ignore exceptions when reading the filesize, it isn't important
-									album.ArtFileSize = 0;
-								} 
+									album.ArtFile = artFile;
+									album.ArtFileStatus = ArtFileStatus.Present;
 
-								break; //Only use the first art file that matches, if there are multiple matches.
+									try
+									{
+										album.ArtFileSize = new FileInfo(artFile).Length;
+									}
+									catch (Exception)
+									{
+										//Ignore exceptions when reading the filesize, it isn't important
+										album.ArtFileSize = 0;
+									}
+
+									break; //Only use the first art file that matches, if there are multiple matches.
+								}
+								//If a matching art file is found, don't search further alternates
+								if (album.ArtFileStatus == ArtFileStatus.Present)
+								{
+									break;
+								}
 							}
 						}
 						catch (Exception)

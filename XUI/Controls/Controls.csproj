@@ -46,13 +46,17 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
     <Compile Include="ArtPanel.cs" />
     <Compile Include="ArtPanelList.cs" />
     <Compile Include="ArtPanelListSortPicker.cs" />
     <Compile Include="CompareConverter.cs" />
     <Compile Include="ArtPathPatternBox.cs" />
+    <Compile Include="EnumIndexConverter.cs" />
     <Compile Include="FileSizeConverter.cs" />
+    <Compile Include="LocalGroupDescription.cs" />
     <Compile Include="SizeRestrainer.cs" />
     <Compile Include="LogarithmicScaleConverter.cs" />
     <Compile Include="NotNullConverter.cs" />

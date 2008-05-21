@@ -1,4 +1,5 @@
 using System;
+using System.Windows.Controls;
 
 namespace AlbumArtDownloader
 {
@@ -11,7 +12,13 @@ namespace AlbumArtDownloader
 		public LocalFilesSourceSettings()
 		{
 			InitializeComponent();
+			mSearchPathPatternBox.ToolTipOpening += new ToolTipEventHandler(OnToolTipOpening);
 		}
 
+		private void OnToolTipOpening(object sender, ToolTipEventArgs e)
+		{
+			//TODO: Can the actual current artist and album be substituted here?
+			((Control)sender).ToolTip = ((LocalFilesSource)DataContext).GetSearchPath("%artist%", "%album%");
+		}
 	}
 }

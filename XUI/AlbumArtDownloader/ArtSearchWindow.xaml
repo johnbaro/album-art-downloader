@@ -21,10 +21,12 @@
 				<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/SimpleList.generic.xaml"/>
 				<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/HyperlinkButton.generic.xaml"/>
 				<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/HyperlinkExpander.generic.xaml"/>
+				<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/HyperlinkCombo.generic.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 
 			<BooleanToVisibilityConverter x:Key="mBooleanToVisibilityConverter"/>
 			<controls:EqualityConverter x:Key="mEqualityConverter"/>
+			<controls:EnumIndexConverter x:Key="mEnumIndexConverter"/>
 
 			<Style TargetType="Label">
 				<Setter Property="Margin" Value="2"/>
@@ -34,7 +36,7 @@
 				<Setter Property="Margin" Value="2"/>
 				<Setter Property="Padding" Value="2"/>
 			</Style>
-
+			
 			<properties:Settings x:Key="mSettings"/>
 		</ResourceDictionary>
 	</Window.Resources>
@@ -192,11 +194,9 @@
 			</Grid>
 		</Expander>
 
-		<controls:ArtPanelListSortPicker Name="mSortPicker" HorizontalAlignment="Right" VerticalAlignment="Bottom"
-										 SortDescription="{Binding Source={StaticResource mSettings}, Path=Default.ResultsSorting}"
-										 >
-			<controls:ArtPanelListSortPicker.Style>
-				<Style TargetType="{x:Type controls:ArtPanelListSortPicker}">
+		<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+			<StackPanel.Style>
+				<Style TargetType="{x:Type StackPanel}">
 					<Setter Property="Grid.Row" Value="2"/>
 					<Style.Triggers>
 						<DataTrigger Binding="{Binding ElementName=mOptionsBox, Path=IsExpanded}" Value="True">
@@ -204,12 +204,28 @@
 						</DataTrigger >
 					</Style.Triggers>
 				</Style>
-			</controls:ArtPanelListSortPicker.Style>
-		</controls:ArtPanelListSortPicker>
+			</StackPanel.Style>
+			
+			<TextBlock Margin="2" Padding="5,1,2,2" VerticalAlignment="Top">Group by:</TextBlock>
+			<ComboBox Name="mGroupingPicker" Style="{StaticResource HyperlinkCombo}" Padding="2,0,2,2" IsEditable="False" HorizontalContentAlignment="Right"
+					  SelectedIndex="{Binding Source={StaticResource mSettings}, Path=Default.ResultsGrouping, Converter={StaticResource mEnumIndexConverter}}">
+				<!-- Must match AlbumArtDownloader.Controls.Grouping enum -->
+				<ComboBoxItem>None</ComboBoxItem>
+				<ComboBoxItem>Local</ComboBoxItem>
+				<ComboBoxItem>Source</ComboBoxItem>
+			</ComboBox>
+
+			<controls:ArtPanelListSortPicker Name="mSortPicker" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+										 SortDescription="{Binding Source={StaticResource mSettings}, Path=Default.ResultsSorting}"
+										 />
+		</StackPanel>
+
+
 		<controls:ArtPanelList  Grid.Row="4" Name="mResultsViewer"
 								PanelWidthSnapping="7"
 								DataContext="{StaticResource mSettings}"
 								SortDescription="{Binding Default.ResultsSorting, Mode=OneWay}"
+								Grouping="{Binding Default.ResultsGrouping, Mode=OneWay}"
 								ThumbSize="{Binding Default.ThumbSize}"
 								PanelWidth="{Binding Default.PanelWidth}"
 								UseMinimumImageSize="{Binding Default.UseMinimumImageSize, Mode=OneWay}"
@@ -218,7 +234,7 @@
 								MaximumImageSize="{Binding Default.MaximumImageSize, Mode=OneWay}"
 								InformationLocation="{Binding Default.InformationLocation}"
 							   />
-
+		
 		<Grid Grid.Column="3" Grid.Row="1" Grid.RowSpan="4">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto"/>

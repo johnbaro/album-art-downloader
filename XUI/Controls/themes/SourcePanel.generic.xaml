@@ -139,7 +139,7 @@
 													Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Source.MaximumResults}"
 													HasValue="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Source.UseMaximumResults}"/>
 									<TextBlock Grid.Column="1" Margin="0,5,0,0">results</TextBlock>
-									<ContentControl Grid.Row="2" Grid.ColumnSpan="2" Content="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Source.CustomSettingsUI, Mode=OneWay}"/>
+									<ContentControl Grid.Row="2" Grid.ColumnSpan="2" Focusable="False" Content="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Source.CustomSettingsUI, Mode=OneWay}"/>
 								</Grid>
 							</GroupBox>
 						</Grid>

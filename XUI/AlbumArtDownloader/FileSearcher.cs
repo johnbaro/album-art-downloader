@@ -5,8 +5,11 @@
 // Stephen Toub
 // stoub@microsoft.com
 
+// Adapted by Alex Vallat for searching Directories too.
+
 using System;
 using System.IO;
+using System.Linq;
 using System.Security;
 using System.ComponentModel;
 using System.Collections.Generic;
@@ -101,6 +104,14 @@ namespace NetMatters
 
 		public static IEnumerable<FileInfo> GetFiles(DirectoryInfo dir, string pattern, SearchOption searchOption)
 		{
+			return GetFileSystemInfos(dir, pattern, searchOption, false, true).Cast<FileInfo>();
+		}
+		public static IEnumerable<DirectoryInfo> GetDirectories(DirectoryInfo dir, string pattern, SearchOption searchOption)
+		{
+			return GetFileSystemInfos(dir, pattern, searchOption, true, false).Cast<DirectoryInfo>();
+		}
+		public static IEnumerable<FileSystemInfo> GetFileSystemInfos(DirectoryInfo dir, string pattern, SearchOption searchOption, bool includeDirectories, bool includeFiles)
+		{
             // We suppressed this demand for each p/invoke call, so demand it upfront once
             new SecurityPermission(SecurityPermissionFlag.UnmanagedCode).Demand();
 
@@ -145,7 +156,19 @@ namespace NetMatters
 							do
 							{
 								if ((findData.dwFileAttributes & FileAttributes.Directory) == 0)
-									yield return new FileInfo(dirPath + findData.cFileName);
+								{
+									if (includeFiles)
+									{
+										yield return new FileInfo(dirPath + findData.cFileName);
+									}
+								}
+								else
+								{
+									if (includeDirectories && findData.cFileName != "." && findData.cFileName != "..")
+									{
+										yield return new DirectoryInfo(dirPath + findData.cFileName);
+									}
+								}
 							}
 							while (FindNextFile(handle, findData));
 							int error = Marshal.GetLastWin32Error();
@@ -159,7 +182,7 @@ namespace NetMatters
 					{
 						try
 						{
-							foreach (DirectoryInfo childDir in dir.GetDirectories())
+							foreach (DirectoryInfo childDir in GetDirectories(dir, "*", SearchOption.TopDirectoryOnly)) //Top only, as we're all ready handling recursion here.
 							{
 								try
 								{

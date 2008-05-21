@@ -15,8 +15,45 @@
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="ItemsControl">
+					<ControlTemplate.Resources>
+						<GroupStyle x:Key="PART_GroupStyle">
+							<GroupStyle.ContainerStyle>
+								<Style TargetType="{x:Type GroupItem}">
+									<Setter Property="Template">
+										<Setter.Value>
+											<ControlTemplate TargetType="{x:Type GroupItem}">
+												<HeaderedContentControl>
+													<HeaderedContentControl.Header>
+														<StackPanel>
+															<TextBlock FontWeight="Bold" Text="{Binding Path=Name}" Margin="10 4 0 2" />
+															<Line X1="1" Stretch="Fill" Margin="0 0 0 3">
+																<Line.Stroke>
+																	<LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+																		<GradientStop Color="#FF3D95FF" Offset="0"/>
+																		<GradientStop Color="#00FFFFFF" Offset="0.8"/>
+																	</LinearGradientBrush>
+																</Line.Stroke>
+															</Line>
+														</StackPanel>
+													</HeaderedContentControl.Header>
+													<HeaderedContentControl.Content>
+														<ItemsPresenter />
+													</HeaderedContentControl.Content>
+												</HeaderedContentControl>
+											</ControlTemplate>
+										</Setter.Value>
+									</Setter>
+								</Style>
+							</GroupStyle.ContainerStyle>
+							<GroupStyle.Panel>
+								<ItemsPanelTemplate>
+									<WrapPanel />
+								</ItemsPanelTemplate>
+							</GroupStyle.Panel>
+						</GroupStyle>
+					</ControlTemplate.Resources>
 					<Border Background="{TemplateBinding Background}" SnapsToDevicePixels="True" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="1,1,1,1">
-						<ScrollViewer VerticalScrollBarVisibility="Visible" CanContentScroll="True" Focusable="False" Padding="{TemplateBinding Padding}">
+						<ScrollViewer VerticalScrollBarVisibility="Visible" Focusable="False" Padding="{TemplateBinding Padding}">
 							<ItemsPresenter Name="PART_ItemsPresenter"  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
 						</ScrollViewer>
 					</Border>

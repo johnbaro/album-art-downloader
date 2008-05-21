@@ -29,7 +29,7 @@ namespace AlbumArtDownloader.Controls
 		static ArtPanelList()
 		{
 			DefaultStyleKeyProperty.OverrideMetadata(typeof(ArtPanelList), new FrameworkPropertyMetadata(typeof(ArtPanelList)));
-
+			
 			PropertyMetadata baseMetadata = ItemsSourceProperty.GetMetadata(typeof(ItemsControl));
 			System.Diagnostics.Debug.Assert(baseMetadata.CoerceValueCallback == null, "Not expecting any pre-existing coercion");
 			ItemsSourceProperty.OverrideMetadata(typeof(ArtPanelList), new FrameworkPropertyMetadata(baseMetadata.DefaultValue, baseMetadata.PropertyChangedCallback, new CoerceValueCallback(CoerceItemsSource)));
@@ -39,6 +39,22 @@ namespace AlbumArtDownloader.Controls
 		{
 			CommandBindings.Add(new CommandBinding(EditingCommands.AlignJustify, new ExecutedRoutedEventHandler(AlignJustifyCommandHandler)));
 			AddHandler(ArtPanel.ImageSizeChangedEvent, new RoutedEventHandler(OnImageSizeChanged));
+		}
+
+		protected override void OnTemplateChanged(ControlTemplate oldTemplate, ControlTemplate newTemplate)
+		{
+			base.OnTemplateChanged(oldTemplate, newTemplate);
+
+			//Check if this template specifies a GroupStyle (which can't be done in Xaml directly)
+			if (newTemplate != null)
+			{
+				GroupStyle groupStyle = newTemplate.Resources["PART_GroupStyle"] as GroupStyle;
+				if (groupStyle != null)
+				{
+					GroupStyle.Clear();
+					GroupStyle.Add(groupStyle);
+				}
+			}
 		}
 
 		#region Mouse shifting
@@ -316,6 +332,33 @@ namespace AlbumArtDownloader.Controls
 			if (!String.IsNullOrEmpty(sortDescription.PropertyName))
 			{
 				artPanelList.Items.SortDescriptions.Add(sortDescription);
+			}
+		}
+
+		public static readonly DependencyProperty GroupingProperty = DependencyProperty.Register("Grouping", typeof(Grouping), typeof(ArtPanelList),
+					new FrameworkPropertyMetadata(Grouping.None, new PropertyChangedCallback(OnGroupingChanged)));
+		/// <summary>The grouping to be applied to the list</summary>
+		public Grouping Grouping
+		{
+			get { return (Grouping)GetValue(GroupingProperty); }
+			set { SetValue(GroupingProperty, value); }
+		}
+
+		private static void OnGroupingChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+		{
+			ArtPanelList artPanelList = (ArtPanelList)sender;
+			artPanelList.Items.GroupDescriptions.Clear();
+
+			switch ((Grouping)e.NewValue)
+			{
+				case Grouping.Local:
+					//Group by whether the source is local or not
+					artPanelList.Items.GroupDescriptions.Add(new LocalGroupDescription());
+					break;
+				case Grouping.Source:
+					//Group by source name
+					artPanelList.Items.GroupDescriptions.Add(new System.Windows.Data.PropertyGroupDescription("SourceName"));
+					break;
 			}
 		}
 

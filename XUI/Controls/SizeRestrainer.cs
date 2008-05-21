@@ -10,6 +10,12 @@ namespace AlbumArtDownloader.Controls
 	/// </summary>
 	public class SizeRestrainer : ContentControl
 	{
+		static SizeRestrainer()
+		{
+			//Size restrainers should not be focusable (at least by default)
+			FocusableProperty.OverrideMetadata(typeof(SizeRestrainer), new FrameworkPropertyMetadata(false));
+		}
+
 		protected override Size MeasureOverride(Size constraint)
 		{
 			return Size.Empty; //Don't need any size larger than the available size

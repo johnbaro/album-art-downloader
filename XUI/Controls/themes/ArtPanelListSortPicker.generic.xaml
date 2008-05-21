@@ -38,7 +38,7 @@
 			<Setter.Value>
 				<ControlTemplate TargetType="{x:Type local:ArtPanelListSortPicker}">
 					<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-						<Label  Padding="5,1,2,2" VerticalAlignment="Top">Sort by:</Label>
+						<TextBlock Margin="2" Padding="5,1,2,2" VerticalAlignment="Top">Sort by:</TextBlock>
 						<ComboBox Name="PART_SortField"  Style="{StaticResource HyperlinkCombo}" Padding="2,0,2,2" IsEditable="False" HorizontalContentAlignment="Right"/>
 						<ToggleButton Name="PART_SortDirection" Padding="2" Style="{StaticResource SortDirection}"/>
 					</StackPanel>

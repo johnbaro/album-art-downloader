@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Threading;
+using System.Linq;
 using AlbumArtDownloader.Controls;
 using AlbumArtDownloader.Scripts;
 
@@ -471,30 +472,16 @@ namespace AlbumArtDownloader
 		}
 		/// <summary>
 		/// Sets the LocalFilesSource image search path.
-		/// Pass null to set as unspecified.
 		/// </summary>
 		/// <param name="path"></param>
 		public void SetLocalImagesPath(string path)
 		{
-			LocalFilesSource localFilesSource = null;
-			foreach (Source source in mSources)
-			{
-				localFilesSource = source as LocalFilesSource;
-				if (localFilesSource != null) //TODO: Could there ever be more than one local files source?
-					break;
-			}
-
+			//TODO: Could there ever be more than one local files source?
+			LocalFilesSource localFilesSource = mSources.OfType<LocalFilesSource>().FirstOrDefault();
+			
 			if (localFilesSource != null)
 			{
-				if (String.IsNullOrEmpty(path))
-				{
-					localFilesSource.UseSearchPathPattern = false;
-				}
-				else
-				{
-					localFilesSource.UseSearchPathPattern = true;
-					localFilesSource.SearchPathPattern = path;
-				}
+				localFilesSource.SearchPathPattern = path;
 			}
 		}
 		#endregion

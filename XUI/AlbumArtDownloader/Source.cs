@@ -76,10 +76,18 @@ namespace AlbumArtDownloader
 		/// </summary>
 		protected virtual SourceSettings GetSettings()
 		{
+			return GetSettingsCore(SourceSettings.Creator);
+		}
+
+		/// <summary>
+		/// Load the SourceSettings object for this source, with the specified source settings creator
+		/// </summary>
+		protected SourceSettings GetSettingsCore(SourceSettingsCreator sourceSettingsCreator)
+		{
 			if (String.IsNullOrEmpty(Name))
 				throw new InvalidOperationException("Cannot load settings for a source with no name");
 
-			return ((App)Application.Current).GetSourceSettings(Name);
+			return ((App)Application.Current).GetSourceSettings(Name, sourceSettingsCreator);
 		}
 
 		/// <summary>

@@ -59,7 +59,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="FileBrowseImagePath" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Folder.jpg</Value>
+      <Value Profile="(Default)">Folder.*|Cover.*</Value>
     </Setting>
     <Setting Name="FileBrowseImagePathHistory" Type="System.Collections.Specialized.StringCollection" Scope="User">
       <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
@@ -76,6 +76,13 @@
     </Setting>
     <Setting Name="FileBrowsePathPattern" Type="System.String" Scope="User">
       <Value Profile="(Default)">\%artist%\%album%\*</Value>
+    </Setting>
+    <Setting Name="ResultsGrouping" Type="AlbumArtDownloader.Controls.Grouping" Scope="User">
+      <Value Profile="(Default)">None</Value>
+    </Setting>
+    <Setting Name="FileBrowseFilePathPatternHistory" Type="System.Collections.Specialized.StringCollection" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+&lt;ArrayOfString xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" /&gt;</Value>
     </Setting>
   </Settings>
 </SettingsFile>

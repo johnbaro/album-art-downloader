@@ -127,6 +127,7 @@
 				<controls:ArtPathPatternBox Name="mImagePathPatternBox" Grid.Row="1" PathPattern="{Binding Source={StaticResource mSettings}, Path=Default.FileBrowseImagePath}">
 					<controls:ArtPathPatternBox.AdditionalPlaceholders>
 						<controls:PatternPlaceholder MenuItemHeader="_Subfolders" ToolTip="Matches subfolders recursively at this point in the path" Placeholder="\**\"/>
+						<controls:PatternPlaceholder MenuItemHeader="_Alternate" ToolTip="Separates alternative paths to match" Placeholder="|"/>
 					</controls:ArtPathPatternBox.AdditionalPlaceholders>
 					<controls:ArtPathPatternBox.BrowseDialog>
 						<Win32:OpenFileDialog Title="Path to find images" ValidateNames="False" CheckFileExists="False" CheckPathExists="False" Filter="All Files (*.*)|*.*"/>

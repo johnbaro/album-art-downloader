@@ -36,7 +36,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>.\bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;_EPHEMERAL_SETTINGS _ERROR_REPORTING</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;EPHEMERAL_SETTINGS _ERROR_REPORTING</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>false</DebugSymbols>

@@ -1,13 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.IO;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
-using System.Text.RegularExpressions;
+using AlbumArtDownloader.Controls;
 
 namespace AlbumArtDownloader
 {
@@ -117,34 +119,36 @@ namespace AlbumArtDownloader
 		}
 
 		#region Settings
-		private void LoadPathPatternHistory()
+		private void LoadPathPatternHistory(ArtPathPatternBox patternBox, StringCollection settingsHistory)
 		{
-			ICollection<String> history = mImagePathPatternBox.History;
+			ICollection<String> history = patternBox.History;
 			history.Clear();
-			foreach (string historyItem in Properties.Settings.Default.FileBrowseImagePathHistory)
+			foreach (string historyItem in settingsHistory)
 			{
 				history.Add(historyItem);
 			}
 		}
 
-		private void SavePathPatternHistory()
+		private void SavePathPatternHistory(ArtPathPatternBox patternBox, StringCollection settingsHistory)
 		{
-			ICollection<String> history = mImagePathPatternBox.History;
+			ICollection<String> history = patternBox.History;
 
-			Properties.Settings.Default.FileBrowseImagePathHistory.Clear();
+			settingsHistory.Clear();
 			foreach (string historyItem in history)
 			{
-				Properties.Settings.Default.FileBrowseImagePathHistory.Add(historyItem);
+				settingsHistory.Add(historyItem);
 			}
 		}
 
 		public void SaveSettings()
 		{
-			SavePathPatternHistory();
+			SavePathPatternHistory(mImagePathPatternBox, Properties.Settings.Default.FileBrowseImagePathHistory);
+			SavePathPatternHistory(mFilePathPattern, Properties.Settings.Default.FileBrowseFilePathPatternHistory);
 		}
 		public void LoadSettings()
 		{
-			LoadPathPatternHistory();
+			LoadPathPatternHistory(mImagePathPatternBox, Properties.Settings.Default.FileBrowseImagePathHistory);
+			LoadPathPatternHistory(mFilePathPattern, Properties.Settings.Default.FileBrowseFilePathPatternHistory);
 		}
 		#endregion
 
@@ -218,6 +222,7 @@ namespace AlbumArtDownloader
 		private void FindExec(object sender, ExecutedRoutedEventArgs e)
 		{
 			mImagePathPatternBox.AddPatternToHistory();
+			mFilePathPattern.AddPatternToHistory();
 			Search(mFilePathBox.Text,
 					mIncludeSubfolders.IsChecked.GetValueOrDefault(),
 					mImagePathPatternBox.PathPattern,
@@ -357,9 +362,16 @@ namespace AlbumArtDownloader
 						else
 						{
 							//It is a directory, so read its contents
+
 							try
 							{
-								foreach (FileInfo file in NetMatters.FileSearcher.GetFiles(root, "*", parameters.IncludeSubfolders ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly))
+								if (parameters.FindDirectories)
+								{
+									//Include self
+									ReadMediaFile(root, pathPattern);
+								}
+
+								foreach (FileSystemInfo file in NetMatters.FileSearcher.GetFileSystemInfos(root, "*", parameters.IncludeSubfolders ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly, parameters.FindDirectories, !parameters.FindDirectories))
 								{
 									ReadMediaFile(file, pathPattern);
 								}
@@ -396,8 +408,13 @@ namespace AlbumArtDownloader
 		}
 
 		/// <param name="filePathPattern">Use null to use the ID3 tags instead</param>
-		private void ReadMediaFile(FileInfo file, Regex filePathPattern)
+		private void ReadMediaFile(FileSystemInfo file, Regex filePathPattern)
 		{
+			if (file is DirectoryInfo && filePathPattern == null) //If a DirectoryInfo is used, then the filePathPattern must have ended in \.
+			{
+				throw new ArgumentException("Directories are only supported for pattern matching, not ID3 tags", "file");
+			}
+
 			Dispatcher.BeginInvoke(DispatcherPriority.DataBind, new ThreadStart(delegate
 			{
 				ProgressText = "Searching... " + file.Name;
@@ -443,9 +460,20 @@ namespace AlbumArtDownloader
 
 			if (!(String.IsNullOrEmpty(artistName) && String.IsNullOrEmpty(albumName))) //No point adding it if no artist or album could be found.
 			{
+				string basePath;
+				if (file is FileInfo)
+				{
+					basePath = ((FileInfo)file).DirectoryName;
+				}
+				else
+				{
+					System.Diagnostics.Debug.Assert(file is DirectoryInfo, "Expecting file to be one of FileInfo or DirectoryInfo");
+					basePath = ((DirectoryInfo)file).FullName;
+				}
+
 				Dispatcher.Invoke(DispatcherPriority.DataBind, new ThreadStart(delegate
 				{
-					mAlbums.Add(new Album(file.DirectoryName, artistName, albumName));
+					mAlbums.Add(new Album(basePath, artistName, albumName));
 				}));
 			}
 		}
@@ -519,9 +547,13 @@ namespace AlbumArtDownloader
 				RootPath = rootPath;
 				IncludeSubfolders = includeSubfolders;
 				PathPattern = pathPattern;
+
+				//If the path pattern ends with \. (or /.) then this is a flag that directory matching should be used
+				FindDirectories = pathPattern != null && (pathPattern.EndsWith(@"\.") || pathPattern.EndsWith(@"/."));
 			}
 			public string RootPath { get ; private set; }
-			public bool IncludeSubfolders { get ; private set; }
+			public bool IncludeSubfolders { get; private set; }
+			public bool FindDirectories { get; private set; }
 			public string PathPattern { get; private set; }
 
 			/// <summary>
@@ -531,10 +563,19 @@ namespace AlbumArtDownloader
 			/// <returns></returns>
 			public Regex CreatePathPatternRegex()
 			{
-				if (PathPattern == null)
+				string regex = PathPattern;
+
+				if (regex == null)
 					return null; //No path matching (use ID3 tags)
 
-				string regex = Regex.Escape(PathPattern) + "$"; //Start by escaping the whole thing, and requiring it to be the end of the path.
+				if(FindDirectories)
+				{
+					//Remove the \. from the end of the string, as it won't actually feature in the path as found, so wouldn't match
+					System.Diagnostics.Debug.Assert(regex.EndsWith(@"\.") || regex.EndsWith(@"/."), "Shouldn't be removing this ending if it isn't there!");
+					regex = regex.Substring(0, regex.Length - 2);
+				}
+
+				regex = Regex.Escape(regex) + "$"; //Start by escaping the whole thing, and requiring it to be the end of the path.
 				regex = Regex.Replace(regex, @"(\\\\|/)", @"[\\/]"); //Replace all / or \ characters with [\/] to allow matching either path character
 				regex = Regex.Replace(regex, @"\\(\*|\?)", @"[^\\/]$1?"); //Replace * (and ?) with [^\/]*? to match within the path segment only, and non-greedy
 				//Restore literal regex parts

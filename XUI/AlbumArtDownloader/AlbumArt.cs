@@ -209,6 +209,12 @@ namespace AlbumArtDownloader
 			}
 		}
 
+		public bool IsSourceLocal
+		{
+			//TODO: Add possibility of other local sources? Perhaps a flag on a sources?
+			get { return mSource is LocalFilesSource; }
+		}
+
 		public string SourceName
 		{
 			get { return mSource.Name; }

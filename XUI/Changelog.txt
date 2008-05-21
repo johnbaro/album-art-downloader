@@ -1,3 +1,14 @@
+0.19 File and Foobar browsers now support Alternates (|) for image path searching
+     Improvements to the generation of the default filename to save to when launching
+      from file and Foobar browsers.
+     Search results grouping (by source, or by local / online results)
+     File path pattern matching box history list fixed
+     Delete key now removes items from history lists
+     Changed Local Files Source settings so that a path is always set, but added new
+      %folder% and %filename% placeholders to it, which produce the folder and
+      filename of the specified default path to save images.
+     Some keyboard accessibility bugs fixed
+      
 0.18 Added extra information link to results (where provided by the script)
      Added installer option to add a "Browse for Album Art" to the context
       menu for folders in Explorer.

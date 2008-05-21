@@ -141,7 +141,15 @@ namespace AlbumArtDownloader
 				{
 					//Ensure that this the parameter is a Uri
 					Uri uri = new Uri(uriString, UriKind.Absolute);
-					System.Diagnostics.Process.Start(uri.AbsoluteUri);
+					if (uri.IsFile)
+					{
+						//If the Uri is a file, then display it in explorer rather than executing it (safer too!)
+						System.Diagnostics.Process.Start("explorer.exe", "/select," + uri.AbsoluteUri);
+					}
+					else
+					{
+						System.Diagnostics.Process.Start(uri.AbsoluteUri);
+					}
 				}
 				catch (Exception ex)
 				{

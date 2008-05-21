@@ -626,10 +626,6 @@ namespace AlbumArtDownloader
 		}
 
 		private Dictionary<string, SourceSettings> mSourceSettings = new Dictionary<String, SourceSettings>();
-		public SourceSettings GetSourceSettings(string sourceName)
-		{
-			return GetSourceSettings(sourceName, SourceSettings.Creator);
-		}
 		public SourceSettings GetSourceSettings(string sourceName, SourceSettingsCreator sourceSettingsCreator)
 		{
 			SourceSettings sourceSettings;

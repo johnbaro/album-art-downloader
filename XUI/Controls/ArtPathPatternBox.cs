@@ -26,6 +26,11 @@ namespace AlbumArtDownloader.Controls
 			//This OverrideMetadata call tells the system that this element wants to provide a style that is different than its base class.
 			//This style is defined in themes\generic.xaml
 			DefaultStyleKeyProperty.OverrideMetadata(typeof(ArtPathPatternBox), new FrameworkPropertyMetadata(typeof(ArtPathPatternBox)));
+			//The control itself shouldn't be a tab stop (it's inner controls are)
+			IsTabStopProperty.OverrideMetadata(typeof(ArtPathPatternBox), new FrameworkPropertyMetadata(false));
+			KeyboardNavigation.TabNavigationProperty.OverrideMetadata(typeof(ArtPathPatternBox), new FrameworkPropertyMetadata(KeyboardNavigationMode.Local));
+			KeyboardNavigation.ControlTabNavigationProperty.OverrideMetadata(typeof(ArtPathPatternBox), new FrameworkPropertyMetadata(KeyboardNavigationMode.None));
+			KeyboardNavigation.DirectionalNavigationProperty.OverrideMetadata(typeof(ArtPathPatternBox), new FrameworkPropertyMetadata(KeyboardNavigationMode.None));
 		}
 
 		public ArtPathPatternBox()
@@ -53,10 +58,12 @@ namespace AlbumArtDownloader.Controls
 				//Make it mimic the editable area of a combo box
 				PathEditor.Margin = new Thickness(0, 0, SystemParameters.VerticalScrollBarWidth, 0);
 				PathEditor.KeyDown += new KeyEventHandler(OnPathEditorKeyDown);
+				PathEditor.PreviewKeyDown += new KeyEventHandler(OnPathEditorPreviewKeyDown);
 				if (PathEditorHistory != null)
 				{
 					PathEditorHistory.SelectionChanged += new SelectionChangedEventHandler(OnPathEditorHistorySelectionChanged);
 					PathEditorHistory.DropDownClosed += new EventHandler(OnPathEditorHistoryDropDownClosed);
+					PathEditorHistory.CommandBindings.Add(new CommandBinding(ApplicationCommands.Delete, new ExecutedRoutedEventHandler(OnHistoryDeleteExec)));
 				}
 			}
 		}
@@ -91,6 +98,16 @@ namespace AlbumArtDownloader.Controls
 			}
 		}
 
+		private void OnHistoryDeleteExec(object sender, ExecutedRoutedEventArgs e)
+		{
+			ComboBox history = (ComboBox)sender;
+			string highlightedEntry = Utilities.GetComboBoxHighlightedItem(history) as string;
+			if (highlightedEntry != null)
+			{
+				History.Remove(highlightedEntry);
+			}
+		}
+
 		private void MenuButtonContextMenuOpening(object sender, ContextMenuEventArgs e)
 		{
 			//Cancel context menu opening
@@ -98,6 +115,25 @@ namespace AlbumArtDownloader.Controls
 		}
 
 		#region Combo box mimicry for PathEditor
+		private void OnPathEditorPreviewKeyDown(object sender, KeyEventArgs e)
+		{
+			//Handle keys that would otherwise be handled by the path editor
+			switch (e.Key)
+			{
+				case Key.Up:
+				case Key.Down:
+					if (PathEditorHistory.IsDropDownOpen)
+					{
+						if (PathEditorHistory.SelectedIndex == -1)
+						{
+							PathEditorHistory.SelectedIndex = 0;
+						}
+						PathEditorHistory.Focus();
+					}
+					e.Handled = true;
+					break;
+			}
+		}
 		private void OnPathEditorKeyDown(object sender, KeyEventArgs e)
 		{
 			//Mimic combo box behaviour
@@ -138,7 +174,11 @@ namespace AlbumArtDownloader.Controls
 
 		private void OnPathEditorHistorySelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
-			PathEditor.Text = (string)PathEditorHistory.SelectedValue;
+			string value = PathEditorHistory.SelectedValue as string;
+			if (value != null)
+			{
+				PathEditor.Text = value;
+			}
 		}
 		private void OnPathEditorHistoryGotFocus(object sender, RoutedEventArgs e)
 		{
@@ -147,6 +187,20 @@ namespace AlbumArtDownloader.Controls
 		private void OnPathEditorHistoryDropDownClosed(object sender, EventArgs e)
 		{
 			PathEditor.Focus();
+		}
+
+		protected override void OnGotFocus(RoutedEventArgs e)
+		{
+			base.OnGotFocus(e);
+
+			if ((!e.Handled) && (PathEditor != null))
+			{
+				if (e.OriginalSource == this)
+				{
+					PathEditor.Focus();
+					e.Handled = true;
+				}
+			}
 		}
 		#endregion
 

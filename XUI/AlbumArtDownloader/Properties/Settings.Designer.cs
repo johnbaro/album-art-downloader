@@ -233,7 +233,7 @@ namespace AlbumArtDownloader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Folder.jpg")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Folder.*|Cover.*")]
         public string FileBrowseImagePath {
             get {
                 return ((string)(this["FileBrowseImagePath"]));
@@ -301,6 +301,31 @@ namespace AlbumArtDownloader.Properties {
             }
             set {
                 this["FileBrowsePathPattern"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("None")]
+        public global::AlbumArtDownloader.Controls.Grouping ResultsGrouping {
+            get {
+                return ((global::AlbumArtDownloader.Controls.Grouping)(this["ResultsGrouping"]));
+            }
+            set {
+                this["ResultsGrouping"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<ArrayOfString xmlns:xsi=\"http://www.w3." +
+            "org/2001/XMLSchema-instance\" xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" />")]
+        public global::System.Collections.Specialized.StringCollection FileBrowseFilePathPatternHistory {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["FileBrowseFilePathPatternHistory"]));
+            }
+            set {
+                this["FileBrowseFilePathPatternHistory"] = value;
             }
         }
     }
