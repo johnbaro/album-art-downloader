@@ -1,4 +1,6 @@
 0.19 File and Foobar browsers now support Alternates (|) for image path searching
+     File path pattern matching can be made to match folders instead of files, by
+      ending the pattern with "\."
      Improvements to the generation of the default filename to save to when launching
       from file and Foobar browsers.
      Search results grouping (by source, or by local / online results)
