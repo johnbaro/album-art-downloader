@@ -52,7 +52,7 @@ namespace AlbumArtDownloader
 				mArtFileSearchThread = null;
 			}
 		}
-
+		
 		#region Command Handlers
 		private void DeleteExec(object sender, ExecutedRoutedEventArgs e)
 		{

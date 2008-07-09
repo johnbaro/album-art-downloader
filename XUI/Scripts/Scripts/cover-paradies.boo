@@ -13,7 +13,7 @@ class CoverParadies:
 	static SourceCreator as string:
 		get: return "Alex Vallat"
 	static SourceVersion as string:
-		get: return "0.4"
+		get: return "0.5"
 	static def GetThumbs(coverart,artist,album):
 		query as string = artist + " " + album
 		query.Replace(' ','+')
@@ -27,7 +27,8 @@ class CoverParadies:
 		
 		for resultMatch as Match in resultMatches:
 			//Get the album page
-			albumPage = GetPage(String.Format("http://www.cover-paradies.to/?Module=ViewEntry&ID={0}", resultMatch.Groups["ID"].Value))
+			albumPageUri = String.Format("http://www.cover-paradies.to/?Module=ViewEntry&ID={0}", resultMatch.Groups["ID"].Value)
+			albumPage = GetPage(albumPageUri)
 			
 			//Get the title for that album
 			titleRegex = Regex("<div class=\"Area_Title\">\\s*(?<title>[^<]+)<", RegexOptions.Singleline)
@@ -42,8 +43,8 @@ class CoverParadies:
 					imageTitle = String.Format("{0} - {1}", title, imageMatch.Groups["imageName"].Value)
 				else:
 					imageTitle = title
-					
-				coverart.AddThumb(imageMatch.Groups["thumb"].Value, imageTitle, Int32.Parse(imageMatch.Groups["width"].Value), Int32.Parse(imageMatch.Groups["height"].Value), imageMatch.Groups["fullSizeID"].Value)		
+				
+				coverart.Add(GetPageStream(imageMatch.Groups["thumb"].Value, "http://www.cover-paradies.to"), imageTitle, albumPageUri, Int32.Parse(imageMatch.Groups["width"].Value), Int32.Parse(imageMatch.Groups["height"].Value), imageMatch.Groups["fullSizeID"].Value)		
 
 	static def Post(url as String, content as String):
 		request = System.Net.HttpWebRequest.Create(url)

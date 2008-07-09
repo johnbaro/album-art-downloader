@@ -90,6 +90,7 @@ namespace AlbumArtDownloader
 		/// </summary>
 		private void ShowSearchWindow(ArtSearchWindow searchWindow)
 		{
+			searchWindow.LoadSettings(); //Ensure the settings are brought up to date
 			searchWindow.Closed += new EventHandler(OnSearchWindowClosed);
 			searchWindow.Show();
 			NumberOfOpenSearchWindows++;

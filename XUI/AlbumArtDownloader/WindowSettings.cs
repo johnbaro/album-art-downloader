@@ -99,11 +99,26 @@ namespace AlbumArtDownloader.Properties
 
 		#endregion
 
+		#region Attached readonly "WindowSettings" property
+		private static readonly DependencyPropertyKey WindowSettingsPropertyKey = DependencyProperty.RegisterAttachedReadOnly("WindowSettings", typeof(WindowSettings), typeof(WindowSettings), new FrameworkPropertyMetadata());
+		public static readonly DependencyProperty WindowSettingsProperty = WindowSettingsPropertyKey.DependencyProperty;
+
+		public static WindowSettings GetWindowSettings(DependencyObject dependencyObject)
+		{
+			return (WindowSettings)dependencyObject.GetValue(WindowSettingsProperty);
+		}
+		private static void SetWindowSettings(DependencyObject dependencyObject, WindowSettings value)
+		{
+			dependencyObject.SetValue(WindowSettingsPropertyKey, value);
+		}
+
+		#endregion
+
 		#region Protected Methods
 		/// <summary>
 		/// Load the Window Size Location and State from the settings object
 		/// </summary>
-		protected virtual void LoadWindowState()
+		public virtual void LoadWindowState()
 		{
 			this.Settings.Reload();
 			if (this.Settings.Location != Rect.Empty)
@@ -124,7 +139,7 @@ namespace AlbumArtDownloader.Properties
 		/// <summary>
 		/// Save the Window Size, Location and State to the settings object
 		/// </summary>
-		protected virtual void SaveWindowState()
+		public virtual void SaveWindowState()
 		{
 			this.Settings.WindowState = this.window.WindowState;
 			this.Settings.Location = this.window.RestoreBounds;
@@ -148,6 +163,7 @@ namespace AlbumArtDownloader.Properties
 				this.window.Closing += new CancelEventHandler(window_Closing);
 				this.window.Initialized += new EventHandler(window_Initialized);
 				this.window.Loaded += new RoutedEventHandler(window_Loaded);
+				SetWindowSettings(window, this);
 			}
 		}
 

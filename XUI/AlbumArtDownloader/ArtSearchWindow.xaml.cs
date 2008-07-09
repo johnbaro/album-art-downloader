@@ -662,6 +662,7 @@ namespace AlbumArtDownloader
 		{
 			System.Diagnostics.Trace.Write("Loading settings for: " + ((IAppWindow)this).Description + "... ");
 
+			AlbumArtDownloader.Properties.WindowSettings.GetWindowSettings(this).LoadWindowState();
 			LoadSourceSettings();
 			LoadDefaultSaveFolderHistory();
 
@@ -671,6 +672,7 @@ namespace AlbumArtDownloader
 		{
 			System.Diagnostics.Trace.Write("Saving settings from: " + ((IAppWindow)this).Description + "... ");
 
+			AlbumArtDownloader.Properties.WindowSettings.GetWindowSettings(this).SaveWindowState();
 			SaveSourceSettings();
 			SaveDefaultSaveFolderHistory();
 

@@ -162,5 +162,14 @@ namespace AlbumArtDownloader
 			}
 		}
 		#endregion
+
+		private void HideMenuItemExec(object sender, ExecutedRoutedEventArgs e)
+		{
+			MenuItem item = sender as MenuItem;
+			if (item != null)
+			{
+				item.Visibility = Visibility.Collapsed;
+			}
+		}
 	}
 }

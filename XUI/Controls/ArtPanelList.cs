@@ -29,10 +29,7 @@ namespace AlbumArtDownloader.Controls
 		static ArtPanelList()
 		{
 			DefaultStyleKeyProperty.OverrideMetadata(typeof(ArtPanelList), new FrameworkPropertyMetadata(typeof(ArtPanelList)));
-			
-			PropertyMetadata baseMetadata = ItemsSourceProperty.GetMetadata(typeof(ItemsControl));
-			System.Diagnostics.Debug.Assert(baseMetadata.CoerceValueCallback == null, "Not expecting any pre-existing coercion");
-			ItemsSourceProperty.OverrideMetadata(typeof(ArtPanelList), new FrameworkPropertyMetadata(baseMetadata.DefaultValue, baseMetadata.PropertyChangedCallback, new CoerceValueCallback(CoerceItemsSource)));
+			ItemsSourceProperty.OverrideMetadata(typeof(ArtPanelList), new FrameworkPropertyMetadata(null, new CoerceValueCallback(CoerceItemsSource)));
 		}
 
 		public ArtPanelList()

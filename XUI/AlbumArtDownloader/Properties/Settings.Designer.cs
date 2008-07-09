@@ -328,5 +328,31 @@ namespace AlbumArtDownloader.Properties {
                 this["FileBrowseFilePathPatternHistory"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<GridSettings xmlns:xsi=\"http://www.w3.o" +
+            "rg/2001/XMLSchema-instance\"\r\n                        xmlns:xsd=\"http://www.w3.or" +
+            "g/2001/XMLSchema\"/>")]
+        public global::AlbumArtDownloader.Controls.SortableListView.GridSettings FileBrowseResultsGrid {
+            get {
+                return ((global::AlbumArtDownloader.Controls.SortableListView.GridSettings)(this["FileBrowseResultsGrid"]));
+            }
+            set {
+                this["FileBrowseResultsGrid"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Visible")]
+        public global::System.Windows.Visibility DonationsMenuItemVisibility {
+            get {
+                return ((global::System.Windows.Visibility)(this["DonationsMenuItemVisibility"]));
+            }
+            set {
+                this["DonationsMenuItemVisibility"] = value;
+            }
+        }
     }
 }

@@ -1,7 +1,11 @@
 //AV (27/05/07):
 //This file taken from http://blogs.interknowlogy.com/joelrumerman/archive/2007/04/03/12497.aspx
 //(no licensing info was available there)
+//AV (05/07/08):
+//Added context menu for showing and hiding columns
+//Added serialisable settings
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Controls;
@@ -126,75 +130,86 @@ namespace AlbumArtDownloader.Controls //AV (27/05/07): changed namespace to matc
                 // ensure that the column header is the correct type and a sort property has been set.
                 if (sortableGridViewColumn != null && !String.IsNullOrEmpty(sortableGridViewColumn.SortPropertyName))
                 {
+					ListSortDirection direction;
 
-                    ListSortDirection direction;
-                    bool newSortColumn = false;
-
-                    // determine if this is a new sort, or a switch in sort direction.
-                    if (lastSortedOnColumn == null
-                        || String.IsNullOrEmpty(lastSortedOnColumn.SortPropertyName)
-                        || !String.Equals(sortableGridViewColumn.SortPropertyName, lastSortedOnColumn.SortPropertyName, StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        newSortColumn = true;
-                        direction = ListSortDirection.Ascending;
-                    }
-                    else
-                    {
-                        if (lastDirection == ListSortDirection.Ascending)
-                        {
-                            direction = ListSortDirection.Descending;
-                        }
-                        else
-                        {
-                            direction = ListSortDirection.Ascending;
-                        }
-                    }
-
-                    // get the sort property name from the column's information.
-                    string sortPropertyName = sortableGridViewColumn.SortPropertyName;
-
-                    // Sort the data.
-                    Sort(sortPropertyName, direction);
-
-                    if (direction == ListSortDirection.Ascending)
-                    {
-                        if (!String.IsNullOrEmpty(this.ColumnHeaderSortedAscendingTemplate))
-                        {
-                            sortableGridViewColumn.HeaderTemplate = this.TryFindResource(ColumnHeaderSortedAscendingTemplate) as DataTemplate;
-                        }
-                        else
-                        {
-                            sortableGridViewColumn.HeaderTemplate = null;
-                        }
-                    }
-                    else
-                    {
-                        if (!String.IsNullOrEmpty(this.ColumnHeaderSortedDescendingTemplate))
-                        {
-                            sortableGridViewColumn.HeaderTemplate = this.TryFindResource(ColumnHeaderSortedDescendingTemplate) as DataTemplate;
-                        }
-                        else
-                        {
-                            sortableGridViewColumn.HeaderTemplate = null;
-                        }
-                    }
-
-                    // Remove arrow from previously sorted header
-                    if (newSortColumn && lastSortedOnColumn != null)
-                    {
-                        if (!String.IsNullOrEmpty(this.ColumnHeaderNotSortedTemplate))
-                        {
-                            lastSortedOnColumn.HeaderTemplate = this.TryFindResource(ColumnHeaderNotSortedTemplate) as DataTemplate;
-                        }
-                        else
-                        {
-                            lastSortedOnColumn.HeaderTemplate = null;
-                        }
-                    }
-                    lastSortedOnColumn = sortableGridViewColumn;
+					if (lastSortedOnColumn == null
+						|| String.IsNullOrEmpty(lastSortedOnColumn.SortPropertyName)
+						|| !String.Equals(sortableGridViewColumn.SortPropertyName, lastSortedOnColumn.SortPropertyName, StringComparison.InvariantCultureIgnoreCase))
+					{
+						//This is a new sort, start with Ascending
+						direction = ListSortDirection.Ascending;
+					}
+					else
+					{
+						if (lastDirection == ListSortDirection.Ascending)
+						{
+							direction = ListSortDirection.Descending;
+						}
+						else
+						{
+							direction = ListSortDirection.Ascending;
+						}
+					}
+					SortByColumn(sortableGridViewColumn, direction);
                 }
             }
         }
+
+		public void SortByColumn(SortableGridViewColumn sortableGridViewColumn, ListSortDirection direction)
+		{
+			bool newSortColumn = false;
+
+			// determine if this is a new sort, or a switch in sort direction.
+			if (lastSortedOnColumn == null
+				|| String.IsNullOrEmpty(lastSortedOnColumn.SortPropertyName)
+				|| !String.Equals(sortableGridViewColumn.SortPropertyName, lastSortedOnColumn.SortPropertyName, StringComparison.InvariantCultureIgnoreCase))
+			{
+				newSortColumn = true;
+			}
+
+			// get the sort property name from the column's information.
+			string sortPropertyName = sortableGridViewColumn.SortPropertyName;
+
+			// Sort the data.
+			Sort(sortPropertyName, direction);
+
+			if (direction == ListSortDirection.Ascending)
+			{
+				if (!String.IsNullOrEmpty(this.ColumnHeaderSortedAscendingTemplate))
+				{
+					sortableGridViewColumn.HeaderTemplate = this.TryFindResource(ColumnHeaderSortedAscendingTemplate) as DataTemplate;
+				}
+				else
+				{
+					sortableGridViewColumn.HeaderTemplate = null;
+				}
+			}
+			else
+			{
+				if (!String.IsNullOrEmpty(this.ColumnHeaderSortedDescendingTemplate))
+				{
+					sortableGridViewColumn.HeaderTemplate = this.TryFindResource(ColumnHeaderSortedDescendingTemplate) as DataTemplate;
+				}
+				else
+				{
+					sortableGridViewColumn.HeaderTemplate = null;
+				}
+			}
+
+			// Remove arrow from previously sorted header
+			if (newSortColumn && lastSortedOnColumn != null)
+			{
+				if (!String.IsNullOrEmpty(this.ColumnHeaderNotSortedTemplate))
+				{
+					lastSortedOnColumn.HeaderTemplate = this.TryFindResource(ColumnHeaderNotSortedTemplate) as DataTemplate;
+				}
+				else
+				{
+					lastSortedOnColumn.HeaderTemplate = null;
+				}
+			}
+			lastSortedOnColumn = sortableGridViewColumn;
+		}
 
         /// <summary>
         /// Helper method that sorts the data.
@@ -211,5 +226,106 @@ namespace AlbumArtDownloader.Controls //AV (27/05/07): changed namespace to matc
             dataView.SortDescriptions.Add(sd);
             dataView.Refresh();
         }
+
+		protected override void OnContextMenuOpening(ContextMenuEventArgs e)
+		{
+			base.OnContextMenuOpening(e);
+
+			if (!e.Handled)
+			{
+				//Show a context menu to allow hiding and showing of (sortable) columns
+				GridView gridView = this.View as GridView;
+				if (gridView != null)
+				{
+					ContextMenu menu = new ContextMenu();
+					foreach (SortableGridViewColumn column in gridView.Columns.OfType<SortableGridViewColumn>())
+					{
+						MenuItem menuItem = new MenuItem();
+						menuItem.Header = column.Header.ToString();
+						//Bind the check to whether the column is visible or not
+						menuItem.IsCheckable = true;
+						menuItem.SetBinding(MenuItem.IsCheckedProperty, new Binding()
+						{
+							Source = column,
+							Path = new PropertyPath(SortableGridViewColumn.IsVisibleProperty),
+							Mode = BindingMode.TwoWay
+						});
+						menu.Items.Add(menuItem);
+					}
+					this.ContextMenu = menu;
+				}
+			}
+		}
+
+		#region Settings
+
+		public GridSettings GetSettings()
+		{
+			GridSettings settings = new GridSettings();
+			GridView gridView = this.View as GridView;
+			if (gridView != null)
+			{
+				var columnSettings = new List<GridSettings.ColumnSetting>(gridView.Columns.Count);
+				foreach (SortableGridViewColumn column in gridView.Columns.OfType<SortableGridViewColumn>())
+				{
+					columnSettings.Add(new GridSettings.ColumnSetting()
+					{
+						Width = (double)column.ReadLocalValue(SortableGridViewColumn.WidthProperty), //Read local value to avoid IsVisible coercion to 0
+						IsVisible = column.IsVisible
+					});
+				}
+
+				settings.ColumnSettings = columnSettings.ToArray();
+				settings.LastSortedOnColumnIndex = gridView.Columns.IndexOf(this.lastSortedOnColumn);
+				settings.LastDirection = this.lastDirection;
+			}
+			return settings;
+		}
+
+		public void ApplySettings(GridSettings settings)
+		{
+			GridView gridView = this.View as GridView;
+			if (gridView != null)
+			{
+				int iColumn = 0;
+				if (settings.ColumnSettings != null)
+				{
+					foreach (SortableGridViewColumn column in gridView.Columns.OfType<SortableGridViewColumn>())
+					{
+						if (iColumn < settings.ColumnSettings.Length)
+						{
+							GridSettings.ColumnSetting columnSetting = settings.ColumnSettings[iColumn++];
+							column.Width = columnSetting.Width;
+							column.IsVisible = columnSetting.IsVisible;
+						}
+					}
+					if (settings.LastSortedOnColumnIndex > -1 && settings.LastSortedOnColumnIndex < gridView.Columns.Count)
+					{
+						SortableGridViewColumn lastSortedColumn = gridView.Columns[settings.LastSortedOnColumnIndex] as SortableGridViewColumn;
+						if (lastSortedColumn != null)
+						{
+							SortByColumn(lastSortedColumn, settings.LastDirection);
+						}
+					}
+				}
+			}
+		}
+
+		[Serializable]
+		public struct GridSettings
+		{
+			//These must be public so that the XmlSerializer can serialise them.
+			public ColumnSetting[] ColumnSettings; //Use an array rather than a List or ArrayList, as XmlSerialiser can't serialise these
+			public int LastSortedOnColumnIndex;
+			public ListSortDirection LastDirection;
+
+			[Serializable]
+			public struct ColumnSetting
+			{
+				public double Width;
+				public bool IsVisible;
+			}
+		}
+		#endregion
     }
 }

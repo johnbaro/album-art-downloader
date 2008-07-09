@@ -32,6 +32,7 @@ namespace AlbumArtDownloader
 		public FileBrowser()
 		{
 			InitializeComponent();
+
 			LoadSettings();
 
 			mBrowse.Click += new RoutedEventHandler(OnBrowseForFilePath);
@@ -144,11 +145,13 @@ namespace AlbumArtDownloader
 		{
 			SavePathPatternHistory(mImagePathPatternBox, Properties.Settings.Default.FileBrowseImagePathHistory);
 			SavePathPatternHistory(mFilePathPattern, Properties.Settings.Default.FileBrowseFilePathPatternHistory);
+			Properties.Settings.Default.FileBrowseResultsGrid = mResults.GetSettings();
 		}
 		public void LoadSettings()
 		{
 			LoadPathPatternHistory(mImagePathPatternBox, Properties.Settings.Default.FileBrowseImagePathHistory);
 			LoadPathPatternHistory(mFilePathPattern, Properties.Settings.Default.FileBrowseFilePathPatternHistory);
+			mResults.ApplySettings(Properties.Settings.Default.FileBrowseResultsGrid);
 		}
 		#endregion
 

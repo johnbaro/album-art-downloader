@@ -55,6 +55,16 @@
 					</DataTemplate>
 				</GridViewColumn.CellTemplate>
 			</GridViewColumn>
+			<controls:SortableGridViewColumn Header="Folder" SortPropertyName="BasePath" Width="175" IsVisible="False">
+				<controls:SortableGridViewColumn.CellTemplate>
+					<DataTemplate>
+						<Button Margin="4,0,0,0" Style="{StaticResource HyperlinkButton}" 
+										Command="{x:Static local:BrowserResults+Commands.ShowInExplorer}" CommandParameter="{Binding BasePath}"
+										Content="{Binding BasePath}" 
+										ToolTip="{Binding BasePath}"/>
+					</DataTemplate>
+				</controls:SortableGridViewColumn.CellTemplate>
+			</controls:SortableGridViewColumn>
 			<controls:SortableGridViewColumn Header="Artist" SortPropertyName="Artist" DisplayMemberBinding="{Binding Artist}" Width="175"/>
 			<controls:SortableGridViewColumn Header="Album" SortPropertyName="Name" DisplayMemberBinding="{Binding Name}" Width="175"/>
 			<controls:SortableGridViewColumn Header="Artwork Status" SortPropertyName="ArtFileStatus" Width="176">

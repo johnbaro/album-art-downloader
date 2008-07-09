@@ -2,9 +2,13 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:local="clr-namespace:AlbumArtDownloader"
+	xmlns:properties="clr-namespace:AlbumArtDownloader.Properties"
 	
 	BorderBrush="{x:Static SystemColors.ControlLightLightBrush}" BorderThickness="0,0,0,1"
 	>
+	<Border.Resources>
+		<properties:Settings x:Key="mSettings"/>
+	</Border.Resources>
 	<Border BorderBrush="{x:Static SystemColors.ControlDarkBrush}" BorderThickness="0,0,0,1">
 
 		<Menu>
@@ -24,6 +28,13 @@
 			</MenuItem>
 			<MenuItem Header="_Help">
 				<MenuItem Header="Album Art Downloader _Website" Command="GoToPage" CommandParameter="http://album-art.sourceforge.net"/>
+				<MenuItem Header="User _Forum" Command="GoToPage" CommandParameter="http://www.hydrogenaudio.org/forums/index.php?showtopic=57392"/>
+				<MenuItem Header="_Donations" Command="GoToPage" CommandParameter="http://www.byalexv.co.uk/foobar/AlbumArtDownloader/donate"
+						  Visibility="{Binding Source={StaticResource mSettings}, Path=Default.DonationsMenuItemVisibility, Mode=TwoWay}">
+					<MenuItem.CommandBindings>
+						<CommandBinding Command="Delete" Executed="HideMenuItemExec"/>
+					</MenuItem.CommandBindings>
+				</MenuItem>
 				<Separator/>
 				<MenuItem Header="_About Album Art Downloader..." Command="{x:Static local:Menu+Commands.About}"/>
 			</MenuItem>
