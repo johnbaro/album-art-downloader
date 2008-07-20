@@ -1,5 +1,5 @@
 !define PRODUCT_NAME "Album Art Downloader XUI"
-!define PRODUCT_VERSION "0.19"
+!define PRODUCT_VERSION "0.21"
 !define PRODUCT_WEB_SITE "http://sourceforge.net/projects/album-art"
 !define PRODUCT_SUPPORT "http://www.hydrogenaudio.org/forums/index.php?showtopic=57392"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\AlbumArt.exe"
@@ -173,8 +173,8 @@ SectionEnd
 Section "RevHQ"
   File "..\Scripts\Scripts\revhq.boo"
 SectionEnd
-Section "Artists.Trivialbeing (artist images)"
-  File "..\Scripts\Scripts\artists.trivialbeing.boo"
+Section "LastFM Artist (artist images)"
+  File "..\Scripts\Scripts\lastfm-artist.boo"
 SectionEnd
 SectionGroupEnd
 

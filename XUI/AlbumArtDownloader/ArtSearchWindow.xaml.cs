@@ -664,7 +664,11 @@ namespace AlbumArtDownloader
 
 			AlbumArtDownloader.Properties.WindowSettings.GetWindowSettings(this).LoadWindowState();
 			LoadSourceSettings();
-			LoadDefaultSaveFolderHistory();
+
+			if (String.IsNullOrEmpty(mDefaultSavePathIsTemporary)) //If a temporary save path has been set, don't override it.
+			{
+				LoadDefaultSaveFolderHistory();
+			}
 
 			System.Diagnostics.Trace.WriteLine("done.");
 		}

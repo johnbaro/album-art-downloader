@@ -1,4 +1,11 @@
-0.20 Window size and position applyinh to new windows now matches other settings behaviour
+0.21 If the existing search window is re-used for a new search, it is now brought to the foreground.
+     When the thumbnail information is displayed below the thumbnail, the info button no longer
+      overlaps the button to toggle the information to display to the side.
+     Removed artists.trivialbeing script, and replaced it with LastFM Artist.
+     Fixed bug where if a search initiated from the file browser was queued, it would have the
+      wrong path to save images to popuplated.
+     
+0.20 Window size and position applying to new windows now matches other settings behaviour
      Current settings (including window size and position) are now applied to queued search
       windows as they are dequeued.
      Context menu of file/foobar browser column headers now allows hiding and showing of columns
@@ -6,6 +13,8 @@
      Fixed crash in command line version when album or artist was not supplied
      Added Forum and Donations links to Help menu. If the donations item is aesthetically or
       philosophically objectional to you, highlight it and click the Delete key to remove it.
+     AlbumArtExchange script updated to use XML API
+     Cover-Paradies script fixed
      
 0.19 File and Foobar browsers now support Alternates (|) for image path searching
      File path pattern matching can be made to match folders instead of files, by

@@ -416,6 +416,10 @@ namespace AlbumArtDownloader
 					searchWindow = new ArtSearchWindow();
 					SearchQueue.EnqueueSearchWindow(searchWindow);
 				}
+				else
+				{
+					searchWindow.Activate(); //Bring the window to the foreground
+				}
 
 				if (autoClose.HasValue)
 					searchWindow.OverrideAutoClose(autoClose.Value);
