@@ -54,6 +54,7 @@
     <Compile Include="ArtPanelListSortPicker.cs" />
     <Compile Include="CompareConverter.cs" />
     <Compile Include="ArtPathPatternBox.cs" />
+    <Compile Include="EditableCell.cs" />
     <Compile Include="EnumIndexConverter.cs" />
     <Compile Include="FileSizeConverter.cs" />
     <Compile Include="LocalGroupDescription.cs" />
@@ -81,6 +82,9 @@
     <Page Include="themes\ArtPanelList.generic.xaml" />
     <Page Include="themes\ArtPanelListSortPicker.generic.xaml" />
     <Page Include="themes\ArtPathPatternBox.generic.xaml" />
+    <Page Include="themes\EditableCell.generic.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="themes\OverflowTextBlock.generic.xaml">
       <SubType>Designer</SubType>
     </Page>

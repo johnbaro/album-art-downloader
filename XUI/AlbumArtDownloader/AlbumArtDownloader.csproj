@@ -68,6 +68,9 @@
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Xml" />
+    <Reference Include="UIAutomationProvider">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
     <Reference Include="WindowsBase">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -94,6 +97,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="EnqueueWarning.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="EditPresets.xaml">
+      <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="QueueManager.xaml" />
@@ -140,6 +147,10 @@
       <DependentUpon>EnqueueWarning.xaml</DependentUpon>
     </Compile>
     <Compile Include="ObservableCollectionOfDisposables.cs" />
+    <Compile Include="EditPresets.xaml.cs">
+      <DependentUpon>EditPresets.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Preset.cs" />
     <Compile Include="SearchQueue.cs" />
     <Compile Include="QueueManager.xaml.cs">
       <DependentUpon>QueueManager.xaml</DependentUpon>
