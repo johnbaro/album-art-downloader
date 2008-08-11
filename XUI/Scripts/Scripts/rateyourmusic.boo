@@ -11,7 +11,7 @@ class RateYourMusic:
 	static SourceCreator as string:
 		get: return "Alex Vallat"
 	static SourceVersion as string:
-		get: return "0.1"
+		get: return "0.2"
 	static def GetThumbs(coverart,artist,album):
 		if(String.IsNullOrEmpty(album)):
 			return //Can't search without the album title to search for
@@ -31,12 +31,19 @@ class RateYourMusic:
 				fullMatches.Add(resultMatch)
 		
 		coverart.EstimatedCount = fullMatches.Count
-
+	
 		//Process the filtered results
 		for resultMatch as Match in fullMatches:
 			name = String.Format("{0} - {1}", resultMatch.Groups["artist"].Value, resultMatch.Groups["album"].Value)
 			id = resultMatch.Groups["id"].Value
-			coverart.Add(String.Format("http://static.rateyourmusic.com/album_images/s{0}.jpg", id), name, String.Format("http://static.rateyourmusic.com/album_images/o{0}.jpg", id))
+			logFile.WriteLine(name + ": " + id)
+			coverart.Add(GetStreamWithUserAgent(String.Format("http://static.rateyourmusic.com/album_images/s{0}.jpg", id)), name, String.Format("http://static.rateyourmusic.com/album_images/o{0}.jpg", id))
 			
 	static def GetResult(param):
-		return param
+		return GetStreamWithUserAgent(param)
+		
+	static def GetStreamWithUserAgent(url as string):
+		request = System.Net.HttpWebRequest.Create(url) as System.Net.HttpWebRequest
+		request.UserAgent = "Mozilla/5.0"
+		response = request.GetResponse()
+		return response.GetResponseStream()

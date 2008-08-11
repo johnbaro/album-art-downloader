@@ -6,14 +6,14 @@ class LastFmArtist(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "LastFM Artist"
 	Version as string:
-		get: return "0.1"
+		get: return "0.2"
 	Author as string:
 		get: return "Alex Vallat"
 	def Search(artist as string, album as string, results as IScriptResults):
 		encodedArtist = EncodeUrl(artist)
 		imagesHtml = GetPage("http://www.last.fm/music/${encodedArtist}/+images")
 
-		imageIdMatches = Regex("<a href=\"/music/[^/]+/\\+images/(?<id>\\d+)\" class=\"pic entry\\-content\"", RegexOptions.Multiline).Matches(imagesHtml)
+		imageIdMatches = Regex("<a href=\"/music/[^/]+/\\+images/(?<id>\\d+)\"", RegexOptions.Multiline).Matches(imagesHtml)
 		
 		results.EstimatedCount = imageIdMatches.Count
 		
