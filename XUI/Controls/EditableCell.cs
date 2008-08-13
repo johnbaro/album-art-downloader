@@ -121,6 +121,8 @@ namespace AlbumArtDownloader.Controls
 		#endregion
 
 		#region IsEditing
+		public event DependencyPropertyChangedEventHandler IsEditingChanged;
+		
 		public static DependencyProperty IsEditingProperty =
 				DependencyProperty.Register(
 						"IsEditing",
@@ -134,7 +136,7 @@ namespace AlbumArtDownloader.Controls
 		public bool IsEditing
 		{
 			get { return (bool)GetValue(IsEditingProperty); }
-			private set { SetValue(IsEditingProperty, value); }
+			set { SetValue(IsEditingProperty, value); }
 		}
 
 		private static void OnIsEditingChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
@@ -159,6 +161,12 @@ namespace AlbumArtDownloader.Controls
 				{
 					mEditor.EndEdit(false);
 				}
+			}
+
+			DependencyPropertyChangedEventHandler temp = IsEditingChanged;
+			if (temp != null)
+			{
+				temp(this, e);
 			}
 		}
 

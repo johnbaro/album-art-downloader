@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Media;
 
 namespace AlbumArtDownloader
 {
@@ -301,6 +302,32 @@ namespace AlbumArtDownloader
 			{
 				return value;
 			}
+		}
+
+		/// <summary>
+		/// Finds a visual child of the specified visual which is of the
+		/// specified type, or null if there are none.
+		/// </summary>
+		public static TChild FindVisualChild<TChild>(DependencyObject obj)
+			where TChild : DependencyObject
+		{
+			for (int i = 0; i < VisualTreeHelper.GetChildrenCount(obj); i++)
+			{
+				DependencyObject child = VisualTreeHelper.GetChild(obj, i);
+				if (child is TChild)
+				{
+					return (TChild)child;
+				}
+				else
+				{
+					TChild descendant = FindVisualChild<TChild>(child);
+					if (descendant != null)
+					{
+						return descendant;
+					}
+				}
+			}
+			return null;
 		}
 	}
 }

@@ -8,26 +8,58 @@
     Title="Presets" 
 	Background="{x:Static SystemColors.ControlBrush}"
 	Icon="AlbumArtDownloader.ico"
-	Width="300" Height="500"
+	Width="375" Height="330"
 	ResizeMode="CanResizeWithGrip"
 	
 	DataContext="{Binding RelativeSource={RelativeSource Self}}"
 		
     properties:WindowSettings.Save="True"
 	>
-    <DockPanel>
-		<StackPanel DockPanel.Dock="Right">
+	<Window.Resources>
+		<Style TargetType="{x:Type Button}">
+			<Setter Property="MinWidth" Value="75"/>
+			<Setter Property="MinHeight" Value="23"/>
+			<Setter Property="Padding" Value="4,0,4,0"/>
+			<Setter Property="Margin" Value="0,0,0,5"/>
+		</Style>
+		<Style TargetType="{x:Type Separator}">
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type Separator}">
+						<Border BorderThickness="0,0,1,1" BorderBrush="{x:Static SystemColors.ControlLightLightBrush}" SnapsToDevicePixels="True">
+							<Border BorderBrush="{x:Static SystemColors.ControlDarkBrush}" BorderThickness="1,1,0,0"/>
+						</Border>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+	</Window.Resources>
+    <DockPanel Margin="10">
+		<TextBlock DockPanel.Dock="Top" TextWrapping="Wrap" Margin="1,1,1,6">
+			Presets are substituted into the %preset% variable in the path to save to. The Name
+			of the Preset is displayed in the Save menu, and the Value is used in the path to save to.
+		</TextBlock>
+		
+		<StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Right">
+			<Button Content="OK" IsDefault="True" Margin="0,0,5,3" Click="OnOKClicked"/>
+			<Button Content="Cancel" IsCancel="True" Margin="0,0,1,3"/>
+		</StackPanel>
+		
+		<Separator DockPanel.Dock="Bottom" Margin="0,10,0,10"/>
+
+		<StackPanel DockPanel.Dock="Right" Margin="10,0,0,0">
 			<Button Command="ApplicationCommands.New" Content="_Add"/>
 			<Button Command="ApplicationCommands.Delete" Content="_Delete"/>
 			<Button Command="{x:Static controls:EditableCell+Commands.Edit}" Content="_Edit"/>
-			<Separator/>
+			<Separator Margin="2,0,1,5"/>
 			<Button Command="ComponentCommands.MoveUp" Content="Move _Up"/>
 			<Button Command="ComponentCommands.MoveDown" Content="Move _Down"/>
 		</StackPanel>
+		
 		<ListView x:Name="mPresetsList" ItemsSource="{Binding Presets}">
 			<ListView.View>
 				<GridView>
-					<GridViewColumn Header="Name" Width="100">
+					<GridViewColumn Header="Name" Width="120">
 						<GridViewColumn.CellTemplate>
 							<DataTemplate>
 								<controls:EditableCell Value="{Binding Name}"/>
@@ -35,7 +67,7 @@
 						</GridViewColumn.CellTemplate>
 					</GridViewColumn>
 
-					<GridViewColumn Header="Value" Width="100">
+					<GridViewColumn Header="Value" Width="120">
 						<GridViewColumn.CellTemplate>
 							<DataTemplate>
 								<controls:EditableCell Value="{Binding Value}"/>

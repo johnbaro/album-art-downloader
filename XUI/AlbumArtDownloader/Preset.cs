@@ -19,7 +19,7 @@ namespace AlbumArtDownloader
 		}
 
 		#region Name
-		public static readonly DependencyProperty NameProperty = FrameworkElement.NameProperty.AddOwner(typeof(Preset));
+		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(Preset));
 		public string Name
 		{
 			get { return (string)GetValue(NameProperty); }
