@@ -36,7 +36,6 @@ class RateYourMusic:
 		for resultMatch as Match in fullMatches:
 			name = String.Format("{0} - {1}", resultMatch.Groups["artist"].Value, resultMatch.Groups["album"].Value)
 			id = resultMatch.Groups["id"].Value
-			logFile.WriteLine(name + ": " + id)
 			coverart.Add(GetStreamWithUserAgent(String.Format("http://static.rateyourmusic.com/album_images/s{0}.jpg", id)), name, String.Format("http://static.rateyourmusic.com/album_images/o{0}.jpg", id))
 			
 	static def GetResult(param):
