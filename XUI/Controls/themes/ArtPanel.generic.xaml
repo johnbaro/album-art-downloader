@@ -114,9 +114,9 @@
 						<Grid.ContextMenu>
 							<ContextMenu>
 								<MenuItem Header="_Preview..." Command="{x:Static local:ArtPanelList+Commands.Preview}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=OneTime}"/>
-								<MenuItem Command="ApplicationCommands.Copy" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=OneTime}"/>
-								<MenuItem Command="ApplicationCommands.Save" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=OneTime}"/>
-								<MenuItem Command="ApplicationCommands.SaveAs" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=OneTime}"/>
+								<MenuItem Header="_Copy" InputGestureText="" Command="ApplicationCommands.Copy" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=OneTime}"/>
+								<MenuItem Header="_Save" InputGestureText="" Command="ApplicationCommands.Save" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=OneTime}"/>
+								<MenuItem Header="Save _As..." Command="ApplicationCommands.SaveAs" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=OneTime}"/>
 							</ContextMenu>
 						</Grid.ContextMenu>
 						<Grid Margin="5,5,5,5" Width="{Binding ThumbSize, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Height="{Binding RelativeSource={RelativeSource Self}, Path=Width, Mode=OneWay}" MinHeight="20" MinWidth="20" VerticalAlignment="Top">
@@ -337,9 +337,10 @@
 									<TextBox Name="PART_FilePathTextBox" FontSize="10" VerticalAlignment="Top"/>
 									<Button Name="PART_FilePathBrowse" Grid.Column="1" Content="..." FontSize="10" Height="{Binding ElementName=PART_FilePathTextBox, Path=ActualHeight, Mode=OneWay}"/>
 								</Grid>
-								<Button Command="ApplicationCommands.Save" Style="{StaticResource FadeButton}" VerticalAlignment="Top" Grid.Column="1">
+								<local:SplitButton Command="ApplicationCommands.Save" VerticalAlignment="Top" Grid.Column="1" MenuToolTip="Save As...">
 									<Image Source="save.png" Stretch="None" ToolTip="Save"/>
-								</Button>
+								</local:SplitButton>
+								
 								<Image VerticalAlignment="Top" Grid.Column="1" Source="wait.png" Stretch="None" Visibility="{Binding Path=AlbumArt.IsSaving, Converter={StaticResource mBooleanToVisibilityConverter}, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" ToolTip="Saving..." Cursor="Wait"/>
 								<Image VerticalAlignment="Top" Grid.Column="1" Source="tick.png" Stretch="None" Visibility="{TemplateBinding IsSaved, Converter={StaticResource mBooleanToVisibilityConverter}}" ToolTip="Already Saved"/>
 							</Grid>

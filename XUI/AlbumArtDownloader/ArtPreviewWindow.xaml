@@ -145,9 +145,9 @@
 			</ScrollViewer.Style>
 			<ScrollViewer.ContextMenu>
 				<ContextMenu>
-					<MenuItem Command="ApplicationCommands.Copy"/>
-					<MenuItem Command="ApplicationCommands.Save"/>
-					<MenuItem Command="ApplicationCommands.SaveAs"/>
+					<MenuItem Header="_Copy" Command="ApplicationCommands.Copy"/>
+					<MenuItem Header="_Save" Command="ApplicationCommands.Save"/>
+					<MenuItem Header="Save _As..." Command="ApplicationCommands.SaveAs"/>
 				</ContextMenu>
 			</ScrollViewer.ContextMenu>
 			

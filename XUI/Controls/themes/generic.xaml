@@ -11,6 +11,7 @@
 		<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/ArtPathPatternBox.generic.xaml"/>
 		<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/LimitBox.generic.xaml"/>
 		<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/EditableCell.generic.xaml"/>
+		<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/SplitFadeButton.generic.xaml"/>
 	</ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>

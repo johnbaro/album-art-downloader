@@ -6,6 +6,7 @@ using System.Windows;
 
 namespace AlbumArtDownloader
 {
+	[Serializable]
 	public class Preset : DependencyObject
 	{
 		public Preset()
@@ -19,6 +20,7 @@ namespace AlbumArtDownloader
 		}
 
 		#region Name
+		[NonSerialized]
 		public static readonly DependencyProperty NameProperty = DependencyProperty.Register("Name", typeof(string), typeof(Preset));
 		public string Name
 		{
@@ -28,6 +30,7 @@ namespace AlbumArtDownloader
 		#endregion
 
 		#region Value
+		[NonSerialized]
 		public static readonly DependencyProperty ValueProperty = DependencyProperty.Register("Value", typeof(string), typeof(Preset));
 
 		public string Value

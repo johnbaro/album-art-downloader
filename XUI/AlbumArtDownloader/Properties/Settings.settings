@@ -92,5 +92,14 @@
     <Setting Name="DonationsMenuItemVisibility" Type="System.Windows.Visibility" Scope="User">
       <Value Profile="(Default)">Visible</Value>
     </Setting>
+    <Setting Name="Presets" Type="AlbumArtDownloader.Preset[]" Scope="User">
+      <Value Profile="(Default)">&lt;ArrayOfPreset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema"&gt;
+  &lt;Preset&gt;&lt;Name&gt;Default&lt;/Name&gt;&lt;Value&gt;&lt;/Value&gt;&lt;/Preset&gt;
+  &lt;Preset&gt;&lt;Name&gt;Front&lt;/Name&gt;&lt;Value&gt;-Front&lt;/Value&gt;&lt;/Preset&gt;
+  &lt;Preset&gt;&lt;Name&gt;Back&lt;/Name&gt;&lt;Value&gt;-Back&lt;/Value&gt;&lt;/Preset&gt;
+  &lt;Preset&gt;&lt;Name&gt;Inlay&lt;/Name&gt;&lt;Value&gt;-Inlay&lt;/Value&gt;&lt;/Preset&gt;
+  &lt;Preset&gt;&lt;Name&gt;CD&lt;/Name&gt;&lt;Value&gt;-CD&lt;/Value&gt;&lt;/Preset&gt;
+&lt;/ArrayOfPreset&gt;</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -72,6 +72,7 @@
     <Compile Include="SourcePanel.cs" />
     <Compile Include="EqualityConverter.cs" />
     <Compile Include="IAlbumArt.cs" />
+    <Compile Include="SplitButton.cs" />
     <Compile Include="SumConverter.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringFormatterConverter.cs" />
@@ -82,6 +83,9 @@
     <Page Include="themes\ArtPanelList.generic.xaml" />
     <Page Include="themes\ArtPanelListSortPicker.generic.xaml" />
     <Page Include="themes\ArtPathPatternBox.generic.xaml" />
+    <Page Include="themes\SplitFadeButton.generic.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="themes\EditableCell.generic.xaml">
       <SubType>Designer</SubType>
     </Page>
