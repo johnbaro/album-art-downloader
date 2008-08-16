@@ -103,7 +103,7 @@ namespace AlbumArtDownloader
 			}
 		}
 		#endregion
-
+		
 		#region EnumerableHelpers
 		/// <summary>
 		/// Takes a specified generic IEnumerable, and returns an unspecified one.

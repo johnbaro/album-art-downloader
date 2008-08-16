@@ -83,215 +83,27 @@
     <Reference Include="PresentationFramework">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
+    <ProjectReference Include="..\Scripts\Scripts.csproj">
+      <Project>{9AA60D1F-2771-4C45-893A-BF3C685C9985}</Project>
+      <Name>Scripts</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="About.xaml" />
-    <Page Include="ArtSearchWindow.xaml" />
-    <Page Include="BrowserResults.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="CommandArgsHelp.xaml" />
-    <Page Include="ArtPreviewWindow.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="ConfigFileProblem.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="EnqueueWarning.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="EditPresets.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="QueueManager.xaml" />
-    <Page Include="FileBrowser.xaml" />
-    <Page Include="FoobarBrowser.xaml" />
-    <Page Include="LocalFilesSourceSettings.xaml" />
-    <Page Include="Logo.xaml" />
-    <Page Include="Menu.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Splashscreen.xaml" />
-    <Page Include="TEST.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="themes\ArtPanel.generic.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="themes\ArtPanelList.generic.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="themes\ArtPanelListSortPicker.generic.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="themes\ArtPathPatternBox.generic.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="themes\EditableCell.generic.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="themes\FadeButton.generic.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="themes\generic.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="themes\HyperlinkButton.generic.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="themes\HyperlinkCombo.generic.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="themes\HyperlinkExpander.generic.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="themes\LimitBox.generic.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="themes\OverflowTextBlock.generic.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="themes\SimpleList.generic.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="themes\SortableColumnHeader.generic.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="themes\SourcePanel.generic.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="themes\SplitFadeButton.generic.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="themes\StatusBar.generic.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Include="ArtSearchWindow.xaml.cs">
-      <DependentUpon>ArtSearchWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
+    <COMReference Include="Foobar2000">
+      <Guid>{CB8F14D8-736E-4BB7-ADCF-BE26C39B576B}</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Isolated>False</Isolated>
+    </COMReference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Third Party Assemblies\MediaInfoDLL.cs">
-      <Link>MediaInfoDLL.cs</Link>
-    </Compile>
-    <Compile Include="About.xaml.cs">
-      <SubType>Code</SubType>
-      <DependentUpon>About.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Album.cs" />
-    <Compile Include="AlbumArt.cs" />
-    <Compile Include="App.cs" />
-    <Compile Include="Arguments.cs" />
-    <Compile Include="BrowserResults.xaml.cs">
-      <DependentUpon>BrowserResults.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="CommandArgsHelp.xaml.cs">
-      <SubType>Code</SubType>
-      <DependentUpon>CommandArgsHelp.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Common.cs" />
-    <Compile Include="ArtPreviewWindow.xaml.cs">
-      <DependentUpon>ArtPreviewWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ConfigFileProblem.xaml.cs">
-      <DependentUpon>ConfigFileProblem.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Controls\ArtPanel.cs" />
-    <Compile Include="Controls\ArtPanelList.cs" />
-    <Compile Include="Controls\ArtPanelListSortPicker.cs" />
-    <Compile Include="Controls\ArtPathPatternBox.cs" />
-    <Compile Include="Controls\CompareConverter.cs" />
-    <Compile Include="Controls\EditableCell.cs" />
-    <Compile Include="Controls\EnumIndexConverter.cs" />
-    <Compile Include="Controls\Enums.cs" />
-    <Compile Include="Controls\EqualityConverter.cs" />
-    <Compile Include="Controls\FileNameConverter.cs" />
-    <Compile Include="Controls\FileSizeConverter.cs" />
-    <Compile Include="Controls\IAlbumArt.cs" />
-    <Compile Include="Controls\ISource.cs" />
-    <Compile Include="Controls\LimitBox.cs" />
-    <Compile Include="Controls\LocalGroupDescription.cs" />
-    <Compile Include="Controls\LogarithmicScaleConverter.cs" />
-    <Compile Include="Controls\MultiEqualityConverter.cs" />
-    <Compile Include="Controls\NotNullConverter.cs" />
-    <Compile Include="Controls\PathCompacterConverter.cs" />
-    <Compile Include="Controls\PatternPlaceholder.cs" />
-    <Compile Include="Controls\SizeRestrainer.cs" />
-    <Compile Include="Controls\SortableGridViewColumn.cs" />
-    <Compile Include="Controls\SortableListView.cs" />
-    <Compile Include="Controls\SourcePanel.cs" />
-    <Compile Include="Controls\SplitButton.cs" />
-    <Compile Include="Controls\StringFormatterConverter.cs" />
-    <Compile Include="Controls\SumConverter.cs" />
-    <Compile Include="Controls\TooltipEnabledOnOverflowConverter.cs" />
-    <Compile Include="Controls\Utilities.cs" />
-    <Compile Include="EnqueueWarning.xaml.cs">
-      <DependentUpon>EnqueueWarning.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ObservableCollectionOfDisposables.cs" />
-    <Compile Include="EditPresets.xaml.cs">
-      <DependentUpon>EditPresets.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Preset.cs" />
-    <Compile Include="SearchQueue.cs" />
-    <Compile Include="QueueManager.xaml.cs">
-      <DependentUpon>QueueManager.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="FileSearcher.cs" />
-    <Compile Include="IAppWindow.cs" />
-    <Compile Include="InstanceMutex.cs" />
-    <Compile Include="Enums.cs" />
-    <Compile Include="LocalFilesSourceSettings.xaml.cs">
-      <SubType>Code</SubType>
-      <DependentUpon>LocalFilesSourceSettings.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Menu.xaml.cs">
-      <DependentUpon>Menu.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ObservableAlbumCollection.cs" />
+    <AppDesigner Include="Properties\" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
-    <Compile Include="ScriptSource.cs" />
-    <Compile Include="FileBrowser.xaml.cs">
-      <SubType>Code</SubType>
-      <DependentUpon>FileBrowser.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="FoobarBrowser.xaml.cs">
-      <SubType>Code</SubType>
-      <DependentUpon>FoobarBrowser.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="FoundAlbumArtEventArgs.cs" />
-    <Compile Include="FullWindowDrag.cs" />
-    <Compile Include="BitmapHelpers.cs" />
-    <Compile Include="LocalFilesSource.cs" />
-    <Compile Include="Logo.xaml.cs">
-      <SubType>Code</SubType>
-      <DependentUpon>Logo.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -309,77 +121,201 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="InstanceMutex.cs" />
+    <Compile Include="Enums.cs" />
+    <Compile Include="Common.cs" />
+
+    <Compile Include="App.cs" />
+    <Compile Include="Arguments.cs" />
+    <Page Include="CommandArgsHelp.xaml" />
+    <Compile Include="CommandArgsHelp.xaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>CommandArgsHelp.xaml</DependentUpon>
+    </Compile>
+
+    <Page Include="Menu.xaml" />
+    <Compile Include="Menu.xaml.cs">
+      <DependentUpon>Menu.xaml</DependentUpon>
+    </Compile>
+
+
+    <Page Include="About.xaml" />
+    <Page Include="Logo.xaml" />
+    <Compile Include="Logo.xaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>Logo.xaml</DependentUpon>
+    </Compile>
+
+    <Page Include="TEST.xaml" />
+    <Compile Include="TEST.xaml.cs">
+      <DependentUpon>TEST.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Preset.cs" />
+    <Compile Include="ObservableCollectionOfDisposables.cs" />
+    <Compile Include="ObservableAlbumCollection.cs" />
     <Compile Include="SearchParameters.cs" />
     <Compile Include="Source.cs" />
     <Compile Include="Sources.cs" />
     <Compile Include="SourceSettings.cs" />
+    <Page Include="Splashscreen.xaml" />
     <Compile Include="Splashscreen.xaml.cs">
       <SubType>Code</SubType>
       <DependentUpon>Splashscreen.xaml</DependentUpon>
     </Compile>
-    <Compile Include="TEST.xaml.cs">
-      <DependentUpon>TEST.xaml</DependentUpon>
-    </Compile>
     <Compile Include="WindowSettings.cs" />
-    <AppDesigner Include="Properties\" />
+    <Compile Include="BitmapHelpers.cs" />
+    <Compile Include="IAppWindow.cs" />
+    <Compile Include="AlbumArt.cs" />
+    <Page Include="ConfigFileProblem.xaml" />
+    <Compile Include="ConfigFileProblem.xaml.cs">
+      <DependentUpon>ConfigFileProblem.xaml</DependentUpon>
+    </Compile>
+
+    <Page Include="ArtSearchWindow.xaml" />
+    <Compile Include="ArtSearchWindow.xaml.cs">
+      <DependentUpon>ArtSearchWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+
+    <Page Include="ArtPreviewWindow.xaml" />
+    <Compile Include="ArtPreviewWindow.xaml.cs">
+      <DependentUpon>ArtPreviewWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Album.cs" />
+    <Compile Include="FullWindowDrag.cs" />
+
+    <Page Include="EnqueueWarning.xaml" />
+    <Compile Include="EnqueueWarning.xaml.cs">
+      <DependentUpon>EnqueueWarning.xaml</DependentUpon>
+    </Compile>
+
+    <Compile Include="FileSearcher.cs" />
+    <Compile Include="ScriptSource.cs" />
+    <Compile Include="FoundAlbumArtEventArgs.cs" />
+
+
+    <Compile Include="LocalFilesSource.cs" />
+
+    <Page Include="LocalFilesSourceSettings.xaml" />
+    <Compile Include="LocalFilesSourceSettings.xaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>LocalFilesSourceSettings.xaml</DependentUpon>
+    </Compile>
+
+    <Compile Include="SearchQueue.cs" />
+
+    <Page Include="QueueManager.xaml" />
+    <Compile Include="QueueManager.xaml.cs">
+      <DependentUpon>QueueManager.xaml</DependentUpon>
+    </Compile>
+
+    <Page Include="BrowserResults.xaml" />
+    <Compile Include="BrowserResults.xaml.cs">
+      <DependentUpon>BrowserResults.xaml</DependentUpon>
+    </Compile>
+    <Page Include="FileBrowser.xaml" />
+    <Compile Include="FileBrowser.xaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>FileBrowser.xaml</DependentUpon>
+    </Compile>
+    <Page Include="FoobarBrowser.xaml" />
+    <Compile Include="FoobarBrowser.xaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>FoobarBrowser.xaml</DependentUpon>
+    </Compile>
+
+    <Page Include="EditPresets.xaml" />
+    <Compile Include="About.xaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>About.xaml</DependentUpon>
+    </Compile>
+
+    <Compile Include="EditPresets.xaml.cs">
+      <DependentUpon>EditPresets.xaml</DependentUpon>
+    </Compile>
+   
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Scripts\Scripts.csproj">
-      <Project>{9AA60D1F-2771-4C45-893A-BF3C685C9985}</Project>
-      <Name>Scripts</Name>
-    </ProjectReference>
-  </ItemGroup>
+
   <ItemGroup>
     <Resource Include="search.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="AlbumArtDownloader.ico" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="CommandArgsHelp.txt" />
+    <Resource Include="ArtMissing.png" />
+    <Resource Include="ArtPresent.png" />
+    <Resource Include="Arrow.png" />
+    <Resource Include="ZoomIn.png" />
+    <Resource Include="ZoomOut.png" />
+    <Resource Include="Hand.cur" />
   </ItemGroup>
+
   <ItemGroup>
+    <Compile Include="..\Third Party Assemblies\MediaInfoDLL.cs">
+      <Link>MediaInfoDLL.cs</Link>
+    </Compile>
     <None Include="..\Third Party Assemblies\MediaInfo.dll">
       <Link>MediaInfo.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+
   <ItemGroup>
-    <Resource Include="ArtMissing.png" />
-    <Resource Include="ArtPresent.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Arrow.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <COMReference Include="Foobar2000">
-      <Guid>{CB8F14D8-736E-4BB7-ADCF-BE26C39B576B}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-    </COMReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="save.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="ZoomIn.png" />
-    <Resource Include="ZoomOut.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Hand.cur" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="themes\browse.png" />
-    <Resource Include="themes\downloading.png" />
-    <Resource Include="themes\info.png" />
-    <Resource Include="themes\save.png" />
-    <Resource Include="themes\tick.png" />
-    <Resource Include="themes\toggleDown.png" />
-    <Resource Include="themes\toggleUp.png" />
-    <Resource Include="themes\wait.png" />
+    <Page Include="Themes\generic.xaml" />
+    <Page Include="Controls\Xaml\FadeButton.generic.xaml" />
+    <Page Include="Controls\Xaml\SplitFadeButton.generic.xaml" />
+    <Page Include="Controls\Xaml\ArtPanel.generic.xaml" />
+    <Page Include="Controls\Xaml\ArtPanelList.generic.xaml" />
+    <Page Include="Controls\Xaml\ArtPanelListSortPicker.generic.xaml" />
+    <Page Include="Controls\Xaml\ArtPathPatternBox.generic.xaml" />
+    <Page Include="Controls\Xaml\EditableCell.generic.xaml" />
+    <Page Include="Controls\Xaml\HyperlinkButton.generic.xaml" />
+    <Page Include="Controls\Xaml\HyperlinkCombo.generic.xaml" />
+    <Page Include="Controls\Xaml\HyperlinkExpander.generic.xaml" />
+    <Page Include="Controls\Xaml\LimitBox.generic.xaml" />
+    <Page Include="Controls\Xaml\OverflowTextBlock.generic.xaml" />
+    <Page Include="Controls\Xaml\SimpleList.generic.xaml" />
+    <Page Include="Controls\Xaml\SortableColumnHeader.generic.xaml" />
+    <Page Include="Controls\Xaml\SourcePanel.generic.xaml" />
+    <Page Include="Controls\Xaml\StatusBar.generic.xaml" />
+    <Resource Include="Controls\Xaml\browse.png" />
+    <Resource Include="Controls\Xaml\downloading.png" />
+    <Resource Include="Controls\Xaml\info.png" />
+    <Resource Include="Controls\Xaml\save.png" />
+    <Resource Include="Controls\Xaml\tick.png" />
+    <Resource Include="Controls\Xaml\toggleDown.png" />
+    <Resource Include="Controls\Xaml\toggleUp.png" />
+    <Resource Include="Controls\Xaml\wait.png" />
+
+    <Compile Include="Controls\Enums.cs" />
+    <Compile Include="Controls\ArtPanel.cs" />
+    <Compile Include="Controls\ArtPanelList.cs" />
+    <Compile Include="Controls\ArtPanelListSortPicker.cs" />
+    <Compile Include="Controls\ArtPathPatternBox.cs" />
+    <Compile Include="Controls\CompareConverter.cs" />
+    <Compile Include="Controls\EditableCell.cs" />
+    <Compile Include="Controls\EnumIndexConverter.cs" />
+    <Compile Include="Controls\EqualityConverter.cs" />
+    <Compile Include="Controls\FileNameConverter.cs" />
+    <Compile Include="Controls\FileSizeConverter.cs" />
+    <Compile Include="Controls\IAlbumArt.cs" />
+    <Compile Include="Controls\ISource.cs" />
+    <Compile Include="Controls\LimitBox.cs" />
+    <Compile Include="Controls\LocalGroupDescription.cs" />
+    <Compile Include="Controls\LogarithmicScaleConverter.cs" />
+    <Compile Include="Controls\MultiEqualityConverter.cs" />
+    <Compile Include="Controls\NotNullConverter.cs" />
+    <Compile Include="Controls\PathCompacterConverter.cs" />
+    <Compile Include="Controls\PatternPlaceholder.cs" />
+    <Compile Include="Controls\SizeRestrainer.cs" />
+    <Compile Include="Controls\SourcePanel.cs" />
+    <Compile Include="Controls\StringFormatterConverter.cs" />
+    <Compile Include="Controls\SumConverter.cs" />
+    <Compile Include="Controls\TooltipEnabledOnOverflowConverter.cs" />
+    <Compile Include="Controls\Utilities.cs" />
+    <Compile Include="Controls\SortableListView.cs" />
+    <Compile Include="Controls\SortableGridViewColumn.cs" />
+    <Compile Include="Controls\SplitButton.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

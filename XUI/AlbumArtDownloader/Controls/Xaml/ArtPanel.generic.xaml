@@ -7,7 +7,7 @@
 	>
 
 	<ResourceDictionary.MergedDictionaries>
-		<ResourceDictionary Source="/Themes/FadeButton.generic.xaml"/>
+		<ResourceDictionary Source="/Controls/Xaml/FadeButton.generic.xaml"/>
 	</ResourceDictionary.MergedDictionaries>
 
 	<controls:StringFormatterConverter x:Key="mStringFormatterConverter"/>
@@ -17,15 +17,15 @@
 	<controls:TooltipEnabledOnOverflowConverter x:Key="mTooltipEnabledOnOverflowConverter"/>
 	<BooleanToVisibilityConverter x:Key="mBooleanToVisibilityConverter"/>
 
-	<Style x:Key="DefaultText" TargetType="{x:Type TextBlock}">
+	<Style x:Key="DefaultText" TargetType="TextBlock">
 		<Setter Property="Foreground" Value="Black"/>
 		<Setter Property="FontSize" Value="10"/>
 	</Style>
-	<Style x:Key="LabelStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource DefaultText}">
+	<Style x:Key="LabelStyle" TargetType="TextBlock" BasedOn="{StaticResource DefaultText}">
 		<Setter Property="Padding" Value="0,0,5,0"/>
 		<Setter Property="Grid.Column" Value="0"/>
 	</Style>
-	<Style x:Key="ValueStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource DefaultText}">
+	<Style x:Key="ValueStyle" TargetType="TextBlock" BasedOn="{StaticResource DefaultText}">
 		<Setter Property="Padding" Value="0"/>
 		<Setter Property="Grid.Column" Value="1"/>
 		<Setter Property="Grid.ColumnSpan" Value="2"/>
@@ -54,7 +54,7 @@
 		</Style.Triggers>
 	</Style>
 
-	<Style x:Key="GridBumpLine" TargetType="{x:Type Line}">
+	<Style x:Key="GridBumpLine" TargetType="Line">
 		<Setter Property="Y1" Value="1"/>
 		<Setter Property="Y2">
 			<Setter.Value>
@@ -65,14 +65,14 @@
 		<Setter Property="StrokeDashArray" Value="1 1"/>
 	</Style>
 	
-	<Style TargetType="{x:Type controls:ArtPanel}">
+	<Style TargetType="controls:ArtPanel">
 		<Setter Property="Height" Value="Auto"/>
 		<Setter Property="Template">
 			<Setter.Value>
-				<ControlTemplate TargetType="{x:Type controls:ArtPanel}">
+				<ControlTemplate TargetType="controls:ArtPanel">
 					<Grid KeyboardNavigation.DirectionalNavigation="None">
 						<Grid.Style>
-							<Style TargetType="{x:Type Grid}">
+							<Style TargetType="Grid">
 								<Setter Property="MinWidth">
 									<Setter.Value>
 										<MultiBinding Converter="{StaticResource mSumConverter}" Mode="OneWay">
@@ -138,7 +138,7 @@
 										<TextBlock Grid.Row="0" Style="{StaticResource DefaultText}" Grid.Column="0" Grid.ColumnSpan="2" FontWeight="Bold" Text="{Binding Path=AlbumArt.ResultName, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"/>
 										<TextBlock Grid.Row="1"  Grid.Column="1">
 											<TextBlock.Style>
-												<Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource DefaultText}">
+												<Style TargetType="TextBlock" BasedOn="{StaticResource DefaultText}">
 													<Setter Property="Text">
 														<Setter.Value>
 															<MultiBinding Converter="{StaticResource mStringFormatterConverter}" ConverterParameter="{}{0} x {1}" Mode="OneWay">
@@ -163,7 +163,7 @@
 									</Grid>
 								</ToolTip>
 							</Grid.ToolTip>
-							<Popup Name="PART_ImagePopup" PlacementTarget="{Binding ElementName=PART_ImageDisplay}" Placement="Center" Width="Auto" Height="Auto">
+							<Popup x:Name="PART_ImagePopup" PlacementTarget="{Binding ElementName=PART_ImageDisplay}" Placement="Center" Width="Auto" Height="Auto">
 								<Border BorderBrush="{x:Static SystemColors.ControlDarkDarkBrush}" BorderThickness="0,0,1,1" Background="{x:Static SystemColors.ControlBrush}">
 									<Border BorderBrush="{x:Static SystemColors.ControlLightLightBrush}" BorderThickness="1,1,0,0">
 										<Border BorderBrush="{x:Static SystemColors.ControlDarkDarkBrush}" BorderThickness="1,1,0,0" Margin="3,3,4,4">
@@ -175,7 +175,7 @@
 												<Image Grid.RowSpan="2" Source="{Binding Path=AlbumArt.Image, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Width="{TemplateBinding ImagePopupWidth}" Height="{TemplateBinding ImagePopupHeight}" Stretch="Fill" 
 													   MinWidth="{Binding ElementName=PART_ImageDisplay, Path=ActualWidth}" MinHeight="{Binding ElementName=PART_ImageDisplay, Path=ActualHeight}">
 													<Image.Style>
-														<Style TargetType="{x:Type Image}">
+														<Style TargetType="Image">
 															<Style.Triggers>
 																<DataTrigger Binding="{Binding AlbumArt.IsDownloading, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Value="True">
 																	<Setter Property="Cursor" Value="Wait"/>
@@ -207,9 +207,9 @@
 							</Popup>
 
 							<ThemesClassic:SystemDropShadowChrome Width="{Binding ElementName=PART_ImageDisplay, Path=ActualWidth, Mode=OneWay}" Height="{Binding ElementName=PART_ImageDisplay, Path=ActualHeight, Mode=OneWay}"/>
-							<Image Name="PART_ImageDisplay" Source="{Binding Path=AlbumArt.Image, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Focusable="True">
+							<Image x:Name="PART_ImageDisplay" Source="{Binding Path=AlbumArt.Image, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Focusable="True">
 								<Image.Style>
-									<Style TargetType="{x:Type Image}">
+									<Style TargetType="Image">
 										<Setter Property="Cursor" Value="Hand"/>
 										<Style.Triggers>
 											<DataTrigger Binding="{Binding AlbumArt.IsDownloading, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Value="True">
@@ -221,9 +221,9 @@
 							</Image>
 							
 							<Image Visibility="{Binding Path=AlbumArt.IsDownloading, Converter={StaticResource mBooleanToVisibilityConverter}, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Source="downloading.png" HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="None" ToolTip="Full size image is being downloaded..." Cursor="Wait"/>
-							<ResizeGrip Name="PART_ImageResizer" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,-1,-1" Cursor="SizeNWSE" Focusable="False"/>
+							<ResizeGrip x:Name="PART_ImageResizer" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,-1,-1" Cursor="SizeNWSE" Focusable="False"/>
 						</Grid>
-						<Grid Name="PART_Information" Margin="5,5,2,5">
+						<Grid x:Name="PART_Information" Margin="5,5,2,5">
 							<Grid.RowDefinitions>
 								<RowDefinition Height="Auto"/>
 								<RowDefinition Height="Auto"/>
@@ -237,7 +237,7 @@
 								<ColumnDefinition Width="Auto"/>
 							</Grid.ColumnDefinitions>
 							<Grid.Style>
-								<Style TargetType="{x:Type Grid}">
+								<Style TargetType="Grid">
 									<Setter Property="Grid.Column" Value="1"/>
 									<Style.Triggers>
 										<DataTrigger Binding="{Binding InformationLocation, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"
@@ -257,7 +257,7 @@
 
 							<DockPanel Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2">
 								<DockPanel.Style>
-									<Style TargetType="{x:Type DockPanel}">
+									<Style TargetType="DockPanel">
 										<Style.Triggers>
 											<DataTrigger Binding="{Binding InformationLocation, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"
 														 Value="Bottom">
@@ -269,7 +269,7 @@
 								<Button DockPanel.Dock="Right" VerticalAlignment="Center"
 										Command="NavigationCommands.GoToPage" CommandParameter="{Binding Path=AlbumArt.InfoUri, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}">
 									<Button.Style>
-										<Style TargetType="{x:Type Button}" BasedOn="{StaticResource FadeButton}">
+										<Style TargetType="Button" BasedOn="{StaticResource FadeButton}">
 											<Style.Triggers>
 												<Trigger Property="CommandParameter" Value="">
 													<Setter Property="Visibility" Value="Collapsed"/>
@@ -284,7 +284,7 @@
 							</DockPanel>
 							<TextBlock Tag="ImageWidth" Grid.Row="1">
 								<TextBlock.Style>
-									<Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource ValueStyle}">
+									<Style TargetType="TextBlock" BasedOn="{StaticResource ValueStyle}">
 										<Setter Property="Text">
 											<Setter.Value>
 												<MultiBinding Converter="{StaticResource mStringFormatterConverter}" ConverterParameter="{}{0} x {1}" Mode="OneWay">
@@ -311,9 +311,9 @@
 									<ColumnDefinition Width="*"/>
 									<ColumnDefinition Width="Auto"/>
 								</Grid.ColumnDefinitions>
-								<TextBlock Focusable="True" Name="PART_FilePathDisplay" Margin="0,0,5,0" Grid.Column="0" Grid.ColumnSpan="1" Cursor="IBeam" ToolTip="{Binding Path=AlbumArt.FilePath, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}">
+								<TextBlock Focusable="True" x:Name="PART_FilePathDisplay" Margin="0,0,5,0" Grid.Column="0" Grid.ColumnSpan="1" Cursor="IBeam" ToolTip="{Binding Path=AlbumArt.FilePath, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}">
 									<TextBlock.Style>
-										<Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource ValueStyle}">
+										<Style TargetType="TextBlock" BasedOn="{StaticResource ValueStyle}">
 											<Style.Triggers>
 												<DataTrigger Binding="{Binding AlbumArt.IsCustomFilePath, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Value="False">
 													<Setter Property="Foreground" Value="Gray"/>
@@ -329,13 +329,13 @@
 										</MultiBinding>
 									</TextBlock.Text>
 								</TextBlock>
-								<Grid Name="PART_FilePathEditor" Margin="-5,-3,5,0" Visibility="Hidden">
+								<Grid x:Name="PART_FilePathEditor" Margin="-5,-3,5,0" Visibility="Hidden">
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition Width="*"/>
 										<ColumnDefinition Width="Auto"/>
 									</Grid.ColumnDefinitions>
-									<TextBox Name="PART_FilePathTextBox" FontSize="10" VerticalAlignment="Top"/>
-									<Button Name="PART_FilePathBrowse" Grid.Column="1" Content="..." FontSize="10" Height="{Binding ElementName=PART_FilePathTextBox, Path=ActualHeight, Mode=OneWay}"/>
+									<TextBox x:Name="PART_FilePathTextBox" FontSize="10" VerticalAlignment="Top"/>
+									<Button x:Name="PART_FilePathBrowse" Grid.Column="1" Content="..." FontSize="10" Height="{Binding ElementName=PART_FilePathTextBox, Path=ActualHeight, Mode=OneWay}"/>
 								</Grid>
 								<controls:SplitButton Command="ApplicationCommands.Save" VerticalAlignment="Top" Grid.Column="1" MenuToolTip="Save As...">
 									<Image Source="save.png" Stretch="None" ToolTip="Save"/>
@@ -349,7 +349,7 @@
 										ToolTip="Show information below thumbnail"
 										Command="{x:Static controls:ArtPanelList+Commands.ToggleInformationLocation}">
 								<Button.Style>
-									<Style TargetType="{x:Type Button}" BasedOn="{StaticResource FadeButton}">
+									<Style TargetType="Button" BasedOn="{StaticResource FadeButton}">
 										<Setter Property="Visibility" Value="Collapsed"/>
 										<Style.Triggers>
 											<DataTrigger Binding="{Binding InformationLocation, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"
@@ -366,7 +366,7 @@
 									ToolTip="Show information besides thumbnail"
 									Command="{x:Static controls:ArtPanelList+Commands.ToggleInformationLocation}">
 								<Button.Style>
-									<Style TargetType="{x:Type Button}" BasedOn="{StaticResource FadeButton}">
+									<Style TargetType="Button" BasedOn="{StaticResource FadeButton}">
 										<Setter Property="Visibility" Value="Collapsed"/>
 										<Style.Triggers>
 											<DataTrigger Binding="{Binding InformationLocation, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"
@@ -380,7 +380,7 @@
 							</Button>
 						</Grid>
 
-						<Border Grid.Column="2" Grid.RowSpan="2" Name="PART_PanelResizer" HorizontalAlignment="Right" Width="10" Padding="6,5,1,6" Margin="-3,-1,2,0" Cursor="SizeWE">
+						<Border Grid.Column="2" Grid.RowSpan="2" x:Name="PART_PanelResizer" HorizontalAlignment="Right" Width="10" Padding="6,5,1,6" Margin="-3,-1,2,0" Cursor="SizeWE">
 							<Canvas Focusable="True" SnapsToDevicePixels="True">
 								<Line Style="{StaticResource GridBumpLine}" Stroke="White" X1="2" X2="2" StrokeDashOffset="1.5"/>
 								<Line Style="{StaticResource GridBumpLine}" Stroke="#FFC1BEB3" X1="1" X2="1"/>

@@ -6,18 +6,18 @@
     >
 
 	<ResourceDictionary.MergedDictionaries>
-		<ResourceDictionary Source="/Themes/FadeButton.generic.xaml"/>
-		<ResourceDictionary Source="/Themes/HyperlinkCombo.generic.xaml"/>
+		<ResourceDictionary Source="/Controls/Xaml/FadeButton.generic.xaml"/>
+		<ResourceDictionary Source="/Controls/Xaml/HyperlinkCombo.generic.xaml"/>
 	</ResourceDictionary.MergedDictionaries>
 	
-	<Style x:Key="SortDirection" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource FadeButton}">
+	<Style x:Key="SortDirection" TargetType="ToggleButton" BasedOn="{StaticResource FadeButton}">
 		<Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
 		<Setter Property="ToolTip" Value="Ascending"/>
 		<Setter Property="Template">
 			<Setter.Value>
-				<ControlTemplate TargetType="{x:Type ToggleButton}">
+				<ControlTemplate TargetType="ToggleButton">
 					<Grid Background="{TemplateBinding Background}">
-						<Path Name="arrow" StrokeThickness="1" Fill="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}"
+						<Path x:Name="arrow" StrokeThickness="1" Fill="{DynamicResource {x:Static SystemColors.ControlDarkDarkBrushKey}}"
 							  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="{TemplateBinding Padding}"
 							  Data="M 0,0 L 5,5 10,0 Z">
 						</Path>
@@ -33,14 +33,14 @@
 		</Setter>
 	</Style>
 	
-	<Style TargetType="{x:Type controls:ArtPanelListSortPicker}">
+	<Style TargetType="controls:ArtPanelListSortPicker">
 		<Setter Property="Template">
 			<Setter.Value>
-				<ControlTemplate TargetType="{x:Type controls:ArtPanelListSortPicker}">
+				<ControlTemplate TargetType="controls:ArtPanelListSortPicker">
 					<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
 						<TextBlock Margin="2" Padding="5,1,2,2" VerticalAlignment="Top">Sort by:</TextBlock>
-						<ComboBox Name="PART_SortField"  Style="{StaticResource HyperlinkCombo}" Padding="2,0,2,2" IsEditable="False" HorizontalContentAlignment="Right"/>
-						<ToggleButton Name="PART_SortDirection" Padding="2" Style="{StaticResource SortDirection}"/>
+						<ComboBox x:Name="PART_SortField"  Style="{StaticResource HyperlinkCombo}" Padding="2,0,2,2" IsEditable="False" HorizontalContentAlignment="Right"/>
+						<ToggleButton x:Name="PART_SortDirection" Padding="2" Style="{StaticResource SortDirection}"/>
 					</StackPanel>
 				</ControlTemplate>
 			</Setter.Value>

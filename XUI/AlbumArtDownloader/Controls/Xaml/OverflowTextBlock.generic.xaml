@@ -6,7 +6,7 @@
 
 	<controls:TooltipEnabledOnOverflowConverter x:Key="mTooltipEnabledOnOverflowConverter"/>
 	
-	<Style x:Key="OverflowTextBlock" TargetType="{x:Type TextBlock}">
+	<Style x:Key="OverflowTextBlock" TargetType="TextBlock">
 		<Setter Property="TextTrimming" Value="CharacterEllipsis"/>
 		<Setter Property="ToolTip" Value="{Binding RelativeSource={RelativeSource Self}, Path=Text}"/>
 		<Setter Property="ToolTipService.IsEnabled">

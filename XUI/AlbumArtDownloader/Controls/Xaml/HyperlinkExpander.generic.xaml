@@ -3,15 +3,15 @@
     >
 
 	<ResourceDictionary.MergedDictionaries>
-		<ResourceDictionary Source="/Themes/HyperlinkButton.generic.xaml"/>
+		<ResourceDictionary Source="/Controls/Xaml/HyperlinkButton.generic.xaml"/>
 	</ResourceDictionary.MergedDictionaries>
 
-	<Style x:Key="HyperlinkExpander" TargetType="{x:Type Expander}">
+	<Style x:Key="HyperlinkExpander" TargetType="Expander">
 		<Setter Property="BorderBrush" Value="#FFD0D0BF"/>
 		<Setter Property="BorderThickness" Value="1,1,1,1"/>
 		<Setter Property="Template">
 			<Setter.Value>
-				<ControlTemplate TargetType="{x:Type Expander}">
+				<ControlTemplate TargetType="Expander">
 					<GroupBox BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}">
 						<GroupBox.Header>
 							<ToggleButton Style="{StaticResource HyperlinkButton}" IsChecked="{Binding Path=IsExpanded,Mode=TwoWay,RelativeSource={RelativeSource TemplatedParent}}"

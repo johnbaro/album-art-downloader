@@ -4,14 +4,14 @@
     >
 
 	<ResourceDictionary.MergedDictionaries>
-		<ResourceDictionary Source="/Themes/SourcePanel.generic.xaml"/>
-		<ResourceDictionary Source="/Themes/ArtPanel.generic.xaml"/>
-		<ResourceDictionary Source="/Themes/ArtPanelList.generic.xaml"/>
-		<ResourceDictionary Source="/Themes/ArtPanelListSortPicker.generic.xaml"/>
-		<ResourceDictionary Source="/Themes/ArtPathPatternBox.generic.xaml"/>
-		<ResourceDictionary Source="/Themes/LimitBox.generic.xaml"/>
-		<ResourceDictionary Source="/Themes/EditableCell.generic.xaml"/>
-		<ResourceDictionary Source="/Themes/SplitFadeButton.generic.xaml"/>
+		<ResourceDictionary Source="/Controls/Xaml/SourcePanel.generic.xaml"/>
+		<ResourceDictionary Source="/Controls/Xaml/ArtPanel.generic.xaml"/>
+		<ResourceDictionary Source="/Controls/Xaml/ArtPanelList.generic.xaml"/>
+		<ResourceDictionary Source="/Controls/Xaml/ArtPanelListSortPicker.generic.xaml"/>
+		<ResourceDictionary Source="/Controls/Xaml/ArtPathPatternBox.generic.xaml"/>
+		<ResourceDictionary Source="/Controls/Xaml/LimitBox.generic.xaml"/>
+		<ResourceDictionary Source="/Controls/Xaml/EditableCell.generic.xaml"/>
+		<ResourceDictionary Source="/Controls/Xaml/SplitFadeButton.generic.xaml"/>
 	</ResourceDictionary.MergedDictionaries>
 
 </ResourceDictionary>

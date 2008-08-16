@@ -5,13 +5,13 @@
     >
 
 	<ResourceDictionary.MergedDictionaries>
-		<ResourceDictionary Source="/Themes/FadeButton.generic.xaml"/>
+		<ResourceDictionary Source="/Controls/Xaml/FadeButton.generic.xaml"/>
 	</ResourceDictionary.MergedDictionaries>
 
-	<Style TargetType="{x:Type controls:SplitButton}" BasedOn="{StaticResource FadeButton}">
+	<Style TargetType="controls:SplitButton" BasedOn="{StaticResource FadeButton}">
 		<Setter Property="Template">
 			<Setter.Value>
-				<ControlTemplate TargetType="{x:Type controls:SplitButton}">
+				<ControlTemplate TargetType="controls:SplitButton">
 					<Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}">
 						<StackPanel Orientation="Horizontal">
 							<ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="{TemplateBinding Padding}" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
@@ -20,9 +20,9 @@
 								<Button.Style>
 									<Style TargetType="Button" BasedOn="{StaticResource FadeButton}">
 										<Style.Triggers>
-											<DataTrigger Binding="{TemplateBinding ShowMenuDropper}" Value="False">
+											<!--<DataTrigger Binding="{TemplateBinding ShowMenuDropper}" Value="False">
 												<Setter Property="Visibility" Value="Collapsed"/>
-											</DataTrigger>
+											</DataTrigger>-->
 										</Style.Triggers>
 									</Style>
 								</Button.Style>

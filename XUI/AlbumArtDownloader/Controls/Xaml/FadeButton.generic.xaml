@@ -4,7 +4,7 @@
 	xmlns:System="clr-namespace:System;assembly=mscorlib"
     >
 
-	<Style x:Key="FadeButton" TargetType="{x:Type ButtonBase}">
+	<Style x:Key="FadeButton" TargetType="ButtonBase">
 		<Setter Property="MinWidth" Value="0"/>
 		<Setter Property="MinHeight" Value="0"/>
 		<Setter Property="Cursor" Value="Hand"/>
@@ -13,7 +13,7 @@
 
 		<Setter Property="Template">
 			<Setter.Value>
-				<ControlTemplate TargetType="{x:Type ButtonBase}">
+				<ControlTemplate TargetType="ButtonBase">
 					<Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}">
 						<ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="{TemplateBinding Padding}" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
 					</Border>
@@ -23,7 +23,7 @@
 		
 		<Setter Property="FocusVisualStyle">
 			<Setter.Value>
-				<Style TargetType="{x:Type Control}">
+				<Style TargetType="Control">
 					<Setter Property="Control.Template">
 						<Setter.Value>
 							<ControlTemplate>

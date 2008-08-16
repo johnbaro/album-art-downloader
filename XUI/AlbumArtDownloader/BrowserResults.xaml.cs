@@ -514,7 +514,7 @@ namespace AlbumArtDownloader
 						try
 						{
 							ProgressText = String.Format("Finding art... {0} / {1}", album.Artist, album.Name);
-
+							/*
 							foreach (string imagePathPatternAlternate in ImagePathPattern.Split('|'))
 							{
 								string artFileSearchPattern = Common.SubstitutePlaceholders(imagePathPatternAlternate, album.Artist, album.Name);
@@ -545,7 +545,7 @@ namespace AlbumArtDownloader
 								{
 									break;
 								}
-							}
+							}*/
 						}
 						catch (Exception)
 						{

@@ -4,7 +4,7 @@
 	xmlns:System="clr-namespace:System;assembly=mscorlib"
     >
 
-	<Style x:Key="SimpleList" TargetType="{x:Type ItemsControl}">
+	<Style x:Key="SimpleList" TargetType="ItemsControl">
 		<Setter Property="BorderBrush" Value="#FF7F9DB9"/>
 		<Setter Property="BorderThickness" Value="1" />
 		<Setter Property="Background" Value="{x:Static SystemColors.WindowBrush}"/>
@@ -13,7 +13,7 @@
 				<ControlTemplate TargetType="ItemsControl">
 					<Border Background="{TemplateBinding Background}" SnapsToDevicePixels="True" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Padding="1,1,1,1">
 						<ScrollViewer VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}" Focusable="False" Padding="{TemplateBinding Padding}">
-							<ItemsPresenter Name="PART_ItemsPresenter"  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+							<ItemsPresenter x:Name="PART_ItemsPresenter"  SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
 						</ScrollViewer>
 					</Border>
 				</ControlTemplate>

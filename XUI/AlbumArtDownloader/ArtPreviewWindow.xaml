@@ -19,8 +19,8 @@
 	<Window.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="/Themes/FadeButton.generic.xaml"/>
-				<ResourceDictionary Source="/Themes/Statusbar.generic.xaml"/>
+				<ResourceDictionary Source="/Controls/Xaml/FadeButton.generic.xaml"/>
+				<ResourceDictionary Source="/Controls/Xaml/Statusbar.generic.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 
 			<controls:TooltipEnabledOnOverflowConverter x:Key="mTooltipEnabledOnOverflowConverter"/>
@@ -52,7 +52,7 @@
 			</Border.Background>
 			<Grid>
 				<Grid.Resources>
-					<Style x:Key="ToolbarButton" TargetType="{x:Type Button}" BasedOn="{StaticResource FadeButton}">
+					<Style x:Key="ToolbarButton" TargetType="Button" BasedOn="{StaticResource FadeButton}">
 						<Setter Property="VerticalAlignment" Value="Top"/>
 						<Setter Property="Grid.Row" Value="1"/>
 					</Style>
@@ -72,7 +72,7 @@
 					<ColumnDefinition Width="Auto"/>
 				</Grid.ColumnDefinitions>
 				<TextBlock Text="Filename: " Grid.Row="1"/>
-				<TextBlock Focusable="True" Name="mFilePathDisplay" Margin="5,0,5,0" Padding="0" Grid.Column="1" Grid.Row="1"
+				<TextBlock Focusable="True" x:Name="mFilePathDisplay" Margin="5,0,5,0" Padding="0" Grid.Column="1" Grid.Row="1"
 					   Cursor="IBeam" Background="{x:Static SystemColors.ControlLightBrush}"
 					   TextTrimming="CharacterEllipsis" ToolTip="{Binding FilePath}" ToolTipService.Placement="Relative">
 					<ToolTipService.IsEnabled>
@@ -83,7 +83,7 @@
 						</MultiBinding>
 					</ToolTipService.IsEnabled>
 					<TextBlock.Style>
-						<Style TargetType="{x:Type TextBlock}">
+						<Style TargetType="TextBlock">
 							<Setter Property="Grid.Row" Value="1"/>
 							<Style.Triggers>
 								<DataTrigger Binding="{Binding IsCustomFilePath, Mode=OneWay}" Value="False">
@@ -100,18 +100,18 @@
 						</MultiBinding>
 					</TextBlock.Text>
 				</TextBlock>
-				<Grid Name="mFilePathEditor" Margin="0,-3,5,0" Grid.Column="1" Grid.Row="1" Visibility="Hidden">
+				<Grid x:Name="mFilePathEditor" Margin="0,-3,5,0" Grid.Column="1" Grid.Row="1" Visibility="Hidden">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="*"/>
 						<ColumnDefinition Width="Auto"/>
 					</Grid.ColumnDefinitions>
-					<TextBox Name="mFilePathTextBox" VerticalAlignment="Top"/>
-					<Button Name="mFilePathBrowse" Grid.Column="1" Content="..." FontSize="10" Height="{Binding ElementName=mFilePathTextBox, Path=ActualHeight, Mode=OneWay}" Style="{x:Null}"/>
+					<TextBox x:Name="mFilePathTextBox" VerticalAlignment="Top"/>
+					<Button x:Name="mFilePathBrowse" Grid.Column="1" Content="..." FontSize="10" Height="{Binding ElementName=mFilePathTextBox, Path=ActualHeight, Mode=OneWay}" Style="{x:Null}"/>
 				</Grid>
 				<Button Style="{StaticResource ToolbarButton}" Command="ApplicationCommands.Save" Grid.Column="2">
-					<Image Source="pack://application:,,,/AlbumArtDownloader.Controls;component/themes/save.png" Stretch="None" ToolTip="Save"/>
+					<Image Source="/Controls/Xaml/save.png" Stretch="None" ToolTip="Save"/>
 				</Button>
-				<Image Grid.Column="2" Grid.Row="1" VerticalAlignment="Top" Source="pack://application:,,,/AlbumArtDownloader.Controls;component/themes/wait.png" Stretch="None" Visibility="{Binding IsSaving, Converter={StaticResource mBooleanToVisibilityConverter}}" ToolTip="Saving..." Cursor="Wait"/>
+				<Image Grid.Column="2" Grid.Row="1" VerticalAlignment="Top" Source="/Controls/Xaml/wait.png" Stretch="None" Visibility="{Binding IsSaving, Converter={StaticResource mBooleanToVisibilityConverter}}" ToolTip="Saving..." Cursor="Wait"/>
 				
 				<Border Grid.Column="3" Grid.RowSpan="3" BorderBrush="{x:Static SystemColors.ControlDarkBrush}" BorderThickness="1,0,0,0" Margin="5,3,5,3"/>
 				
@@ -129,10 +129,10 @@
 				</Button>
 			</Grid>
 		</Border>
-		<ScrollViewer Name="mImageScroller" Grid.Row="2" Focusable="True" KeyboardNavigation.IsTabStop="True"
+		<ScrollViewer x:Name="mImageScroller" Grid.Row="2" Focusable="True" KeyboardNavigation.IsTabStop="True"
 					  HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
 			<ScrollViewer.Style>
-				<Style TargetType="{x:Type ScrollViewer}">
+				<Style TargetType="ScrollViewer">
 					<Style.Triggers>
 						<Trigger Property="ComputedHorizontalScrollBarVisibility" Value="Visible">
 							<Setter Property="Cursor" Value="Hand.cur"/>
@@ -159,7 +159,7 @@
 		</ScrollViewer>
 		<StatusBar Grid.Row="3" Padding="0,2,10,2">
 			<StatusBar.Resources>
-				<Style TargetType="{x:Type StatusBarItem}">
+				<Style TargetType="StatusBarItem">
 					<Setter Property="BorderBrush" Value="{x:Static SystemColors.ControlDarkBrush}"/>
 					<Setter Property="BorderThickness" Value="1,0,0,0"/>
 					<Setter Property="Padding" Value="5,0,5,0"/>
@@ -172,7 +172,7 @@
 					<TextBlock>Full size image is being downloaded...</TextBlock>
 					<ProgressBar Width="100" Margin="5,-1,2,-1" IsIndeterminate="True">
 						<ProgressBar.Style>
-							<Style TargetType="{x:Type ProgressBar}">
+							<Style TargetType="ProgressBar">
 								<Style.Triggers>
 									<Trigger Property="IsVisible" Value="False">
 										<!-- Windows Vista will keep animating a progress bar even when it is not visible,
@@ -180,7 +180,7 @@
 										it an empty control template -->
 										<Setter Property="Template">
 											<Setter.Value>
-												<ControlTemplate TargetType="{x:Type ProgressBar}" />
+												<ControlTemplate TargetType="ProgressBar" />
 											</Setter.Value>
 										</Setter>
 									</Trigger>
@@ -196,7 +196,7 @@
 			<StatusBarItem>
 				<TextBlock ToolTip="Size">
 					<TextBlock.Style>
-						<Style TargetType="{x:Type TextBlock}">
+						<Style TargetType="TextBlock">
 							<Setter Property="Text">
 								<Setter.Value>
 									<MultiBinding Converter="{StaticResource mStringFormatterConverter}" ConverterParameter="{}{0} x {1}" Mode="OneWay">

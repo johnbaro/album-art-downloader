@@ -6,18 +6,18 @@
     >
 
 	<ResourceDictionary.MergedDictionaries>
-		<ResourceDictionary Source="/Themes/HyperlinkButton.generic.xaml"/>
-		<ResourceDictionary Source="/Themes/OverflowTextBlock.generic.xaml"/>
+		<ResourceDictionary Source="/Controls/Xaml/HyperlinkButton.generic.xaml"/>
+		<ResourceDictionary Source="/Controls/Xaml/OverflowTextBlock.generic.xaml"/>
 	</ResourceDictionary.MergedDictionaries>
 
 	<controls:StringFormatterConverter x:Key="mStringFormatterConverter"/>
 	<controls:CompareConverter x:Key="mCompareConverter"/>
 	<BooleanToVisibilityConverter x:Key="mBooleanToVisibilityConverter"/>
 
-	<Style TargetType="{x:Type controls:SourcePanel}">
+	<Style TargetType="controls:SourcePanel">
 		<Setter Property="Template">
 			<Setter.Value>
-				<ControlTemplate TargetType="{x:Type controls:SourcePanel}">
+				<ControlTemplate TargetType="controls:SourcePanel">
 					<Border BorderThickness="0,0,0,1" BorderBrush="#FF7F9DB9">
 						<Grid Margin="4" KeyboardNavigation.DirectionalNavigation="None">
 							<Grid.RowDefinitions>
@@ -33,7 +33,7 @@
 							</Grid.ColumnDefinitions>
 							<CheckBox Focusable="False" Grid.RowSpan="2" VerticalAlignment="Center" Margin="2,5,5,5" IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Source.IsEnabled, Mode=TwoWay}"/>
 							<TextBlock Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Source.Name, Mode=OneWay}"/>
-							<TextBlock Name="count" TextAlignment="Right" Grid.Column="3" Margin="5,0,0,0" MinWidth="25">
+							<TextBlock x:Name="count" TextAlignment="Right" Grid.Column="3" Margin="5,0,0,0" MinWidth="25">
 								<TextBlock.Text>
 									<MultiBinding Converter="{StaticResource mStringFormatterConverter}" ConverterParameter="{}({0})" Mode="OneWay">
 										<Binding Path="Source.Results.Count" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
@@ -42,7 +42,7 @@
 							</TextBlock>
 							
 							<controls:SizeRestrainer Grid.Row="1" Grid.Column="1">
-								<TextBlock Name="versionInfo" FontStyle="Italic" Foreground="Silver" Style="{StaticResource OverflowTextBlock}">
+								<TextBlock x:Name="versionInfo" FontStyle="Italic" Foreground="Silver" Style="{StaticResource OverflowTextBlock}">
 									<TextBlock.Text>
 										<MultiBinding Converter="{StaticResource mStringFormatterConverter}" ConverterParameter="{}v{0} by {1}" Mode="OneWay">
 											<Binding Path="Source.Version" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
@@ -51,10 +51,10 @@
 									</TextBlock.Text>
 								</TextBlock>
 							</controls:SizeRestrainer>
-							<ToggleButton Name="optionsToggle" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Right"
+							<ToggleButton x:Name="optionsToggle" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" HorizontalAlignment="Right"
 									 Foreground="#FF7F9DB9" Margin="0,3,0,-3">
 								<ToggleButton.Style>
-									<Style BasedOn="{StaticResource HyperlinkButton}" TargetType="{x:Type ToggleButton}">
+									<Style BasedOn="{StaticResource HyperlinkButton}" TargetType="ToggleButton">
 										<Setter Property="Content" Value="..."/>
 										<Setter Property="ToolTip" Value="Show source options..."/>
 										<Style.Triggers>
@@ -66,11 +66,11 @@
 								</ToggleButton.Style>
 							</ToggleButton>
 
-							<ProgressBar Name="searchProgress" Grid.Row="1" Grid.Column="1" Margin="2,3,2,1"
+							<ProgressBar x:Name="searchProgress" Grid.Row="1" Grid.Column="1" Margin="2,3,2,1"
 										 Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Source.Results.Count, Mode=OneWay}"
 										 Maximum="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Source.EstimatedResultsCount, Mode=OneWay}">
 								<ProgressBar.Style>
-									<Style TargetType="{x:Type ProgressBar}">
+									<Style TargetType="ProgressBar">
 										<Setter Property="Visibility" Value="Collapsed"/>
 										<Setter Property="ToolTip">
 											<Setter.Value>
@@ -115,7 +115,7 @@
 												<!-- Windows Vista will keep animating a progress bar even when it is not visible, so nuke the thing by giving it an empty control template -->
 												<Setter Property="Template">
 													<Setter.Value>
-														<ControlTemplate TargetType="{x:Type ProgressBar}" />
+														<ControlTemplate TargetType="ProgressBar" />
 													</Setter.Value>
 												</Setter>
 											</Trigger>
@@ -123,8 +123,8 @@
 									</Style>
 								</ProgressBar.Style>
 							</ProgressBar>
-							<Button Command="ApplicationCommands.Stop" Name="stopDownload" Visibility="Hidden" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" Style="{StaticResource HyperlinkButton}" HorizontalAlignment="Right">Stop</Button>
-							<GroupBox Name="PART_Options" Header="Options" Grid.Row="2" Grid.ColumnSpan="4"
+							<Button Command="ApplicationCommands.Stop" x:Name="stopDownload" Visibility="Hidden" Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2" Style="{StaticResource HyperlinkButton}" HorizontalAlignment="Right">Stop</Button>
+							<GroupBox x:Name="PART_Options" Header="Options" Grid.Row="2" Grid.ColumnSpan="4"
 									  Visibility="{Binding ElementName=optionsToggle, Path=IsChecked, Converter={StaticResource mBooleanToVisibilityConverter}}">
 								<Grid>
 									<Grid.RowDefinitions>

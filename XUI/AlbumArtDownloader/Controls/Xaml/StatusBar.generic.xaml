@@ -4,7 +4,7 @@
     >
 
 	<!-- The default status bar is flat. I don't know why. Status bars are supposed to have a gradient. -->
-	<Style TargetType="{x:Type StatusBar}">
+	<Style TargetType="StatusBar">
 		<Setter Property="Background">
 			<Setter.Value>
 				<LinearGradientBrush StartPoint="0,0" EndPoint="0,1">

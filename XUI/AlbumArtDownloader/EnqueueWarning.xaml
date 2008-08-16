@@ -15,7 +15,7 @@
 
 		<controls:StringFormatterConverter x:Key="mStringFormatterConverter"/>
 			
-		<Style TargetType="{x:Type Button}" x:Key="CommandLink">
+		<Style TargetType="Button" x:Key="CommandLink">
 			<Setter Property="Padding" Value="4"/>
 			<Setter Property="Margin" Value="16,8,16,0"/>
 			<Setter Property="HorizontalContentAlignment" Value="Left"/>
@@ -24,7 +24,7 @@
     <StackPanel>
 		<TextBlock TextWrapping="Wrap" Margin="8">You are about to enqueue a large number of searches. This may cause Album Art Downloader
 		to become slow and unresponsive, are you sure you want to enqueue them all?</TextBlock>
-		<Button Style="{StaticResource CommandLink}" IsDefault="True" Name="mEnqueueLimited">
+		<Button Style="{StaticResource CommandLink}" IsDefault="True" x:Name="mEnqueueLimited">
 			<StackPanel Orientation="Horizontal">
 				<Image Source="Arrow.png" Margin="0,2,0,0" Stretch="None"/>
 				<TextBlock Margin="2" Padding="3">
@@ -36,7 +36,7 @@
 				</TextBlock>
 			</StackPanel>
 		</Button>
-		<Button Style="{StaticResource CommandLink}" Name="mEnqueueAll">
+		<Button Style="{StaticResource CommandLink}" x:Name="mEnqueueAll">
 			<StackPanel Orientation="Horizontal">
 				<Image Source="Arrow.png" Margin="0,2,0,0" Stretch="None"/>
 				<TextBlock Margin="2" Padding="3">

@@ -4,13 +4,13 @@
 	xmlns:System="clr-namespace:System;assembly=mscorlib"
     >
 
-	<Style x:Key="HyperlinkButton" TargetType="{x:Type ButtonBase}">
+	<Style x:Key="HyperlinkButton" TargetType="ButtonBase">
 		<Setter Property="Cursor" Value="Hand"/>
 		<Setter Property="Foreground" Value="DarkBlue"/>
 		<Setter Property="Template">
 			<Setter.Value>
-				<ControlTemplate TargetType="{x:Type ButtonBase}">
-					<TextBlock Name="label" Text="{TemplateBinding Content}"/>
+				<ControlTemplate TargetType="ButtonBase">
+					<TextBlock x:Name="label" Text="{TemplateBinding Content}"/>
 					<ControlTemplate.Triggers>
 						<Trigger Property="IsMouseOver" Value="True">
 							<Setter TargetName="label" Property="TextDecorations" Value="Underline"/>
@@ -21,7 +21,7 @@
 		</Setter>
 		<Setter Property="FocusVisualStyle">
 			<Setter.Value>
-				<Style TargetType="{x:Type Control}">
+				<Style TargetType="Control">
 					<Setter Property="Control.Template">
 						<Setter.Value>
 							<ControlTemplate>

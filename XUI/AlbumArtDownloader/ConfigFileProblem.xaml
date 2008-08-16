@@ -10,7 +10,7 @@
 	<Window.Resources>
 		<controls:StringFormatterConverter x:Key="mStringFormatterConverter"/>
 			
-		<Style TargetType="{x:Type Button}" x:Key="CommandLink">
+		<Style TargetType="Button" x:Key="CommandLink">
 			<Setter Property="Padding" Value="4"/>
 			<Setter Property="Margin" Value="16,8,16,0"/>
 			<Setter Property="HorizontalContentAlignment" Value="Left"/>

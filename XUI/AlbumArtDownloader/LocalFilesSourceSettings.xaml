@@ -4,13 +4,13 @@
 	xmlns:Win32="clr-namespace:Microsoft.Win32;assembly=presentationframework"
 	xmlns:controls="clr-namespace:AlbumArtDownloader.Controls"
 	>
-    <Grid Name="mGrid">
+    <Grid x:Name="mGrid">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 		<Label Grid.Row="0" Target="{Binding ElementName=mSearchPathPatternBox}" Margin="0" Padding="0">_Path to find images:</Label>
-		<controls:ArtPathPatternBox Name="mSearchPathPatternBox" Margin="0,4,0,0" Grid.Row="1"
+		<controls:ArtPathPatternBox x:Name="mSearchPathPatternBox" Margin="0,4,0,0" Grid.Row="1"
 									MaxWidth="{Binding ElementName=mGrid, Path=ActualWidth}" 
 									PathPattern="{Binding SearchPathPattern}" ToolTip="[please wait...]">
 			<controls:ArtPathPatternBox.AdditionalPlaceholders>

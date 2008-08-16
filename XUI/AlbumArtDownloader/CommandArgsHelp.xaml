@@ -8,7 +8,7 @@
 	WindowStartupLocation="CenterScreen"
     >
 	<Grid>
-		<TextBox Name="mTextDisplay" FontFamily="Courier New" IsReadOnly="True" Padding="5"
+		<TextBox x:Name="mTextDisplay" FontFamily="Courier New" IsReadOnly="True" Padding="5"
 				 VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
 			<TextBox.ContextMenu>
 				<ContextMenu>

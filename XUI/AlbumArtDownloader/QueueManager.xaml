@@ -17,7 +17,7 @@
 	<Window.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="/Themes/HyperlinkButton.generic.xaml"/>
+				<ResourceDictionary Source="/Controls/Xaml/HyperlinkButton.generic.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 			
 			<BooleanToVisibilityConverter x:Key="mBooleanToVisibilityConverter"/>
@@ -45,7 +45,7 @@
 				<ColumnDefinition Width="*"/>
 			</Grid.ColumnDefinitions>
 			<Label Target="{Binding ElementName=mNumberOfWindows}">Simultaneous search windows:</Label>
-			<TextBox Grid.Column="1" Name="mNumberOfWindows" Margin="2" Padding="2" MinWidth="30">
+			<TextBox Grid.Column="1" x:Name="mNumberOfWindows" Margin="2" Padding="2" MinWidth="30">
 				<TextBox.Text>
 					<Binding Path="SearchQueue.SimulataneousWindowsAllowed" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
 						<Binding.ValidationRules>
@@ -57,7 +57,7 @@
 			
 			<TextBlock Grid.Column="2" Padding="5">
 				<TextBlock.Style>
-					<Style TargetType="{x:Type TextBlock}">
+					<Style TargetType="TextBlock">
 						<Style.Triggers>
 							<DataTrigger Binding="{Binding ElementName=mQueueDisplay, Path=Items.Count}" Value="0">
 								<Setter Property="Visibility" Value="Hidden"/>
@@ -76,7 +76,7 @@
 				Content="Cancel All"/>
 		</Grid>
 		
-		<ListBox Name="mQueueDisplay" Grid.Row="3" 
+		<ListBox x:Name="mQueueDisplay" Grid.Row="3" 
 				 HorizontalContentAlignment="Stretch"
 				 ItemsSource="{Binding Path=SearchQueue.Queue, Mode=OneWay}"
 				 SelectionMode="Extended">

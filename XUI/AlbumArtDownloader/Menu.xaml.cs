@@ -73,10 +73,10 @@ namespace AlbumArtDownloader
 					thisWindowMenuItem.IsChecked = true; //This is the active window
 					windowList.Items.Add(thisWindowMenuItem);
 				}
-				else if(thisWindow is QueueManager)
+				/*else if(thisWindow is QueueManager)
 				{
 					mQueueManager.IsChecked = true;
-				}
+				}*/
 
 				foreach (Window window in Application.Current.Windows)
 				{
@@ -101,15 +101,15 @@ namespace AlbumArtDownloader
 		#region Standard Handlers
 		private static void NewSearchWindowExec(object sender, ExecutedRoutedEventArgs e)
 		{
-			Common.NewSearchWindow(sender as IAppWindow, true);
+			//Common.NewSearchWindow(sender as IAppWindow, true);
 		}
 		private static void NewFileBrowserExec(object sender, ExecutedRoutedEventArgs e)
 		{
-			Common.NewFileBrowser(sender as IAppWindow);
+			//Common.NewFileBrowser(sender as IAppWindow);
 		}
 		private static void NewFoobarBrowserExec(object sender, ExecutedRoutedEventArgs e)
 		{
-			Common.NewFoobarBrowser(sender as IAppWindow);
+			//Common.NewFoobarBrowser(sender as IAppWindow);
 		}
 		private static void CloseExec(object sender, ExecutedRoutedEventArgs e)
 		{
@@ -119,12 +119,12 @@ namespace AlbumArtDownloader
 		}
 		private static void ExitExec(object sender, ExecutedRoutedEventArgs e)
 		{
-			((App)Application.Current).SearchQueue.Queue.Clear(); //The queued windows won't open during a shutdown anyway, but this makes things crystal clear.
+			//((App)Application.Current).SearchQueue.Queue.Clear(); //The queued windows won't open during a shutdown anyway, but this makes things crystal clear.
 			Application.Current.Shutdown();
 		}
 		private static void ShowQueueManagerExec(object sender, ExecutedRoutedEventArgs e)
 		{
-			((App)Application.Current).SearchQueue.ShowManagerWindow();
+			//((App)Application.Current).SearchQueue.ShowManagerWindow();
 		}
 		private static void AboutExec(object sender, ExecutedRoutedEventArgs e)
 		{

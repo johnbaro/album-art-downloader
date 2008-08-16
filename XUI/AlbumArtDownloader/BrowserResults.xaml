@@ -15,14 +15,14 @@
 	<controls:SortableListView.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="/Themes/HyperlinkButton.generic.xaml"/>
-				<ResourceDictionary Source="/Themes/SortableColumnHeader.generic.xaml"/>
+				<ResourceDictionary Source="/Controls/Xaml/HyperlinkButton.generic.xaml"/>
+				<ResourceDictionary Source="/Controls/Xaml/SortableColumnHeader.generic.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 
 			<controls:FileNameConverter x:Key="mFileNameConverter"/>
 			<controls:FileSizeConverter x:Key="mFileSizeConverter"/>
 
-			<Style TargetType="{x:Type GridViewColumnHeader}">
+			<Style TargetType="GridViewColumnHeader">
 				<Setter Property="HorizontalContentAlignment" Value="Left"/>
 			</Style>
 		</ResourceDictionary>
@@ -30,7 +30,7 @@
 
 	<controls:SortableListView.ItemContainerStyle>
 		<!-- Set row backgrounds for present or missing artwork -->
-		<Style TargetType="{x:Type ListViewItem}">
+		<Style TargetType="ListViewItem">
 			<Style.Triggers>
 				<DataTrigger Binding="{Binding ArtFileStatus}" Value="Present">
 					<Setter Property="Background" Value="#FFE5FFE5" />
@@ -73,7 +73,7 @@
 						<StackPanel Orientation="Horizontal">
 							<Image Margin="0,0,2,0">
 								<Image.Style>
-									<Style TargetType="{x:Type Image}">
+									<Style TargetType="Image">
 										<Style.Triggers>
 											<DataTrigger Binding="{Binding ArtFileStatus}" Value="Searching">
 												<Setter Property="Source" Value="search.ico"/>
@@ -90,7 +90,7 @@
 							</Image>
 							<TextBlock>
                                 <TextBlock.Style>
-                                    <Style TargetType="{x:Type TextBlock}">
+                                    <Style TargetType="TextBlock">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding ArtFileStatus}" Value="Searching">
                                                 <Setter Property="Text" Value="Searching..."/>
@@ -110,7 +110,7 @@
 										Content="{Binding ArtFile, Converter={StaticResource mFileNameConverter}}" 
 										ToolTip="{Binding ArtFile}">
 								<Button.Style>
-									<Style TargetType="{x:Type Button}" BasedOn="{StaticResource HyperlinkButton}">
+									<Style TargetType="Button" BasedOn="{StaticResource HyperlinkButton}">
 										<Setter Property="Visibility" Value="Collapsed"/>
 										<Style.Triggers>
 											<DataTrigger Binding="{Binding ArtFileStatus}" Value="Present">
@@ -129,7 +129,7 @@
 					<DataTemplate>
 						<TextBlock Text="{Binding Path=ArtFileSize, Converter={StaticResource mFileSizeConverter}}">
 							<TextBlock.Style>
-								<Style TargetType="{x:Type TextBlock}">
+								<Style TargetType="TextBlock">
 									<Setter Property="Visibility" Value="Hidden"/>
 									<Style.Triggers>
 										<DataTrigger Binding="{Binding ArtFileStatus}" Value="Present">

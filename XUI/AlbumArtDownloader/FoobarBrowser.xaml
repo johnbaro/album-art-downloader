@@ -18,10 +18,10 @@
 	<Window.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="/Themes/HyperlinkButton.generic.xaml"/>
-				<ResourceDictionary Source="/Themes/HyperlinkExpander.generic.xaml"/>
-				<ResourceDictionary Source="/Themes/Statusbar.generic.xaml"/>
-				<ResourceDictionary Source="/Themes/OverflowTextBlock.generic.xaml"/>
+				<ResourceDictionary Source="/Controls/Xaml/HyperlinkButton.generic.xaml"/>
+				<ResourceDictionary Source="/Controls/Xaml/HyperlinkExpander.generic.xaml"/>
+				<ResourceDictionary Source="/Controls/Xaml/Statusbar.generic.xaml"/>
+				<ResourceDictionary Source="/Controls/Xaml/OverflowTextBlock.generic.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 
 			<controls:StringFormatterConverter x:Key="mStringFormatterConverter"/>
@@ -52,7 +52,7 @@
 			</Grid.ColumnDefinitions>
 			<TextBlock Padding="0,0,0,4">
 				<TextBlock.Style>
-					<Style TargetType="{x:Type TextBlock}">
+					<Style TargetType="TextBlock">
 						<Setter Property="Text" Value="Search for media in:"/>
 						<Style.Triggers>
 							<DataTrigger Binding="{Binding FoobarPresent}" Value="False">
@@ -64,7 +64,7 @@
 			</TextBlock>
 			<Border Grid.Row="1" BorderBrush="{x:Static SystemColors.ControlDarkBrush}" BorderThickness="1" Padding="2">
 				<Border.Style>
-					<Style TargetType="{x:Type Border}">
+					<Style TargetType="Border">
 						<Setter Property="Visibility" Value="Collapsed"/>
 						<Style.Triggers>
 							<DataTrigger Binding="{Binding FoobarPresent}" Value="False">
@@ -89,7 +89,7 @@
 					  SelectedIndex="{Binding SelectedPlaylistIndex, Mode=TwoWay}"
 					  DisplayMemberPath="Name">
 				<ComboBox.Style>
-					<Style TargetType="{x:Type ComboBox}">
+					<Style TargetType="ComboBox">
 						<Setter Property="Visibility" Value="Visible"/>
 						<Style.Triggers>
 							<DataTrigger Binding="{Binding FoobarPresent}" Value="False">
@@ -99,7 +99,7 @@
 					</Style>
 				</ComboBox.Style>
 			</ComboBox>
-			<Button Name="mSearch" Padding="5,-5,5,-5" Margin="5,0,0,0" Grid.Column="2" Grid.RowSpan="2" Command="ApplicationCommands.Find" IsDefault="True">
+			<Button x:Name="mSearch" Padding="5,-5,5,-5" Margin="5,0,0,0" Grid.Column="2" Grid.RowSpan="2" Command="ApplicationCommands.Find" IsDefault="True">
 				<StackPanel Orientation="Horizontal">
 					<Image Source="search.ico" Margin="0,4,0,0"/>
 					<Label>_Search</Label>
@@ -109,7 +109,7 @@
 		<Expander Padding="5,5,0,0" Grid.Row="2"
 				  Header="Options..." BorderBrush="{x:Static SystemColors.ControlDarkBrush}">
 			<Expander.Style>
-				<Style TargetType="{x:Type Expander}" BasedOn="{StaticResource HyperlinkExpander}">
+				<Style TargetType="Expander" BasedOn="{StaticResource HyperlinkExpander}">
 					<Setter Property="Margin" Value="0,2,0,0"/>
 					<Style.Triggers>
 						<Trigger Property="IsExpanded" Value="True">
@@ -124,7 +124,7 @@
 					<RowDefinition Height="Auto"/>
 				</Grid.RowDefinitions>
 				<Label Target="{Binding ElementName=mImagePathPatternBox}" Padding="0,4,0,4">Specify path to find _images:</Label>
-				<controls:ArtPathPatternBox Name="mImagePathPatternBox" Grid.Row="1" PathPattern="{Binding Source={StaticResource mSettings}, Path=Default.FileBrowseImagePath}">
+				<controls:ArtPathPatternBox x:Name="mImagePathPatternBox" Grid.Row="1" PathPattern="{Binding Source={StaticResource mSettings}, Path=Default.FileBrowseImagePath}">
 					<controls:ArtPathPatternBox.AdditionalPlaceholders>
 						<controls:PatternPlaceholder MenuItemHeader="_Subfolders" ToolTip="Matches subfolders recursively at this point in the path" Placeholder="\**\"/>
 						<controls:PatternPlaceholder MenuItemHeader="_Alternate" ToolTip="Separates alternative paths to match" Placeholder="|"/>
@@ -163,7 +163,7 @@
 				<Button Padding="10,-3,10,-1" Margin="0,-3,10,-5"
 						Command="ApplicationCommands.Stop" Content="Stop">
 					<Button.Style>
-						<Style TargetType="{x:Type Button}">
+						<Style TargetType="Button">
 							<Setter Property="Visibility" Value="Collapsed"/>
 							<Style.Triggers>
 								<DataTrigger Binding="{Binding State}" Value="FindingFiles">
@@ -181,7 +181,7 @@
 				<ProgressBar Value="{Binding Progress, Mode=OneWay}" Maximum="{Binding ProgressMax, Mode=OneWay}"
 							 Width="100" Margin="5,-4,2,-6">
 					<ProgressBar.Style>
-						<Style TargetType="{x:Type ProgressBar}">
+						<Style TargetType="ProgressBar">
 							<Setter Property="Visibility" Value="Collapsed"/>
 							<Style.Triggers>
 								<DataTrigger Binding="{Binding State}" Value="FindingFiles">
@@ -195,7 +195,7 @@
 			<StatusBarItem>
 				<TextBlock>
 					<TextBlock.Style>
-						<Style TargetType="{x:Type TextBlock}" BasedOn="{StaticResource OverflowTextBlock}">
+						<Style TargetType="TextBlock" BasedOn="{StaticResource OverflowTextBlock}">
 							<Style.Triggers>
 								<DataTrigger Binding="{Binding State}" Value="Ready">
 									<Setter Property="Text">

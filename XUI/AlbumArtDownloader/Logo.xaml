@@ -6,7 +6,7 @@
 	<UserControl.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="/Themes/HyperlinkButton.generic.xaml"/>
+				<ResourceDictionary Source="/Controls/Xaml/HyperlinkButton.generic.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</UserControl.Resources>
@@ -19,7 +19,7 @@
 			<TextBlock Foreground="Black" FontSize="24">Album Art Downloader</TextBlock>
 			<TextBlock Foreground="Red" Margin="5,0,0,0" FontSize="12" VerticalAlignment="Top">XUI</TextBlock>
 		</StackPanel>
-		<Button Style="{StaticResource HyperlinkButton}" Name="mLink" Grid.Row="1" Content="http://album-art.sourceforge.net"
+		<Button Style="{StaticResource HyperlinkButton}" x:Name="mLink" Grid.Row="1" Content="http://album-art.sourceforge.net"
 				Command="GoToPage" CommandParameter="http://album-art.sourceforge.net"/>
 		<TextBlock Grid.Row="1" HorizontalAlignment="Right" Foreground="Black" Text="{Binding Version, Mode=OneTime}"/>
 		</Grid>
