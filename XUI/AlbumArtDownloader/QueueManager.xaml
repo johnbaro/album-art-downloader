@@ -4,7 +4,7 @@
    
 	xmlns:local="clr-namespace:AlbumArtDownloader"
 	xmlns:properties="clr-namespace:AlbumArtDownloader.Properties"
-	xmlns:controls="clr-namespace:AlbumArtDownloader.Controls;assembly=AlbumArtDownloader.Controls"
+	xmlns:controls="clr-namespace:AlbumArtDownloader.Controls"
 		
 	DataContext="{x:Static Application.Current}"
 		
@@ -17,7 +17,7 @@
 	<Window.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/HyperlinkButton.generic.xaml"/>
+				<ResourceDictionary Source="/Themes/HyperlinkButton.generic.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 			
 			<BooleanToVisibilityConverter x:Key="mBooleanToVisibilityConverter"/>

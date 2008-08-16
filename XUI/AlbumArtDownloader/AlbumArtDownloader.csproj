@@ -57,6 +57,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\ThirdParty Assemblies\Boo.Lang.Parser.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationFramework.Classic">
+      <RequiredTargetFramework>3.0</RequiredTargetFramework>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">
@@ -112,6 +115,78 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Splashscreen.xaml" />
+    <Page Include="TEST.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="themes\ArtPanel.generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="themes\ArtPanelList.generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="themes\ArtPanelListSortPicker.generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="themes\ArtPathPatternBox.generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="themes\EditableCell.generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="themes\FadeButton.generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="themes\generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="themes\HyperlinkButton.generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="themes\HyperlinkCombo.generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="themes\HyperlinkExpander.generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="themes\LimitBox.generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="themes\OverflowTextBlock.generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="themes\SimpleList.generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="themes\SortableColumnHeader.generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="themes\SourcePanel.generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="themes\SplitFadeButton.generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="themes\StatusBar.generic.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Compile Include="ArtSearchWindow.xaml.cs">
       <DependentUpon>ArtSearchWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -143,6 +218,35 @@
     <Compile Include="ConfigFileProblem.xaml.cs">
       <DependentUpon>ConfigFileProblem.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ArtPanel.cs" />
+    <Compile Include="Controls\ArtPanelList.cs" />
+    <Compile Include="Controls\ArtPanelListSortPicker.cs" />
+    <Compile Include="Controls\ArtPathPatternBox.cs" />
+    <Compile Include="Controls\CompareConverter.cs" />
+    <Compile Include="Controls\EditableCell.cs" />
+    <Compile Include="Controls\EnumIndexConverter.cs" />
+    <Compile Include="Controls\Enums.cs" />
+    <Compile Include="Controls\EqualityConverter.cs" />
+    <Compile Include="Controls\FileNameConverter.cs" />
+    <Compile Include="Controls\FileSizeConverter.cs" />
+    <Compile Include="Controls\IAlbumArt.cs" />
+    <Compile Include="Controls\ISource.cs" />
+    <Compile Include="Controls\LimitBox.cs" />
+    <Compile Include="Controls\LocalGroupDescription.cs" />
+    <Compile Include="Controls\LogarithmicScaleConverter.cs" />
+    <Compile Include="Controls\MultiEqualityConverter.cs" />
+    <Compile Include="Controls\NotNullConverter.cs" />
+    <Compile Include="Controls\PathCompacterConverter.cs" />
+    <Compile Include="Controls\PatternPlaceholder.cs" />
+    <Compile Include="Controls\SizeRestrainer.cs" />
+    <Compile Include="Controls\SortableGridViewColumn.cs" />
+    <Compile Include="Controls\SortableListView.cs" />
+    <Compile Include="Controls\SourcePanel.cs" />
+    <Compile Include="Controls\SplitButton.cs" />
+    <Compile Include="Controls\StringFormatterConverter.cs" />
+    <Compile Include="Controls\SumConverter.cs" />
+    <Compile Include="Controls\TooltipEnabledOnOverflowConverter.cs" />
+    <Compile Include="Controls\Utilities.cs" />
     <Compile Include="EnqueueWarning.xaml.cs">
       <DependentUpon>EnqueueWarning.xaml</DependentUpon>
     </Compile>
@@ -213,14 +317,13 @@
       <SubType>Code</SubType>
       <DependentUpon>Splashscreen.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TEST.xaml.cs">
+      <DependentUpon>TEST.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WindowSettings.cs" />
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Controls\Controls.csproj">
-      <Project>{760836F5-1921-4159-9FA7-38DC664BCD4B}</Project>
-      <Name>Controls</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Scripts\Scripts.csproj">
       <Project>{9AA60D1F-2771-4C45-893A-BF3C685C9985}</Project>
       <Name>Scripts</Name>
@@ -267,6 +370,16 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Hand.cur" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="themes\browse.png" />
+    <Resource Include="themes\downloading.png" />
+    <Resource Include="themes\info.png" />
+    <Resource Include="themes\save.png" />
+    <Resource Include="themes\tick.png" />
+    <Resource Include="themes\toggleDown.png" />
+    <Resource Include="themes\toggleUp.png" />
+    <Resource Include="themes\wait.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

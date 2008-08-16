@@ -1,17 +1,17 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:AlbumArtDownloader.Controls"
+    xmlns:controls="clr-namespace:AlbumArtDownloader.Controls"
 	xmlns:System="clr-namespace:System;assembly=mscorlib"
     >
 
 	<ResourceDictionary.MergedDictionaries>
-		<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/SimpleList.generic.xaml"/>
+		<ResourceDictionary Source="/Themes/SimpleList.generic.xaml"/>
 	</ResourceDictionary.MergedDictionaries>
 
-	<local:NotNullConverter x:Key="mNotNullConverter"/>
+	<controls:NotNullConverter x:Key="mNotNullConverter"/>
 
-	<Style TargetType="{x:Type local:ArtPanelList}" BasedOn="{StaticResource SimpleList}">
+	<Style TargetType="{x:Type controls:ArtPanelList}" BasedOn="{StaticResource SimpleList}">
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="ItemsControl">
@@ -70,26 +70,26 @@
 		<Setter Property="ItemTemplate">
 			<Setter.Value>
 				<DataTemplate>
-					<local:ArtPanel
+					<controls:ArtPanel
 							Name="PART_ArtPanel"
-							Width="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ArtPanelList}}, Path=PanelWidth, Mode=TwoWay}"
-							ThumbSize="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ArtPanelList}}, Path=ThumbSize, Mode=TwoWay}"
-							InformationLocation="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ArtPanelList}}, Path=InformationLocation, Mode=TwoWay}"
+							Width="{Binding RelativeSource={RelativeSource AncestorType={x:Type controls:ArtPanelList}}, Path=PanelWidth, Mode=TwoWay}"
+							ThumbSize="{Binding RelativeSource={RelativeSource AncestorType={x:Type controls:ArtPanelList}}, Path=ThumbSize, Mode=TwoWay}"
+							InformationLocation="{Binding RelativeSource={RelativeSource AncestorType={x:Type controls:ArtPanelList}}, Path=InformationLocation, Mode=TwoWay}"
 							AlbumArt="{Binding}"
 						>
 						<!-- Performance tweak: keep the panel collapsed until it becomes properly bound to the ArtPanelList -->
-						<local:ArtPanel.Style>
-							<Style TargetType="{x:Type local:ArtPanel}">
+						<controls:ArtPanel.Style>
+							<Style TargetType="{x:Type controls:ArtPanel}">
 								<Setter Property="Visibility" Value="Collapsed"/>
 								<Style.Triggers>
-									<DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:ArtPanelList}}, Converter={StaticResource mNotNullConverter}, Mode=OneWay}"
+									<DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type controls:ArtPanelList}}, Converter={StaticResource mNotNullConverter}, Mode=OneWay}"
 												 Value="True">
 										<Setter Property="Visibility" Value="Visible"/>
 									</DataTrigger>
 								</Style.Triggers>	
 							</Style>
-						</local:ArtPanel.Style>
-					</local:ArtPanel>
+						</controls:ArtPanel.Style>
+					</controls:ArtPanel>
 				</DataTemplate>
 			</Setter.Value>
 		</Setter>

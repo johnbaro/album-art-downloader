@@ -5,7 +5,7 @@
     >
 
 	<ResourceDictionary.MergedDictionaries>
-		<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/HyperlinkButton.generic.xaml"/>
+		<ResourceDictionary Source="/Themes/HyperlinkButton.generic.xaml"/>
 	</ResourceDictionary.MergedDictionaries>
 
 	<Style x:Key="HyperlinkCombo" TargetType="{x:Type ComboBox}">

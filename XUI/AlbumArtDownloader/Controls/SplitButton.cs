@@ -52,7 +52,6 @@ namespace AlbumArtDownloader.Controls
 		}
 		#endregion
 
-
 		#region Menu
 		public static readonly DependencyProperty MenuProperty = DependencyProperty.Register("Menu", typeof(ContextMenu), typeof(SplitButton), new FrameworkPropertyMetadata(null));
 
@@ -66,6 +65,14 @@ namespace AlbumArtDownloader.Controls
 		}
 		#endregion
 
+		#region ShowMenuDroppper
+		public static readonly DependencyProperty ShowMenuDroppperProperty = DependencyProperty.Register("ShowMenuDroppper", typeof(Boolean), typeof(SplitButton), new FrameworkPropertyMetadata(true));
 
+		public Boolean ShowMenuDroppper
+		{
+			get { return (Boolean)GetValue(ShowMenuDroppperProperty); }
+			set { SetValue(ShowMenuDroppperProperty, value); }
+		}
+		#endregion
 	}
 }

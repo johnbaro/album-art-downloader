@@ -19,7 +19,7 @@
 	<Window.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/HyperlinkButton.generic.xaml"/>
+				<ResourceDictionary Source="/Themes/HyperlinkButton.generic.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 			<BooleanToVisibilityConverter x:Key="mBooleanToVisibilityConverter"/>
 		</ResourceDictionary>

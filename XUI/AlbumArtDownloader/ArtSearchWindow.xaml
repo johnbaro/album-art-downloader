@@ -4,7 +4,7 @@
 	xmlns:Win32="clr-namespace:Microsoft.Win32;assembly=presentationframework" 
 	xmlns:local="clr-namespace:AlbumArtDownloader"
 	xmlns:properties="clr-namespace:AlbumArtDownloader.Properties"
-	xmlns:controls="clr-namespace:AlbumArtDownloader.Controls;assembly=AlbumArtDownloader.Controls"
+	xmlns:controls="clr-namespace:AlbumArtDownloader.Controls"
 	
 	Icon="AlbumArtDownloader.ico"
 	Title="Album Art Downloader" Background="{x:Static SystemColors.ControlBrush}"
@@ -18,10 +18,10 @@
 	<Window.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/SimpleList.generic.xaml"/>
-				<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/HyperlinkButton.generic.xaml"/>
-				<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/HyperlinkExpander.generic.xaml"/>
-				<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/HyperlinkCombo.generic.xaml"/>
+				<ResourceDictionary Source="/Themes/SimpleList.generic.xaml"/>
+				<ResourceDictionary Source="/Themes/HyperlinkButton.generic.xaml"/>
+				<ResourceDictionary Source="/Themes/HyperlinkExpander.generic.xaml"/>
+				<ResourceDictionary Source="/Themes/HyperlinkCombo.generic.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 
 			<BooleanToVisibilityConverter x:Key="mBooleanToVisibilityConverter"/>

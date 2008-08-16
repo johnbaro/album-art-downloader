@@ -4,7 +4,7 @@
    
 	xmlns:local="clr-namespace:AlbumArtDownloader"
 	xmlns:properties="clr-namespace:AlbumArtDownloader.Properties"
-	xmlns:controls="clr-namespace:AlbumArtDownloader.Controls;assembly=AlbumArtDownloader.Controls"
+	xmlns:controls="clr-namespace:AlbumArtDownloader.Controls"
 		
 	Title="Art Preview" Background="{x:Static SystemColors.ControlBrush}"
 	Icon="AlbumArtDownloader.ico"
@@ -19,8 +19,8 @@
 	<Window.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/FadeButton.generic.xaml"/>
-				<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/Statusbar.generic.xaml"/>
+				<ResourceDictionary Source="/Themes/FadeButton.generic.xaml"/>
+				<ResourceDictionary Source="/Themes/Statusbar.generic.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 
 			<controls:TooltipEnabledOnOverflowConverter x:Key="mTooltipEnabledOnOverflowConverter"/>

@@ -631,6 +631,12 @@ namespace AlbumArtDownloader
 					albumArt.PropertyChanged += AutoCloseOnSave;
 				}
 
+				string preset = e.Parameter as String;
+				if (preset != null)
+				{
+					albumArt.Preset = preset;
+				}
+
 				albumArt.Save();
 			}
 		}

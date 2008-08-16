@@ -5,7 +5,7 @@
     
 	xmlns:local="clr-namespace:AlbumArtDownloader"
 	xmlns:properties="clr-namespace:AlbumArtDownloader.Properties"
-	xmlns:controls="clr-namespace:AlbumArtDownloader.Controls;assembly=AlbumArtDownloader.Controls"
+	xmlns:controls="clr-namespace:AlbumArtDownloader.Controls"
 
 	DataContext="{Binding RelativeSource={RelativeSource Self}}"
 		
@@ -18,10 +18,10 @@
 	<Window.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/HyperlinkButton.generic.xaml"/>
-				<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/HyperlinkExpander.generic.xaml"/>
-				<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/Statusbar.generic.xaml"/>
-				<ResourceDictionary Source="/AlbumArtDownloader.Controls;component/Themes/OverflowTextBlock.generic.xaml"/>
+				<ResourceDictionary Source="/Themes/HyperlinkButton.generic.xaml"/>
+				<ResourceDictionary Source="/Themes/HyperlinkExpander.generic.xaml"/>
+				<ResourceDictionary Source="/Themes/Statusbar.generic.xaml"/>
+				<ResourceDictionary Source="/Themes/OverflowTextBlock.generic.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 
 			<controls:StringFormatterConverter x:Key="mStringFormatterConverter"/>
