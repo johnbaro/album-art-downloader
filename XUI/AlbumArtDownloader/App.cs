@@ -19,6 +19,9 @@ namespace AlbumArtDownloader
 		[System.STAThreadAttribute()]
 		public static void Main(string[] args)
 		{
+			//new Application().Run(new TEST());
+			//return;
+
 #if ERROR_REPORTING
 			try
 			{
@@ -58,7 +61,7 @@ namespace AlbumArtDownloader
 				//Show the self-service config file problem solver
 				if (new ConfigFileProblem(ex).ShowDialog().GetValueOrDefault())
 				{
-					System.Diagnostics.Process.Start(Assembly.GetEntryAssembly().Location, Common.GetCommandArgs());
+					//System.Diagnostics.Process.Start(Assembly.GetEntryAssembly().Location, Common.GetCommandArgs());
 				}
 				return;
 			}

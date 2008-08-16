@@ -24,7 +24,7 @@
 				<MenuItem Command="{x:Static local:Menu+Commands.Exit}"/>
 			</MenuItem>
 			<MenuItem Header="_Window" SubmenuOpened="OnWindowListOpened">
-				<MenuItem Name="mQueueManager" Header="_Queue Manager" Command="{x:Static local:Menu+Commands.ShowQueueManager}" IsCheckable="True"/>
+				<MenuItem x:Name="mQueueManager" Header="_Queue Manager" Command="{x:Static local:Menu+Commands.ShowQueueManager}" IsCheckable="True"/>
 			</MenuItem>
 			<MenuItem Header="_Help">
 				<MenuItem Header="Album Art Downloader _Website" Command="GoToPage" CommandParameter="http://album-art.sourceforge.net"/>

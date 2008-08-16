@@ -654,7 +654,7 @@ namespace AlbumArtDownloader
 
 		private void PreviewExec(object sender, ExecutedRoutedEventArgs e)
 		{
-			IAlbumArt albumArt = mResultsViewer.GetSourceAlbumArt(e);
+			AlbumArt albumArt = mResultsViewer.GetSourceAlbumArt(e);
 			if (albumArt != null)
 			{
 				albumArt.RetrieveFullSizeImage();

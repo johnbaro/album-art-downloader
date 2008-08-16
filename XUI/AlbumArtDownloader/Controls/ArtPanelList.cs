@@ -174,7 +174,7 @@ namespace AlbumArtDownloader.Controls
 		#region Image Size Changed
 		private void OnImageSizeChanged(object sender, RoutedEventArgs e)
 		{
-			IAlbumArt albumArt = ((ArtPanel)e.OriginalSource).AlbumArt; //Or should this get it from the ItemContainerGenerator?
+			AlbumArt albumArt = ((ArtPanel)e.OriginalSource).AlbumArt; //Or should this get it from the ItemContainerGenerator?
 
 			//As this panel's size has changed, it must be removed and re-added, so the list re-filters and re-sorts it
 			if (ItemsSource is IList)
@@ -243,7 +243,7 @@ namespace AlbumArtDownloader.Controls
 		}
 		private bool SizeFilter(object item)
 		{
-			IAlbumArt albumArt = item as IAlbumArt;
+			AlbumArt albumArt = item as AlbumArt;
 			if (albumArt == null)
 				return true; //Can't filter it, don't know what it is
 
@@ -565,11 +565,11 @@ namespace AlbumArtDownloader.Controls
 		#endregion
 
 		/// <summary>
-		/// Gets the IAlbumArt that corresponds to the source of the a RoutedEvent that came from it.
+		/// Gets the AlbumArt that corresponds to the source of the a RoutedEvent that came from it.
 		/// </summary>
 		/// <param name="e"></param>
 		/// <returns></returns>
-		public IAlbumArt GetSourceAlbumArt(ExecutedRoutedEventArgs e)
+		public AlbumArt GetSourceAlbumArt(ExecutedRoutedEventArgs e)
 		{
 			FrameworkElement source = e.OriginalSource as FrameworkElement;
 			if (source != null && !(source is ArtPanel)) //If the source isn't the panel itself, then it must come from some control in the panels template.
@@ -578,7 +578,7 @@ namespace AlbumArtDownloader.Controls
 			if (source == null)
 				return null; //Couldn't find an art panel that triggered this command.
 
-			return (IAlbumArt)ItemContainerGenerator.ItemFromContainer(source.TemplatedParent);
+			return (AlbumArt)ItemContainerGenerator.ItemFromContainer(source.TemplatedParent);
 		}
 	}
 }

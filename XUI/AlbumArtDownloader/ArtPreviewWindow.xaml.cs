@@ -150,11 +150,11 @@ namespace AlbumArtDownloader
 		}
 
 		#region Properties
-		public static readonly DependencyProperty AlbumArtProperty = DependencyProperty.Register("AlbumArt", typeof(IAlbumArt), typeof(ArtPreviewWindow));
+		public static readonly DependencyProperty AlbumArtProperty = DependencyProperty.Register("AlbumArt", typeof(AlbumArt), typeof(ArtPreviewWindow));
 		/// <summary>The AlbumArt to preview</summary>
-		public IAlbumArt AlbumArt
+		public AlbumArt AlbumArt
 		{
-			get { return (IAlbumArt)GetValue(AlbumArtProperty); }
+			get { return (AlbumArt)GetValue(AlbumArtProperty); }
 			set { SetValue(AlbumArtProperty, value); }
 		}
 

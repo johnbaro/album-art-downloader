@@ -13,7 +13,7 @@ using Microsoft.Win32;
 
 namespace AlbumArtDownloader
 {
-	internal class AlbumArt : DependencyObject, Controls.IAlbumArt
+	public class AlbumArt : DependencyObject, INotifyPropertyChanged, IDisposable
 	{
 		private Source mSource;
 		private object mFullSizeCallbackParameter;
@@ -71,12 +71,12 @@ namespace AlbumArtDownloader
 				albumArt.IsCustomFilePath = false;
 
 				//Construct the default file path
-				return albumArt;/*.DefaultFilePathPattern
+				return albumArt.DefaultFilePathPattern
 								.Replace("%name%", Common.MakeSafeForPath(albumArt.ResultName))
 								.Replace("%source%", Common.MakeSafeForPath(albumArt.SourceName))
 								.Replace("%size%", String.Format("{0} x {1}", albumArt.ImageWidth, albumArt.ImageHeight))
 								.Replace("%extension%", albumArt.ImageCodecInfo.FilenameExtension.Split(';')[0].Substring(2).ToLower() //Use the first filename extension of the codec, with *. removed from it, in lower case
-								.Replace("%preset%", Common.MakeSafeForPath(albumArt.Preset)));*/
+								.Replace("%preset%", Common.MakeSafeForPath(albumArt.Preset)));
 			}
 			else
 			{
@@ -228,7 +228,7 @@ namespace AlbumArtDownloader
 		public bool IsSourceLocal
 		{
 			//TODO: Add possibility of other local sources? Perhaps a flag on a sources?
-			get { return true; /* mSource is LocalFilesSource;*/ }
+			get { return mSource is LocalFilesSource; }
 		}
 
 		public string SourceName

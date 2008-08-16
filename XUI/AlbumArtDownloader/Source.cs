@@ -11,12 +11,12 @@ using AlbumArtDownloader.Scripts;
 
 namespace AlbumArtDownloader
 {
-	internal abstract class Source : ISource
+	public abstract class Source : INotifyPropertyChanged
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
 		public event EventHandler SearchCompleted;
 
-		private ObservableCollectionOfDisposables<IAlbumArt> mResults;
+		private ObservableCollectionOfDisposables<AlbumArt> mResults;
 		private SourceSettings mSettings;
 		private Control mCustomSettingsUI; 
 
@@ -24,7 +24,7 @@ namespace AlbumArtDownloader
 
 		public Source()
 		{
-			mResults = new ObservableCollectionOfDisposables<IAlbumArt>();
+			mResults = new ObservableCollectionOfDisposables<AlbumArt>();
 
 			mCustomSettingsUI = CreateCustomSettingsUI();
 			if(mCustomSettingsUI != null)
@@ -204,7 +204,7 @@ namespace AlbumArtDownloader
 			}
 		}
 
-		public ObservableCollection<IAlbumArt> Results
+		public ObservableCollection<AlbumArt> Results
 		{
 			get { return mResults; }
 		}

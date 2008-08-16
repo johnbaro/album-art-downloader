@@ -8,14 +8,14 @@ namespace AlbumArtDownloader
 {
 	internal class Sources : ObservableCollection<Source>
 	{
-		private ObservableCollection<IAlbumArt> mCombinedResults = null;
+		private ObservableCollection<AlbumArt> mCombinedResults = null;
 
-		public ObservableCollection<IAlbumArt> CombinedResults
+		public ObservableCollection<AlbumArt> CombinedResults
 		{
 			get
 			{
 				if (mCombinedResults == null)
-					mCombinedResults = new ObservableCollection<IAlbumArt>();
+					mCombinedResults = new ObservableCollection<AlbumArt>();
 				return mCombinedResults;
 			}
 		}
@@ -99,7 +99,7 @@ namespace AlbumArtDownloader
 			source.PropertyChanged += new PropertyChangedEventHandler(OnSourcePropertyChanged);
 			source.Results.CollectionChanged += new NotifyCollectionChangedEventHandler(OnSourceResultsChanged);
 
-			foreach (IAlbumArt albumArt in source.Results)
+			foreach (AlbumArt albumArt in source.Results)
 			{
 				CombinedResults.Add(albumArt);
 			}
@@ -116,7 +116,7 @@ namespace AlbumArtDownloader
 			source.PropertyChanged -= new PropertyChangedEventHandler(OnSourcePropertyChanged);
 			source.Results.CollectionChanged -= new NotifyCollectionChangedEventHandler(OnSourceResultsChanged);
 
-			foreach (IAlbumArt albumArt in source.Results)
+			foreach (AlbumArt albumArt in source.Results)
 			{
 				CombinedResults.Remove(albumArt);
 			}
@@ -140,7 +140,7 @@ namespace AlbumArtDownloader
 			if (e.Action == NotifyCollectionChangedAction.Add ||
 				e.Action == NotifyCollectionChangedAction.Replace)
 			{
-				foreach (IAlbumArt albumArt in e.NewItems)
+				foreach (AlbumArt albumArt in e.NewItems)
 				{
 					CombinedResults.Add(albumArt);
 				}
@@ -148,7 +148,7 @@ namespace AlbumArtDownloader
 			if (e.Action == NotifyCollectionChangedAction.Remove ||
 				e.Action == NotifyCollectionChangedAction.Replace)
 			{
-				foreach (IAlbumArt albumArt in e.OldItems)
+				foreach (AlbumArt albumArt in e.OldItems)
 				{
 					//TODO: Does this need a TryRemoveResultFromCombinedResults helper?
 					CombinedResults.Remove(albumArt);
@@ -170,7 +170,7 @@ namespace AlbumArtDownloader
 			CombinedResults.Clear();
 			foreach (Source source in this)
 			{
-				foreach (IAlbumArt albumArt in source.Results)
+				foreach (AlbumArt albumArt in source.Results)
 				{
 					CombinedResults.Add(albumArt);
 				}

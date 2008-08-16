@@ -36,10 +36,10 @@ namespace AlbumArtDownloader.Controls
 				((FrameworkElement)sender).BringIntoView();
 		}
 
-		public static readonly DependencyProperty SourceProperty = DependencyProperty.Register("Source", typeof(ISource), typeof(SourcePanel));
-		public ISource Source
+		public static readonly DependencyProperty SourceProperty = DependencyProperty.Register("Source", typeof(Source), typeof(SourcePanel));
+		public Source Source
 		{
-			get { return (ISource)GetValue(SourceProperty); }
+			get { return (Source)GetValue(SourceProperty); }
 			set { SetValue(SourceProperty, value); }
 		}
 

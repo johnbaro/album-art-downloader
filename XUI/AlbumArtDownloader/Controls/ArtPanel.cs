@@ -563,11 +563,11 @@ namespace AlbumArtDownloader.Controls
 		#endregion
 
 		#region Properties
-		public static readonly DependencyProperty AlbumArtProperty = DependencyProperty.Register("AlbumArt", typeof(IAlbumArt), typeof(ArtPanel));
+		public static readonly DependencyProperty AlbumArtProperty = DependencyProperty.Register("AlbumArt", typeof(AlbumArt), typeof(ArtPanel));
 		/// <summary>The AlbumArt that this panel displays</summary>
-		public IAlbumArt AlbumArt
+		public AlbumArt AlbumArt
 		{
-			get { return (IAlbumArt)GetValue(AlbumArtProperty); }
+			get { return (AlbumArt)GetValue(AlbumArtProperty); }
 			set { SetValue(AlbumArtProperty, value); }
 		}
 

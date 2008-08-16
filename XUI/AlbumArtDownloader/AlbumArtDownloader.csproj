@@ -126,7 +126,6 @@
     <Compile Include="InstanceMutex.cs" />
     <Compile Include="Enums.cs" />
     <Compile Include="Common.cs" />
-
     <Compile Include="App.cs" />
     <Compile Include="Arguments.cs" />
     <Page Include="CommandArgsHelp.xaml" />
@@ -134,20 +133,16 @@
       <SubType>Code</SubType>
       <DependentUpon>CommandArgsHelp.xaml</DependentUpon>
     </Compile>
-
     <Page Include="Menu.xaml" />
     <Compile Include="Menu.xaml.cs">
       <DependentUpon>Menu.xaml</DependentUpon>
     </Compile>
-
-
     <Page Include="About.xaml" />
     <Page Include="Logo.xaml" />
     <Compile Include="Logo.xaml.cs">
       <SubType>Code</SubType>
       <DependentUpon>Logo.xaml</DependentUpon>
     </Compile>
-
     <Page Include="TEST.xaml" />
     <Compile Include="TEST.xaml.cs">
       <DependentUpon>TEST.xaml</DependentUpon>
@@ -172,45 +167,35 @@
     <Compile Include="ConfigFileProblem.xaml.cs">
       <DependentUpon>ConfigFileProblem.xaml</DependentUpon>
     </Compile>
-
     <Page Include="ArtSearchWindow.xaml" />
     <Compile Include="ArtSearchWindow.xaml.cs">
       <DependentUpon>ArtSearchWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-
     <Page Include="ArtPreviewWindow.xaml" />
     <Compile Include="ArtPreviewWindow.xaml.cs">
       <DependentUpon>ArtPreviewWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Album.cs" />
     <Compile Include="FullWindowDrag.cs" />
-
     <Page Include="EnqueueWarning.xaml" />
     <Compile Include="EnqueueWarning.xaml.cs">
       <DependentUpon>EnqueueWarning.xaml</DependentUpon>
     </Compile>
-
     <Compile Include="FileSearcher.cs" />
     <Compile Include="ScriptSource.cs" />
     <Compile Include="FoundAlbumArtEventArgs.cs" />
-
-
     <Compile Include="LocalFilesSource.cs" />
-
     <Page Include="LocalFilesSourceSettings.xaml" />
     <Compile Include="LocalFilesSourceSettings.xaml.cs">
       <SubType>Code</SubType>
       <DependentUpon>LocalFilesSourceSettings.xaml</DependentUpon>
     </Compile>
-
     <Compile Include="SearchQueue.cs" />
-
     <Page Include="QueueManager.xaml" />
     <Compile Include="QueueManager.xaml.cs">
       <DependentUpon>QueueManager.xaml</DependentUpon>
     </Compile>
-
     <Page Include="BrowserResults.xaml" />
     <Compile Include="BrowserResults.xaml.cs">
       <DependentUpon>BrowserResults.xaml</DependentUpon>
@@ -225,19 +210,15 @@
       <SubType>Code</SubType>
       <DependentUpon>FoobarBrowser.xaml</DependentUpon>
     </Compile>
-
     <Page Include="EditPresets.xaml" />
     <Compile Include="About.xaml.cs">
       <SubType>Code</SubType>
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
-
     <Compile Include="EditPresets.xaml.cs">
       <DependentUpon>EditPresets.xaml</DependentUpon>
     </Compile>
-   
   </ItemGroup>
-
   <ItemGroup>
     <Resource Include="search.ico" />
     <Resource Include="AlbumArtDownloader.ico" />
@@ -249,7 +230,6 @@
     <Resource Include="ZoomOut.png" />
     <Resource Include="Hand.cur" />
   </ItemGroup>
-
   <ItemGroup>
     <Compile Include="..\Third Party Assemblies\MediaInfoDLL.cs">
       <Link>MediaInfoDLL.cs</Link>
@@ -259,7 +239,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
   <ItemGroup>
     <Page Include="Themes\generic.xaml" />
     <Page Include="Controls\Xaml\FadeButton.generic.xaml" />
@@ -286,7 +265,6 @@
     <Resource Include="Controls\Xaml\toggleDown.png" />
     <Resource Include="Controls\Xaml\toggleUp.png" />
     <Resource Include="Controls\Xaml\wait.png" />
-
     <Compile Include="Controls\Enums.cs" />
     <Compile Include="Controls\ArtPanel.cs" />
     <Compile Include="Controls\ArtPanelList.cs" />
@@ -298,8 +276,6 @@
     <Compile Include="Controls\EqualityConverter.cs" />
     <Compile Include="Controls\FileNameConverter.cs" />
     <Compile Include="Controls\FileSizeConverter.cs" />
-    <Compile Include="Controls\IAlbumArt.cs" />
-    <Compile Include="Controls\ISource.cs" />
     <Compile Include="Controls\LimitBox.cs" />
     <Compile Include="Controls\LocalGroupDescription.cs" />
     <Compile Include="Controls\LogarithmicScaleConverter.cs" />
