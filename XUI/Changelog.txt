@@ -1,3 +1,7 @@
+0.22 Added Presets functionality (first cut for testing)
+     Merged AlbumArtDownloader.Controls.dll into AlbumArt.exe
+     Updated RateYourMusic
+     
 0.21 If the existing search window is re-used for a new search, it is now brought to the foreground.
      When the thumbnail information is displayed below the thumbnail, the info button no longer
       overlaps the button to toggle the information to display to the side.

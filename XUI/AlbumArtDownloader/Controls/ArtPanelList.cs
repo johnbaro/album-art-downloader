@@ -582,12 +582,12 @@ namespace AlbumArtDownloader.Controls
 			DependencyObject ancestorOrSelf = e.OriginalSource as DependencyObject;
 			while (ancestorOrSelf != null)
 			{
-				ancestorOrSelf = System.Windows.Media.VisualTreeHelper.GetParent(ancestorOrSelf);
 				if (ancestorOrSelf is ArtPanel)
 				{
 					//Found the art panel that triggered the command
 					return ((ArtPanel)ancestorOrSelf).AlbumArt;
 				}
+				ancestorOrSelf = System.Windows.Media.VisualTreeHelper.GetParent(ancestorOrSelf);
 			}
 			return null; //Couldn't find an art panel that triggered this command.
 		}
