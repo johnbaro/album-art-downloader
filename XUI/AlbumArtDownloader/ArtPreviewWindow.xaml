@@ -12,7 +12,7 @@
 	ResizeMode="CanResizeWithGrip"
 	
 	DataContext="{Binding RelativeSource={RelativeSource Self}, Path=AlbumArt}"
-	Name="this"
+	x:Name="this"
 		
     properties:WindowSettings.Save="True"
     >

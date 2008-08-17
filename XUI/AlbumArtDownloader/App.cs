@@ -19,9 +19,6 @@ namespace AlbumArtDownloader
 		[System.STAThreadAttribute()]
 		public static void Main(string[] args)
 		{
-			//new Application().Run(new TEST());
-			//return;
-
 #if ERROR_REPORTING
 			try
 			{
@@ -61,7 +58,7 @@ namespace AlbumArtDownloader
 				//Show the self-service config file problem solver
 				if (new ConfigFileProblem(ex).ShowDialog().GetValueOrDefault())
 				{
-					//System.Diagnostics.Process.Start(Assembly.GetEntryAssembly().Location, Common.GetCommandArgs());
+					System.Diagnostics.Process.Start(Assembly.GetEntryAssembly().Location, Common.GetCommandArgs());
 				}
 				return;
 			}
@@ -491,7 +488,7 @@ namespace AlbumArtDownloader
 		private void AssignDefaultSettings()
 		{
 			if (AlbumArtDownloader.Properties.Settings.Default.DefaultSavePath == "%default%")
-				AlbumArtDownloader.Properties.Settings.Default.DefaultSavePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), @"Album Art\%artist%\%album%\Folder.%extension%");
+				AlbumArtDownloader.Properties.Settings.Default.DefaultSavePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), @"Album Art\%artist%\%album%\Folder%preset%.%extension%");
 
 			if (AlbumArtDownloader.Properties.Settings.Default.FileBrowseRoot == "%default%")
 				AlbumArtDownloader.Properties.Settings.Default.FileBrowseRoot = Environment.GetFolderPath(Environment.SpecialFolder.MyMusic);

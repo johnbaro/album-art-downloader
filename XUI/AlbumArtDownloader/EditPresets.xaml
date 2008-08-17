@@ -9,6 +9,7 @@
 	Background="{x:Static SystemColors.ControlBrush}"
 	Icon="AlbumArtDownloader.ico"
 	Width="375" Height="330"
+	WindowStartupLocation="CenterOwner"
 	ResizeMode="CanResizeWithGrip"
 	
 	DataContext="{Binding RelativeSource={RelativeSource Self}}"

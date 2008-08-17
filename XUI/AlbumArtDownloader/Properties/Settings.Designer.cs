@@ -233,7 +233,7 @@ namespace AlbumArtDownloader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Folder.*|Cover.*")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Folder%preset%.%extension%|Cover%preset%.%extension%")]
         public string FileBrowseImagePath {
             get {
                 return ((string)(this["FileBrowseImagePath"]));

@@ -129,7 +129,8 @@ namespace AlbumArtDownloader
 								.Replace("%name%", "*")
 								.Replace("%extension%", "*")
 								.Replace("%source%", "*")
-								.Replace("%size%", "*");
+								.Replace("%size%", "*")
+								.Replace("%preset%", "*");
 		}
 
 		private static Regex sPathPatternSplitter = new Regex(@"(?<fixed>(?:[^/\\*]*(?:[/\\]|$))*)(?<match>[^/\\]+)?[/\\]?(?<remainder>.*)", RegexOptions.Compiled);

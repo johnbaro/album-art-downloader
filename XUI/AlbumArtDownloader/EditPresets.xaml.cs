@@ -13,6 +13,7 @@ using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 using AlbumArtDownloader.Controls;
 using System.Windows.Controls.Primitives;
+using System.Collections.Specialized;
 
 namespace AlbumArtDownloader
 {
@@ -21,7 +22,7 @@ namespace AlbumArtDownloader
 	/// </summary>
 	public partial class EditPresets : Window
 	{
-		private ObservableCollection<Preset> mPresets = new ObservableCollection<Preset>();
+		private readonly ObservableCollection<Preset> mPresets = new ObservableCollection<Preset>();
 
 		public EditPresets()
 		{
@@ -32,6 +33,16 @@ namespace AlbumArtDownloader
 			CommandBindings.Add(new CommandBinding(EditableCell.Commands.Edit, EditExec, SelectedItemCanExec));
 			CommandBindings.Add(new CommandBinding(ComponentCommands.MoveUp, MoveUpExec, MoveUpCanExec));
 			CommandBindings.Add(new CommandBinding(ComponentCommands.MoveDown, MoveDownExec, MoveDownCanExec));
+
+			Presets.CollectionChanged += OnPresetsChanged;
+		}
+
+		public EditPresets(IEnumerable<Preset> presets) : this()
+		{
+			foreach (Preset preset in presets)
+			{
+				mPresets.Add(preset);
+			}
 		}
 
 		#region Add New Preset
@@ -123,5 +134,27 @@ namespace AlbumArtDownloader
 		{
 			DialogResult = true;
 		}
+
+		private void OnPresetsChanged(object sender, NotifyCollectionChangedEventArgs e)
+		{
+			//Re-apply style selector (as otherwise it doesn't apply to all items when one is changed)
+			mPresetsList.ItemContainerStyleSelector = new FirstItemStyleSelector();
+		}
+
+		private class FirstItemStyleSelector : StyleSelector
+		{
+			public override Style SelectStyle(object item, DependencyObject container)
+			{
+				int index = ItemsControl.ItemsControlFromItemContainer(container).ItemContainerGenerator.IndexFromContainer(container);
+				if (index == 0)
+				{
+					var style = new Style(typeof(ListViewItem), base.SelectStyle(item, container));
+					style.Setters.Add(new Setter(ListViewItem.FontWeightProperty, FontWeights.Bold));
+					return style;
+				}
+
+				return base.SelectStyle(item, container);
+			}
+		}    
 	}
 }

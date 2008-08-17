@@ -15,21 +15,17 @@
 					<Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}">
 						<StackPanel Orientation="Horizontal">
 							<ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="{TemplateBinding Padding}" Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
-							<Button x:Name="PART_MenuDropper"
+							<Button x:Name="PART_MenuDropper" Style="{StaticResource FadeButton}"
 								ToolTip="{TemplateBinding MenuToolTip}" VerticalAlignment="Stretch" Background="Transparent">
-								<Button.Style>
-									<Style TargetType="Button" BasedOn="{StaticResource FadeButton}">
-										<Style.Triggers>
-											<!--<DataTrigger Binding="{TemplateBinding ShowMenuDropper}" Value="False">
-												<Setter Property="Visibility" Value="Collapsed"/>
-											</DataTrigger>-->
-										</Style.Triggers>
-									</Style>
-								</Button.Style>
 								<Path StrokeThickness="1" Fill="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" Data="M 0,0 L 5,5 10,0 Z" />
 							</Button>
 						</StackPanel>
 					</Border>
+					<ControlTemplate.Triggers>
+						<Trigger Property="Menu" Value="{x:Null}">
+							<Setter TargetName="PART_MenuDropper" Property="Visibility" Value="Collapsed"/>
+						</Trigger>
+					</ControlTemplate.Triggers>
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>

@@ -337,7 +337,7 @@
 									<TextBox x:Name="PART_FilePathTextBox" FontSize="10" VerticalAlignment="Top"/>
 									<Button x:Name="PART_FilePathBrowse" Grid.Column="1" Content="..." FontSize="10" Height="{Binding ElementName=PART_FilePathTextBox, Path=ActualHeight, Mode=OneWay}"/>
 								</Grid>
-								<controls:SplitButton Command="ApplicationCommands.Save" VerticalAlignment="Top" Grid.Column="1" MenuToolTip="Save As...">
+								<controls:SplitButton Command="ApplicationCommands.Save" VerticalAlignment="Top" Grid.Column="1" MenuToolTip="Save As..." Menu="{TemplateBinding PresetsContextMenu}">
 									<Image Source="save.png" Stretch="None" ToolTip="Save"/>
 								</controls:SplitButton>
 								

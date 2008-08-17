@@ -11,7 +11,7 @@
 	Width="640" Height="400"
 	FocusManager.FocusedElement="{Binding ElementName=mArtist}"
 	
-	Name="this" 
+	x:Name="this" 
 		
     properties:WindowSettings.Save="True"
 	>
@@ -180,6 +180,7 @@
 					<controls:ArtPathPatternBox Grid.Row="2" Grid.Column="1" x:Name="mDefaultSaveFolder"
 												Margin="2" Padding="2">
 						<controls:ArtPathPatternBox.AdditionalPlaceholders>
+							<controls:PatternPlaceholder MenuItemHeader="_Preset" ToolTip="A custom preset string, chosen from the save button menu" Placeholder="%preset%"/>
 							<controls:PatternPlaceholder MenuItemHeader="_Name" ToolTip="The name of the result found" Placeholder="%name%"/>
 							<controls:PatternPlaceholder MenuItemHeader="_Extension" ToolTip="The file extension of the result found" Placeholder="%extension%"/>
 							<controls:PatternPlaceholder MenuItemHeader="_Source" ToolTip="The source from which the result was found" Placeholder="%source%"/>
@@ -233,6 +234,7 @@
 								UseMaximumImageSize="{Binding Default.UseMaximumImageSize, Mode=OneWay}"
 								MaximumImageSize="{Binding Default.MaximumImageSize, Mode=OneWay}"
 								InformationLocation="{Binding Default.InformationLocation}"
+								PresetsContextMenu="{Binding ElementName=this, Path=PresetsContextMenu, Mode=OneWay}"
 							   />
 		
 		<Grid Grid.Column="3" Grid.Row="1" Grid.RowSpan="4">

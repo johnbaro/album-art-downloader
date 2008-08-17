@@ -107,7 +107,7 @@ namespace AlbumArtDownloader.Controls
 						"Value",
 						typeof(object),
 						typeof(EditableCell),
-						new FrameworkPropertyMetadata(null));
+						new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
 
 		/// <summary>
 		/// Gets or sets the value of the EditableCell

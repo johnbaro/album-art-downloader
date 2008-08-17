@@ -376,6 +376,14 @@ namespace AlbumArtDownloader.Controls
 			}
 			return newValue;
 		}
+
+		public static readonly DependencyProperty PresetsContextMenuProperty = ArtPanel.PresetsContextMenuProperty.AddOwner(typeof(ArtPanelList));
+		/// <summary>The menu to display when the Save button dropper is clicked</summary>
+		public ContextMenu PresetsContextMenu
+		{
+			get { return (ContextMenu)GetValue(PresetsContextMenuProperty); }
+			set { SetValue(PresetsContextMenuProperty, value); }
+		}
 		#endregion
 
 		#region Elements
@@ -571,14 +579,17 @@ namespace AlbumArtDownloader.Controls
 		/// <returns></returns>
 		public AlbumArt GetSourceAlbumArt(ExecutedRoutedEventArgs e)
 		{
-			FrameworkElement source = e.OriginalSource as FrameworkElement;
-			if (source != null && !(source is ArtPanel)) //If the source isn't the panel itself, then it must come from some control in the panels template.
-				source = source.TemplatedParent as ArtPanel;
-
-			if (source == null)
-				return null; //Couldn't find an art panel that triggered this command.
-
-			return (AlbumArt)ItemContainerGenerator.ItemFromContainer(source.TemplatedParent);
+			DependencyObject ancestorOrSelf = e.OriginalSource as DependencyObject;
+			while (ancestorOrSelf != null)
+			{
+				ancestorOrSelf = System.Windows.Media.VisualTreeHelper.GetParent(ancestorOrSelf);
+				if (ancestorOrSelf is ArtPanel)
+				{
+					//Found the art panel that triggered the command
+					return ((ArtPanel)ancestorOrSelf).AlbumArt;
+				}
+			}
+			return null; //Couldn't find an art panel that triggered this command.
 		}
 	}
 }

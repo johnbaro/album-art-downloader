@@ -8,6 +8,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using System.Linq;
 
 namespace AlbumArtDownloader.Controls
 {
@@ -628,6 +629,15 @@ namespace AlbumArtDownloader.Controls
 				}
 			}
 		}
+
+		public static readonly DependencyProperty PresetsContextMenuProperty = DependencyProperty.Register("PresetsContextMenu", typeof(ContextMenu), typeof(ArtPanel), new FrameworkPropertyMetadata(null));
+		/// <summary>The menu to display when the Save button dropper is clicked</summary>
+		public ContextMenu PresetsContextMenu
+		{
+			get { return (ContextMenu)GetValue(PresetsContextMenuProperty); }
+			set { SetValue(PresetsContextMenuProperty, value); }
+		}
+
 		#endregion
 
 		#region Elements

@@ -85,6 +85,9 @@ namespace AlbumArtDownloader
 			//Tab auto-select all for Artist and Album boxes
 			mArtist.GotKeyboardFocus += OnAutoSelectTextBoxFocusChange;
 			mAlbum.GotKeyboardFocus += OnAutoSelectTextBoxFocusChange;
+
+			//If the default file path pattern does not containg %preset%, the presets context menu is coerced into being hidden
+			mDefaultSaveFolder.PathPatternChanged += delegate { CoerceValue(PresetsContextMenuProperty); };
 		}
 
 		private void OnAutoSelectTextBoxFocusChange(object sender, KeyboardFocusChangedEventArgs e)
@@ -189,7 +192,6 @@ namespace AlbumArtDownloader
 		#endregion
 
 		#region Searching
-
 
 		public static readonly DependencyProperty ArtistProperty = DependencyProperty.Register("Artist", typeof(string), typeof(ArtSearchWindow));
 		public string Artist
@@ -663,6 +665,75 @@ namespace AlbumArtDownloader
 			}
 		}
 
+		#region Presets
+		private void UpdatePresetsMenu()
+		{
+			var contextMenu = new ContextMenu();
+
+			//Start with the Save As item
+			contextMenu.Items.Add(new MenuItem() { Header = "_Save As...", Command = ApplicationCommands.SaveAs });
+			contextMenu.Items.Add(new Separator());
+
+			bool first = true;
+			foreach (var preset in Properties.Settings.Default.Presets)
+			{
+				var presetMenuItem = new MenuItem()
+				{
+					Header = preset.Name,
+					InputGestureText = String.Empty,
+					Command = ApplicationCommands.Save,
+					CommandParameter = preset.Value
+				};
+				if (first)
+				{
+					first = false;
+					//Mark this menu item as the default
+					presetMenuItem.FontWeight = FontWeights.Bold;
+				}
+				contextMenu.Items.Add(presetMenuItem);
+			}
+
+			//End with the Edit Presets menu item
+			contextMenu.Items.Add(new Separator());
+			var editPresets = new MenuItem() { Header = "Edit Presets..." };
+			editPresets.Click += OnEditPresets;
+			contextMenu.Items.Add(editPresets);
+
+			PresetsContextMenu = contextMenu;
+		}
+
+		#region PresetsContextMenu
+		private static readonly DependencyPropertyKey PresetsContextMenuPropertyKey = DependencyProperty.RegisterReadOnly("PresetsContextMenu", typeof(ContextMenu), typeof(ArtSearchWindow), new FrameworkPropertyMetadata(null, new CoerceValueCallback(CoercePresetsContextMenu)));
+		public static readonly DependencyProperty PresetsContextMenuProperty = PresetsContextMenuPropertyKey.DependencyProperty;
+
+		public object PresetsContextMenu
+		{
+			get { return (object)GetValue(PresetsContextMenuProperty); }
+			private set { SetValue(PresetsContextMenuPropertyKey, value); }
+		}
+
+		private static object CoercePresetsContextMenu(DependencyObject sender, object baseValue)
+		{
+			if (!((ArtSearchWindow)sender).mDefaultSaveFolder.PathPattern.Contains("%preset%"))
+			{
+				return null;
+			}
+			return baseValue;
+		}
+		#endregion
+
+		private void OnEditPresets(object sender, RoutedEventArgs e)
+		{
+			var editPresets = new EditPresets(Properties.Settings.Default.Presets);
+			editPresets.Owner = this;
+			if (editPresets.ShowDialog().GetValueOrDefault())
+			{
+				Properties.Settings.Default.Presets = editPresets.Presets.ToArray();
+				UpdatePresetsMenu();
+			}
+		}
+		#endregion
+
 		#region IAppWindow
 		public void LoadSettings()
 		{
@@ -675,6 +746,8 @@ namespace AlbumArtDownloader
 			{
 				LoadDefaultSaveFolderHistory();
 			}
+
+			UpdatePresetsMenu();
 
 			System.Diagnostics.Trace.WriteLine("done.");
 		}

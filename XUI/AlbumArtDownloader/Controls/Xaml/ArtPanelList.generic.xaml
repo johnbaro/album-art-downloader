@@ -71,10 +71,11 @@
 			<Setter.Value>
 				<DataTemplate>
 					<controls:ArtPanel
-							Name="PART_ArtPanel"
+							x:Name="PART_ArtPanel"
 							Width="{Binding RelativeSource={RelativeSource AncestorType={x:Type controls:ArtPanelList}}, Path=PanelWidth, Mode=TwoWay}"
 							ThumbSize="{Binding RelativeSource={RelativeSource AncestorType={x:Type controls:ArtPanelList}}, Path=ThumbSize, Mode=TwoWay}"
 							InformationLocation="{Binding RelativeSource={RelativeSource AncestorType={x:Type controls:ArtPanelList}}, Path=InformationLocation, Mode=TwoWay}"
+							PresetsContextMenu="{Binding RelativeSource={RelativeSource AncestorType={x:Type controls:ArtPanelList}}, Path=PresetsContextMenu, Mode=OneWay}"
 							AlbumArt="{Binding}"
 						>
 						<!-- Performance tweak: keep the panel collapsed until it becomes properly bound to the ArtPanelList -->

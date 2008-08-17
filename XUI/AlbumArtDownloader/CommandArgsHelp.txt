@@ -29,6 +29,7 @@ Options:
                %extension%  Default file extension for the image
                %source%     Name of the source where image was found
                %size%       Dimensions of the image
+               %preset%     A custom preset string, chosen from the save button menu
 
  /f           Provided for backwards          (/p "\Art" /f "Folder.jpg")
               compatibility only. When

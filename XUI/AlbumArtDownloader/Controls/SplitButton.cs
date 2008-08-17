@@ -11,6 +11,8 @@ namespace AlbumArtDownloader.Controls
 	[TemplatePart(Name="PART_MenuDropper", Type=typeof(ButtonBase))]
 	public class SplitButton : Button
 	{
+		public event EventHandler MenuOpening;
+
 		static SplitButton()
 		{
 			//This OverrideMetadata call tells the system that this element wants to provide a style that is different than its base class.
@@ -18,7 +20,7 @@ namespace AlbumArtDownloader.Controls
 			DefaultStyleKeyProperty.OverrideMetadata(typeof(SplitButton), new FrameworkPropertyMetadata(typeof(SplitButton)));
 		}
 
-		public override void  OnApplyTemplate()
+		public override void OnApplyTemplate()
 		{
  			base.OnApplyTemplate();
 
@@ -31,11 +33,22 @@ namespace AlbumArtDownloader.Controls
 
 		private void OnMenuDropperClicked(object sender, RoutedEventArgs e)
 		{
+			OnMenuOpening(EventArgs.Empty);
+
  			if(Menu != null)
 			{
 				Menu.PlacementTarget = this;
 				Menu.Placement = PlacementMode.Bottom;
 				Menu.IsOpen = true;
+			}
+		}
+
+		protected virtual void OnMenuOpening(EventArgs e)
+		{
+			EventHandler temp = MenuOpening;
+			if (temp != null)
+			{
+				temp(this, e);
 			}
 		}
 
@@ -62,16 +75,6 @@ namespace AlbumArtDownloader.Controls
 		{
 			get { return (ContextMenu)GetValue(MenuProperty); }
 			set { SetValue(MenuProperty, value); }
-		}
-		#endregion
-
-		#region ShowMenuDroppper
-		public static readonly DependencyProperty ShowMenuDroppperProperty = DependencyProperty.Register("ShowMenuDroppper", typeof(Boolean), typeof(SplitButton), new FrameworkPropertyMetadata(true));
-
-		public Boolean ShowMenuDroppper
-		{
-			get { return (Boolean)GetValue(ShowMenuDroppperProperty); }
-			set { SetValue(ShowMenuDroppperProperty, value); }
 		}
 		#endregion
 	}
