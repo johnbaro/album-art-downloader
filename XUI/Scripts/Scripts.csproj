@@ -120,6 +120,9 @@
     <None Include="Scripts\albumartexchange.boo">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Scripts\darktown.boo">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Scripts\google.boo">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
