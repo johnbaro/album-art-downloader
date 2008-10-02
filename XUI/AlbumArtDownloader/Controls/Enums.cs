@@ -21,6 +21,8 @@ namespace AlbumArtDownloader.Controls
 		/// <summary>2 groups: Local results, and Online results</summary>
 		Local,
 		/// <summary>Grouped by result source name</summary>
-		Source
+		Source,
+		/// <summary>Grouped by cover type (Front, CD, ...)</summary>
+		Type
 	}
 }

@@ -214,6 +214,7 @@
 				<ComboBoxItem>None</ComboBoxItem>
 				<ComboBoxItem>Local</ComboBoxItem>
 				<ComboBoxItem>Source</ComboBoxItem>
+				<ComboBoxItem>Type</ComboBoxItem>
 			</ComboBox>
 
 			<controls:ArtPanelListSortPicker x:Name="mSortPicker" HorizontalAlignment="Right" VerticalAlignment="Bottom"

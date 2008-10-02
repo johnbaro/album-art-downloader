@@ -14,7 +14,8 @@ namespace AlbumArtDownloader.Controls
 												new SortFieldItem("None", ""), 
 												new SortFieldItem("Name", "ResultName"), 
 												new SortFieldItem("Size", "ImageWidth"), 
-												new SortFieldItem("Source", "SourceName")};
+												new SortFieldItem("Source", "SourceName"),
+												new SortFieldItem("Type", "CoverType")};
 
 		static ArtPanelListSortPicker()
 		{

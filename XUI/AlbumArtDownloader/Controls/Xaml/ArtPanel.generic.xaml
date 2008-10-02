@@ -133,7 +133,8 @@
 											<ColumnDefinition Width="*"/>
 										</Grid.ColumnDefinitions>
 										<TextBlock Grid.Row="1" Style="{StaticResource LabelStyle}">Size:</TextBlock>
-										<TextBlock Grid.Row="2" Style="{StaticResource LabelStyle}">Source:</TextBlock>
+										<TextBlock Grid.Row="2" Style="{StaticResource LabelStyle}">Type:</TextBlock>
+										<TextBlock Grid.Row="3" Style="{StaticResource LabelStyle}">Source:</TextBlock>
 
 										<TextBlock Grid.Row="0" Style="{StaticResource DefaultText}" Grid.Column="0" Grid.ColumnSpan="2" FontWeight="Bold" Text="{Binding Path=AlbumArt.ResultName, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"/>
 										<TextBlock Grid.Row="1"  Grid.Column="1">
@@ -159,7 +160,8 @@
 												</Style>
 											</TextBlock.Style>
 										</TextBlock>
-										<TextBlock Grid.Row="2" Style="{StaticResource DefaultText}" Grid.Column="1" Text="{Binding Path=AlbumArt.SourceName, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"/>
+										<TextBlock Grid.Row="2" Style="{StaticResource DefaultText}" Grid.Column="1" Text="{Binding Path=AlbumArt.CoverType, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"/>
+										<TextBlock Grid.Row="3" Style="{StaticResource DefaultText}" Grid.Column="1" Text="{Binding Path=AlbumArt.SourceName, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"/>
 									</Grid>
 								</ToolTip>
 							</Grid.ToolTip>
@@ -252,8 +254,9 @@
 
 							<TextBlock Grid.Row="0" Style="{StaticResource LabelStyle}">Name:</TextBlock>
 							<TextBlock Grid.Row="1" Style="{StaticResource LabelStyle}">Size:</TextBlock>
-							<TextBlock Grid.Row="2" Style="{StaticResource LabelStyle}">Source:</TextBlock>
-							<TextBlock Grid.Row="3" Style="{StaticResource LabelStyle}">File:</TextBlock>
+							<TextBlock Grid.Row="2" Style="{StaticResource LabelStyle}">Type:</TextBlock>
+							<TextBlock Grid.Row="3" Style="{StaticResource LabelStyle}">Source:</TextBlock>
+							<TextBlock Grid.Row="4" Style="{StaticResource LabelStyle}">File:</TextBlock>
 
 							<DockPanel Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2">
 								<DockPanel.Style>
@@ -305,8 +308,9 @@
 									</Style>
 								</TextBlock.Style>
 							</TextBlock>
-							<TextBlock Tag="SourceName" Grid.Row="2" Style="{StaticResource ValueStyle}" Text="{Binding Path=AlbumArt.SourceName, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"/>
-							<Grid Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2">
+							<TextBlock Tag="SourceName" Grid.Row="2" Style="{StaticResource ValueStyle}" Text="{Binding Path=AlbumArt.CoverType, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"/>
+							<TextBlock Tag="SourceName" Grid.Row="3" Style="{StaticResource ValueStyle}" Text="{Binding Path=AlbumArt.SourceName, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"/>
+							<Grid Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2">
 								<Grid.ColumnDefinitions>
 									<ColumnDefinition Width="*"/>
 									<ColumnDefinition Width="Auto"/>
@@ -345,7 +349,7 @@
 								<Image VerticalAlignment="Top" Grid.Column="1" Source="tick.png" Stretch="None" Visibility="{TemplateBinding IsSaved, Converter={StaticResource mBooleanToVisibilityConverter}}" ToolTip="Already Saved"/>
 							</Grid>
 							<Button Grid.Column="2" HorizontalAlignment="Right"
-										Grid.Row="4" VerticalAlignment="Bottom"
+										Grid.Row="5" VerticalAlignment="Bottom"
 										ToolTip="Show information below thumbnail"
 										Command="{x:Static controls:ArtPanelList+Commands.ToggleInformationLocation}">
 								<Button.Style>

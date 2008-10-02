@@ -1,14 +1,15 @@
+using AlbumArtDownloader.Scripts;
 using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using System.Linq;
 using Microsoft.Win32;
 
 namespace AlbumArtDownloader
@@ -22,6 +23,19 @@ namespace AlbumArtDownloader
 
 		public event PropertyChangedEventHandler PropertyChanged;
 
+		public AlbumArt(Source source, Bitmap thumbnail, string name, string infoUri, double width, double height, object fullSizeCallbackParameter, CoverType coverType)
+		{
+			mSource = source;
+			BitmapImage = thumbnail;
+			ResultName = name;
+			InfoUri = infoUri;
+			ImageWidth = width;
+			ImageHeight = height;
+			mFullSizeCallbackParameter = fullSizeCallbackParameter;
+			CoverType = coverType;
+		}
+		
+		[System.Obsolete("set coverType")]
 		public AlbumArt(Source source, Bitmap thumbnail, string name, string infoUri, double width, double height, object fullSizeCallbackParameter)
 		{
 			mSource = source;
@@ -31,8 +45,9 @@ namespace AlbumArtDownloader
 			ImageWidth = width;
 			ImageHeight = height;
 			mFullSizeCallbackParameter = fullSizeCallbackParameter;
+			CoverType = CoverType.Unknown;
 		}
-
+		
 		public void Dispose()
 		{
 			BitmapImage = null; //This will dispose of the bitmap
@@ -209,6 +224,7 @@ namespace AlbumArtDownloader
 				}
 			}
 		}
+		
 
 		private string mPreset;
 		public string Preset
@@ -288,6 +304,21 @@ namespace AlbumArtDownloader
 				}
 			}
 		}
+		
+		private CoverType mCoverType = CoverType.Unknown;
+		public CoverType CoverType
+		{
+			get { return mCoverType; }
+			private set
+			{
+				if (mCoverType != value)
+				{
+					mCoverType = value;
+					NotifyPropertyChanged("CoverType");
+				}
+			}
+		}
+		
 		#endregion
 
 		private void NotifyPropertyChanged(string propertyName)

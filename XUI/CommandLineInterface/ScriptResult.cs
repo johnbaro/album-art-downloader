@@ -19,7 +19,9 @@ namespace AlbumArtDownloader
 		private object mFullSizeImageCallbackParameter;
 		private Bitmap mImage;
 		private bool mImageDownloaded;
-
+		private CoverType mCoverType;
+		
+		[System.Obsolete("set coverType")]
 		public ScriptResult(IScript script, object thumbnail, string name, int width, int height, object fullSizeImageCallbackParameter)
 		{
 			mScript = script;
@@ -28,6 +30,18 @@ namespace AlbumArtDownloader
 			mWidth = width;
 			mHeight = height;
 			mFullSizeImageCallbackParameter = fullSizeImageCallbackParameter;
+			mCoverType = CoverType.Unknown;
+		}
+		
+		public ScriptResult(IScript script, object thumbnail, string name, int width, int height, object fullSizeImageCallbackParameter, CoverType coverType)
+		{
+			mScript = script;
+			mThumbnail = thumbnail;
+			mName = name;
+			mWidth = width;
+			mHeight = height;
+			mFullSizeImageCallbackParameter = fullSizeImageCallbackParameter;
+			mCoverType = coverType;
 		}
 
 		private void DownloadImage()

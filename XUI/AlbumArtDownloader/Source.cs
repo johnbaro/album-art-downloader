@@ -413,6 +413,11 @@ namespace AlbumArtDownloader
 			}
 			public void Add(object thumbnail, string name, string infoUri, int fullSizeImageWidth, int fullSizeImageHeight, object fullSizeImageCallback)
 			{
+				Add(thumbnail, name, infoUri, fullSizeImageWidth, fullSizeImageHeight, fullSizeImageCallback, CoverType.Unknown);
+			}
+			
+			public void Add(object thumbnail, string name, string infoUri, int fullSizeImageWidth, int fullSizeImageHeight, object fullSizeImageCallback, CoverType coverType)
+			{
 				//TODO: does downloading the thumbnail need to be asynch?
 				Bitmap thumbnailBitmap = BitmapHelpers.GetBitmap(thumbnail);
 
@@ -426,7 +431,8 @@ namespace AlbumArtDownloader
 							infoUri,
 							fullSizeImageWidth,
 							fullSizeImageHeight,
-							fullSizeImageCallback));
+							fullSizeImageCallback,
+							coverType));
 					}));
 				}
 
