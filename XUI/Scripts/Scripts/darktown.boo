@@ -12,7 +12,7 @@ class darktown(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "Darktown"
 	Version as string:
-		get: return "0.1"
+		get: return "0.2"
 	Author as string:
 		get: return "daju"
 	
@@ -50,8 +50,10 @@ class darktown(AlbumArtDownloader.Scripts.IScript):
 				
 				typeRegex = Regex("<b>Typ des Covers:</b>[^<]*", RegexOptions.Multiline)
 				typeMatches = typeRegex.Matches(secondResultPage)
+				coverType = CoverType.Unknown;
 				if (typeMatches.Count==1):
 					type = typeMatches[0].ToString().Remove(0,22).Trim()
+					coverType = string2coverType(type);
 				
 				kbRegex = Regex("<b>Dateigr[^:]*:</b>[^<]*", RegexOptions.Multiline)
 				kbMatches = kbRegex.Matches(secondResultPage)
@@ -59,37 +61,27 @@ class darktown(AlbumArtDownloader.Scripts.IScript):
 					kb = kbMatches[0].ToString()
 					kb = kb.Remove(0,kb.LastIndexOf('>')+1).Trim()
 					
-				results.Add(thumbUrl, "${name} - ${type} - ${kb}", nextQuery, -1, -1, imgUrl);
+				results.Add(thumbUrl, "${name} - ${type} - ${kb}", nextQuery, -1, -1, imgUrl, coverType);
 				
 		
 		
 	def RetrieveFullSizeImage(fullSizeCallbackParameter):
 		return fullSizeCallbackParameter;
-	
-	/**
-	 * Does the same like util.UtilModul.GetPage,
-	 * but uses ISO/IEC 8859-1 (called iso-latin-1)
-	 * as encoding.
-	 * Many Pages uses this encoding for umlauts (äöüß),
-	 * when searching for "Die Ärzte" on such a site, using
-	 * this method is nessesacry
-	 */
-	def GetPageIsoLatin1(url as string):
-		encoding as Encoding = Encoding.GetEncoding("iso-8859-1")
-		s=System.IO.StreamReader(GetPageStream(url),encoding)
-		return s.ReadToEnd()
-	
-	/**
-	 * Does the same like util.UtilModul.EncodeUrl,
-	 * but uses ISO/IEC 8859-1 (called iso-latin-1)
-	 * as encoding.
-	 * EncodeUrl uses utf-8 per default. So encoding
-	 * "Die Ärzte" will result in "Die%20%c3%84rzte".
-	 * Some websites have a problem with that encoding.
-	 * These sites uses iso-latin-1 as encoding.
-	 * Using this methode to encode "Die Ärzte" will 
-	 * result in "Die%20%c4rzte"
-	 */
-	def EncodeUrlIsoLatin1(url as string):
-		encoding as Encoding = Encoding.GetEncoding("iso-8859-1")#iso-latin-1
-		return System.Web.HttpUtility.UrlEncode(url,encoding)
+
+		
+	def string2coverType(typeString as string):
+		if(string.Compare(typeString,"back",true)==0):
+			return CoverType.Back;
+		if(string.Compare(typeString,"cd",true)==0):
+			return CoverType.CD;
+		if(string.Compare(typeString,"front",true)==0):
+			return CoverType.Front;
+		if(string.Compare(typeString,"inlay",true)==0):
+			return CoverType.Inlay;
+		else:
+			return CoverType.Unknown;
+			
+def GetPageIsoLatin1(url as string):
+	encoding as Encoding = Encoding.GetEncoding("iso-8859-1")
+	s=System.IO.StreamReader(GetPageStream(url),encoding)
+	return s.ReadToEnd()

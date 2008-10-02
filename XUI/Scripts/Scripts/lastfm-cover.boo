@@ -11,7 +11,7 @@ class LastFmCover(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "LastFM Cover"
 	Version as string:
-		get: return "0.2"
+		get: return "0.3"
 	Author as string:
 		get: return "daju"
 	
@@ -69,7 +69,7 @@ class LastFmCover(AlbumArtDownloader.Scripts.IScript):
 								else:
 									thumbnailUrl = picUrl
 								
-								results.Add(thumbnailUrl, name, resultInfoUrl, px, px, picUrl);
+								results.Add(thumbnailUrl, name, resultInfoUrl, px, px, picUrl, CoverType.Front);
 							
 						
 				else:
