@@ -127,6 +127,7 @@
 											<RowDefinition Height="Auto"/>
 											<RowDefinition Height="Auto"/>
 											<RowDefinition Height="Auto"/>
+											<RowDefinition Height="Auto"/>
 										</Grid.RowDefinitions>
 										<Grid.ColumnDefinitions>
 											<ColumnDefinition Width="Auto"/>
@@ -227,6 +228,7 @@
 						</Grid>
 						<Grid x:Name="PART_Information" Margin="5,5,2,5">
 							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto"/>
 								<RowDefinition Height="Auto"/>
 								<RowDefinition Height="Auto"/>
 								<RowDefinition Height="Auto"/>

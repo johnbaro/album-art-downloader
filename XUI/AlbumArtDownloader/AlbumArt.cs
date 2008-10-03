@@ -37,16 +37,8 @@ namespace AlbumArtDownloader
 		
 		[System.Obsolete("set coverType")]
 		public AlbumArt(Source source, Bitmap thumbnail, string name, string infoUri, double width, double height, object fullSizeCallbackParameter)
-		{
-			mSource = source;
-			BitmapImage = thumbnail;
-			ResultName = name;
-			InfoUri = infoUri;
-			ImageWidth = width;
-			ImageHeight = height;
-			mFullSizeCallbackParameter = fullSizeCallbackParameter;
-			CoverType = CoverType.Unknown;
-		}
+			:this(source, thumbnail, name, infoUri, width, height, fullSizeCallbackParameter, CoverType.Unknown)
+		{}
 		
 		public void Dispose()
 		{
