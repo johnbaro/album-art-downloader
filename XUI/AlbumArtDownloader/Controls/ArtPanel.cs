@@ -394,8 +394,8 @@ namespace AlbumArtDownloader.Controls
 
 				if (InformationLocation == InformationLocation.Bottom)
 				{
-					//Resize the whole panel instead, don't have negative size.
-					double delta = Math.Max(0,Math.Max(0, Math.Max(mousePos.X, mousePos.Y)) - ThumbSize);
+					//Resize the whole panel instead
+					double delta = Math.Max(0, Math.Max(mousePos.X, mousePos.Y)) - ThumbSize;
 					//Do not allow zero or negative width
 					Width = Math.Max(1, Width + delta);
 					UpdateWidthFromBinding();				
