@@ -8,7 +8,7 @@ abstract class Amazon(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "Amazon (.${Suffix})"
 	Version as string:
-		get: return "0.6"
+		get: return "0.7"
 	Author as string:
 		get: return "Alex Vallat"
 	abstract protected Suffix as string:
@@ -18,7 +18,7 @@ abstract class Amazon(AlbumArtDownloader.Scripts.IScript):
 		n = XmlNamespaceManager(x.NameTable);
 		n.AddNamespace("a", "http://webservices.amazon.com/AWSECommerceService/2005-10-05");
 			
-		x.Load("http://ecs.amazonaws.${Suffix}/onca/xml?Service=AWSECommerceService&AWSAccessKeyId=1MV23E34ARMVYMBDZB02&Operation=ItemSearch&SearchIndex=Music&ItemPage=1&ResponseGroup=ItemAttributes,Images&Keywords="+EncodeUrl(artist+" "+album))
+		x.Load("http://ecs.amazonaws.${Suffix}/onca/xml?Service=AWSECommerceService&AWSAccessKeyId=1MV23E34ARMVYMBDZB02&Operation=ItemSearch&SearchIndex=Music&ItemPage=1&ResponseGroup=ItemAttributes,Images&Keywords="+EncodeUrlIsoLatin1(artist+" "+album))
 
 		resultNodes=x.SelectNodes("a:ItemSearchResponse/a:Items/a:Item[a:LargeImage/a:URL]", n) //Only want results with large images
 		results.SetCountEstimate(resultNodes.Count)

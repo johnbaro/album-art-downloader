@@ -11,11 +11,11 @@ class Freecovers:
 	static SourceCreator as string:
 		get: return "Alex Vallat"
 	static SourceVersion as string:
-		get: return "0.1"
+		get: return "0.2"
 	static def GetThumbs(coverart,artist,album):
 		query as string = artist + " " + album
 		query.Replace(' ','+')
-		resultResults = GetPage(String.Format("http://www.freecovers.net/search.php?search={0}&cat=4", EncodeUrl(query)))
+		resultResults = GetPage(String.Format("http://www.freecovers.net/search.php?search={0}&cat=4", EncodeUrlIsoLatin1(query)))
 		
 		//Get results
 		resultRegex = Regex("<a class=\"versionName\"[^>]+>(?<name>[^<]+)</a>[^\\[]+(?:\\[<a href=http://www.freecovers.net/view/(?<urlBase>[^ >]+?)/(?<urlTitle>[^ >/]+?)-(?<urlPart>[^\\.]+)\\.html[^<]+</a>\\] )+", RegexOptions.Multiline)

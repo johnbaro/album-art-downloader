@@ -1,7 +1,9 @@
 namespace CoverSources
 import System
+import System.String
 import System.Text
 import System.Text.RegularExpressions
+import AlbumArtDownloader.Scripts
 import util
 
 class Coveralia:
@@ -10,11 +12,11 @@ class Coveralia:
 	static SourceCreator as string:
 		get: return "Alex Vallat"
 	static SourceVersion as string:
-		get: return "0.7"
+		get: return "0.8"
 	static def GetThumbs(coverart,artist,album):
 		query as string = artist + " " + album
 		query.Replace(' ','+')
-		resultResults = GetPage(String.Format("http://www.coveralia.com/mostrar.php?bus={0}&bust=2", EncodeUrl(query)))
+		resultResults = GetPageIsoLatin1(String.Format("http://www.coveralia.com/mostrar.php?bus={0}&bust=2", EncodeUrlIsoLatin1(query)))
 		
 		//Get results
 		resultRegex = Regex("<a href=\"(?<url>/discos/[^\"]+)\" class=\"texto9\">", RegexOptions.Multiline)
@@ -23,7 +25,7 @@ class Coveralia:
 
 		for resultMatch as Match in resultMatches:
 			//Get the result page
-			resultPage = GetPage(String.Format("http://www.coveralia.com{0}", resultMatch.Groups["url"].Value))
+			resultPage = GetPageIsoLatin1(String.Format("http://www.coveralia.com{0}", resultMatch.Groups["url"].Value))
 			
 			labelRegex = Regex("<span class=\"disco1\"><a[^>]+>(?<artist>[^<]+)</a>\\s*</span>\\s*<br>\\s*<span class=\"disco2\">(?<album>[^<]+)", RegexOptions.Multiline)
 			labelMatch = labelRegex.Match(resultPage) //Expecting one match
@@ -35,14 +37,43 @@ class Coveralia:
 			
 			for imagePageMatch as Match in imagePageMatches:
 				//Find Full Size image
-				fullSizeImagePage = GetPage(String.Format("http://www.coveralia.com/caratulas/{0}", imagePageMatch.Groups["imageName"].Value))
+				fullSizeImageUrlEnd = imagePageMatch.Groups["imageName"].Value
+				urlParts = fullSizeImageUrlEnd.Split(".-".ToCharArray(),42);
+				if(urlParts.Length>=3):
+					coverTypeString = urlParts[urlParts.Length-2]
+					if(coverTypeString=="Frontal" or coverTypeString=="Trasera"):
+						#Specialcase: Could be "Interior-Frontal" or "Interior-Trasera"
+						if(urlParts[urlParts.Length-3]=="Interior"):
+							coverTypeString="Interior ${coverTypeString}"
+				
+				fullSizeImagePageUrl =String.Format("http://www.coveralia.com/caratulas/{0}", imagePageMatch.Groups["imageName"].Value)
+				fullSizeImagePage = GetPage(fullSizeImagePageUrl)
 				
 				//Width and Height in the html are not the actual width and height of the image, they are always around 500, so ignore them.
 				fullSizeImageRegex = Regex("src=\"(?<url>http://images\\.coveralia\\.com/audio/[^\"]+)\"")
 				fullSizeImageMatch = fullSizeImageRegex.Match(fullSizeImagePage) //Expecting only one match
 				
 				if fullSizeImageMatch.Success:
-					coverart.Add(String.Format("http://images.coveralia.com/audio/thumbs/{0}", imagePageMatch.Groups["thumbID"].Value), labelMatch.Groups["artist"].Value + " - " + labelMatch.Groups["album"].Value, fullSizeImageMatch.Groups["url"].Value)
-		
+					coverart.Add(
+						String.Format("http://images.coveralia.com/audio/thumbs/{0}", imagePageMatch.Groups["thumbID"].Value),
+						labelMatch.Groups["artist"].Value + " - " + labelMatch.Groups["album"].Value+ " - " + coverTypeString,
+						fullSizeImagePageUrl,
+						-1,
+						-1,
+						fullSizeImageMatch.Groups["url"].Value,
+						string2coverType(coverTypeString))
+			
 	static def GetResult(param):
 		return param
+		
+	static def string2coverType(typeString as string):
+		if(string.Compare(typeString,"Trasera",true)==0):
+			return CoverType.Back;
+		if(typeString.ToLower().StartsWith("cd")):
+			return CoverType.CD;
+		if(typeString.ToLower().StartsWith("interior")):
+			return CoverType.Inlay;
+		if(string.Compare(typeString,"Frontal",true)==0):
+			return CoverType.Front;
+		else:
+			return CoverType.Unknown;

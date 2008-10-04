@@ -3,6 +3,7 @@ import System
 import System.Drawing
 import System.Text
 import System.Text.RegularExpressions
+import AlbumArtDownloader.Scripts
 import util
 
 class CoverParadies:
@@ -13,7 +14,7 @@ class CoverParadies:
 	static SourceCreator as string:
 		get: return "Alex Vallat"
 	static SourceVersion as string:
-		get: return "0.6"
+		get: return "0.7"
 	static def GetThumbs(coverart,artist,album):
 		query as string = artist + " " + album
 		query.Replace(' ','+')
@@ -39,12 +40,13 @@ class CoverParadies:
 			imageMatches = imagesRegex.Matches(albumPage)
 			
 			for imageMatch as Match in imageMatches:
+				coverTypeString = imageMatch.Groups["imageName"].Value
 				if(DescriptiveImageTitles and imageMatches.Count > 1):
-					imageTitle = String.Format("{0} - {1}", title, imageMatch.Groups["imageName"].Value)
+					imageTitle = String.Format("{0} - {1}", title, coverTypeString)
 				else:
 					imageTitle = title
 				
-				coverart.Add(GetPageStream(imageMatch.Groups["thumb"].Value, "http://www.cover-paradies.to"), imageTitle, albumPageUri, Int32.Parse(imageMatch.Groups["width"].Value), Int32.Parse(imageMatch.Groups["height"].Value), imageMatch.Groups["fullSizeID"].Value)		
+				coverart.Add(GetPageStream(imageMatch.Groups["thumb"].Value, "http://www.cover-paradies.to"), imageTitle, albumPageUri, Int32.Parse(imageMatch.Groups["width"].Value), Int32.Parse(imageMatch.Groups["height"].Value), imageMatch.Groups["fullSizeID"].Value, string2coverType(coverTypeString))		
 
 	static def Post(url as String, content as String):
 		request = System.Net.HttpWebRequest.Create(url)
@@ -60,4 +62,20 @@ class CoverParadies:
 			
 	static def GetResult(param):
 		return String.Format("http://www.cover-paradies.to/res/exe/GetElement.php?ID={0}", param)
+		
+	static def string2coverType(typeString as string):
+		if(string.Compare(typeString,"back",true)==0):
+			return CoverType.Back;
+		if(string.Compare(typeString,"cd",true)==0):
+			return CoverType.CD;
+		if(string.Compare(typeString,"front",true)==0):
+			return CoverType.Front;
+		if(string.Compare(typeString,"inlay",true)==0):
+			return CoverType.Inlay;
+		if(string.Compare(typeString,"inside",true)==0):
+			return CoverType.Inlay;
+		if(string.Compare(typeString,"booklet",true)==0):
+			return CoverType.Unknown; //did not know where to sort it in.
+		else:
+			return CoverType.Unknown;
 
