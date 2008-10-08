@@ -3,6 +3,7 @@ import System
 import System.Drawing
 import System.Text
 import System.Text.RegularExpressions
+import AlbumArtDownloader.Scripts
 import util
 
 class JunoRecords:
@@ -10,15 +11,15 @@ class JunoRecords:
 	static SourceName as string:
 		get: return "Juno Records"
 	static SourceVersion as string:
-		get: return "0.1"
+		get: return "0.2"
 	static SourceCreator as string:
 		get: return "Marc Landis"
 
 	static def GetThumbs(coverart,artist,album):
 		query as string = artist + " " + album
-		query.Replace(' ','%20')
+		query = EncodeUrl(query)
 		
-		searchResults = GetPage(String.Format("http://classic.juno.co.uk/search/?q={0}&precision=any&column=all&genre_id=0000&released=&sdate=&edate=", query))
+		searchResults = GetPage("http://classic.juno.co.uk/search/?q=${query}&precision=any&column=all&genre_id=0000&released=&sdate=&edate=")
 
 		//Get obids
 		resultsRegex = Regex("<a href=\"/products/(?<ID>.*?.htm)", RegexOptions.Singleline)
@@ -27,7 +28,8 @@ class JunoRecords:
 
 		for resultMatch as Match in resultMatches:
 			//Get the album page
-			albumPage = GetPage(String.Format("http://classic.juno.co.uk/products/{0}", resultMatch.Groups["ID"].Value))
+			albumPageUrl = String.Format("http://classic.juno.co.uk/products/{0}", resultMatch.Groups["ID"].Value)
+			albumPage = GetPage(albumPageUrl)
 
 			//Get the title for that album
 			titleRegex = Regex("<h3>(?<title>.*?)</h3>", RegexOptions.Singleline)
@@ -39,12 +41,36 @@ class JunoRecords:
 			
 			for imageMatch as Match in imageMatches:
 				if(imageMatches.Count > 1):
-					imageTitle = String.Format("{0} - {1}", title, imageMatch.Groups["imageName"].Value)
+					altText = imageMatch.Groups["imageName"].Value
+					coverType = string2coverType(altText);
+					imageTitle = "${title} - ${altText}"
 				else:
 					imageTitle = title
-
-				coverart.AddThumb(String.Format("http://images.juno.co.uk/full/CS{0}-BIG.jpg", imageMatch.Groups["fullSizeID"].Value), imageTitle, -1, -1, null)		
-
+				fullSizeID = imageMatch.Groups["fullSizeID"].Value
+				coverart.Add(
+					"http://images.juno.co.uk/150/CS${fullSizeID}.jpg", #thumbnail
+					imageTitle, #name
+					albumPageUrl, #infoUri
+					-1, #fullSizeImageWidth
+					-1, #fullSizeImageHeight
+					"http://images.juno.co.uk/full/CS${fullSizeID}-BIG.jpg", #fullSizeImageCallback
+					coverType #coverType
+					)
+				
 	static def GetResult(param):
-		return null
+		return param
+		
+	static def string2coverType(typeString as string):
+		if(typeString.ToLower().Contains("front")):
+			return CoverType.Front;
+		elif(typeString.ToLower().Contains("back")):
+			return CoverType.Back;
+		elif(typeString.ToLower().Contains("inlay")):
+			return CoverType.Inlay;
+		elif(typeString.ToLower().Contains("cd")):
+			return CoverType.CD;
+		elif(typeString.ToLower().Contains("inside")):
+			return CoverType.Inlay;
+		else:
+			return CoverType.Unknown;
 

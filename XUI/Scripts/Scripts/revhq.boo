@@ -3,6 +3,7 @@ import System
 import System.Text
 import System.Text.RegularExpressions
 import System.Collections
+import AlbumArtDownloader.Scripts
 import util
 
 class RevHQ:
@@ -11,7 +12,7 @@ class RevHQ:
 	static SourceCreator as string:
 		get: return "Alex Vallat"
 	static SourceVersion as string:
-		get: return "0.2"
+		get: return "0.3"
 	static def GetThumbs(coverart,artist,album):
 		if(String.IsNullOrEmpty(album)):
 			return //Can't search without the album title to search for
@@ -62,8 +63,9 @@ class RevHQ:
 	  
 	  titleRegex = Regex("<TD CLASS=base><B>(?<title>[^<]+)</B>", RegexOptions.Singleline)
 	  title = titleRegex.Matches(resultPage)[0].Groups["title"].Value //Expecting only one match
+	  coverType = CoverType.Front #Assume that the image is always the front cover
 	  
-	  coverart.Add(String.Format("http://revhq.com/images/covers/50/{0}.gif", id), artist + " - " + title, size, size, String.Format("http://revhq.com/images/covers/{0}", full))
+	  coverart.Add(String.Format("http://revhq.com/images/covers/50/{0}.gif", id), artist + " - " + title, size, size, String.Format("http://revhq.com/images/covers/{0}", full, coverType))
 
 	static def GetResult(param):
 		return param

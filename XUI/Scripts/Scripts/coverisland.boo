@@ -10,8 +10,8 @@ class CoverIsland:
 		get: return "CoverIsland"
 	static SourceCreator as string:
 		get: return "Alex Vallat"
-	static SourceVersion as decimal:
-		get: return 0.4
+	static SourceVersion as string:
+		get: return "0.4"
 	static def GetThumbs(coverart,artist,album):
 		if not String.IsNullOrEmpty(artist):
 			firstLetter = artist[0]

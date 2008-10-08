@@ -3,6 +3,7 @@ import System
 import System.Text
 import System.Text.RegularExpressions
 import System.Collections
+import AlbumArtDownloader.Scripts
 import util
 
 class RateYourMusic:
@@ -11,7 +12,7 @@ class RateYourMusic:
 	static SourceCreator as string:
 		get: return "Alex Vallat"
 	static SourceVersion as string:
-		get: return "0.2"
+		get: return "0.3"
 	static def GetThumbs(coverart,artist,album):
 		if(String.IsNullOrEmpty(album)):
 			return //Can't search without the album title to search for
@@ -36,7 +37,12 @@ class RateYourMusic:
 		for resultMatch as Match in fullMatches:
 			name = String.Format("{0} - {1}", resultMatch.Groups["artist"].Value, resultMatch.Groups["album"].Value)
 			id = resultMatch.Groups["id"].Value
-			coverart.Add(GetStreamWithUserAgent(String.Format("http://static.rateyourmusic.com/album_images/s{0}.jpg", id)), name, String.Format("http://static.rateyourmusic.com/album_images/o{0}.jpg", id))
+			coverart.Add(
+				GetStreamWithUserAgent(String.Format("http://static.rateyourmusic.com/album_images/s{0}.jpg", id)), 
+				name,
+				String.Format("http://static.rateyourmusic.com/album_images/o{0}.jpg", id),
+				CoverType.Front
+				)
 			
 	static def GetResult(param):
 		return GetStreamWithUserAgent(param)

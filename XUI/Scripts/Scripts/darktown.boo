@@ -12,7 +12,7 @@ class darktown(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "Darktown"
 	Version as string:
-		get: return "0.2"
+		get: return "0.3"
 	Author as string:
 		get: return "daju"
 	
@@ -21,7 +21,7 @@ class darktown(AlbumArtDownloader.Scripts.IScript):
 		toSearchFor = toSearchFor.Trim() #delete unnessary whitespaces
 		toSearchFor = EncodeUrlIsoLatin1(toSearchFor)# iso-latin-1 encoding is nessecary for searching  for "Die Ärzte"
 		myQuery = "http://www.darktown.to/search.php?action=search&what=${toSearchFor}&category=audio"
-		firstResultPage  = GetPageIsoLatin1(myQuery)
+		firstResultPage  = GetPageIsoLatin1(myQuery, true)
 		
 		resultRegex = Regex("'/coverdownload.php[^']*'", RegexOptions.Multiline)
 		resultMatches = resultRegex.Matches(firstResultPage)
@@ -29,7 +29,7 @@ class darktown(AlbumArtDownloader.Scripts.IScript):
 		for resultMatch as Match in resultMatches:
 			currentRes = resultMatch.ToString().Replace('\'',' ').Trim()
 			nextQuery = "http://www.darktown.to${currentRes}"
-			secondResultPage  = GetPageIsoLatin1(nextQuery)
+			secondResultPage  = GetPageIsoLatin1(nextQuery, true)
 			
 			imgRegex = Regex("\"http://img.darktown.to/getcover.php[^\"]*\"", RegexOptions.Multiline)
 			imgMatches = imgRegex.Matches(secondResultPage)
@@ -80,8 +80,3 @@ class darktown(AlbumArtDownloader.Scripts.IScript):
 			return CoverType.Inlay;
 		else:
 			return CoverType.Unknown;
-			
-def GetPageIsoLatin1(url as string):
-	encoding as Encoding = Encoding.GetEncoding("iso-8859-1")
-	s=System.IO.StreamReader(GetPageStream(url),encoding)
-	return s.ReadToEnd()

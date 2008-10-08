@@ -3,6 +3,7 @@ import System
 import System.Drawing
 import System.Text
 import System.Text.RegularExpressions
+import AlbumArtDownloader.Scripts
 import util
 
 class Psyshop:
@@ -10,8 +11,8 @@ class Psyshop:
 		get: return "Psyshop"
 	static SourceCreator as string:
 		get: return "Alex Vallat"
-	static SourceVersion as decimal:
-		get: return 0.1
+	static SourceVersion as string:
+		get: return "0.1"
 	static def GetThumbs(coverart,artist,album):
 		query as string = artist + " " + album
 		query.Replace(' ','+')
@@ -24,7 +25,17 @@ class Psyshop:
 		
 		for resultMatch as Match in resultMatches:
 			id = resultMatch.Groups["id"].Value
-			coverart.AddThumb(String.Format("http://217.160.164.51/pic/{0}_s.jpg", id), resultMatch.Groups["title"].Value, 512, 512, String.Format("http://217.160.138.169/pic_b/{0}_b.jpg", id))
+			coverType = CoverType.Front #Assume that the image is always the front cover
+			albumUrl = "http://www.psyshop.com/shop/CDs/${id}.html"
+			coverart.Add(
+					"http://217.160.164.51/pic/${id}_s.jpg", #thumbnail
+					resultMatch.Groups["title"].Value, #name
+					albumUrl, #infoUri
+					512, #fullSizeImageWidth
+					512, #fullSizeImageHeight
+					"http://217.160.138.169/pic_b/${id}_b.jpg", #fullSizeImageCallback
+					coverType #coverType
+					)
 
 	static def Post(url as String, content as String):
 		request = System.Net.HttpWebRequest.Create(url)
