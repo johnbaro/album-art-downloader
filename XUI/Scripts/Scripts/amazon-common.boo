@@ -8,7 +8,7 @@ abstract class Amazon(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "Amazon (.${Suffix})"
 	Version as string:
-		get: return "0.7"
+		get: return "0.8"
 	Author as string:
 		get: return "Alex Vallat"
 	abstract protected Suffix as string:
@@ -20,31 +20,39 @@ abstract class Amazon(AlbumArtDownloader.Scripts.IScript):
 			
 		x.Load("http://ecs.amazonaws.${Suffix}/onca/xml?Service=AWSECommerceService&AWSAccessKeyId=1MV23E34ARMVYMBDZB02&Operation=ItemSearch&SearchIndex=Music&ItemPage=1&ResponseGroup=ItemAttributes,Images&Keywords="+EncodeUrlIsoLatin1(artist+" "+album))
 
-		resultNodes=x.SelectNodes("a:ItemSearchResponse/a:Items/a:Item[a:LargeImage/a:URL]", n) //Only want results with large images
-		results.SetCountEstimate(resultNodes.Count)
+		resultNodes=x.SelectNodes("a:ItemSearchResponse/a:Items/a:Item[a:ImageSets/a:ImageSet/a:LargeImage/a:URL]", n) //Only want results with large images
+		
 		for node in resultNodes:
 		  asin = node.SelectSingleNode("a:ASIN", n).InnerText
 		  title = node.SelectSingleNode("a:ItemAttributes/a:Title", n).InnerText //Can Title ever not exist? Assume it always exists.
 		  artistNode = node.SelectSingleNode("a:ItemAttributes/a:Artist", n)
 		  if artistNode != null:
 		    title = artistNode.InnerText + " - " + title
-		    
-		  width = -1
-		  height = -1
-		  widthNode = node.SelectSingleNode("a:LargeImage/a:Width", n)
-		  heightNode = node.SelectSingleNode("a:LargeImage/a:Height", n)
-		  if widthNode != null and heightNode != null:
-		    width = int.Parse(widthNode.InnerText)
-		    height = int.Parse(heightNode.InnerText)
 		  
-		  fullsize = node.SelectSingleNode("a:LargeImage/a:URL", n).InnerText
-		  
-		  thumbnail as string = fullsize //Unless a Medium image is present, in which case use that instead
-		  thumbNode = node.SelectSingleNode("a:MediumImage/a:URL", n)
-		  if thumbNode != null:
-		    thumbnail = thumbNode.InnerText
-		  
-		  results.Add(thumbnail, title, "http://amazon.${Suffix}/dp/"+asin, width, height, fullsize);
+		  imageSets = node.SelectNodes("a:ImageSets/a:ImageSet",n)
+		  results.EstimatedCount += imageSets.Count
+		  for imageSetNode as XmlNode in imageSets:
+			  width = -1
+			  height = -1
+			  widthNode = imageSetNode.SelectSingleNode("a:LargeImage/a:Width", n)
+			  heightNode = imageSetNode.SelectSingleNode("a:LargeImage/a:Height", n)
+			  category = imageSetNode.Attributes["Category"].Value
+			  coverType = CoverType.Unknown;
+			  if category == "primary":
+			  	coverType = CoverType.Front
+			  	
+			  if widthNode != null and heightNode != null:
+			    width = int.Parse(widthNode.InnerText)
+			    height = int.Parse(heightNode.InnerText)
+			  
+			  fullsize = imageSetNode.SelectSingleNode("a:LargeImage/a:URL", n).InnerText
+			  
+			  thumbnail as string = fullsize //Unless a Medium image is present, in which case use that instead
+			  thumbNode = imageSetNode.SelectSingleNode("a:MediumImage/a:URL", n)
+			  if thumbNode != null:
+			    thumbnail = thumbNode.InnerText
+			  
+			  results.Add(thumbnail, title, "http://amazon.${Suffix}/dp/"+asin, width, height, fullsize, coverType);
 
 	def RetrieveFullSizeImage(fullSizeCallbackParameter):
 		return fullSizeCallbackParameter
