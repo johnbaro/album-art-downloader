@@ -3,6 +3,7 @@ import System
 import System.Drawing
 import System.Text
 import System.Text.RegularExpressions
+import AlbumArtDownloader.Scripts
 import util
 
 class CoverIsland:
@@ -11,7 +12,7 @@ class CoverIsland:
 	static SourceCreator as string:
 		get: return "Alex Vallat"
 	static SourceVersion as string:
-		get: return "0.4"
+		get: return "0.5"
 	static def GetThumbs(coverart,artist,album):
 		if not String.IsNullOrEmpty(artist):
 			firstLetter = artist[0]
@@ -71,13 +72,17 @@ class CoverIsland:
 				imageResult = Post("http://www.coverisland.com/copertine/down.asp", String.Format("tipologia=Audio&title={0}&type=-{1}&segno={2}", title, typeName, segno))
 				imageRegex = Regex("'(?<image>http\\://www\\.coverforum\\.net/view\\.php\\?[^']+)'", RegexOptions.Multiline)
 				imageMatches = imageRegex.Matches(imageResult)
-				
 				for imageMatch as Match in imageMatches: //Only expecting one, really.
 					url = imageMatch.Groups["image"].Value
 					request = System.Net.HttpWebRequest.Create(url)
 					response = request.GetResponse()
 					if response.ContentType.StartsWith("image/"):
-						coverart.AddThumb(response.GetResponseStream(), String.Format("{0} - {1}", matchTitle, typeName), -1, -1, null)
+						coverart.Add(
+							response.GetResponseStream(), 
+							String.Format("{0} - {1}", matchTitle.Trim(), typeName),
+							null,
+							string2coverType(typeName)
+							)
 
 	static def Post(url as String, content as String):
 		request = System.Net.HttpWebRequest.Create(url)
@@ -93,3 +98,17 @@ class CoverIsland:
 			
 	static def GetResult(param):
 		return param
+		
+	static def string2coverType(typeString as string):
+		if(typeString.StartsWith("front")):
+			return CoverType.Front;
+		elif(typeString.StartsWith("back")):
+			return CoverType.Back;
+		elif(typeString.StartsWith("inlay")):
+			return CoverType.Inlay;
+		elif(typeString.StartsWith("cd")):
+			return CoverType.CD;
+		elif(typeString.StartsWith("inside")):
+			return CoverType.Inlay;
+		else:
+			return CoverType.Unknown;

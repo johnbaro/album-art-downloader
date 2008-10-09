@@ -442,6 +442,11 @@ namespace AlbumArtDownloader
 					mSource.AbortSearch();
 				}
 			}
+			
+			public void Add(object thumbnail, string name, object fullSizeImageCallback, CoverType coverType)
+			{
+				Add(thumbnail, name, String.Empty, -1, -1, fullSizeImageCallback, coverType);
+			}
 		}
 	}
 }
