@@ -1,6 +1,8 @@
-0.23 Added reporting of the Cover Type (Front, Back, CD, Inlay) for results
+0.23 Added reporting of the Cover Type (Front, Back, CD, Inlay) for results.
 	 Fixed bug where file and foobar browsers would not refresh image status after searching for
-	  artwork for a multiple selection
+	  artwork for a multiple selection.
+	 Fixed bug where the order of columns in the file and foobar browsers would not be persisted
+	  correctly.
 
 0.22 Added Presets functionality (first cut for testing)
      Merged AlbumArtDownloader.Controls.dll into AlbumArt.exe
