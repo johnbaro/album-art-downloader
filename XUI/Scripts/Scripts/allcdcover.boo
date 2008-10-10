@@ -16,8 +16,6 @@ class AllCdCovers(AlbumArtDownloader.Scripts.IScript):
 		get: return "daju"
 	
 	def Search(artist as string, album as string, results as IScriptResults):
-		page = GetPageIsoLatin1("http://whatsmyuseragent.com/",true)
-		System.Diagnostics.Debug.Print(page)
 		searchFor = EncodeUrl("${artist} ${album}".Trim())
 		baseUrl = "http://www.allcdcovers.com/search/music/all/"
 		allResultsPage = GetPageAsFirefox("${baseUrl}${searchFor}")

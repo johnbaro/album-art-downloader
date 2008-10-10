@@ -21,6 +21,7 @@ abstract class Amazon(AlbumArtDownloader.Scripts.IScript):
 		x.Load("http://ecs.amazonaws.${Suffix}/onca/xml?Service=AWSECommerceService&AWSAccessKeyId=1MV23E34ARMVYMBDZB02&Operation=ItemSearch&SearchIndex=Music&ItemPage=1&ResponseGroup=ItemAttributes,Images&Keywords="+EncodeUrlIsoLatin1(artist+" "+album))
 
 		resultNodes=x.SelectNodes("a:ItemSearchResponse/a:Items/a:Item[a:ImageSets/a:ImageSet/a:LargeImage/a:URL]", n) //Only want results with large images
+		results.EstimatedCount = resultNodes.Count
 		
 		for node in resultNodes:
 		  asin = node.SelectSingleNode("a:ASIN", n).InnerText
@@ -30,7 +31,7 @@ abstract class Amazon(AlbumArtDownloader.Scripts.IScript):
 		    title = artistNode.InnerText + " - " + title
 		  
 		  imageSets = node.SelectNodes("a:ImageSets/a:ImageSet",n)
-		  results.EstimatedCount += imageSets.Count
+		  results.EstimatedCount += (imageSets.Count - 1)
 		  for imageSetNode as XmlNode in imageSets:
 			  width = -1
 			  height = -1

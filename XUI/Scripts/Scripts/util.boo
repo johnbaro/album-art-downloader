@@ -15,7 +15,14 @@ def GetPage(url as string):
 	s=System.IO.StreamReader(GetPageStream(url))
 	return s.ReadToEnd()
 def EncodeUrl(url as string):
-	return System.Web.HttpUtility.UrlEncode(url.Replace("&","%26").Replace("?","%3F"));
+	return EncodeUrl(url, null)
+
+def  EncodeUrl(url as string, encoding as Encoding):
+	url = url.Replace("&","%26").Replace("?","%3F")
+	if not encoding == null:
+		return System.Web.HttpUtility.UrlEncode(url, encoding)
+	else:
+		return System.Web.HttpUtility.UrlEncode(url)# Seems to be different from UrlEncode(url, Encoding.Default)
 
 def GetPage(url as string, withFirefoxLikeHeader as bool, encodingName as string):
 	if not string.IsNullOrEmpty(encodingName):
@@ -64,7 +71,7 @@ def GetPageIsoLatin1(url as string, withFirefoxLikeHeader as bool):
  */
 def EncodeUrlIsoLatin1(url as string):
 	encoding as Encoding = Encoding.GetEncoding("iso-8859-1")#iso-latin-1
-	return System.Web.HttpUtility.UrlEncode(url,encoding)
+	return EncodeUrl(url, encoding)
 
 def GetPageStreamAsFirefox(url as string):
 	return GetPageStream2(url, true)

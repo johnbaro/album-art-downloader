@@ -26,17 +26,15 @@ class freecoversApi(AlbumArtDownloader.Scripts.IScript):
 		 * freecovers xml result contains as first row:
 		 * <?xml version="1.0" encoding="utf-8" ?>
 		 * but actually the encoding is not utf-8,
-		 * but iso-latin-1. I did not found an other
-		 * solution as replacing this wrong encoding
-		 * setting manually via string.Replace
+		 * but iso-latin-1. 
 		 */
 		xmlResult as string = GetPageIsoLatin1(url)
-		xmlResult = xmlResult.Replace("utf-8","iso-8859-1")
 		reader as XmlReader = XmlReader.Create(System.IO.StringReader(xmlResult))
 		
 		x = System.Xml.XmlDocument()
 		x.Load(reader)
 		titleNodes = x.SelectNodes("rsp[@stat='ok']/title")
+		allCoverNodes = x.SelectNodes("rsp[@stat='ok']/title/covers/cover")
 		for titleNode as XmlNode in titleNodes:
 			albumName = titleNode.SelectSingleNode("name").InnerText
 			if (String.IsNullOrEmpty(artist) or albumName.IndexOf(artist, StringComparison.OrdinalIgnoreCase) >= 0) and (String.IsNullOrEmpty(album) or albumName.IndexOf(album, StringComparison.OrdinalIgnoreCase) >= 0):
