@@ -270,6 +270,7 @@ namespace AlbumArtDownloader.Controls //AV (27/05/07): changed namespace to matc
 				{
 					columnSettings.Add(new GridSettings.ColumnSetting()
 					{
+						Name = column.SortPropertyName,
 						Width = (double)column.ReadLocalValue(SortableGridViewColumn.WidthProperty), //Read local value to avoid IsVisible coercion to 0
 						IsVisible = column.IsVisible
 					});
@@ -287,18 +288,25 @@ namespace AlbumArtDownloader.Controls //AV (27/05/07): changed namespace to matc
 			GridView gridView = this.View as GridView;
 			if (gridView != null)
 			{
-				int iColumn = 0;
 				if (settings.ColumnSettings != null)
 				{
-					foreach (SortableGridViewColumn column in gridView.Columns.OfType<SortableGridViewColumn>())
+					int firstIndex = gridView.Columns.IndexOf(gridView.Columns.OfType<SortableGridViewColumn>().First());
+					var columns = gridView.Columns.OfType<SortableGridViewColumn>().ToLookup(column => column.SortPropertyName);
+					//First, apply position and size of all columns in the settings
+					for (int i = 0; i < settings.ColumnSettings.Length; i++)
 					{
-						if (iColumn < settings.ColumnSettings.Length)
+						GridSettings.ColumnSetting columnSetting = settings.ColumnSettings[i];
+						SortableGridViewColumn column = columns[columnSetting.Name].FirstOrDefault();
+						if(column != null)
 						{
-							GridSettings.ColumnSetting columnSetting = settings.ColumnSettings[iColumn++];
+							//There is a column to which these settings apply.
 							column.Width = columnSetting.Width;
 							column.IsVisible = columnSetting.IsVisible;
+							//Move the column to the right index
+							gridView.Columns.Move(gridView.Columns.IndexOf(column), firstIndex + i);
 						}
 					}
+
 					if (settings.LastSortedOnColumnIndex > -1 && settings.LastSortedOnColumnIndex < gridView.Columns.Count)
 					{
 						SortableGridViewColumn lastSortedColumn = gridView.Columns[settings.LastSortedOnColumnIndex] as SortableGridViewColumn;
@@ -322,6 +330,7 @@ namespace AlbumArtDownloader.Controls //AV (27/05/07): changed namespace to matc
 			[Serializable]
 			public struct ColumnSetting
 			{
+				public string Name;
 				public double Width;
 				public bool IsVisible;
 			}
