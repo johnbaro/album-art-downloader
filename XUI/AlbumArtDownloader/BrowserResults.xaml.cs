@@ -160,12 +160,26 @@ namespace AlbumArtDownloader
 
 				searchWindow.SetDefaultSaveFolderPattern(rootedArtFileSearchPattern, true); //Default save to the location where the image was searched for.
 				searchWindow.Search(album.Artist, album.Name); //Kick off the search.
-				searchWindow.Closed += new EventHandler(delegate(object win, EventArgs ev)
-				{
-					QueueAlbumForArtFileSearch(album);
-				}); //Watch for the window being closed to update the status of the artwork
+
+				//Watch for the window being closed to update the status of the artwork
+				mSearchWindowAlbumLookup.Add(searchWindow, album);
+				searchWindow.Closed += OnSearchWindowClosed;
 
 				i++;
+			}
+		}
+
+		private Dictionary<ArtSearchWindow, Album> mSearchWindowAlbumLookup = new Dictionary<ArtSearchWindow, Album>();
+		private void OnSearchWindowClosed(object sender, EventArgs e)
+		{
+			Album album;
+			var searchWindow = sender as ArtSearchWindow;
+			if(mSearchWindowAlbumLookup.TryGetValue(searchWindow, out album))
+			{
+				searchWindow.Closed -= OnSearchWindowClosed;
+				mSearchWindowAlbumLookup.Remove(searchWindow);
+
+				QueueAlbumForArtFileSearch(album);
 			}
 		}
 
