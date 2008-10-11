@@ -35,7 +35,6 @@ namespace AlbumArtDownloader.Controls
 		public ArtPanelList()
 		{
 			CommandBindings.Add(new CommandBinding(EditingCommands.AlignJustify, new ExecutedRoutedEventHandler(AlignJustifyCommandHandler)));
-			AddHandler(ArtPanel.ImageSizeChangedEvent, new RoutedEventHandler(OnImageSizeChanged));
 		}
 
 		protected override void OnTemplateChanged(ControlTemplate oldTemplate, ControlTemplate newTemplate)
@@ -171,10 +170,58 @@ namespace AlbumArtDownloader.Controls
 		}
 		#endregion
 
-		#region Image Size Changed
-		private void OnImageSizeChanged(object sender, RoutedEventArgs e)
+		#region Image Size Change Monitoring
+		private HashSet<AlbumArt> mAlbumArtsWithListendedEvents = new HashSet<AlbumArt>();
+		private void OnItemsSourceChanged(object sender, NotifyCollectionChangedEventArgs e)
 		{
-			AlbumArt albumArt = ((ArtPanel)e.OriginalSource).AlbumArt; //Or should this get it from the ItemContainerGenerator?
+			switch (e.Action)
+			{
+				case NotifyCollectionChangedAction.Add:
+					foreach (AlbumArt albumArt in e.NewItems)
+					{
+						//If not added yet, hook up the event
+						AddAlbumArtEventHandlers(albumArt);
+					}
+					break;
+				case NotifyCollectionChangedAction.Remove:
+					foreach (AlbumArt albumArt in e.OldItems)
+					{
+						//Unhook the event (if present)
+						RemoveAlbumArtEventHandlers(albumArt);
+					}
+					break;
+				case NotifyCollectionChangedAction.Reset:
+					//Unhook all events, rehook to new contents
+					foreach (AlbumArt albumArt in mAlbumArtsWithListendedEvents)
+					{
+						albumArt.ImageSizeChanged -= OnImageSizeChanged;						
+					}
+					mAlbumArtsWithListendedEvents.Clear();
+					foreach (AlbumArt albumArt in (IEnumerable)sender)
+					{
+						AddAlbumArtEventHandlers(albumArt);
+					}
+					break;
+			}
+		}
+
+		private void RemoveAlbumArtEventHandlers(AlbumArt albumArt)
+		{
+			albumArt.ImageSizeChanged -= OnImageSizeChanged;
+			mAlbumArtsWithListendedEvents.Remove(albumArt);
+		}
+
+		private void AddAlbumArtEventHandlers(AlbumArt albumArt)
+		{
+			if (mAlbumArtsWithListendedEvents.Add(albumArt))
+			{
+				albumArt.ImageSizeChanged += OnImageSizeChanged;
+			}
+		}
+
+		private void OnImageSizeChanged(object sender, EventArgs e)
+		{
+			AlbumArt albumArt = (AlbumArt)sender;
 
 			//As this panel's size has changed, it must be removed and re-added, so the list re-filters and re-sorts it
 			if (ItemsSource is IList)
@@ -375,7 +422,8 @@ namespace AlbumArtDownloader.Controls
 			IList itemsSource = newValue as IList;
 			if (itemsSource != null && itemsSource is INotifyCollectionChanged && !(itemsSource is SuspendedNotificationCollection))
 			{
-				return new SuspendedNotificationCollection(itemsSource);
+				var itemsSourceWrapper = new SuspendedNotificationCollection(itemsSource);
+				itemsSourceWrapper.CollectionChanged += ((ArtPanelList)sender).OnItemsSourceChanged;
 			}
 			return newValue;
 		}

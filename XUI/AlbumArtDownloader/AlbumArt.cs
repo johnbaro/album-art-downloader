@@ -29,8 +29,7 @@ namespace AlbumArtDownloader
 			BitmapImage = thumbnail;
 			ResultName = name;
 			InfoUri = infoUri;
-			ImageWidth = width;
-			ImageHeight = height;
+			SetImageDimensions(width, height);
 			mFullSizeCallbackParameter = fullSizeCallbackParameter;
 			CoverType = coverType;
 		}
@@ -159,6 +158,8 @@ namespace AlbumArtDownloader
 			}
 		}
 
+		public event EventHandler ImageSizeChanged;
+
 		private double mImageWidth;
 		public double ImageWidth
 		{
@@ -170,9 +171,17 @@ namespace AlbumArtDownloader
 					mImageWidth = value;
 					NotifyPropertyChanged("ImageWidth");
 					CoerceValue(FilePathProperty);
+
+					//Raise the ImageSizeChanged event
+					var temp = ImageSizeChanged;
+					if (temp != null)
+					{
+						temp(this, EventArgs.Empty);
+					}
 				}
 			}
 		}
+
 		private double mImageHeight;
 		public double ImageHeight
 		{
@@ -184,6 +193,46 @@ namespace AlbumArtDownloader
 					mImageHeight = value;
 					NotifyPropertyChanged("ImageHeight");
 					CoerceValue(FilePathProperty);
+
+					//Raise the ImageSizeChanged event
+					var temp = ImageSizeChanged;
+					if (temp != null)
+					{
+						temp(this, EventArgs.Empty);
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Sets the width and height of the image in a single operation, to avoid redundant coercion and ImageSizeChanged events.
+		/// </summary>
+		/// <param name="width"></param>
+		/// <param name="height"></param>
+		public void SetImageDimensions(double width, double height)
+		{
+			bool changed = false;
+			if (mImageWidth != width)
+			{
+				changed = true;
+				mImageWidth = width;
+				NotifyPropertyChanged("ImageWidth");
+			}
+			if (mImageHeight != height)
+			{
+				changed = true;
+				mImageHeight = height;
+				NotifyPropertyChanged("ImageHeight");
+			}
+			if (changed)
+			{
+				CoerceValue(FilePathProperty);
+
+				//Raise the ImageSizeChanged event
+				var temp = ImageSizeChanged;
+				if (temp != null)
+				{
+					temp(this, EventArgs.Empty);
 				}
 			}
 		}
@@ -364,8 +413,7 @@ namespace AlbumArtDownloader
 			{
 				if (Image != null) //Image should *never* be null, but this might be what's causing reported crashes at this location.
 				{
-					ImageWidth = Math.Round(Image.Width);
-					ImageHeight = Math.Round(Image.Height);
+					SetImageDimensions(Math.Round(Image.Width), Math.Round(Image.Height));
 				}
 				else
 				{

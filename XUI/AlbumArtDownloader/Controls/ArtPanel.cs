@@ -250,10 +250,6 @@ namespace AlbumArtDownloader.Controls
 		{
 			//When the width changes, the height needs to be re-coerced too, as it is dependent on aspect ratio
 			sender.CoerceValue(ArtPanel.ImagePopupHeightProperty);
-			
-			//We happen to know that this will occur when the image size changes (as it is bound to that), so raise the event
-			if ((double)e.OldValue != 0) //Don't bother raising an event for the first time the width is assigned, only for when it changes
-				((ArtPanel)sender).RaiseImageSizeChangedEvent();
 		}
 		private static object CoerceImagePopupWidth(DependencyObject sender, object value)
 		{
@@ -275,10 +271,6 @@ namespace AlbumArtDownloader.Controls
 		{
 			//When the height changes, the width needs to be re-coerced too, as it is dependent on aspect ratio
 			sender.CoerceValue(ArtPanel.ImagePopupWidthProperty);
-
-			//We happen to know that this will occur when the image size changes (as it is bound to that), so raise the event
-			if ((double)e.OldValue != 0) //Don't bother raising an event for the first time the height is assigned, only for when it changes
-				((ArtPanel)sender).RaiseImageSizeChangedEvent();
 		}
 		private static object CoerceImagePopupHeight(DependencyObject sender, object value)
 		{
@@ -319,24 +311,6 @@ namespace AlbumArtDownloader.Controls
 			}
 
 			return new Size(maxWidth, maxHeight);
-		}
-		#endregion
-
-		#region Image size changing event
-		//This event is provided as routed event so that the ArtPanelList can listen to all image size changes with one handler.
-		public static readonly RoutedEvent ImageSizeChangedEvent = EventManager.RegisterRoutedEvent("ImageSizeChanged", RoutingStrategy.Bubble, typeof(RoutedEventHandler), typeof(ArtPanel));
-		/// <summary>
-		/// This event occurs when the size of the AlbumArt image changes, usually due to the full size image being downloaded.
-		/// </summary>
-		public event RoutedEventHandler ImageSizeChanged
-		{
-			add { AddHandler(ImageSizeChangedEvent, value); }
-			remove { RemoveHandler(ImageSizeChangedEvent, value); }
-		}
-		private void RaiseImageSizeChangedEvent()
-		{
-			RoutedEventArgs newEventArgs = new RoutedEventArgs(ImageSizeChangedEvent);
-			RaiseEvent(newEventArgs);
 		}
 		#endregion
 
