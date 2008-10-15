@@ -283,11 +283,13 @@
     <Compile Include="Controls\SourcePanel.cs" />
     <Compile Include="Controls\StringFormatterConverter.cs" />
     <Compile Include="Controls\SumConverter.cs" />
+    <Compile Include="Controls\SynchronousFullSizeImageStream.cs" />
     <Compile Include="Controls\TooltipEnabledOnOverflowConverter.cs" />
     <Compile Include="Controls\Utilities.cs" />
     <Compile Include="Controls\SortableListView.cs" />
     <Compile Include="Controls\SortableGridViewColumn.cs" />
     <Compile Include="Controls\SplitButton.cs" />
+    <Compile Include="Controls\VirtualFileDragger.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

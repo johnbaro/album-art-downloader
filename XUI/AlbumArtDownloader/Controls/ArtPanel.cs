@@ -110,6 +110,7 @@ namespace AlbumArtDownloader.Controls
 					ImageDisplay.PreviewKeyUp += new KeyEventHandler(ImageDisplay_PreviewKeyUp);
 					ImageDisplay.PreviewMouseLeftButtonDown += new MouseButtonEventHandler(ImageDisplay_PreviewMouseLeftButtonDown);
 					ImageDisplay.PreviewMouseLeftButtonUp += new MouseButtonEventHandler(ImageDisplay_PreviewMouseLeftButtonUp);
+					ImageDisplay.PreviewMouseMove += new MouseEventHandler(ImageDisplay_PreviewMouseMove);
 					ImagePopup.PreviewMouseLeftButtonUp += new MouseButtonEventHandler(ImagePopup_PreviewMouseLeftButtonUp);
 				}
 			}
@@ -183,6 +184,8 @@ namespace AlbumArtDownloader.Controls
 
 		private void ImageDisplay_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
 		{
+			mMouseDownLocation = e.GetPosition(ImageDisplay); //Used by ImageDisplay_PreviewMouseMove
+
 			if (e.ClickCount == 2)
 			{
 				//This is a double click, so treat as a Save.
@@ -312,6 +315,36 @@ namespace AlbumArtDownloader.Controls
 
 			return new Size(maxWidth, maxHeight);
 		}
+		#endregion
+
+		#region Drag as File
+		private Point mMouseDownLocation;
+
+		private void ImageDisplay_PreviewMouseMove(object sender, MouseEventArgs e)
+		{
+			if (e.LeftButton == MouseButtonState.Pressed)
+			{
+				Vector offset = e.GetPosition(ImageDisplay) - mMouseDownLocation;
+				if (Math.Abs(offset.X) > SystemParameters.MinimumHorizontalDragDistance ||
+					Math.Abs(offset.Y) > SystemParameters.MinimumVerticalDragDistance)
+				{
+					CloseImagePopup();
+					StartDrag();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Starts a drag of this result as a file (suitable for dropping on Windows Explorer)
+		/// </summary>
+		private void StartDrag()
+		{
+			DragDrop.DoDragDrop(this, 
+				new VirtualFileDragger(System.IO.Path.GetFileName(AlbumArt.FilePath),
+					new SynchronousFullSizeImageStream(AlbumArt), 0), DragDropEffects.Copy);
+		}
+
+		
 		#endregion
 
 		#region Information sizing

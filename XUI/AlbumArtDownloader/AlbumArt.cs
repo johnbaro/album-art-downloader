@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Microsoft.Win32;
+using System.Collections.Generic;
 
 namespace AlbumArtDownloader
 {
@@ -118,6 +119,18 @@ namespace AlbumArtDownloader
 					NotifyPropertyChanged("ImageCodecInfo");
 				}
 			}
+		}
+
+		/// <summary>
+		/// Returns the contents of the <see cref="Image"/> as a stream
+		/// </summary>
+		/// <returns></returns>
+		internal Stream GetImageData()
+		{
+			//Data is only available from BitmapImage
+			var stream = new MemoryStream();
+			BitmapImage.Save(stream, BitmapImage.RawFormat);
+			return stream;
 		}
 
 		private ImageSource mCachedImageSource;
@@ -372,12 +385,16 @@ namespace AlbumArtDownloader
 		}
 
 		#region Retrieve Full Size Image
+		private object mRetrieveFullSizeImageSynchronization = new object();
+		private List<WaitCallback> mOnFullSizeRetrievedCallbacks = new List<WaitCallback>();
+		private List<EventWaitHandle> mOnFullSizeRetrievedWaitHandles = new List<EventWaitHandle>();
+		
 		/// <summary>
 		/// Begins an asynchronous retrieval of the full size image
 		/// </summary>
 		public void RetrieveFullSizeImage()
 		{
-			RetrieveFullSizeImage(null);
+			RetrieveFullSizeImage(null, null);
 		}
 		/// <summary>
 		/// Begins an asynchronous retrieval of the full size image, notifying a callback on completion
@@ -385,30 +402,81 @@ namespace AlbumArtDownloader
 		/// </summary>
 		public void RetrieveFullSizeImage(WaitCallback callback)
 		{
-			if (!mIsFullSize)
+			RetrieveFullSizeImage(callback, null);
+		}
+		/// <summary>
+		/// Begins an asynchronous retrieval of the full size image, signalling a wait handle on completion
+		/// <param name="waitHandle">Signalled when the retrieval completes</param>
+		/// </summary>
+		public void RetrieveFullSizeImage(EventWaitHandle waitHandle)
+		{
+			RetrieveFullSizeImage(null, waitHandle);
+		}
+		private void RetrieveFullSizeImage(WaitCallback callback, EventWaitHandle waitHandle)
+		{
+			lock(mRetrieveFullSizeImageSynchronization)
 			{
-				IsDownloading = true;
-				ThreadPool.QueueUserWorkItem(new WaitCallback(RetrieveFullSizeImageWorker), callback);
+				if (!mIsFullSize)
+				{
+					if (callback != null)
+					{
+						//Add this callback to the list of callbacks to call when the retrieval finishes.
+						mOnFullSizeRetrievedCallbacks.Add(callback);
+					}
+					if (waitHandle != null)
+					{
+						mOnFullSizeRetrievedWaitHandles.Add(waitHandle);
+					}
+
+					if (!mIsDownloading)
+					{
+						//Start downloading
+						IsDownloading = true;
+						ThreadPool.QueueUserWorkItem(new WaitCallback(RetrieveFullSizeImageWorker));
+					}
+					return;
+				}
 			}
-			else
+
+			//Already full size.
+			//Raise the callback and wait handle anyway, in case anything is waiting on it
+			if (callback != null)
 			{
-				//Raise the callback anyway, in case anything is waiting on it
-				if (callback != null)
-					callback(this);
+				callback(this);
 			}
+			if (waitHandle != null)
+			{
+				waitHandle.Set();
+			}
+			
 		}
 
 		private void RetrieveFullSizeImageWorker(object state)
 		{
-			WaitCallback callback = state as WaitCallback;
-
 			Bitmap fullSizeImage = mSource.RetrieveFullSizeImage(mFullSizeCallbackParameter);
 			if (fullSizeImage != null) //If it is null, just use the thumbnail image
 			{
 				BitmapImage = fullSizeImage;
 			}
 
-			//Update the values
+			List<WaitCallback> callbacks;
+			lock (mRetrieveFullSizeImageSynchronization)
+			{
+				mIsFullSize = true;
+				mIsDownloading = false;
+
+				//Signal all the wait handles to continue
+				foreach (var waitHandle in mOnFullSizeRetrievedWaitHandles)
+				{
+					waitHandle.Set();
+				}
+
+				//Take a copy of the callbacks to call, but call them outside of the lock.
+				callbacks = new List<WaitCallback>(mOnFullSizeRetrievedCallbacks);
+				mOnFullSizeRetrievedCallbacks.Clear();
+			}
+
+			//Update the values, notify of changes, and invoke callbacks in the main dispatcher thread.
 			Dispatcher.Invoke(DispatcherPriority.DataBind, new ThreadStart(delegate
 			{
 				if (Image != null) //Image should *never* be null, but this might be what's causing reported crashes at this location.
@@ -419,12 +487,13 @@ namespace AlbumArtDownloader
 				{
 					System.Diagnostics.Debug.Fail("Image was unexpectedly null");
 				}
-				IsDownloading = false;
 
-				mIsFullSize = true;
-
-				if (callback != null)
+				NotifyPropertyChanged("IsDownloading");
+				
+				foreach (var callback in callbacks)
+				{
 					callback(this);
+				}
 			}));
 		}
 

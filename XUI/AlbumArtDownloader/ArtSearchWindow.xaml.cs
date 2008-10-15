@@ -143,17 +143,12 @@ namespace AlbumArtDownloader
 							)
 						)
 					{
-						resultToProcess.RetrieveFullSizeImage(new WaitCallback(FullSizeImageDownloadCompleted));
+						resultToProcess.RetrieveFullSizeImage(mWaitForImage);
 						//Wait until it is finished to move on to the next one, which triggers the trigger.
 						mWaitForImage.WaitOne();
 					}
 				}
 			} while (true);
-		}
-
-		private void FullSizeImageDownloadCompleted(object sender)
-		{
-			mWaitForImage.Set();
 		}
 
 		private void OnAutoDownloadFullSizeImagesChanged(object sender, RoutedEventArgs e)
