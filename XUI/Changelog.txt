@@ -4,6 +4,7 @@
 	  artwork for a multiple selection.
 	 Fixed bug where the order of columns in the file and foobar browsers would not be persisted
 	  correctly.
+	 Updated to latest version of Boo (for scripts)
 
 0.22 Added Presets functionality (first cut for testing)
      Merged AlbumArtDownloader.Controls.dll into AlbumArt.exe

@@ -45,17 +45,17 @@
     <DefineConstants>TRACE;ERROR_REPORTING</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Boo.Lang, Version=1.0.0.0, Culture=neutral, PublicKeyToken=32c39770e9a21a67, processorArchitecture=MSIL">
+    <Reference Include="Boo.Lang, Version=2.0.0.0, Culture=neutral, PublicKeyToken=32c39770e9a21a67, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\ThirdParty Assemblies\Boo.Lang.dll</HintPath>
+      <HintPath>..\Third Party Assemblies\Boo.Lang.dll</HintPath>
     </Reference>
-    <Reference Include="Boo.Lang.Compiler, Version=1.0.0.0, Culture=neutral, PublicKeyToken=32c39770e9a21a67, processorArchitecture=MSIL">
+    <Reference Include="Boo.Lang.Compiler, Version=2.0.0.0, Culture=neutral, PublicKeyToken=32c39770e9a21a67, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\ThirdParty Assemblies\Boo.Lang.Compiler.dll</HintPath>
+      <HintPath>..\Third Party Assemblies\Boo.Lang.Compiler.dll</HintPath>
     </Reference>
-    <Reference Include="Boo.Lang.Parser, Version=1.0.0.0, Culture=neutral, PublicKeyToken=32c39770e9a21a67, processorArchitecture=MSIL">
+    <Reference Include="Boo.Lang.Parser, Version=2.0.0.0, Culture=neutral, PublicKeyToken=32c39770e9a21a67, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\ThirdParty Assemblies\Boo.Lang.Parser.dll</HintPath>
+      <HintPath>..\Third Party Assemblies\Boo.Lang.Parser.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework.Classic">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
