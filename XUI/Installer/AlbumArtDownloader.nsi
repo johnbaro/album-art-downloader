@@ -109,10 +109,14 @@ SectionGroup "Image Download Scripts"
 #  File "..\Scripts\Scripts\iTunes.boo"
 #SectionEnd
 SectionGroup "Amazon"
-        Section "Amazon (US)"
+    Section "Amazon (US)"
 	  File "..\Scripts\Scripts\amazon-common.boo"
-          File "..\Scripts\Scripts\amazon-com.boo"
+      File "..\Scripts\Scripts\amazon-com.boo"
 	SectionEnd
+    Section "Amazon MP3 (US)"
+	  File "..\Scripts\Scripts\amazon-common.boo"
+      File "..\Scripts\Scripts\amazon-com-mp3.boo"
+	SectionEnd	
 	Section /o "Amazon (UK)"
 	  File "..\Scripts\Scripts\amazon-common.boo"
 	  File "..\Scripts\Scripts\amazon-co-uk.boo"
@@ -159,7 +163,7 @@ Section "CoverIsland"
   File "..\Scripts\Scripts\coverisland.boo"
 SectionEnd
 Section "FreeCovers"
-  File "..\Scripts\Scripts\freecovers.boo"
+  File "..\Scripts\Scripts\freecovers-api.boo"
 SectionEnd
 Section "Rate Your Music"
   File "..\Scripts\Scripts\rateyourmusic.boo"
@@ -167,11 +171,17 @@ SectionEnd
 Section "Album Art Exchange"
   File "..\Scripts\Scripts\albumartexchange.boo"
 SectionEnd
+Section "DarkTown"
+  File "..\Scripts\Scripts\darktown.boo"
+SectionEnd
 Section "PsyShop"
   File "..\Scripts\Scripts\psyshop.boo"
 SectionEnd
 Section "RevHQ"
   File "..\Scripts\Scripts\revhq.boo"
+SectionEnd
+Section "LastFM"
+  File "..\Scripts\Scripts\lastfm-cover.boo"
 SectionEnd
 Section "LastFM Artist (artist images)"
   File "..\Scripts\Scripts\lastfm-artist.boo"

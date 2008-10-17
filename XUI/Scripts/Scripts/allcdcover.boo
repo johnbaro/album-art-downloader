@@ -18,7 +18,7 @@ class AllCdCovers(AlbumArtDownloader.Scripts.IScript):
 	def Search(artist as string, album as string, results as IScriptResults):
 		searchFor = EncodeUrl("${artist} ${album}".Trim())
 		baseUrl = "http://www.allcdcovers.com/search/music/all/"
-		allResultsPage = GetPageAsFirefox("${baseUrl}${searchFor}")
+		allResultsPage = GetPage(GetPageStream("${baseUrl}${searchFor}", null, true))
 		resultRegex = Regex("<a href=\"/show/(?<singleResultPage>[^\"]+)\">(?<typeName>[^<]+)</a>")
 		resultMatches = resultRegex.Matches(allResultsPage)
 		results.EstimatedCount = resultMatches.Count
@@ -27,7 +27,7 @@ class AllCdCovers(AlbumArtDownloader.Scripts.IScript):
 			typeName = resultMatch.Groups["typeName"].Value
 			
 			singleResultPageUrl = "http://www.allcdcovers.com/show/${singleResultPageUrl}"
-			singleResultPage = GetPageAsFirefox(singleResultPageUrl)
+			singleResultPage = GetPage(GetPageStream(singleResultPageUrl, null, true))
 			infoRegex =Regex("<dl class=\"tableLike\">\\s*<dt>Title:</dt>\\s*<dd>(?<name>[^<]+)</dd>\\s*<dt>Part:</dt>\\s*<dd>(?<typeNameTwo>[^<]+)</dd>\\s*<dt>Dimensions:</dt>\\s*<dd>(?<sizeX>[0-9]+) x (?<sizeY>[0-9]+) px</dd>\\s*<dt>Size:</dt>\\s*<dd>(?<sizeKB>[^<]+)</dd>")
 			infoMatch = infoRegex.Match(singleResultPage)
 			title = infoMatch.Groups["name"].Value
@@ -68,7 +68,7 @@ class AllCdCovers(AlbumArtDownloader.Scripts.IScript):
 				
 			if((not String.IsNullOrEmpty(thumbUrlPart))and (not String.IsNullOrEmpty(fullUrlPart))or useSmallVersion):
 				results.Add(
-					GetPageStreamAsFirefox(thumbUrl),
+					GetPageStream(thumbUrl, null, true),
 					coverName,
 					singleResultPageUrl,
 					sizeX,
@@ -80,7 +80,7 @@ class AllCdCovers(AlbumArtDownloader.Scripts.IScript):
 				
 		
 	def RetrieveFullSizeImage(fullSizeCallbackParameter):
-		return GetPageStreamAsFirefox(fullSizeCallbackParameter);
+		return GetPageStream(fullSizeCallbackParameter, null, true);
 		
 	def string2coverType(typeString as string):
 		if(typeString.ToLower().StartsWith("front")):
