@@ -24,6 +24,7 @@ namespace AlbumArtDownloader
 			public static RoutedUICommand ShowQueueManager = new RoutedUICommand("Queue Manager", "ShowQueueManager", typeof(Commands));
 			public static RoutedUICommand About = new RoutedUICommand("About...", "About", typeof(Commands));
 			public static RoutedUICommand Exit = new RoutedUICommand("E_xit", "Exit", typeof(Commands));
+			public static RoutedUICommand CommandLineReference = new RoutedUICommand("Command Line _Reference", "CommandLineReference", typeof(Commands));
 		}
 
 		static Menu()
@@ -36,6 +37,7 @@ namespace AlbumArtDownloader
 			CommandManager.RegisterClassCommandBinding(typeof(Window), new CommandBinding(Commands.Exit, new ExecutedRoutedEventHandler(ExitExec)));
 			CommandManager.RegisterClassCommandBinding(typeof(Window), new CommandBinding(Commands.About, new ExecutedRoutedEventHandler(AboutExec)));
 			CommandManager.RegisterClassCommandBinding(typeof(Window), new CommandBinding(NavigationCommands.GoToPage, new ExecutedRoutedEventHandler(GoToPageExec)));
+			CommandManager.RegisterClassCommandBinding(typeof(Window), new CommandBinding(Commands.CommandLineReference, new ExecutedRoutedEventHandler(CommandLineReferenceExec)));
 		}
 
 		public Menu()
@@ -131,6 +133,10 @@ namespace AlbumArtDownloader
 			About about = new About();
 			about.Owner = sender as Window;
 			about.ShowDialog();
+		}
+		private static void CommandLineReferenceExec(object sender, ExecutedRoutedEventArgs e)
+		{
+			new CommandArgsHelp().ShowDialog(null);
 		}
 		private static void GoToPageExec(object sender, ExecutedRoutedEventArgs e)
 		{
