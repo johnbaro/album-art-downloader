@@ -1,6 +1,4 @@
 ﻿import System
-import System.Text
-import System.Text.RegularExpressions
 import System.Xml
 import AlbumArtDownloader.Scripts
 import util
@@ -34,7 +32,7 @@ class freecoversApi(AlbumArtDownloader.Scripts.IScript):
 		x = System.Xml.XmlDocument()
 		x.Load(reader)
 		titleNodes = x.SelectNodes("rsp[@stat='ok']/title")
-		allCoverNodes = x.SelectNodes("rsp[@stat='ok']/title/covers/cover")
+//		allCoverNodes = x.SelectNodes("rsp[@stat='ok']/title/covers/cover")
 		for titleNode as XmlNode in titleNodes:
 			albumName = titleNode.SelectSingleNode("name").InnerText
 			if (String.IsNullOrEmpty(artist) or albumName.IndexOf(artist, StringComparison.OrdinalIgnoreCase) >= 0) and (String.IsNullOrEmpty(album) or albumName.IndexOf(album, StringComparison.OrdinalIgnoreCase) >= 0):

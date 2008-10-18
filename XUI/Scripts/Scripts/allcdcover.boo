@@ -1,5 +1,4 @@
 ﻿import System
-import System.Text
 import System.Text.RegularExpressions
 import AlbumArtDownloader.Scripts
 import util

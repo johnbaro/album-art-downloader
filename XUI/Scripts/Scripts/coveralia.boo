@@ -1,7 +1,5 @@
 namespace CoverSources
 import System
-import System.String
-import System.Text
 import System.Text.RegularExpressions
 import AlbumArtDownloader.Scripts
 import util

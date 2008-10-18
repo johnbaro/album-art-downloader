@@ -1,3 +1,9 @@
+0.23.1
+     Fixed bad installer release
+     Fixed problem with launching explorer windows with commas in the path
+     Fixed warnings in script compilation
+     Fixed problem with command line version (aad.exe)
+     
 0.23 Added reporting of the Cover Type (Front, Back, CD, Inlay) for results.
      Added drag and drop of results into explorer windows.
      Fixed bug where file and foobar browsers would not refresh image status after searching for

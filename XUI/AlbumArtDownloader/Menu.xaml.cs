@@ -150,7 +150,7 @@ namespace AlbumArtDownloader
 					if (uri.IsFile)
 					{
 						//If the Uri is a file, then display it in explorer rather than executing it (safer too!)
-						System.Diagnostics.Process.Start("explorer.exe", "/select," + uri.AbsoluteUri);
+						System.Diagnostics.Process.Start("explorer.exe", "/select,\"" + uri.AbsoluteUri + "\"");
 					}
 					else
 					{

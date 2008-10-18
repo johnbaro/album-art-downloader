@@ -1,7 +1,6 @@
 # refs: ICSharpCode.SharpZipLib.dll
 namespace CoverSources
 import System.Xml
-import System.Drawing
 import util
 
 class iTMS:

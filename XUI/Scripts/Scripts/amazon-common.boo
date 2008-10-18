@@ -1,7 +1,6 @@
 # refs: System.Core
 
 import System.Xml
-import System.Drawing
 import AlbumArtDownloader.Scripts
 import util
 
