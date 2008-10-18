@@ -1,12 +1,12 @@
 0.23 Added reporting of the Cover Type (Front, Back, CD, Inlay) for results.
-	 Added drag and drop of results into explorer windows.
-	 Fixed bug where file and foobar browsers would not refresh image status after searching for
-	  artwork for a multiple selection.
-	 Fixed bug where the order of columns in the file and foobar browsers would not be persisted
-	  correctly.
-	 Updated to latest version of Boo (for scripts)
-	 Replaced FreeCovers script with new version that uses the API
-	 Added DarkTown, LastFM (covers) and AllCdCover scripts
+     Added drag and drop of results into explorer windows.
+     Fixed bug where file and foobar browsers would not refresh image status after searching for
+      artwork for a multiple selection.
+     Fixed bug where the order of columns in the file and foobar browsers would not be persisted
+      correctly.
+     Updated to latest version of Boo (for scripts)
+     Replaced FreeCovers script with new version that uses the API
+     Added DarkTown, LastFM (covers) and AllCdCover scripts
 
 0.22 Added Presets functionality (first cut for testing)
      Merged AlbumArtDownloader.Controls.dll into AlbumArt.exe
