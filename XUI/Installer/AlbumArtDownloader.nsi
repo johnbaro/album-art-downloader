@@ -96,11 +96,11 @@ Section "Command Line Interface (aad.exe)"
 SectionEnd
 
 Section -ScriptsPath
-SetOutPath "$INSTDIR\Scripts"
-SetOverwrite ifnewer
-#delete old script cache file
-Delete "$INSTDIR\Scripts\boo script cache.dll"
-File "..\Scripts\Scripts\util.boo"
+  SetOutPath "$INSTDIR\Scripts"
+  SetOverwrite ifnewer
+  #delete old script cache file
+  Delete "$INSTDIR\Scripts\boo script cache.dll"
+  File "..\Scripts\Scripts\util.boo"
 SectionEnd
 
 SectionGroup "Image Download Scripts"
@@ -113,7 +113,7 @@ SectionGroup "Amazon"
 	  File "..\Scripts\Scripts\amazon-common.boo"
       File "..\Scripts\Scripts\amazon-com.boo"
 	SectionEnd
-    Section "Amazon MP3 (US)"
+    Section /o "Amazon MP3 (US)"
 	  File "..\Scripts\Scripts\amazon-common.boo"
       File "..\Scripts\Scripts\amazon-com-mp3.boo"
 	SectionEnd	
@@ -163,6 +163,8 @@ Section "CoverIsland"
   File "..\Scripts\Scripts\coverisland.boo"
 SectionEnd
 Section "FreeCovers"
+  #Remove old freecovers script
+  Delete "$INSTDIR\Scripts\freecovers.boo"
   File "..\Scripts\Scripts\freecovers-api.boo"
 SectionEnd
 Section "Rate Your Music"
@@ -173,6 +175,9 @@ Section "Album Art Exchange"
 SectionEnd
 Section "DarkTown"
   File "..\Scripts\Scripts\darktown.boo"
+SectionEnd
+Section "AllCdCover"
+  File "..\Scripts\Scripts\allcdcover.boo"
 SectionEnd
 Section "PsyShop"
   File "..\Scripts\Scripts\psyshop.boo"
