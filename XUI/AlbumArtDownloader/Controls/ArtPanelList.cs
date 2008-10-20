@@ -424,6 +424,7 @@ namespace AlbumArtDownloader.Controls
 			{
 				var itemsSourceWrapper = new SuspendedNotificationCollection(itemsSource);
 				itemsSourceWrapper.CollectionChanged += ((ArtPanelList)sender).OnItemsSourceChanged;
+				return itemsSourceWrapper;
 			}
 			return newValue;
 		}
@@ -489,8 +490,8 @@ namespace AlbumArtDownloader.Controls
 
 			private IList mWrappedCollection;
 			private bool mResetPending = false;
-			private ArrayList mAddedItems = new ArrayList();
-			private ArrayList mRemovedItems = new ArrayList();
+			private HashSet<Object> mAddedItems = new HashSet<Object>();
+			private HashSet<Object> mRemovedItems = new HashSet<Object>();
 			
 			public SuspendedNotificationCollection(IList collection)
 			{
@@ -516,14 +517,22 @@ namespace AlbumArtDownloader.Controls
 								foreach (object item in e.NewItems)
 								{
 									mAddedItems.Add(item);
-									mRemovedItems.Remove(item);
+									//Re-adding a removed item is fine, as things are done in that order.
 								}
 								break;
 							case NotifyCollectionChangedAction.Remove:
 								foreach (object item in e.OldItems)
 								{
+									if (mAddedItems.Contains(item))
+									{
+										//Removing an added item is not supported, so fall back on a reset.
+										mResetPending = true; //Trumps all other changes
+										mAddedItems.Clear();
+										mRemovedItems.Clear();
+										break;
+									}
+
 									mRemovedItems.Add(item);
-									mAddedItems.Remove(item);
 								} 
 								break;
 							case NotifyCollectionChangedAction.Move:
@@ -580,7 +589,7 @@ namespace AlbumArtDownloader.Controls
 								{
 									RaiseCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item));
 								}
-								foreach (object item in mRemovedItems)
+								foreach (object item in mAddedItems)
 								{
 									RaiseCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item));
 								}
