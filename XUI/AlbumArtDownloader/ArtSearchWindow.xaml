@@ -238,7 +238,39 @@
 								PresetsContextMenu="{Binding ElementName=this, Path=PresetsContextMenu, Mode=OneWay}"
 							   />
 		
-		<Grid Grid.Column="3" Grid.Row="1" Grid.RowSpan="4">
+		<DockPanel Grid.Row="5" Margin="0,2,0,0">
+			<DockPanel.Style>
+				<Style TargetType="DockPanel">
+					<Style.Triggers>
+						<DataTrigger Binding="{Binding ElementName=this, Path=AutoDownloadingProgressMaximum, Mode=OneWay}" Value="0">
+							<Setter Property="Visibility" Value="Collapsed"/>
+						</DataTrigger>
+					</Style.Triggers>
+				</Style>
+			</DockPanel.Style>
+			<TextBlock DockPanel.Dock="Left" Margin="0,0,2,0">Downloading full size images...</TextBlock>
+			<ProgressBar Margin="5,2,3,1"
+						 Value="{Binding ElementName=this, Path=AutoDownloadingProgressValue, Mode=OneWay}"
+						 Maximum="{Binding ElementName=this, Path=AutoDownloadingProgressMaximum, Mode=OneWay}">
+				<ProgressBar.Style>
+					<Style TargetType="ProgressBar">
+						<Style.Triggers>
+							<Trigger Property="IsVisible" Value="False">
+								<!-- Windows Vista will keep animating a progress bar even when it is not visible, so nuke the thing by giving
+										it an empty control template -->
+								<Setter Property="Template">
+									<Setter.Value>
+										<ControlTemplate TargetType="ProgressBar" />
+									</Setter.Value>
+								</Setter>
+							</Trigger>
+						</Style.Triggers>
+					</Style>
+				</ProgressBar.Style>
+			</ProgressBar>
+		</DockPanel>
+		
+		<Grid Grid.Column="3" Grid.Row="1" Grid.RowSpan="5">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto"/>
 				<RowDefinition Height="Auto"/>

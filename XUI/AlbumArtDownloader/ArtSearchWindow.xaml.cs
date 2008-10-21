@@ -125,9 +125,11 @@ namespace AlbumArtDownloader
 				while (Properties.Settings.Default.AutoDownloadFullSizeImages != AutoDownloadFullSizeImages.Never)
 				{
 					AlbumArt resultToProcess;
+					int queueCount;
 					lock (mResultsToAutoDownloadFullSizeImages)
 					{
-						if (mResultsToAutoDownloadFullSizeImages.Count == 0)
+						queueCount = mResultsToAutoDownloadFullSizeImages.Count;
+						if (queueCount == 0)
 						{
 							break; //Finished downloading all the pending results to download, so skip back round to the waiting.
 						}
@@ -143,12 +145,54 @@ namespace AlbumArtDownloader
 							)
 						)
 					{
+						//If the queue length has increased, then update the maximum to be the new queue length.
+						mAutoDownloadingProgressMaximum = Math.Max(mAutoDownloadingProgressMaximum, queueCount);
+						//The progress is reset to be counted from the end, so if there are 5 items remaining, the progress should be 5 points from the end. (so if new items keep getting added, the progress will look static)
+						mAutoDownloadingProgressValue = mAutoDownloadingProgressMaximum - queueCount;
+						NotifyChangeOfAutoDownloadingProgress();
+
 						resultToProcess.RetrieveFullSizeImage(mWaitForImage);
 						//Wait until it is finished to move on to the next one, which triggers the trigger.
 						mWaitForImage.WaitOne();
+
+						mAutoDownloadingProgressValue++;
+						NotifyChangeOfAutoDownloadingProgress();
 					}
 				}
+
+				//Queue has been completed, so hide the progress bar.
+				if (mAutoDownloadingProgressMaximum > 0)
+				{
+					mAutoDownloadingProgressValue = mAutoDownloadingProgressMaximum = 0;
+					NotifyChangeOfAutoDownloadingProgress();
+				}
+							
 			} while (true);
+		}
+
+		//Public members for binding the auto downloading progress bar to:
+		private int mAutoDownloadingProgressMaximum;
+		public int AutoDownloadingProgressMaximum { get { return mAutoDownloadingProgressMaximum; } }
+
+		private int mAutoDownloadingProgressValue;
+		public int AutoDownloadingProgressValue { get { return mAutoDownloadingProgressValue; } }
+
+		private volatile bool mNotifyChangeOfAutoDownloadingProgressPending;
+		private void NotifyChangeOfAutoDownloadingProgress()
+		{
+			//Don't queue up a whole bunch of notifiactions - once one is pended, ignore further notifications until that one completes
+			if (!mNotifyChangeOfAutoDownloadingProgressPending)
+			{
+				mNotifyChangeOfAutoDownloadingProgressPending = true;
+
+				//The auto downloading progress variables have changed, so add an Update to the dispatcher (low priority)
+				Dispatcher.BeginInvoke(DispatcherPriority.DataBind, new ThreadStart(delegate
+				{
+					NotifyPropertyChanged("AutoDownloadingProgressMaximum");
+					NotifyPropertyChanged("AutoDownloadingProgressValue");
+					mNotifyChangeOfAutoDownloadingProgressPending = false;
+				}));
+			}
 		}
 
 		private void OnAutoDownloadFullSizeImagesChanged(object sender, RoutedEventArgs e)
@@ -170,11 +214,14 @@ namespace AlbumArtDownloader
 
 		private void AddResultToAutoDownloadFullSizeImage(AlbumArt result)
 		{
-			lock(mResultsToAutoDownloadFullSizeImages)
+			if (!result.IsDownloading && !result.IsFullSize) //No need to auto-download if it is already downloading, or full sized.
 			{
-				mResultsToAutoDownloadFullSizeImages.Enqueue(result);
+				lock (mResultsToAutoDownloadFullSizeImages)
+				{
+					mResultsToAutoDownloadFullSizeImages.Enqueue(result);
+				}
+				mAutoDownloadFullSizeImagesTrigger.Set();
 			}
-			mAutoDownloadFullSizeImagesTrigger.Set();
 		}
 
 		private void ClearAutoDownloadFullSizeImageResults()
@@ -184,6 +231,8 @@ namespace AlbumArtDownloader
 				mResultsToAutoDownloadFullSizeImages.Clear();
 			}
 		}
+
+
 		#endregion
 
 		#region Searching

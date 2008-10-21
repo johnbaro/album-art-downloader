@@ -28,6 +28,9 @@ namespace AlbumArtDownloader.Controls
 		private static extern int GetDoubleClickTime(); 
 
 		private static readonly double sKeyboardSizingStep = 5d;
+		//Because the mouse down event is also used for the preview operation, a larger drag dead-spot makes for better usability.
+		//If the system minimum drag distance is set larger than this, the system distance will be used anyway
+		private static readonly double sMinimumDragDistance = 32;
 
 		static ArtPanel()
 		{
@@ -325,8 +328,8 @@ namespace AlbumArtDownloader.Controls
 			if (e.LeftButton == MouseButtonState.Pressed)
 			{
 				Vector offset = e.GetPosition(ImageDisplay) - mMouseDownLocation;
-				if (Math.Abs(offset.X) > SystemParameters.MinimumHorizontalDragDistance ||
-					Math.Abs(offset.Y) > SystemParameters.MinimumVerticalDragDistance)
+				if (Math.Abs(offset.X) > Math.Max(sMinimumDragDistance, SystemParameters.MinimumHorizontalDragDistance) ||
+					Math.Abs(offset.Y) > Math.Max(sMinimumDragDistance, SystemParameters.MinimumVerticalDragDistance))
 				{
 					CloseImagePopup();
 					StartDrag();
