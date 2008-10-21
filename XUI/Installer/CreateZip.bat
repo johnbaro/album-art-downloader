@@ -1,5 +1,5 @@
 @echo off
-set version=0.23.1
+set version=0.24
 
 set zipfile=..\..\Releases\AlbumArtDownloaderXUI-%version%.zip
 del %zipfile%

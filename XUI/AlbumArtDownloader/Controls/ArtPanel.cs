@@ -356,7 +356,11 @@ namespace AlbumArtDownloader.Controls
 		{
 			mMinimumGridSizeForLabelColumn = Information.ColumnDefinitions[0].ActualWidth * 3;
 			if (mMinimumGridSizeForLabelColumn > 0)
+			{
 				Information.LayoutUpdated -= SetMinimumGridSizeForLabelColumn; //Unhook after successfully finding the width.
+				//Ensure layout is now up to date with new minimum grid size
+				OnSizeChanged(null, null);
+			}
 		}
 
 		private void OnSizeChanged(object sender, SizeChangedEventArgs e)

@@ -19,9 +19,7 @@ namespace AlbumArtDownloader
 	{
 		private Source mSource;
 		private object mFullSizeCallbackParameter;
-		/// <summary>If true, then the current value of Image is the full sized image, and no further retrieval is necessary.</summary>
-		private bool mIsFullSize = false;
-
+		
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		public AlbumArt(Source source, Bitmap thumbnail, string name, string infoUri, double width, double height, object fullSizeCallbackParameter, CoverType coverType)
@@ -488,6 +486,7 @@ namespace AlbumArtDownloader
 					System.Diagnostics.Debug.Fail("Image was unexpectedly null");
 				}
 
+				NotifyPropertyChanged("IsFullSize");
 				NotifyPropertyChanged("IsDownloading");
 				
 				foreach (var callback in callbacks)
@@ -497,12 +496,19 @@ namespace AlbumArtDownloader
 			}));
 		}
 
+
+		private bool mIsFullSize = false;
 		/// <summary>If true, then the current value of Image is the full sized image, and no further retrieval is necessary.</summary>
-		internal bool IsFullSize
+		public bool IsFullSize
 		{
-			get
+			get { return mIsFullSize; }
+			set
 			{
-				return mIsFullSize;
+				if (mIsFullSize != value)
+				{
+					mIsFullSize = value;
+					NotifyPropertyChanged("IsFullSize");
+				}
 			}
 		}
 		#endregion

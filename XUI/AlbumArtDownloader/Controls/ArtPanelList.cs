@@ -75,6 +75,21 @@ namespace AlbumArtDownloader.Controls
 			PreviewMouseMove -= OnPreviewMouseMoveWhileCaptured;
 
 			Suspended = false;
+
+			ArtPanel panel = GetArtPanel(e.OriginalSource);
+
+			if(panel != null)
+			{
+				if (panel.Parent == null)
+				{
+					//The panel has been removed (probably due to image size changed), so find the new panel for that album art, and bring that into view instead
+					((ContentPresenter)ItemContainerGenerator.ContainerFromItem(panel.AlbumArt)).BringIntoView();
+				}
+				else
+				{
+					panel.BringIntoView(); //Ensure the panel remains in view
+				}
+			}
 		}
 
 		private void OnPreviewMouseMoveWhileCaptured(object sender, MouseEventArgs e)
@@ -158,7 +173,7 @@ namespace AlbumArtDownloader.Controls
 			ContentPresenter firstItemContentPresenter = (ContentPresenter)ItemContainerGenerator.ContainerFromIndex(0);
 			if (firstItemContentPresenter != null) //Will be null if there are no items shown.
 			{
-				ArtPanel firstArtPanel = firstItemContentPresenter.ContentTemplate.FindName("PART_ArtPanel", firstItemContentPresenter) as ArtPanel;
+				ArtPanel firstArtPanel = GetArtPanelFromContentPresenter(firstItemContentPresenter);
 				if (numberOfPanels > 1 && newPanelWidth < firstArtPanel.MinWidth)
 				{
 					//Can't fit the panels at this size, as it is under the minimum size, so decrease the number of panels by one, and recalc.
@@ -167,6 +182,14 @@ namespace AlbumArtDownloader.Controls
 				}
 			}
 			return newPanelWidth;
+		}
+
+		/// <summary>
+		/// Gets the art panel from the content presenter produced by ItemContainerGenerator.
+		/// </summary>
+		private ArtPanel GetArtPanelFromContentPresenter(ContentPresenter contentPresenter)
+		{
+			return contentPresenter.ContentTemplate.FindName("PART_ArtPanel", contentPresenter) as ArtPanel;
 		}
 		#endregion
 
@@ -223,21 +246,24 @@ namespace AlbumArtDownloader.Controls
 		{
 			AlbumArt albumArt = (AlbumArt)sender;
 
-			//As this panel's size has changed, it must be removed and re-added, so the list re-filters and re-sorts it
-			if (ItemsSource is IList)
+			if (UseMaximumImageSize || UseMinimumImageSize || !String.IsNullOrEmpty(SortDescription.PropertyName))
 			{
-				IList itemsSource = (IList)ItemsSource;
-				itemsSource.Remove(albumArt);
-				itemsSource.Add(albumArt);
-			}
-			else if (ItemsSource == null) //If there is no items source, then Items might be directly assigned
-			{
-				Items.Remove(albumArt);
-				Items.Add(albumArt);
-			}
-			else
-			{
-				System.Diagnostics.Debug.Fail("Can't re-add the album art for re-sorting and filtering, as ItemsSource is not an IList");
+				//As this panel's size has changed, it must be removed and re-added, so the list re-filters and re-sorts it
+				if (ItemsSource is IList)
+				{
+					IList itemsSource = (IList)ItemsSource;
+					itemsSource.Remove(albumArt);
+					itemsSource.Add(albumArt);
+				}
+				else if (ItemsSource == null) //If there is no items source, then Items might be directly assigned
+				{
+					Items.Remove(albumArt);
+					Items.Add(albumArt);
+				}
+				else
+				{
+					System.Diagnostics.Debug.Fail("Can't re-add the album art for re-sorting and filtering, as ItemsSource is not an IList");
+				}
 			}
 		}
 		#endregion

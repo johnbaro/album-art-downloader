@@ -306,6 +306,9 @@
 												</MultiDataTrigger.Conditions>
 												<Setter Property="Text" Value="Unknown"/>
 											</MultiDataTrigger>
+											<DataTrigger Binding="{Binding Path=AlbumArt.IsFullSize, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Value="False" >
+												<Setter Property="Foreground" Value="{x:Static SystemColors.ControlDarkBrush}"/>
+											</DataTrigger>
 										</Style.Triggers>
 									</Style>
 								</TextBlock.Style>
