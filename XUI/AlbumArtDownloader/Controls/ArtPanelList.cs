@@ -301,8 +301,8 @@ namespace AlbumArtDownloader.Controls
 			double size = Math.Min(albumArt.ImageWidth, albumArt.ImageHeight);
 			if (size == -1 || albumArt.ImageHeight == -1)
 			{
-				//No size has been provided, so filter on the actual thumbnail size
-				size = Math.Min(albumArt.Image.Width, albumArt.Image.Height);
+				//No size has been provided, so can't filter it. (Unknown size images are always shown)
+				return true;
 			}
 
 			//Valid if there is no limit specified, or the size is within the limit. Both limits must apply if both are present

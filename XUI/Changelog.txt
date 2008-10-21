@@ -1,3 +1,7 @@
+0.24 Fixed a couple of problems with image size changes introduced by previous release
+     Fixed bug 2182831: Window size and position settings should no longer be lost on upgrade
+     Images of Unknown size are now always included, regardless of size filtering settings.
+     
 0.23.1
      Fixed bad installer release
      Fixed problem with launching explorer windows with commas in the path
@@ -10,9 +14,11 @@
       artwork for a multiple selection.
      Fixed bug where the order of columns in the file and foobar browsers would not be persisted
       correctly.
+     Fixed bug where filtered out items aren't shown when the size becomes known
      Updated to latest version of Boo (for scripts)
      Replaced FreeCovers script with new version that uses the API
-     Added DarkTown, LastFM (covers) and AllCdCover scripts
+     Added DarkTown, LastFM (covers), AllCdCover and Amazon MP3 (US) scripts
+     Added handy link to the command line reference from the Help menu
 
 0.22 Added Presets functionality (first cut for testing)
      Merged AlbumArtDownloader.Controls.dll into AlbumArt.exe

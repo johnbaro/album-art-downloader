@@ -55,6 +55,34 @@ namespace AlbumArtDownloader.Properties
 				}
 			}
 
+			//Version stored for upgrade purposes
+			[UserScopedSetting]
+			public string ApplicationVersion
+			{
+				get
+				{
+					if (this["ApplicationVersion"] != null)
+					{
+						return (string)this["ApplicationVersion"];
+					}
+					return String.Empty;
+				}
+				set
+				{
+					this["ApplicationVersion"] = value;
+				}
+			}
+
+			protected override void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+			{
+				base.OnPropertyChanged(sender, e);
+			}
+
+			protected override void OnSettingChanging(object sender, SettingChangingEventArgs e)
+			{
+				base.OnSettingChanging(sender, e);
+			}
+
 		}
 		#endregion
 
@@ -143,6 +171,8 @@ namespace AlbumArtDownloader.Properties
 		{
 			this.Settings.WindowState = this.window.WindowState;
 			this.Settings.Location = this.window.RestoreBounds;
+			this.Settings.ApplicationVersion = GetVersionString();
+
 			try
 			{
 				this.Settings.Save();
@@ -201,15 +231,32 @@ namespace AlbumArtDownloader.Properties
 			{
 				if (windowApplicationSettings == null)
 				{
-					this.windowApplicationSettings = CreateWindowApplicationSettingsInstance();
+					windowApplicationSettings = CreateWindowApplicationSettingsInstance();
+
+					//Settings may need upgrading from an earlier version
+					string currentVersion = GetVersionString();
+					if (windowApplicationSettings.ApplicationVersion != currentVersion)
+					{
+						System.Diagnostics.Debug.WriteLine("Upgrading window settings");
+						windowApplicationSettings.Upgrade();
+					}
+
 #if EPHEMERAL_SETTINGS
-					this.windowApplicationSettings.Reset();
+					windowApplicationSettings.Reset();
 #endif
 				}
-				return this.windowApplicationSettings;
+				return windowApplicationSettings;
 			}
 		}
 		#endregion
+
+		/// <summary>
+		/// String used to determine whether an upgrade of the settings is reqired
+		/// </summary>
+		private static string GetVersionString()
+		{
+			return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+		}
 	}
 }
 
