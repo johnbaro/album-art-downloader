@@ -365,6 +365,10 @@ namespace AlbumArtDownloader
 					mSearchParameters.RemoveSource(source);
 				}
 			}
+			if (!CommandBindings.Contains(mStopAllCommandBinding))
+			{
+				CommandBindings.Add(mStopAllCommandBinding);
+			}
 		}
 		#endregion
 

@@ -11,6 +11,8 @@
       is displayed in grey, as it can't be confirmed as accurate (accuracy will depend on the source)
      Fixed bug where the information labels would re-appear when the thumbnail has been resized
       such that they should not be visible.
+     Added script for buy.com
+     Fixed bug where "Stop All" would not appear when adding or removing sources from a search
      
 0.23.1
      Fixed bad installer release
