@@ -236,6 +236,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="MissingFrameworkSP1.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Themes\generic.xaml" />
     <Page Include="Controls\Xaml\FadeButton.generic.xaml" />
     <Page Include="Controls\Xaml\SplitFadeButton.generic.xaml" />
@@ -290,6 +293,9 @@
     <Compile Include="Controls\SortableGridViewColumn.cs" />
     <Compile Include="Controls\SplitButton.cs" />
     <Compile Include="Controls\VirtualFileDragger.cs" />
+    <Compile Include="MissingFrameworkSP1.xaml.cs">
+      <DependentUpon>MissingFrameworkSP1.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -7,12 +7,20 @@ using System.Reflection;
 using System.ServiceModel;
 using System.Windows;
 using AlbumArtDownloader.Scripts;
+using Microsoft.Win32;
 
 namespace AlbumArtDownloader
 {
 	[ServiceBehavior(InstanceContextMode = InstanceContextMode.Single)]
 	public class App : System.Windows.Application, IPriorInstance
 	{
+		internal static readonly string DotNetDownloadPage = "http://www.microsoft.com/downloads/details.aspx?FamilyId=AB99342F-5D1A-413D-8319-81DA479AB0D7";
+
+		/// <summary>
+		/// Framework 3.5 prior to SP1 has some bugs that need workarounds.
+		/// </summary>
+		public static bool UsePreSP1Compatibility { get; private set; }
+
 		/// <summary>
 		/// Application Entry Point.
 		/// </summary>
@@ -24,12 +32,16 @@ namespace AlbumArtDownloader
 			{
 #endif
 			#region .net framework problem detection
-
-			#endregion
 			bool foundNet35 = false;
+			bool foundNet35SP1 = false;
+
 			try
 			{
-				foundNet35 = 1.Equals(Microsoft.Win32.Registry.GetValue(@"HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.5", "Install", null));
+				using(var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.5"))
+				{
+					foundNet35 = (key.GetValue("Install") as int?).GetValueOrDefault() == 1;
+					foundNet35SP1 = (key.GetValue("SP") as int?).GetValueOrDefault() >= 1;
+				}
 			}
 			catch (Exception e)
 			{
@@ -40,11 +52,36 @@ namespace AlbumArtDownloader
 			{
 				if(MessageBox.Show("The required Microsoft .NET Framework version 3.5 is not installed. Album Art Downloader XUI will now exit.\n\nWould you like to visit the download page now?", "Album Art Downloader XUI", MessageBoxButton.YesNo, MessageBoxImage.Stop) == MessageBoxResult.Yes)
 				{
-					System.Diagnostics.Process.Start("http://www.microsoft.com/downloads/details.aspx?FamilyId=333325FD-AE52-4E35-B531-508D977D32A6");
+					System.Diagnostics.Process.Start(DotNetDownloadPage);
 				}
 				Environment.Exit(-1); //Ensure exit
 				return;
 			}
+			else if(!foundNet35SP1)
+			{
+				//Show the SP1 missing dialog
+				if(!AlbumArtDownloader.Properties.Settings.Default.IgnoreSP1Missing)
+				{
+					if (!new MissingFrameworkSP1().ShowDialog().GetValueOrDefault())
+					{
+						//Save the "Don't show me again" setting
+						try
+						{
+							AlbumArtDownloader.Properties.Settings.Default.Save();
+						}
+						catch (Exception ex)
+						{
+							System.Diagnostics.Trace.TraceError("Could not save main settings: " + ex.Message);
+						}
+						Environment.Exit(-1); //Ensure exit
+						return;
+					}
+					App.UsePreSP1Compatibility = true;
+				}
+
+			}
+			#endregion
+
 			#region Config File Problem detection
 			try
 			{

@@ -83,7 +83,11 @@ namespace AlbumArtDownloader.Controls
 				if (panel.Parent == null)
 				{
 					//The panel has been removed (probably due to image size changed), so find the new panel for that album art, and bring that into view instead
-					((ContentPresenter)ItemContainerGenerator.ContainerFromItem(panel.AlbumArt)).BringIntoView();
+					ContentPresenter contentPresenter = ItemContainerGenerator.ContainerFromItem(panel.AlbumArt) as ContentPresenter;
+					if (contentPresenter != null)
+					{
+						contentPresenter.BringIntoView();
+					}
 				}
 				else
 				{
@@ -549,7 +553,8 @@ namespace AlbumArtDownloader.Controls
 							case NotifyCollectionChangedAction.Remove:
 								foreach (object item in e.OldItems)
 								{
-									if (mAddedItems.Contains(item))
+									//Pre SP1, the Remove notification doesn't work, so always use a Reset instead
+									if (mAddedItems.Contains(item) || App.UsePreSP1Compatibility)
 									{
 										//Removing an added item is not supported, so fall back on a reset.
 										mResetPending = true; //Trumps all other changes
@@ -578,8 +583,16 @@ namespace AlbumArtDownloader.Controls
 				}
 				else
 				{
-					//Pass it on immediately
-					RaiseCollectionChanged(e);
+					//Pre SP1, the Remove notification doesn't work, so always use a Reset instead
+					if (e.Action == NotifyCollectionChangedAction.Remove && App.UsePreSP1Compatibility)
+					{
+						RaiseCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+					}
+					else
+					{
+						//Pass it on immediately
+						RaiseCollectionChanged(e);
+					}
 				}
 			}
 

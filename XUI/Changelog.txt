@@ -13,6 +13,11 @@
       such that they should not be visible.
      Added script for buy.com
      Fixed bug where "Stop All" would not appear when adding or removing sources from a search
+     Fixed bug where, in rare circumstances, you may get one more result from a source than the
+      limit specified.
+     Added Compatibility Mode warning for pre-SP1 framework version, and fixed bug where list would
+      not refresh properly under pre-SP1. Updated all links to download the framework to point to
+      the SP1 version.
      
 0.23.1
      Fixed bad installer release

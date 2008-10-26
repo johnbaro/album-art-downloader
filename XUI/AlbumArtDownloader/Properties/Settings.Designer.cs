@@ -372,5 +372,17 @@ namespace AlbumArtDownloader.Properties {
                 this["Presets"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IgnoreSP1Missing {
+            get {
+                return ((bool)(this["IgnoreSP1Missing"]));
+            }
+            set {
+                this["IgnoreSP1Missing"] = value;
+            }
+        }
     }
 }

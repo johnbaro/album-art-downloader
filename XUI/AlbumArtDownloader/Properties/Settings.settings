@@ -101,5 +101,8 @@
   &lt;Preset&gt;&lt;Name&gt;CD&lt;/Name&gt;&lt;Value&gt;-CD&lt;/Value&gt;&lt;/Preset&gt;
 &lt;/ArrayOfPreset&gt;</Value>
     </Setting>
+    <Setting Name="IgnoreSP1Missing" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
