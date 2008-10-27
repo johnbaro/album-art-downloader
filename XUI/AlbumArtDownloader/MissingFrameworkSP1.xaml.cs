@@ -16,6 +16,7 @@ namespace AlbumArtDownloader
 		private void DownloadPage(object sender, RoutedEventArgs e)
 		{
 			System.Diagnostics.Process.Start(App.DotNetDownloadPage);
+			DialogResult = false;
 		}
 
 		private void Continue(object sender, RoutedEventArgs e)
@@ -26,8 +27,6 @@ namespace AlbumArtDownloader
 		protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
 		{
 			Properties.Settings.Default.IgnoreSP1Missing = mDontAskAgain.IsChecked.GetValueOrDefault();
-
-			base.OnClosing(e);
 		}
 		
 	}

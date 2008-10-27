@@ -73,6 +73,8 @@ namespace AlbumArtDownloader
 						{
 							System.Diagnostics.Trace.TraceError("Could not save main settings: " + ex.Message);
 						}
+
+
 						Environment.Exit(-1); //Ensure exit
 						return;
 					}
@@ -499,8 +501,14 @@ namespace AlbumArtDownloader
 			{
 				System.Diagnostics.Debug.WriteLine("Upgrading settings");
 				mSettingsUpgradeRequired = true;
+
+				//Upgrading will forget the value of this setting, if it was changed prior to upgrading the settings (which it will have been, if the MissingFrameworkSP1 dialog was shown
+				bool ignoreSP1Missing = AlbumArtDownloader.Properties.Settings.Default.IgnoreSP1Missing;
+
 				AlbumArtDownloader.Properties.Settings.Default.Upgrade();
 				AlbumArtDownloader.Properties.Settings.Default.ApplicationVersion = currentVersion;
+
+				AlbumArtDownloader.Properties.Settings.Default.IgnoreSP1Missing = ignoreSP1Missing;
 			}
 		}
 

@@ -422,6 +422,7 @@ namespace AlbumArtDownloader
 				{
 					//Break out of this search
 					mSource.AbortSearch();
+					return;
 				}
 
 				//TODO: does downloading the thumbnail need to be asynch?
