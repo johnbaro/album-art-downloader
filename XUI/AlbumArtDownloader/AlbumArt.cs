@@ -564,7 +564,7 @@ namespace AlbumArtDownloader
 		{
 			SaveFileDialog saveFileDialog = new SaveFileDialog();
 			saveFileDialog.FileName = FilePath;
-			saveFileDialog.DefaultExt = ImageCodecInfo.FilenameExtension.Split(';')[0].ToLower(); //Default to the first extension
+			saveFileDialog.DefaultExt = ImageCodecInfo.FilenameExtension.Split(';')[0].Substring(2).ToLower(); //Default to the first extension
 			saveFileDialog.AddExtension = true;
 			saveFileDialog.OverwritePrompt = false; //That will be handled by Save();
 			saveFileDialog.Filter = String.Format("Image Files ({0})|{0}|All Files|*.*", ImageCodecInfo.FilenameExtension.ToLower());
@@ -572,7 +572,13 @@ namespace AlbumArtDownloader
 
 			if (saveFileDialog.ShowDialog().GetValueOrDefault(false))
 			{
-				FilePath = saveFileDialog.FileName;
+				//HACK: DefaultExt doesn't actually seem to work, so force it by adding the default extension if none was provided
+				string filename = saveFileDialog.FileName;
+				if(!Path.HasExtension(filename) && !File.Exists(filename))
+				{
+					filename = Path.ChangeExtension(filename, saveFileDialog.DefaultExt);
+				}
+				FilePath = filename;
 
 				Save();
 			}

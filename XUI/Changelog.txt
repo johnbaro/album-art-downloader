@@ -18,6 +18,7 @@
      Added Compatibility Mode warning for pre-SP1 framework version, and fixed bug where list would
       not refresh properly under pre-SP1. Updated all links to download the framework to point to
       the SP1 version.
+     Fixed bug where Save As would not apply the default file extension correctly
      
 0.23.1
      Fixed bad installer release
