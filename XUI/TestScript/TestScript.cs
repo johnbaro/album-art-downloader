@@ -59,7 +59,7 @@ namespace TestScript
 			for (int i = 0; i < numberOfResults; i++)
 			{
 				Bitmap thumbnail = new Bitmap(typeof(TestScript), "testThumbnail.jpg");
-				Bitmap fullSize = new Bitmap(typeof(TestScript), "testFullsize.jpg");
+				Bitmap fullSize = new Bitmap(typeof(TestScript), "testHuge.jpg");
 				results.Add(thumbnail, i.ToString(), "notauri", -1, -1, fullSize,(CoverType)rnd.Next((int)CoverType.Unknown, (int)CoverType.CD));
 				//System.Threading.Thread.Sleep(1000);
 			}

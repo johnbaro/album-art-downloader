@@ -304,16 +304,16 @@ namespace AlbumArtDownloader.Controls
 			//Popup may not take up more than 75% screen area (matches WPF Popup restriction)
 			double maxArea = 0.75 * SystemParameters.PrimaryScreenHeight * SystemParameters.PrimaryScreenWidth;
 
-			//Max width, then is sqrt of max area x aspect ratio. Or screen width (less a small amount for borders), whichever is smaller.
-			double maxWidth = Math.Min( SystemParameters.PrimaryScreenWidth - 10D,
-										Math.Sqrt(maxArea * imageAspectRatio));
+			//Max width, then is sqrt of max area / aspect ratio. Or screen height. Then less a small amount for borders), whichever is smaller.
+			double maxHeight = Math.Min( SystemParameters.PrimaryScreenHeight,
+										Math.Sqrt(maxArea / imageAspectRatio)) - 10D;
 
-			double maxHeight = maxWidth / imageAspectRatio;
-			//Don't allow the height to exceed the screen height (less a small amount for borders)
-			if (maxHeight > SystemParameters.PrimaryScreenHeight - 10D)
+			double maxWidth = maxHeight * imageAspectRatio;
+			//Don't allow the width to exceed the screen with (less a small amount for borders)
+			if (maxWidth > SystemParameters.PrimaryScreenWidth - 10D)
 			{
-				maxHeight = SystemParameters.PrimaryScreenHeight - 10D;
-				maxWidth = maxHeight * imageAspectRatio; //This should always be a decrease, as maxHeight was decreased.
+				maxWidth = SystemParameters.PrimaryScreenWidth - 10D;
+				maxHeight = maxWidth / imageAspectRatio; //This should always be a decrease, as maxHeight was decreased.
 			}
 
 			return new Size(maxWidth, maxHeight);

@@ -19,6 +19,9 @@
       not refresh properly under pre-SP1. Updated all links to download the framework to point to
       the SP1 version.
      Fixed bug where Save As would not apply the default file extension correctly
+     Fixed bug where if the popup preview were too large to fit on the screen, the bottom of the
+      cover may be cropped off.
+     Added script for CDCoverHideout
      
 0.23.1
      Fixed bad installer release
