@@ -1,17 +1,16 @@
-0.24 Fixed a couple of problems with image size changes introduced by previous release.
-     Window size and position settings should no longer be lost on upgrade.
+0.24 Added a progress bar to indicate the progress of the auto-downloading of full size images
+     If the full size image for a result has not yet been downloaded, then the size of that image
+      is displayed in grey, as it can't be confirmed as accurate (accuracy will depend on the source)
      Images of Unknown size are now always included, regardless of size filtering settings.
+     Fixed a couple of problems with image size changes introduced by previous release.
+     Window size and position settings should no longer be lost on upgrade.
      Sort arrow direction reversed, to match more common convention.
      Increased the distance the mouse must be dragged in order to start a drag of a result, in
       order to avoid accidental drags when trying to just preview the image
-     Added a progress bar to indicate the progress of the auto-downloading of full size images
      After showing a popup preview, if the image being previewed has scrolled out of view, it
       is now automatically scrolled back into view.
-     If the full size image for a result has not yet been downloaded, then the size of that image
-      is displayed in grey, as it can't be confirmed as accurate (accuracy will depend on the source)
      Fixed bug where the information labels would re-appear when the thumbnail has been resized
       such that they should not be visible.
-     Added script for buy.com
      Fixed bug where "Stop All" would not appear when adding or removing sources from a search
      Fixed bug where, in rare circumstances, you may get one more result from a source than the
       limit specified.
@@ -21,7 +20,7 @@
      Fixed bug where Save As would not apply the default file extension correctly
      Fixed bug where if the popup preview were too large to fit on the screen, the bottom of the
       cover may be cropped off.
-     Added script for CDCoverHideout
+     Added scripts for buy.com and CDCoverHideout
      
 0.23.1
      Fixed bad installer release
