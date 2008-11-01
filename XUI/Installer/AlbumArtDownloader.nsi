@@ -179,6 +179,9 @@ SectionEnd
 Section "AllCdCover"
   File "..\Scripts\Scripts\allcdcover.boo"
 SectionEnd
+Section "CDCoverHideout"
+  File "..\Scripts\Scripts\cdcoverhideout.boo"
+SectionEnd
 Section "PsyShop"
   File "..\Scripts\Scripts\psyshop.boo"
 SectionEnd
