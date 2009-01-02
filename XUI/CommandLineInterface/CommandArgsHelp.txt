@@ -72,7 +72,7 @@ Options:
               than its width) and "landscape" or
               "l" (meaning the width of the image 
               must be larger than its height).
-              May be abbreviated to /o              (/o l)
+              May be abbreviated to /r              (/r l)
               
  /sequence    Specifies which result to use, if     (/sequence 2)
               more than one are found. For

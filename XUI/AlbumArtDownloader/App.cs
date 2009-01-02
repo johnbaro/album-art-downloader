@@ -367,6 +367,8 @@ namespace AlbumArtDownloader
 							break;
 						case "minaspect":
 						case "ma":
+						case "orientation":
+						case "r":
 						case "sequence":
 						case "seq":
 						case "listsources":

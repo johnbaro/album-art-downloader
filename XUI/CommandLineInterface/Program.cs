@@ -23,7 +23,7 @@ namespace AlbumArtDownloader
 				//valuedParameters is a list of parameters which must have values - they can not be just switches.
 				string[] valuedParameters = { "artist", "ar", "album", "al", "path", "p", 
 											  "sources", "s", "exclude", "es", "minsize", "mn",
-											  "maxsize", "mx", "minaspect", "ma", "orientation", "o",
+											  "maxsize", "mx", "minaspect", "ma", "orientation", "r",
 											  "sequence", "seq" };
 				Arguments arguments = new Arguments(args, valuedParameters);
 				if (arguments.Contains("?") || arguments.Count == 0)
@@ -155,7 +155,7 @@ namespace AlbumArtDownloader
 							warnIfNoSearch = true;
 							break;
 						case "orientation":
-						case "o":
+						case "r":
 							switch (parameter.Value.ToLower())
 							{
 								case "portrait":
