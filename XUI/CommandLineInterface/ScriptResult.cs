@@ -85,6 +85,28 @@ namespace AlbumArtDownloader
 			return (float)Math.Min(mWidth, mHeight) / (float)Math.Max(mWidth, mHeight);
 		}
 
+		public Orientation GetImageOrientation(bool forceDownload)
+		{
+			if (mWidth < 0 || mHeight < 0 || forceDownload)
+				DownloadImage(); //Must download the image to determine the width and height;
+
+			if (mWidth == 0 || mHeight == 0) //No meaningful answer for 0-sized image, so return None
+				return Orientation.None;
+
+			if (mWidth > mHeight)
+			{
+				return Orientation.Landscape;
+			}
+			else if (mHeight > mWidth)
+			{
+				return Orientation.Portrait;
+			}
+			else
+			{
+				return Orientation.Square;
+			}
+		}
+
 		public bool Save(string pathPattern, int sequence)
 		{
 			DownloadImage(); //Ensure image is downloaded

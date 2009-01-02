@@ -62,6 +62,7 @@
     <Compile Include="..\AlbumArtDownloader\Arguments.cs">
       <Link>Arguments.cs</Link>
     </Compile>
+    <Compile Include="Orientation.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="ProgressBar.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

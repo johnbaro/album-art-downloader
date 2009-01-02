@@ -28,32 +28,32 @@ Options:
                %sequence%   A sequence number for the image, corresponding to
                              the number passed to /sequence, or "1" by default
 
- /sources     Specifies the sources to search,    (/sources "Amazon,Coveralia")
+ /sources     Specifies the sources to search,  (/sources "Amazon,Coveralia")
               in the order to search them.
               Separate sources with commas.
               If omitted, all available sources
               except those excluded by the /exclude
               option are searched.
-              May be abbreviated to /s            (/s "Amazon,Coveralia")
+              May be abbreviated to /s          (/s "Amazon,Coveralia")
 
  /exclude     Does not search the specified     (/exclude "Local Files,Google")
               sources. Separate sources with
               commas.
               May be abbreviated to /es         (/es "Local Files,Google")
 
- /minSize     Specifies the minimum size of   (/minSize 300)
+ /minSize     Specifies the minimum size of         (/minSize 300)
               image, in pixels, to use.
               Both horizontal and vertical
               dimensions must conform.
-              May be abbreviated to /mn       (/mn 300)
+              May be abbreviated to /mn             (/mn 300)
               
- /maxSize     Specifies the maximum size of   (/maxSize 1000)
+ /maxSize     Specifies the maximum size of         (/maxSize 1000)
               image, in pixels, to use.
               The smallest dimension of the
               image must conform.
-              May be abbreviated to /mx       (/mx 1000)
+              May be abbreviated to /mx             (/mx 1000)
 
- /minAspect   Specifies the minimum aspect ratio  (/minAspect 0.9)
+ /minAspect   Specifies the minimum aspect ratio    (/minAspect 0.9)
               of the image to use. This is how
               square the image must be, where a
               value of 1 represents perfectly
@@ -61,18 +61,27 @@ Options:
               image of size 600 x 300 would only
               be allowed if /minAspect were 0.5
               or lower.
-              May be abbreviated to /ma           (/ma 0.9)
+              May be abbreviated to /ma             (/ma 0.9)
+ 
+ /orientation Specifies that the image must have    (/orientation landscape)
+              a specific orientation. Valid values
+              are "portrait" or "p" (meaning the 
+              height of the image must be larger
+              than its width) and "landscape" or
+              "l" (meaning the width of the image 
+              must be larger than its height).
+              May be abbreviated to /o              (/o l)
               
- /sequence    Specifies which result to use, if   (/sequence 2)
+ /sequence    Specifies which result to use, if     (/sequence 2)
               more than one are found. For
               example, passing 2 as the value
               here would ignore the first result
               found, and use the second.
-              May be abbreviated to /seq          (/seq 2)
+              May be abbreviated to /seq            (/seq 2)
  
- /listSources Produces a list of all available    (/listSources)
+ /listSources Produces a list of all available      (/listSources)
               sources to search.
-              May be abbreviated to /l            (/l)
+              May be abbreviated to /l              (/l)
 
 Exit errorlevel codes:
 

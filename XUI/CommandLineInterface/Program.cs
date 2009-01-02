@@ -23,7 +23,8 @@ namespace AlbumArtDownloader
 				//valuedParameters is a list of parameters which must have values - they can not be just switches.
 				string[] valuedParameters = { "artist", "ar", "album", "al", "path", "p", 
 											  "sources", "s", "exclude", "es", "minsize", "mn",
-											  "maxsize", "mx", "sequence", "seq" };
+											  "maxsize", "mx", "minaspect", "ma", "orientation", "o",
+											  "sequence", "seq" };
 				Arguments arguments = new Arguments(args, valuedParameters);
 				if (arguments.Contains("?") || arguments.Count == 0)
 				{
@@ -58,6 +59,7 @@ namespace AlbumArtDownloader
 			int sequence = 1;
 			List<String> useScripts = new List<string>();
 			List<String> excludeScripts = new List<string>();
+			Orientation requiredOrientation = Orientation.None;
 
 			bool warnIfNoSearch = false; //If search-like parameters are present, warn if search terms are not.
 			string errorMessage = null;
@@ -152,6 +154,23 @@ namespace AlbumArtDownloader
 							}
 							warnIfNoSearch = true;
 							break;
+						case "orientation":
+						case "o":
+							switch (parameter.Value.ToLower())
+							{
+								case "portrait":
+								case "p":
+									requiredOrientation = Orientation.Portrait;
+									break;
+								case "landscape":
+								case "l":
+									requiredOrientation = Orientation.Landscape;
+									break;
+								default:
+									errorMessage = "The /orientation parameter must be either 'portrait' or 'landscape': '" + parameter.Value + "'";
+									break;
+							}
+							break;
 						case "sequence":
 						case "seq":
 							if (!Int32.TryParse(parameter.Value, out sequence))
@@ -238,7 +257,7 @@ namespace AlbumArtDownloader
 			//perform the actual search
 			try
 			{
-				if (Search(scripts, artist, album, path, minSize, maxSize, minAspect, sequence))
+				if (Search(scripts, artist, album, path, minSize, maxSize, minAspect, requiredOrientation, sequence))
 				{
 					return 0; //Success
 				}
@@ -258,7 +277,7 @@ namespace AlbumArtDownloader
 		/// <summary>
 		/// Perform the actual search, download and save of art
 		/// </summary>
-		private static bool Search(IEnumerable<IScript> scripts, string artist, string album, string path, int? minSize, int? maxSize, float minAspect, int targetSequence)
+		private static bool Search(IEnumerable<IScript> scripts, string artist, string album, string path, int? minSize, int? maxSize, float minAspect, Orientation requiredOrientation, int targetSequence)
 		{
 			//Replace the artist and album placeholders in the path
 			path = path.Replace("%artist%", MakeSafeForPath(artist))
@@ -280,8 +299,8 @@ namespace AlbumArtDownloader
 				}
 				foreach (ScriptResult result in scriptResults.Results)
 				{
-					if( CheckImageDimensions(result, minSize, maxSize, minAspect, false) && //Quick check of reported dimensions
-						CheckImageDimensions(result, minSize, maxSize, minAspect, true)) //Full check of downloaded image dimensions
+					if( CheckImageDimensions(result, minSize, maxSize, minAspect, requiredOrientation, false) && //Quick check of reported dimensions
+						CheckImageDimensions(result, minSize, maxSize, minAspect, requiredOrientation, true)) //Full check of downloaded image dimensions
 					{
 						if (++sequence == targetSequence) //Discard sequence-1 results.
 						{
@@ -300,7 +319,7 @@ namespace AlbumArtDownloader
 			return false; //No result found
 		}
 
-		private static bool CheckImageDimensions(ScriptResult result, int? minSize, int? maxSize, float minAspect, bool forceDownload)
+		private static bool CheckImageDimensions(ScriptResult result, int? minSize, int? maxSize, float minAspect, Orientation requiredOrientation, bool forceDownload)
 		{
 			//Valid if there is no limit specified, or the size is within the limit. Both limits must apply if both are present
 			//Check size
@@ -309,13 +328,18 @@ namespace AlbumArtDownloader
 				if (!CheckImageSize(minSize, maxSize, result.GetMinImageDimension(forceDownload)))
 					return false;
 			}
+			if (requiredOrientation != Orientation.None)
+			{
+				if (result.GetImageOrientation(forceDownload) != requiredOrientation)
+					return false;
+			}
 			//Check aspect ratio
 			if (minAspect > 0)
 			{
 				if (result.GetImageAspectRatio(forceDownload) < minAspect)
 					return false;
 			}
-			//Passes both tests
+			//Passes all tests
 			return true;
 		}
 
