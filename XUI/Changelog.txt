@@ -1,3 +1,13 @@
+0.25 Fixed bug where empty quoted command line paramters would cause a crash
+     Valid command line parameters for aad.exe that are not valid for AlbumArt.exe will now be
+      silently ignored rather than reported as errors.
+     Fixed bug where Stop All would appear after modifying a search that caused no further sources
+      to be searched.
+     Added /orientation parameter to aad.exe to require landscape or portrait results only.
+     Added "all" option to the /sources parameter to select all available sources (/sources all)
+     Added %type% placeholder, which is substituted by "Front", "Back", "Inlay", "CD" or "Unknown".
+     When sorting by image size, images now are sorted by height too, if they have the same width.
+     
 0.24 Added a progress bar to indicate the progress of the auto-downloading of full size images
      If the full size image for a result has not yet been downloaded, then the size of that image
       is displayed in grey, as it can't be confirmed as accurate (accuracy will depend on the source)
