@@ -138,6 +138,7 @@ namespace AlbumArtDownloader
 									 .Replace("%source%", Program.MakeSafeForPath(mScript.Name))
 									 .Replace("%size%", String.Format("{0} x {1}", mWidth, mHeight))
 									 .Replace("%extension%", extension)
+									 .Replace("%type%", Program.MakeSafeForPath(mCoverType.ToString()))
 									 .Replace("%sequence%", sequence.ToString());
 
 			//Ensure path is absolute, if relative

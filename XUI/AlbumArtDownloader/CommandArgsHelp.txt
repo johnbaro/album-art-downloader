@@ -27,6 +27,7 @@ Options:
                %album%      Album searched for
                %name%       Name of the image found
                %extension%  Default file extension for the image
+               %type%       Type of image (front, back, inlay, etc.)
                %source%     Name of the source where image was found
                %size%       Dimensions of the image
                %preset%     A custom preset string, chosen from the save button menu

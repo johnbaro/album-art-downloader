@@ -183,6 +183,7 @@
 							<controls:PatternPlaceholder MenuItemHeader="_Preset" ToolTip="A custom preset string, chosen from the save button menu" Placeholder="%preset%"/>
 							<controls:PatternPlaceholder MenuItemHeader="_Name" ToolTip="The name of the result found" Placeholder="%name%"/>
 							<controls:PatternPlaceholder MenuItemHeader="_Extension" ToolTip="The file extension of the result found" Placeholder="%extension%"/>
+							<controls:PatternPlaceholder MenuItemHeader="_Type" ToolTip="The type of the result found (front, back, inlay, etc.)" Placeholder="%type%"/>
 							<controls:PatternPlaceholder MenuItemHeader="_Source" ToolTip="The source from which the result was found" Placeholder="%source%"/>
 							<controls:PatternPlaceholder MenuItemHeader="Si_ze" ToolTip="The dimensions, in pixels, of the result" Placeholder="%size%"/>
 						</controls:ArtPathPatternBox.AdditionalPlaceholders>

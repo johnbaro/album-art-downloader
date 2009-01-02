@@ -23,6 +23,7 @@ Options:
                %album%      Album searched for
                %name%       Name of the image found
                %extension%  Default file extension for the image
+               %type%       Type of image (front, back, inlay, etc.)
                %source%     Name of the source where image was found
                %size%       Dimensions of the image
                %sequence%   A sequence number for the image, corresponding to

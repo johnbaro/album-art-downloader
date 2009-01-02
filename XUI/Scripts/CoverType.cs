@@ -17,6 +17,7 @@ namespace AlbumArtDownloader.Scripts
 	/// </summary>
 	public enum CoverType
 	{
+		//NOTE: These values are currently directly user-visible in the UI
 		Unknown, 
 		Front, 
 		Back, 

@@ -128,6 +128,7 @@ namespace AlbumArtDownloader
 							//Replace these too, just in case path pattern was copied and pasted with them in, for example
 								.Replace("%name%", "*")
 								.Replace("%extension%", "*")
+								.Replace("%type%", "*")
 								.Replace("%source%", "*")
 								.Replace("%size%", "*")
 								.Replace("%preset%", "*");
