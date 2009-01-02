@@ -406,6 +406,11 @@ namespace AlbumArtDownloader.Controls
 			if (!String.IsNullOrEmpty(sortDescription.PropertyName))
 			{
 				artPanelList.Items.SortDescriptions.Add(sortDescription);
+				//HACK: If sorting by ImageWidth, use ImageHeight as a secondary key.
+				if (sortDescription.PropertyName == "ImageWidth")
+				{
+					artPanelList.Items.SortDescriptions.Add(new SortDescription("ImageHeight", sortDescription.Direction));
+				}
 			}
 		}
 
