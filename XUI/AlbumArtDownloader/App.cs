@@ -103,7 +103,7 @@ namespace AlbumArtDownloader
 			}
 			#endregion
 
-			if (Array.Exists(args, new Predicate<string>(delegate(string arg) { return arg.Substring(1).Equals("separateInstance", StringComparison.OrdinalIgnoreCase); })))
+			if (Array.Exists(args, new Predicate<string>(delegate(string arg) { return arg.Length > 1 && arg.Substring(1).Equals("separateInstance", StringComparison.OrdinalIgnoreCase); })))
 			{
 				//Start a separate process instance
 				new AlbumArtDownloader.App().Run();
@@ -364,6 +364,14 @@ namespace AlbumArtDownloader
 							break;
 						case "separateinstance":
 							//This will already have been handled earlier, in Main()
+							break;
+						case "minaspect":
+						case "ma":
+						case "sequence":
+						case "seq":
+						case "listsources":
+						case "l":
+							System.Diagnostics.Debug.Fail("Unexpected command line parameter (valid for aad.exe, though): " + parameter.Name);
 							break;
 						default:
 							errorMessage = "Unexpected command line parameter: " + parameter.Name;

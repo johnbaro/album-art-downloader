@@ -31,9 +31,10 @@ Options:
  /sources     Specifies the sources to search,  (/sources "Amazon,Coveralia")
               in the order to search them.
               Separate sources with commas.
-              If omitted, all available sources
-              except those excluded by the /exclude
-              option are searched.
+              If omitted, or "all" is specified, (/sources all)
+              all available sources except those 
+              excluded by the /exclude option 
+              are searched.
               May be abbreviated to /s          (/s "Amazon,Coveralia")
 
  /exclude     Does not search the specified     (/exclude "Local Files,Google")

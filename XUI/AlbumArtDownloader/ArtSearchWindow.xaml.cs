@@ -545,17 +545,29 @@ namespace AlbumArtDownloader
 		/// </summary>
 		public void UseSources(IEnumerable<string> useSources)
 		{
-			foreach (Source source in mSources) //Go through all the sources
+			//Check for the special case of the "all" parameter here.
+			if (useSources.Count() == 1 && useSources.First().Equals("all", StringComparison.OrdinalIgnoreCase))
 			{
-				source.IsEnabled = false; //Disabled unless it's name matches
-				foreach (string useSource in useSources) //Check against the list of sources to use
+				//Select all sources
+				foreach (Source source in mSources)
 				{
-					//Use a case insensitive check
-					if (source.Name.Equals(useSource, StringComparison.InvariantCultureIgnoreCase))
+					source.IsEnabled = true;
+				}
+			}
+			else
+			{
+				foreach (Source source in mSources) //Go through all the sources
+				{
+					source.IsEnabled = false; //Disabled unless it's name matches
+					foreach (string useSource in useSources) //Check against the list of sources to use
 					{
-						//The source name matches, so use it. Enable it, and stop checking names.
-						source.IsEnabled = true;
-						break;
+						//Use a case insensitive check
+						if (source.Name.Equals(useSource, StringComparison.InvariantCultureIgnoreCase))
+						{
+							//The source name matches, so use it. Enable it, and stop checking names.
+							source.IsEnabled = true;
+							break;
+						}
 					}
 				}
 			}

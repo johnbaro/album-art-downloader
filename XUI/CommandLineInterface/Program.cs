@@ -223,7 +223,8 @@ namespace AlbumArtDownloader
 
 			//Create list of scripts to search
 			List<IScript> scripts = new List<IScript>();
-			if (useScripts.Count == 0)
+			if (useScripts.Count == 0 || 
+				(useScripts.Count == 1 && useScripts[0].Equals("all", StringComparison.OrdinalIgnoreCase)))
 			{
 				//Start by adding all the scripts, in arbitrary order
 				scripts.AddRange(ScriptManager.Scripts);

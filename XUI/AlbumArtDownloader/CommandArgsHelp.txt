@@ -67,6 +67,8 @@ Options:
  /sources     Searches only the specified     (/sources "Amazon,Coveralia")
               sources. Others are disabled.
               Separate sources with commas.
+              To search all available sources,
+              specify "all" here.             (/sources all)
               May be abbreviated to /s
 
  /exclude     Does not search the specified   (/exclude "Local Files,Google")
