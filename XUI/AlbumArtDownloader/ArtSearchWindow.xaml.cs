@@ -334,6 +334,7 @@ namespace AlbumArtDownloader
 		/// </summary>
 		private void AlterSearch()
 		{
+			bool searchPerformed = false;
 			foreach (Source source in mSources)
 			{
 				if (source.IsEnabled)
@@ -351,6 +352,8 @@ namespace AlbumArtDownloader
 					}
 					if(performSearch)
 					{
+						searchPerformed = true;
+
 						source.Search(Artist, Album);
 
 						mSearchParameters.AddSource(source);
@@ -365,7 +368,7 @@ namespace AlbumArtDownloader
 					mSearchParameters.RemoveSource(source);
 				}
 			}
-			if (!CommandBindings.Contains(mStopAllCommandBinding))
+			if (searchPerformed && !CommandBindings.Contains(mStopAllCommandBinding))
 			{
 				CommandBindings.Add(mStopAllCommandBinding);
 			}
