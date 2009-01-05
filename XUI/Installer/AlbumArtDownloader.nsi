@@ -173,6 +173,9 @@ SectionEnd
 Section "Album Art Exchange"
   File "..\Scripts\Scripts\albumartexchange.boo"
 SectionEnd
+Section "maniadb"
+  File "..\Scripts\Scripts\maniadb.boo"
+SectionEnd
 Section "DarkTown"
   File "..\Scripts\Scripts\darktown.boo"
 SectionEnd
