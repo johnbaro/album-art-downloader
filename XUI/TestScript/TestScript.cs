@@ -4,6 +4,7 @@ using System.Text;
 using AlbumArtDownloader.Scripts;
 using System.Drawing;
 using System.Xml;
+using System.Text.RegularExpressions;
 
 namespace TestScript
 {
@@ -52,7 +53,27 @@ namespace TestScript
 			results.Add(@"file://C:\Documents and Settings\David Vallat\My Documents\Alexander\foobar2000\CoverDownloader\AlbumArtDownloader\XUI\TestScript\testThumbnail.png", "PNG format", 600, 600, @"file://C:\Documents and Settings\David Vallat\My Documents\Alexander\foobar2000\CoverDownloader\AlbumArtDownloader\XUI\TestScript\testFullsize.png");
 			results.Add(@"http://www.google.com/invalid", "Not valid url", null);
 			 */
+			
+			/*
+			string searchResultsHtml = GetPage("http://www.metal-archives.com/advanced.php?band_name=" + artist + "&release_name=" + album);
 
+			var matches = new Regex("href=\"release\\.php\\?id=(?<id>(?<idPart>\\d){4,})\">(?<name>.*?)</a>", RegexOptions.IgnoreCase).Matches(searchResultsHtml);
+
+			results.EstimatedCount = matches.Count;
+
+			foreach (Match match in matches)
+			{
+				var name = match.Groups["name"].Value.Replace("<strong>","").Replace("</strong>", "");
+			
+				var idParts = match.Groups["idPart"].Captures;
+				var url = String.Format("http://www.metal-archives.com/images/{0}/{1}/{2}/{3}/{4}.jpg", idParts[0], idParts[1], idParts[2], idParts[3], match.Groups["id"].Value);
+
+				results.Add(url, name, null, -1, -1, null, CoverType.Front);
+
+			}
+			 * */
+			
+			//*
 			int numberOfResults = 50;
 			results.EstimatedCount = numberOfResults;
 			Random rnd = new Random();
@@ -63,11 +84,17 @@ namespace TestScript
 				results.Add(thumbnail, i.ToString(), "notauri", 1000 + rnd.Next(6) * 100, rnd.Next(1,1600), fullSize,(CoverType)rnd.Next((int)CoverType.Unknown, (int)CoverType.CD));
 				//System.Threading.Thread.Sleep(1000);
 			}
+			 //*/
 		}
 
 		public object RetrieveFullSizeImage(object fullSizeCallbackParameter)
 		{
 			return fullSizeCallbackParameter;
+		}
+
+		private string GetPage(string uri)
+		{
+			return new System.Net.WebClient().DownloadString(uri);
 		}
 	}
 }

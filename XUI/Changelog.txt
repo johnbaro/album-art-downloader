@@ -1,3 +1,5 @@
+0.26 Added maniadb and Encyclopaedia Metallum scripts
+
 0.25 Fixed bug where empty quoted command line paramters would cause a crash
      Valid command line parameters for aad.exe that are not valid for AlbumArt.exe will now be
       silently ignored rather than reported as errors.

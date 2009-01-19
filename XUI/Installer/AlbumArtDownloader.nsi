@@ -191,6 +191,9 @@ SectionEnd
 Section "RevHQ"
   File "..\Scripts\Scripts\revhq.boo"
 SectionEnd
+Section "Encyclopaedia Metallum"
+  File "..\Scripts\Scripts\metal-archives.boo"
+SectionEnd
 Section "LastFM"
   File "..\Scripts\Scripts\lastfm-cover.boo"
 SectionEnd
