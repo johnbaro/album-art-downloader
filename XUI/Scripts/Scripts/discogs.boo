@@ -10,14 +10,14 @@ class Discogs:
 	static SourceCreator as string:
 		get: return "Alex Vallat"
 	static SourceVersion as string:
-		get: return "0.4"
+		get: return "0.5"
 	static def GetThumbs(coverart,artist,album):
 		query as string = artist + " " + album
 		query.Replace(' ','+')
 		obidResults = GetPage(String.Format("http://www.discogs.com/search?type=all&q={0}", EncodeUrl(query)))
 			
 		//Get obids
-		obidRegex = Regex("<a href=\"/release/(?<obid>\\d+)\"><span[^>]+>(?:</?em>|(?<name>[^<]+))+</span>", RegexOptions.Multiline)
+		obidRegex = Regex("<a href=\"[^\"]+/release/(?<obid>\\d+)\">(?:</?em>|(?<name>[^<]+))+</a>", RegexOptions.Multiline)
 		obidMatches = obidRegex.Matches(obidResults)
 		coverart.EstimatedCount = obidMatches.Count //Probably more than this, as some releases might have multiple images
 
