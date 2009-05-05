@@ -25,6 +25,7 @@ namespace AlbumArtDownloader
 			public static RoutedUICommand About = new RoutedUICommand("About...", "About", typeof(Commands));
 			public static RoutedUICommand Exit = new RoutedUICommand("E_xit", "Exit", typeof(Commands));
 			public static RoutedUICommand CommandLineReference = new RoutedUICommand("Command Line _Reference", "CommandLineReference", typeof(Commands));
+			public static RoutedUICommand CheckForUpdates = new RoutedUICommand("Check for _Updtes", "CheckForUpdates", typeof(Commands));
 		}
 
 		static Menu()
@@ -36,8 +37,8 @@ namespace AlbumArtDownloader
 			CommandManager.RegisterClassCommandBinding(typeof(Window), new CommandBinding(ApplicationCommands.Close, new ExecutedRoutedEventHandler(CloseExec)));
 			CommandManager.RegisterClassCommandBinding(typeof(Window), new CommandBinding(Commands.Exit, new ExecutedRoutedEventHandler(ExitExec)));
 			CommandManager.RegisterClassCommandBinding(typeof(Window), new CommandBinding(Commands.About, new ExecutedRoutedEventHandler(AboutExec)));
-			CommandManager.RegisterClassCommandBinding(typeof(Window), new CommandBinding(NavigationCommands.GoToPage, new ExecutedRoutedEventHandler(GoToPageExec)));
 			CommandManager.RegisterClassCommandBinding(typeof(Window), new CommandBinding(Commands.CommandLineReference, new ExecutedRoutedEventHandler(CommandLineReferenceExec)));
+			CommandManager.RegisterClassCommandBinding(typeof(Window), new CommandBinding(Commands.CheckForUpdates, new ExecutedRoutedEventHandler(CheckForUpdatesExec)));
 		}
 
 		public Menu()
@@ -138,34 +139,10 @@ namespace AlbumArtDownloader
 		{
 			new CommandArgsHelp().ShowDialog(null);
 		}
-		private static void GoToPageExec(object sender, ExecutedRoutedEventArgs e)
+		private static void CheckForUpdatesExec(object sender, ExecutedRoutedEventArgs e)
 		{
-			string uriString = e.Parameter as String;
-			if (!String.IsNullOrEmpty(uriString))
-			{
-				try
-				{
-					//Ensure that this the parameter is a Uri
-					Uri uri = new Uri(uriString, UriKind.Absolute);
-					if (uri.IsFile)
-					{
-						//If the Uri is a file, then display it in explorer rather than executing it (safer too!)
-						System.Diagnostics.Process.Start("explorer.exe", "/select,\"" + uri.AbsoluteUri + "\"");
-					}
-					else
-					{
-						System.Diagnostics.Process.Start(uri.AbsoluteUri);
-					}
-				}
-				catch (Exception ex)
-				{
-					System.Diagnostics.Trace.TraceError("Could open web address: {0}\n\t{1}", uriString, ex.Message);
-				}
-			}
-			else if (e.Parameter is Window)
-			{
-				((Window)e.Parameter).Activate();
-			}
+			//Force a check for updates now
+			Updates.CheckForUpdates(true);
 		}
 		#endregion
 

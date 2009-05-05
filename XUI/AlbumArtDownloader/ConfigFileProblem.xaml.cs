@@ -68,7 +68,7 @@ namespace AlbumArtDownloader
 			}
 
 			System.Diagnostics.Trace.TraceInformation("Settings reset to defaults, restarting");
-			DialogResult = true; //Request restart once the dialog closes
+			App.RestartOnExit = true; //Request restart once the dialog closes
 		}
 
 		private void OperationFailed(string operationName, string message)

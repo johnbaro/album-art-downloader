@@ -37,6 +37,7 @@
 					</MenuItem.CommandBindings>
 				</MenuItem>
 				<Separator/>
+				<MenuItem Header="Check for Updates..." Command="{x:Static local:Menu+Commands.CheckForUpdates}"/>
 				<MenuItem Header="_About Album Art Downloader..." Command="{x:Static local:Menu+Commands.About}"/>
 			</MenuItem>
 		</Menu>

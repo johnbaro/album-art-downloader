@@ -13,7 +13,7 @@ class CoverParadies:
 	static SourceCreator as string:
 		get: return "Alex Vallat"
 	static SourceVersion as string:
-		get: return "0.7"
+		get: return "0.8"
 	static def GetThumbs(coverart,artist,album):
 		query as string = artist + " " + album
 		query.Replace(' ','+')
@@ -35,7 +35,7 @@ class CoverParadies:
 			title = titleRegex.Matches(albumPage)[0].Groups["title"].Value //Expecting only one match
 			
 			//Get all the images for the album
-			imagesRegex = Regex("ID=(?<fullSizeID>\\d+)\"><img [^>]+? src=\"(?<thumb>[^\"]+)\" alt=\"(?<imageName>[^\"]+)\".+?: (?<width>\\d+) x (?<height>\\d+) px", RegexOptions.Singleline)
+			imagesRegex = Regex("ID=(?<fullSizeID>\\d+)\"><img [^>]+? src=\"(?<thumb>[^\"]+)\" alt=\"(?<imageName>[^\"]+)\".+? (?<width>\\d+) x (?<height>\\d+) px", RegexOptions.Singleline)
 			imageMatches = imagesRegex.Matches(albumPage)
 			
 			for imageMatch as Match in imageMatches:

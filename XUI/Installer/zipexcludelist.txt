@@ -1,2 +1,3 @@
 *\.svn
 *\itunes.boo
+*\updatetest.boo

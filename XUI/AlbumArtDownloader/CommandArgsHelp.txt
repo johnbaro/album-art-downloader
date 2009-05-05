@@ -133,6 +133,10 @@ Options:
               specified, then a search window
               will not be shown initially.
 
+ /update                                      (/update)
+              Checks for updates to scripts and
+              application.
+
  /separateInstance                            (/separateInstance)
               Starts a new instance as a new
               process, which will neither re-use

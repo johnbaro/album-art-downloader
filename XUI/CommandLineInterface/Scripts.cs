@@ -12,7 +12,7 @@ using AlbumArtDownloader.Scripts;
 
 namespace AlbumArtDownloader
 {
-	internal static class ScriptManager
+	public static class ScriptManager
 	{
 		/// <summary>
 		/// Compiles the script files, if the cache is out of date
@@ -194,30 +194,37 @@ namespace AlbumArtDownloader
 
 				Console.WriteLine("Searching for scripts...");
 
-				List<string> readableFiles = new List<string>();
-				List<string> references = new List<string>();
-
+				Dictionary<string, string> scripts = new Dictionary<string,string>();
 				foreach (string scriptsPath in ScriptsPaths)
 				{
 					foreach (string scriptFile in Directory.GetFiles(scriptsPath, "*.boo"))
 					{
-						try
+						//Later files override earlier ones of the same name
+						scripts[Path.GetFileName(scriptFile).ToLowerInvariant()] = scriptFile;
+					}
+				}
+
+				List<string> readableFiles = new List<string>();
+				List<string> references = new List<string>();
+
+				foreach (string scriptFile in scripts.Values)
+				{
+					try
+					{
+						using (StreamReader reader = File.OpenText(scriptFile))
 						{
-							using (StreamReader reader = File.OpenText(scriptFile))
+							string firstLine = reader.ReadLine();
+							if (firstLine.StartsWith("# refs: ") && firstLine.Length > 8)
 							{
-								string firstLine = reader.ReadLine();
-								if (firstLine.StartsWith("# refs: ") && firstLine.Length > 8)
-								{
-									string refsText = firstLine.Substring(8);
-									references.AddRange(refsText.Split(' '));
-								}
-								readableFiles.Add(scriptFile);
+								string refsText = firstLine.Substring(8);
+								references.AddRange(refsText.Split(' '));
 							}
+							readableFiles.Add(scriptFile);
 						}
-						catch (Exception fileReadingException)
-						{
-							Console.WriteLine(String.Format("Skipping unreadable file: \"{0}\"\n  {1}", scriptFile, fileReadingException.Message));
-						}
+					}
+					catch (Exception fileReadingException)
+					{
+						Console.WriteLine(String.Format("Skipping unreadable file: \"{0}\"\n  {1}", scriptFile, fileReadingException.Message));
 					}
 				}
 

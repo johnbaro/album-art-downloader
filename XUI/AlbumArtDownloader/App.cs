@@ -21,104 +21,101 @@ namespace AlbumArtDownloader
 		/// </summary>
 		public static bool UsePreSP1Compatibility { get; private set; }
 
+		public static bool RestartOnExit { get; set; }
+
 		/// <summary>
 		/// Application Entry Point.
 		/// </summary>
 		[System.STAThreadAttribute()]
 		public static void Main(string[] args)
 		{
-#if ERROR_REPORTING
 			try
 			{
-#endif
-			#region .net framework problem detection
-			bool foundNet35 = false;
-			bool foundNet35SP1 = false;
+				#region .net framework problem detection
+				bool foundNet35 = false;
+				bool foundNet35SP1 = false;
 
-			try
-			{
-				using(var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.5"))
+				try
 				{
-					foundNet35 = (key.GetValue("Install") as int?).GetValueOrDefault() == 1;
-					foundNet35SP1 = (key.GetValue("SP") as int?).GetValueOrDefault() >= 1;
-				}
-			}
-			catch (Exception e)
-			{
-				//If there was an exception, then it probably isn't installed
-				System.Diagnostics.Trace.TraceError("Could not find .net 3.5 framework: " + e.Message);
-			}
-			if(!foundNet35)
-			{
-				if(MessageBox.Show("The required Microsoft .NET Framework version 3.5 is not installed. Album Art Downloader XUI will now exit.\n\nWould you like to visit the download page now?", "Album Art Downloader XUI", MessageBoxButton.YesNo, MessageBoxImage.Stop) == MessageBoxResult.Yes)
-				{
-					System.Diagnostics.Process.Start(DotNetDownloadPage);
-				}
-				Environment.Exit(-1); //Ensure exit
-				return;
-			}
-			else if(!foundNet35SP1)
-			{
-				//Show the SP1 missing dialog
-				if(!AlbumArtDownloader.Properties.Settings.Default.IgnoreSP1Missing)
-				{
-					if (!new MissingFrameworkSP1().ShowDialog().GetValueOrDefault())
+					using (var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\NET Framework Setup\NDP\v3.5"))
 					{
-						//Save the "Don't show me again" setting
-						try
-						{
-							AlbumArtDownloader.Properties.Settings.Default.Save();
-						}
-						catch (Exception ex)
-						{
-							System.Diagnostics.Trace.TraceError("Could not save main settings: " + ex.Message);
-						}
-
-
-						Environment.Exit(-1); //Ensure exit
-						return;
+						foundNet35 = (key.GetValue("Install") as int?).GetValueOrDefault() == 1;
+						foundNet35SP1 = (key.GetValue("SP") as int?).GetValueOrDefault() >= 1;
 					}
-					App.UsePreSP1Compatibility = true;
 				}
-
-			}
-			#endregion
-
-			#region Config File Problem detection
-			try
-			{
-				string appVersion = AlbumArtDownloader.Properties.Settings.Default.ApplicationVersion;
-				System.Diagnostics.Trace.TraceInformation("Successfully read application version from settings: " + appVersion);
-			}
-			catch (ConfigurationErrorsException ex)
-			{
-				System.Diagnostics.Trace.TraceError("Could not load settings: " + ex.Message);
-				
-				//Show the self-service config file problem solver
-				if (new ConfigFileProblem(ex).ShowDialog().GetValueOrDefault())
+				catch (Exception e)
 				{
-					System.Diagnostics.Process.Start(Assembly.GetEntryAssembly().Location, Common.GetCommandArgs());
+					//If there was an exception, then it probably isn't installed
+					System.Diagnostics.Trace.TraceError("Could not find .net 3.5 framework: " + e.Message);
 				}
-				return;
-			}
-			#endregion
-
-			if (Array.Exists(args, new Predicate<string>(delegate(string arg) { return arg.Length > 1 && arg.Substring(1).Equals("separateInstance", StringComparison.OrdinalIgnoreCase); })))
-			{
-				//Start a separate process instance
-				new AlbumArtDownloader.App().Run();
-			}
-			else
-			{
-				//Start a single-instance process, or connect to an existing one
-				const string channelUri = "net.pipe://localhost/AlbumArtDownloader/SingleInstance";
-				if (!InstanceMutex.QueryPriorInstance(args, channelUri))
+				if (!foundNet35)
 				{
-					InstanceMutex.RunAppAsServiceHost(new AlbumArtDownloader.App(), channelUri);
+					if (MessageBox.Show("The required Microsoft .NET Framework version 3.5 is not installed. Album Art Downloader XUI will now exit.\n\nWould you like to visit the download page now?", "Album Art Downloader XUI", MessageBoxButton.YesNo, MessageBoxImage.Stop) == MessageBoxResult.Yes)
+					{
+						System.Diagnostics.Process.Start(DotNetDownloadPage);
+					}
+					Environment.Exit(-1); //Ensure exit
+					return;
+				}
+				else if (!foundNet35SP1)
+				{
+					//Show the SP1 missing dialog
+					if (!AlbumArtDownloader.Properties.Settings.Default.IgnoreSP1Missing)
+					{
+						if (!new MissingFrameworkSP1().ShowDialog().GetValueOrDefault())
+						{
+							//Save the "Don't show me again" setting
+							try
+							{
+								AlbumArtDownloader.Properties.Settings.Default.Save();
+							}
+							catch (Exception ex)
+							{
+								System.Diagnostics.Trace.TraceError("Could not save main settings: " + ex.Message);
+							}
+
+
+							Environment.Exit(-1); //Ensure exit
+							return;
+						}
+						App.UsePreSP1Compatibility = true;
+					}
+
+				}
+				#endregion
+
+				#region Config File Problem detection
+				try
+				{
+					string appVersion = AlbumArtDownloader.Properties.Settings.Default.ApplicationVersion;
+					System.Diagnostics.Trace.TraceInformation("Successfully read application version from settings: " + appVersion);
+				}
+				catch (ConfigurationErrorsException ex)
+				{
+					System.Diagnostics.Trace.TraceError("Could not load settings: " + ex.Message);
+
+					//Show the self-service config file problem solver
+					new ConfigFileProblem(ex).ShowDialog();
+					return;
+				}
+				#endregion
+
+				if (Array.Exists(args, new Predicate<string>(delegate(string arg) { return arg.Length > 1 && arg.Substring(1).Equals("separateInstance", StringComparison.OrdinalIgnoreCase); })))
+				{
+					//Start a separate process instance
+					new AlbumArtDownloader.App().Run();
+				}
+				else
+				{
+					//Start a single-instance process, or connect to an existing one
+					const string channelUri = "net.pipe://localhost/AlbumArtDownloader/SingleInstance";
+					if (!InstanceMutex.QueryPriorInstance(args, channelUri))
+					{
+						InstanceMutex.RunAppAsServiceHost(new AlbumArtDownloader.App(), channelUri);
+					}
 				}
 			}
 #if ERROR_REPORTING
-			}
 			catch (Exception e)
 			{
 				Assembly entryAssembly = Assembly.GetEntryAssembly();
@@ -137,6 +134,13 @@ namespace AlbumArtDownloader
 				Environment.Exit(-1); //Ensure exit
 			}
 #endif
+			finally
+			{
+				if (RestartOnExit)
+				{
+					System.Diagnostics.Process.Start(Assembly.GetEntryAssembly().Location, Common.GetCommandArgs());
+				}
+			}
 		}
 
 		protected override void OnStartup(StartupEventArgs e)
@@ -151,6 +155,9 @@ namespace AlbumArtDownloader
 
 			AssignDefaultSettings();
 			ApplyDefaultProxyCredentials();
+
+			//Assign the application-wide GoToPage hyperlink handler
+			System.Windows.Input.CommandManager.RegisterClassCommandBinding(typeof(Window), new System.Windows.Input.CommandBinding(System.Windows.Input.NavigationCommands.GoToPage, new System.Windows.Input.ExecutedRoutedEventHandler(GoToPageExec)));
 
 			//Only shut down if the Exit button is pressed
 			ShutdownMode = ShutdownMode.OnExplicitShutdown;
@@ -362,6 +369,10 @@ namespace AlbumArtDownloader
 								errorMessage = "The /maxSize parameter must be a number: " + parameter.Value + "\n  " + e.Message;
 							}
 							break;
+						case "update":
+							//Force an immediate check fro updates
+							Updates.CheckForUpdates(true);
+							break;
 						case "separateinstance":
 							//This will already have been handled earlier, in Main()
 							break;
@@ -498,6 +509,12 @@ namespace AlbumArtDownloader
 				}
 			}
 
+			if (AlbumArtDownloader.Properties.Settings.Default.AutoUpdateEnabled)
+			{
+				//Check for updates if enough time has elapsed.
+				Updates.CheckForUpdates(false);
+			}
+
 			return true;
 		}
 
@@ -630,7 +647,7 @@ namespace AlbumArtDownloader
 		}
 
 		/// <summary>
-		/// Returns each path that scripts may be found in.
+		/// Returns each path that scripts may be found in, in reverse priority order (scripts with the same name in the last path override scripts in first path)
 		/// </summary>
 		public static IEnumerable<string> ScriptsPaths
 		{
@@ -716,6 +733,39 @@ namespace AlbumArtDownloader
 				if (mSearchQueue == null)
 					mSearchQueue = new SearchQueue();
 				return mSearchQueue;
+			}
+		}
+
+		/// <summary>
+		/// Command handler for all GoToPage commands (hyperlinks)
+		/// </summary>
+		private static void GoToPageExec(object sender, System.Windows.Input.ExecutedRoutedEventArgs e)
+		{
+			string uriString = e.Parameter as String;
+			if (!String.IsNullOrEmpty(uriString))
+			{
+				try
+				{
+					//Ensure that this the parameter is a Uri
+					Uri uri = new Uri(uriString, UriKind.Absolute);
+					if (uri.IsFile)
+					{
+						//If the Uri is a file, then display it in explorer rather than executing it (safer too!)
+						System.Diagnostics.Process.Start("explorer.exe", "/select,\"" + uri.AbsoluteUri + "\"");
+					}
+					else
+					{
+						System.Diagnostics.Process.Start(uri.AbsoluteUri);
+					}
+				}
+				catch (Exception ex)
+				{
+					System.Diagnostics.Trace.TraceError("Could open web address: {0}\n\t{1}", uriString, ex.Message);
+				}
+			}
+			else if (e.Parameter is Window)
+			{
+				((Window)e.Parameter).Activate();
 			}
 		}
 	}

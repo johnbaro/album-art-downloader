@@ -104,5 +104,17 @@
     <Setting Name="IgnoreSP1Missing" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="UpdatesURI" Type="System.Uri" Scope="User">
+      <Value Profile="(Default)">http://album-art.sourceforge.net/Updates.xml</Value>
+    </Setting>
+    <Setting Name="AutoUpdateCheckInterval" Type="System.TimeSpan" Scope="User">
+      <Value Profile="(Default)">1.00:00:00</Value>
+    </Setting>
+    <Setting Name="LastUpdateCheck" Type="System.DateTime" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="AutoUpdateEnabled" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

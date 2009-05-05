@@ -36,7 +36,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>.\bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;_EPHEMERAL_SETTINGS _ERROR_REPORTING</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;EPHEMERAL_SETTINGS _ERROR_REPORTING</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>false</DebugSymbols>
@@ -256,6 +256,10 @@
     <Page Include="Controls\Xaml\SortableColumnHeader.generic.xaml" />
     <Page Include="Controls\Xaml\SourcePanel.generic.xaml" />
     <Page Include="Controls\Xaml\StatusBar.generic.xaml" />
+    <Page Include="UpdatesViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Resource Include="Controls\Xaml\browse.png" />
     <Resource Include="Controls\Xaml\downloading.png" />
     <Resource Include="Controls\Xaml\info.png" />
@@ -295,6 +299,10 @@
     <Compile Include="Controls\VirtualFileDragger.cs" />
     <Compile Include="MissingFrameworkSP1.xaml.cs">
       <DependentUpon>MissingFrameworkSP1.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Updates.cs" />
+    <Compile Include="UpdatesViewer.xaml.cs">
+      <DependentUpon>UpdatesViewer.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

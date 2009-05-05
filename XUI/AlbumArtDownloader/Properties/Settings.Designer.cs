@@ -384,5 +384,52 @@ namespace AlbumArtDownloader.Properties {
                 this["IgnoreSP1Missing"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://album-art.sourceforge.net/Updates.xml")]
+        public global::System.Uri UpdatesURI {
+            get {
+                return ((global::System.Uri)(this["UpdatesURI"]));
+            }
+            set {
+                this["UpdatesURI"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1.00:00:00")]
+        public global::System.TimeSpan AutoUpdateCheckInterval {
+            get {
+                return ((global::System.TimeSpan)(this["AutoUpdateCheckInterval"]));
+            }
+            set {
+                this["AutoUpdateCheckInterval"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.DateTime LastUpdateCheck {
+            get {
+                return ((global::System.DateTime)(this["LastUpdateCheck"]));
+            }
+            set {
+                this["LastUpdateCheck"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool AutoUpdateEnabled {
+            get {
+                return ((bool)(this["AutoUpdateEnabled"]));
+            }
+            set {
+                this["AutoUpdateEnabled"] = value;
+            }
+        }
     }
 }
