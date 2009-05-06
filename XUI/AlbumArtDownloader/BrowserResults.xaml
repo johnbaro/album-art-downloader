@@ -21,9 +21,19 @@
 
 			<controls:FileNameConverter x:Key="mFileNameConverter"/>
 			<controls:FileSizeConverter x:Key="mFileSizeConverter"/>
-
+			<controls:StringFormatterConverter x:Key="mStringFormatterConverter"/>
+			
 			<Style TargetType="GridViewColumnHeader">
 				<Setter Property="HorizontalContentAlignment" Value="Left"/>
+			</Style>
+
+			<Style x:Key="OnlyWithArtPresent" TargetType="TextBlock">
+				<Setter Property="Visibility" Value="Hidden"/>
+				<Style.Triggers>
+					<DataTrigger Binding="{Binding ArtFileStatus}" Value="Present">
+						<Setter Property="Visibility" Value="Visible"/>
+					</DataTrigger>
+				</Style.Triggers>
 			</Style>
 		</ResourceDictionary>
 	</controls:SortableListView.Resources>
@@ -67,7 +77,7 @@
 			</controls:SortableGridViewColumn>
 			<controls:SortableGridViewColumn Header="Artist" SortPropertyName="Artist" DisplayMemberBinding="{Binding Artist}" Width="175"/>
 			<controls:SortableGridViewColumn Header="Album" SortPropertyName="Name" DisplayMemberBinding="{Binding Name}" Width="175"/>
-			<controls:SortableGridViewColumn Header="Artwork Status" SortPropertyName="ArtFileStatus" Width="176">
+			<controls:SortableGridViewColumn Header="Artwork Status" SortPropertyName="ArtFileStatus" Width="122">
 				<controls:SortableGridViewColumn.CellTemplate>
 					<DataTemplate>
 						<StackPanel Orientation="Horizontal">
@@ -124,21 +134,25 @@
 					</DataTemplate>
 				</controls:SortableGridViewColumn.CellTemplate>
 			</controls:SortableGridViewColumn>
-			<controls:SortableGridViewColumn Header="Size" SortPropertyName="ArtFileSize" Width="50">
+			<controls:SortableGridViewColumn Header="Dimensions" SortPropertyName="ArtFileWidth" Width="64">
 				<controls:SortableGridViewColumn.CellTemplate>
 					<DataTemplate>
-						<TextBlock Text="{Binding Path=ArtFileSize, Converter={StaticResource mFileSizeConverter}}">
-							<TextBlock.Style>
-								<Style TargetType="TextBlock">
-									<Setter Property="Visibility" Value="Hidden"/>
-									<Style.Triggers>
-										<DataTrigger Binding="{Binding ArtFileStatus}" Value="Present">
-											<Setter Property="Visibility" Value="Visible"/>
-										</DataTrigger>
-									</Style.Triggers>
-								</Style>
-							</TextBlock.Style>
+						<TextBlock Style="{StaticResource OnlyWithArtPresent}">
+							<TextBlock.Text>
+								<MultiBinding Converter="{StaticResource mStringFormatterConverter}" ConverterParameter="{}{0} x {1}" Mode="OneWay">
+									<Binding Path="ArtFileWidth" Mode="OneWay"/>
+									<Binding Path="ArtFileHeight" Mode="OneWay"/>
+								</MultiBinding>
+							</TextBlock.Text>
 						</TextBlock>
+					</DataTemplate>
+				</controls:SortableGridViewColumn.CellTemplate>
+			</controls:SortableGridViewColumn>
+			<controls:SortableGridViewColumn Header="Size" SortPropertyName="ArtFileSize" Width="40">
+				<controls:SortableGridViewColumn.CellTemplate>
+					<DataTemplate>
+						<TextBlock Text="{Binding Path=ArtFileSize, Converter={StaticResource mFileSizeConverter}}"
+								   Style="{StaticResource OnlyWithArtPresent}"/>
 					</DataTemplate>
 				</controls:SortableGridViewColumn.CellTemplate>
 			</controls:SortableGridViewColumn>

@@ -9,6 +9,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
+using System.Windows.Media.Imaging;
 using AlbumArtDownloader.Controls;
 
 namespace AlbumArtDownloader
@@ -548,8 +549,24 @@ namespace AlbumArtDownloader
 									}
 									catch (Exception)
 									{
-										//Ignore exceptions when reading the filesize, it isn't important
+										//Ignore exceptions when reading the filesize it's not important
 										album.ArtFileSize = 0;
+									}
+
+									//Attempt to get the image dimesions
+									try
+									{
+										using (var fileStream = File.OpenRead(artFile))
+										{
+											var bitmapDecoder = BitmapDecoder.Create(fileStream, BitmapCreateOptions.DelayCreation, BitmapCacheOption.None);
+											album.ArtFileWidth = bitmapDecoder.Frames[0].PixelWidth;
+											album.ArtFileHeight = bitmapDecoder.Frames[0].PixelHeight;
+										}
+									}
+									catch (Exception)
+									{
+										//Ignore exceptions when reading the dimensions, they aren't important
+										album.ArtFileWidth = album.ArtFileHeight = 0;
 									}
 
 									break; //Only use the first art file that matches, if there are multiple matches.

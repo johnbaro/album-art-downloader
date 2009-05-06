@@ -113,10 +113,12 @@ namespace AlbumArtDownloader
 		public void SaveSettings()
 		{
 			SavePathPatternHistory();
+			Properties.Settings.Default.FoobarBrowserResultsGrid = mResults.GetSettings();
 		}
 		public void LoadSettings()
 		{
 			LoadPathPatternHistory();
+			mResults.ApplySettings(Properties.Settings.Default.FoobarBrowserResultsGrid);
 		}
 		#endregion
 

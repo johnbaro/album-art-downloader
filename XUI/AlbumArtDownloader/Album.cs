@@ -90,6 +90,40 @@ namespace AlbumArtDownloader
 			}
 		}
 
+		/// <summary>
+		/// The art file dimensions width in pixels, or 0 if none has been found
+		/// </summary>
+		private int mArtFileWidth;
+		public int ArtFileWidth
+		{
+			get { return mArtFileWidth; }
+			set
+			{
+				if (value != mArtFileWidth)
+				{
+					mArtFileWidth = value;
+					NotifyPropertyChanged("ArtFileWidth");
+				}
+			}
+		}
+
+		/// <summary>
+		/// The art file dimensions height in pixels, or 0 if none has been found
+		/// </summary>
+		private int mArtFileHeight;
+		public int ArtFileHeight
+		{
+			get { return mArtFileHeight; }
+			set
+			{
+				if (value != mArtFileHeight)
+				{
+					mArtFileHeight = value;
+					NotifyPropertyChanged("ArtFileHeight");
+				}
+			}
+		}
+
 		private ArtFileStatus mArtFileStatus;
 		public ArtFileStatus ArtFileStatus
 		{

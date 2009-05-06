@@ -1,5 +1,7 @@
 0.26 Added maniadb and Encyclopaedia Metallum scripts
 	 Automatic online update checking for both script and application updates
+	 Foobar browser grid columns settings are now persisted (as the file browser already did)
+	 Added "Dimensions" column to file and foobar browser results grid
 
 0.25 Fixed bug where empty quoted command line paramters would cause a crash
      Valid command line parameters for aad.exe that are not valid for AlbumArt.exe will now be

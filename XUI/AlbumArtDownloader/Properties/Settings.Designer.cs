@@ -345,6 +345,20 @@ namespace AlbumArtDownloader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("<?xml version=\"1.0\" encoding=\"utf-16\"?>\r\n<GridSettings xmlns:xsi=\"http://www.w3.o" +
+            "rg/2001/XMLSchema-instance\"\r\n\t\t\t\txmlns:xsd=\"http://www.w3.org/2001/XMLSchema\"/>\r" +
+            "\n\t\t\t")]
+        public global::AlbumArtDownloader.Controls.SortableListView.GridSettings FoobarBrowserResultsGrid {
+            get {
+                return ((global::AlbumArtDownloader.Controls.SortableListView.GridSettings)(this["FoobarBrowserResultsGrid"]));
+            }
+            set {
+                this["FoobarBrowserResultsGrid"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Visible")]
         public global::System.Windows.Visibility DonationsMenuItemVisibility {
             get {
