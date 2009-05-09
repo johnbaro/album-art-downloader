@@ -167,9 +167,10 @@ Section "FreeCovers"
   Delete "$INSTDIR\Scripts\freecovers.boo"
   File "..\Scripts\Scripts\freecovers-api.boo"
 SectionEnd
-Section "Rate Your Music"
-  File "..\Scripts\Scripts\rateyourmusic.boo"
-SectionEnd
+#Rate Your Music script currently inoperational due to defensive site changes
+#Section "Rate Your Music"
+#  File "..\Scripts\Scripts\rateyourmusic.boo"
+#SectionEnd
 Section "Album Art Exchange"
   File "..\Scripts\Scripts\albumartexchange.boo"
 SectionEnd

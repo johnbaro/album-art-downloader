@@ -66,13 +66,12 @@
     <None Include="Scripts\cduniverse.boo">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Scripts\itunes.boo">
+    <None Include="Scripts\Archived\itunes.boo">
     </None>
     <None Include="Scripts\revhq.boo">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Scripts\rateyourmusic.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    <None Include="Scripts\Archived\rateyourmusic.boo">
     </None>
     <None Include="Scripts\cover-paradies.boo">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -155,6 +154,9 @@
     <None Include="Scripts\metal-archives.boo">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Scripts\Archived\Archived Scripts.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

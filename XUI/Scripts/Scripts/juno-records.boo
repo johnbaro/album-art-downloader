@@ -9,7 +9,7 @@ class JunoRecords:
 	static SourceName as string:
 		get: return "Juno Records"
 	static SourceVersion as string:
-		get: return "0.2"
+		get: return "0.3"
 	static SourceCreator as string:
 		get: return "Marc Landis"
 
@@ -17,20 +17,20 @@ class JunoRecords:
 		query as string = artist + " " + album
 		query = EncodeUrl(query)
 		
-		searchResults = GetPage("http://classic.juno.co.uk/search/?q=${query}&precision=any&column=all&genre_id=0000&released=&sdate=&edate=")
-
+		searchResults = GetPage("http://www.juno.co.uk/search/?as=1&q=${query}&s_search_precision=any&s_search_type=all&s_search_music=1&s_music_product_type=all&s_media_type=all-media&s_merchandise_id=3&s_genre_id=0000&s_released=&s_start_date=&s_end_date=")
+		
 		//Get obids
-		resultsRegex = Regex("<a href=\"/products/(?<ID>.*?.htm)", RegexOptions.Singleline)
+		resultsRegex = Regex("class=\"productcover\"><a href=\"products/(?<ID>.*?.htm)", RegexOptions.Singleline)
 		resultMatches = resultsRegex.Matches(searchResults)
 		coverart.SetCountEstimate(resultMatches.Count * 2) //Estimate 2 covers per result. Results may vary.
 
 		for resultMatch as Match in resultMatches:
 			//Get the album page
-			albumPageUrl = String.Format("http://classic.juno.co.uk/products/{0}", resultMatch.Groups["ID"].Value)
+			albumPageUrl = String.Format("http://www.juno.co.uk/products/{0}", resultMatch.Groups["ID"].Value)
 			albumPage = GetPage(albumPageUrl)
 
 			//Get the title for that album
-			titleRegex = Regex("<h3>(?<title>.*?)</h3>", RegexOptions.Singleline)
+			titleRegex = Regex("<h1>(?<title>.*?)</h1>", RegexOptions.Singleline)
 			title = titleRegex.Matches(albumPage)[0].Groups["title"].Value //Expecting only one match
 
 			//Get all the images for the album
@@ -46,12 +46,12 @@ class JunoRecords:
 					imageTitle = title
 				fullSizeID = imageMatch.Groups["fullSizeID"].Value
 				coverart.Add(
-					"http://images.juno.co.uk/150/CS${fullSizeID}.jpg", #thumbnail
+					"http://cdn.images.juno.co.uk/150/CS${fullSizeID}.jpg", #thumbnail
 					imageTitle, #name
 					albumPageUrl, #infoUri
 					-1, #fullSizeImageWidth
 					-1, #fullSizeImageHeight
-					"http://images.juno.co.uk/full/CS${fullSizeID}-BIG.jpg", #fullSizeImageCallback
+					"http://cdn.images.juno.co.uk/full/CS${fullSizeID}-BIG.jpg", #fullSizeImageCallback
 					coverType #coverType
 					)
 				
