@@ -89,12 +89,12 @@
 &lt;GridSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                         xmlns:xsd="http://www.w3.org/2001/XMLSchema"/&gt;</Value>
     </Setting>
-		<Setting Name="FoobarBrowserResultsGrid" Type="AlbumArtDownloader.Controls.SortableListView.GridSettings" Scope="User">
-			<Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
+    <Setting Name="FoobarBrowserResultsGrid" Type="AlbumArtDownloader.Controls.SortableListView.GridSettings" Scope="User">
+      <Value Profile="(Default)">&lt;?xml version="1.0" encoding="utf-16"?&gt;
 &lt;GridSettings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 				xmlns:xsd="http://www.w3.org/2001/XMLSchema"/&gt;
 			</Value>
-		</Setting>
+    </Setting>
     <Setting Name="DonationsMenuItemVisibility" Type="System.Windows.Visibility" Scope="User">
       <Value Profile="(Default)">Visible</Value>
     </Setting>
@@ -117,7 +117,7 @@
       <Value Profile="(Default)">1.00:00:00</Value>
     </Setting>
     <Setting Name="LastUpdateCheck" Type="System.DateTime" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">2009-05-09</Value>
     </Setting>
     <Setting Name="AutoUpdateEnabled" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>

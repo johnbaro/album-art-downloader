@@ -425,6 +425,7 @@ namespace AlbumArtDownloader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2009-05-09")]
         public global::System.DateTime LastUpdateCheck {
             get {
                 return ((global::System.DateTime)(this["LastUpdateCheck"]));
