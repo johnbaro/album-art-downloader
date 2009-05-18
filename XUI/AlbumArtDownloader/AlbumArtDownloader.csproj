@@ -71,6 +71,10 @@
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="System.Xml" />
+    <Reference Include="taglib-sharp, Version=2.0.3.2, Culture=neutral, PublicKeyToken=db62eba44689b5b0, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Third Party Assemblies\taglib-sharp.dll</HintPath>
+    </Reference>
     <Reference Include="UIAutomationProvider">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -225,15 +229,6 @@
     <Resource Include="ZoomIn.png" />
     <Resource Include="ZoomOut.png" />
     <Resource Include="Hand.cur" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\Third Party Assemblies\MediaInfoDLL.cs">
-      <Link>MediaInfoDLL.cs</Link>
-    </Compile>
-    <None Include="..\Third Party Assemblies\MediaInfo.dll">
-      <Link>MediaInfo.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Page Include="MissingFrameworkSP1.xaml">

@@ -1,5 +1,5 @@
 !define PRODUCT_NAME "Album Art Downloader XUI"
-!define PRODUCT_VERSION "0.26.1"
+!define PRODUCT_VERSION "0.26.2"
 !define PRODUCT_WEB_SITE "http://sourceforge.net/projects/album-art"
 !define PRODUCT_SUPPORT "http://www.hydrogenaudio.org/forums/index.php?showtopic=57392"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\AlbumArt.exe"
@@ -52,6 +52,10 @@ SectionGroup /e "Album Art Downloader"
   Section "!Program files" ProgramFiles
     SetOutPath "$INSTDIR"
     CreateDirectory "$INSTDIR\Scripts"
+    
+    #Remove the old MediaInfo dll, if present
+    Delete "$INSTDIR\MediaInfo.dll"
+    
     File "License.txt"
     File "..\AlbumArtDownloader\AlbumArtDownloader.ico"
     File "..\AlbumArtDownloader\bin\Release\AlbumArt.exe"
@@ -101,6 +105,10 @@ Section -ScriptsPath
   #delete old script cache file
   Delete "$INSTDIR\Scripts\boo script cache.dll"
   File "..\Scripts\Scripts\util.boo"
+  
+  #delete obsolete scripts
+  Delete "$INSTDIR\Scripts\iTunes.boo"
+  Delete "$INSTDIR\Scripts\rateyourmusic.boo"
 SectionEnd
 
 SectionGroup "Image Download Scripts"
@@ -108,6 +116,7 @@ SectionGroup "Image Download Scripts"
 #Section "iTunes Music Shop"
 #  File "..\Scripts\Scripts\iTunes.boo"
 #SectionEnd
+
 SectionGroup "Amazon"
     Section "Amazon (US)"
 	  File "..\Scripts\Scripts\amazon-common.boo"
@@ -167,10 +176,12 @@ Section "FreeCovers"
   Delete "$INSTDIR\Scripts\freecovers.boo"
   File "..\Scripts\Scripts\freecovers-api.boo"
 SectionEnd
+
 #Rate Your Music script currently inoperational due to defensive site changes
 #Section "Rate Your Music"
 #  File "..\Scripts\Scripts\rateyourmusic.boo"
 #SectionEnd
+
 Section "Album Art Exchange"
   File "..\Scripts\Scripts\albumartexchange.boo"
 SectionEnd
@@ -195,6 +206,12 @@ SectionEnd
 Section "Encyclopaedia Metallum"
   File "..\Scripts\Scripts\metal-archives.boo"
 SectionEnd
+Section "hitparade.ch"
+  File "..\Scripts\Scripts\hitparade.boo"
+SectionEnd
+Section "Metal Library"
+  File "..\Scripts\Scripts\metallibrary.boo"
+SectionEnd
 Section "LastFM"
   File "..\Scripts\Scripts\lastfm-cover.boo"
 SectionEnd
@@ -216,15 +233,6 @@ Section -Post
   WriteRegDword ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "NoModify" "1"
   WriteRegDword ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" "NoRepair" "1"
 SectionEnd
-
-Function .onInstSuccess
-  #Check for running on x64
-  ${If} ${RunningX64}
-    MessageBox MB_ICONEXCLAMATION|MB_YESNO "In order to use the File Browser functionality under 64 bit windows, the x64 version of MediaInfo must be installed.$\n$\nWould you like to visit the download page now?" IDNO +2
-    ExecShell "open" "http://downloads.sourceforge.net/album-art/AlbumArtDownloaderXUI-MediaInfoX64Upgrade.exe"
-  ${EndIf}
-FunctionEnd
-
 
 Function un.onUninstSuccess
   HideWindow

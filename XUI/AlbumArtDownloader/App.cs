@@ -126,7 +126,7 @@ namespace AlbumArtDownloader
 					errorLog.WriteLine("If you wish to report this error, please include this information, which");
 					errorLog.WriteLine("has been written to the file: " + filename);
 					errorLog.WriteLine();
-					errorLog.WriteLine("App version: {0}, running on {1}", entryAssembly.GetName().Version, Environment.OSVersion);
+					errorLog.WriteLine("App version: {0}, running on {1} ({2} bit)", entryAssembly.GetName().Version, Environment.OSVersion, IntPtr.Size == 8 ? "64" : "32");
 					errorLog.WriteLine();
 					errorLog.WriteLine(e);
 				}

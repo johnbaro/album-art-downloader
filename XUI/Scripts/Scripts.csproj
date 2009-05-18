@@ -100,8 +100,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Third Party Assemblies\ICSharpCode.SharpZipLib.dll">
-      <Link>ICSharpCode.SharpZipLib.dll</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Link>Scripts\Archived\ICSharpCode.SharpZipLib.dll</Link>
     </None>
     <None Include="Scripts\amazon-com-mp3.boo">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

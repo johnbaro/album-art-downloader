@@ -18,15 +18,6 @@ namespace AlbumArtDownloader
 		/// <summary>The artist name to use when a Various Artists album is detected</summary>
 		private static readonly string sVariousArtistsName = "Various Artists";
 
-		private enum MediaInfoState
-		{
-			Uninitialised,
-			Initialised,
-			Error
-		}
-		private static MediaInfoLib.MediaInfo sMediaInfo;
-		private static MediaInfoState sMediaInfoState;
-
 		private Thread mMediaFileSearchThread;
 		private Queue<SearchThreadParameters> mMediaFileSearchQueue = new Queue<SearchThreadParameters>();
 		private AutoResetEvent mMediaFileSearchTrigger = new AutoResetEvent(false);
@@ -43,8 +34,6 @@ namespace AlbumArtDownloader
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Find, new ExecutedRoutedEventHandler(FindExec)));
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Stop, new ExecutedRoutedEventHandler(StopExec)));
 
-			IsVisibleChanged += new DependencyPropertyChangedEventHandler(OnIsVisibleChanged);
-
 			mResults.Albums = mAlbums;
 			mResults.DragEnter += new DragEventHandler(OnResultsDragEnter);
 			mResults.Drop += new DragEventHandler(OnResultsDragDrop);
@@ -52,57 +41,6 @@ namespace AlbumArtDownloader
 			mResults.StateChanged += new EventHandler(OnResultsStateChanged);
 
 			CreateMediaFileSearchThread();
-		}
-
-		private void OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-		{
-			if ((bool)e.NewValue)
-			{
-				//Window is being shown.
-
-				if (sMediaInfoState == MediaInfoState.Uninitialised)
-				{
-					//Initialise the MediaInfo tag reader
-					try
-					{
-						sMediaInfo = new MediaInfoLib.MediaInfo();
-					}
-					catch (DllNotFoundException)
-					{
-						OnErrorLoadingMediaInfo("MediaInfo.dll was not found. Please re-install Album Art Downloader to use File Browser functionality.");
-						return;
-					}
-					catch (BadImageFormatException)
-					{
-						if (IntPtr.Size == 8) //Size of pointer is 4 on x86, 8 or x64.
-						{
-							OnErrorLoadingMediaInfo("MediaInfo.dll could not be loaded. Please download the x64 version of MediaInfo to use File Browser functionality on 64 bit windows.");
-						}
-						else
-						{
-							OnErrorLoadingMediaInfo("MediaInfo.dll could not be loaded. Please re-install Album Art Downloader to use File Browser functionality.");
-						}
-						return;
-					}
-
-					AssemblyName assemblyName = Assembly.GetEntryAssembly().GetName();
-					if (String.IsNullOrEmpty(sMediaInfo.Option("Info_Version", String.Format("0.7.6.3;{0};{1}", assemblyName.Name, assemblyName.Version))))
-					{
-						OnErrorLoadingMediaInfo("The version of the MediaInfo.dll found is not compatible with the expected version. Please re-install the latest version of Album Art Downloader to use the File Browser functionality.");
-					}
-					else
-					{
-						sMediaInfoState = MediaInfoState.Initialised;
-					}
-				}
-			}
-		}
-
-		private void OnErrorLoadingMediaInfo(string message)
-		{
-			MessageBox.Show(message, "Error Loading MediaInfo.dll", MessageBoxButton.OK, MessageBoxImage.Error);
-			sMediaInfoState = MediaInfoState.Error;
-			this.Close();
 		}
 
 		protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
@@ -440,26 +378,34 @@ namespace AlbumArtDownloader
 			if (filePathPattern == null)
 			{
 				//Read ID3 Tags
+				TagLib.File fileTags = null;
 				try
 				{
-					sMediaInfo.Open(file.FullName);
-					try
+					fileTags = TagLib.File.Create(file.FullName, TagLib.ReadStyle.None);
+					if (fileTags.Tag.AlbumArtists.Length == 0)
 					{
-						artistName = sMediaInfo.Get(MediaInfoLib.StreamKind.General, 0, "Artist");
-						albumName = sMediaInfo.Get(MediaInfoLib.StreamKind.General, 0, "Album");
+						artistName = String.Join(" / ", fileTags.Tag.Performers);
 					}
-					finally
+					else
 					{
-						sMediaInfo.Close();
+						artistName = String.Join(" / ", fileTags.Tag.AlbumArtists);
 					}
+					albumName = fileTags.Tag.Album;
 				}
 				catch (Exception e)
 				{
-					System.Diagnostics.Trace.WriteLine("Could not get artist and album information for file: " + file.FullName);
+					System.Diagnostics.Trace.WriteLine("TagLib# could not get artist and album information for file: " + file.FullName);
 					System.Diagnostics.Trace.Indent();
 					System.Diagnostics.Trace.WriteLine(e.Message);
 					System.Diagnostics.Trace.Unindent();
-					return null; //If this media file couldn't be read, just go on to the next one.
+					return null; //If this media file couldn't be read, just go on to the next one.				
+				}
+				finally
+				{
+					if (fileTags != null)
+					{
+						fileTags.Mode = TagLib.File.AccessMode.Closed;
+					}
 				}
 			}
 			else
