@@ -277,6 +277,7 @@
 				<RowDefinition Height="Auto"/>
 				<RowDefinition Height="Auto"/>
 				<RowDefinition Height="*"/>
+				<RowDefinition Height="Auto"/>
 			</Grid.RowDefinitions>
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="Auto"/>
@@ -295,6 +296,11 @@
 					</DataTemplate>
 				</ItemsControl.ItemTemplate>
 			</ItemsControl>
+			<Button Grid.Row="4" Grid.ColumnSpan="2" Style="{StaticResource HyperlinkButton}"
+					Margin="4,0,0,0"
+					Command="{x:Static local:ArtSearchWindow+Commands.GetMoreScripts}"
+					Visibility="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled, Converter={StaticResource mBooleanToVisibilityConverter}}"
+					Content="Get more scripts..."/>
 		</Grid>
 	</Grid>
 </Window>

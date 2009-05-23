@@ -2,6 +2,9 @@
      Installer now removes iTunes.boo and rateyourmusic.boo, if present
      Updated installer to NSIS 2.44
      Removed MediaInfo library, replaced with TagLib#
+     Script updates now include dependency information (except util.boo, which all depend on)
+     "Get more scripts" functionality added to browse and install any available scripts
+      not yet installed, with the option to do so automatically when checking for updates.
 
 0.26.1 Fixed settings upgrade to 0.26 bug
 

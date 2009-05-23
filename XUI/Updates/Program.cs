@@ -164,10 +164,18 @@ namespace AlbumArtDownloader.Updates
 										if (script != null)
 										{
 											//Obtain name and version number
-											updates.Add(new XElement("Script",
-															new XAttribute("Name", script.Name),
-															new XAttribute("URI", Path.GetFileName(scriptFile)),
-															new XAttribute("Version", script.Version)));
+											var scriptXml = new XElement("Script",
+																new XAttribute("Name", script.Name),
+																new XAttribute("URI", Path.GetFileName(scriptFile)),
+																new XAttribute("Version", script.Version));
+
+											//Hack: Add dependency to known dependent files
+											if (script.Name.StartsWith("Amazon "))
+											{
+												scriptXml.Add(new XElement("Dependency", "amazon-common.boo"));
+											}
+
+											updates.Add(scriptXml);
 										}
 									}
 									catch (Exception e)

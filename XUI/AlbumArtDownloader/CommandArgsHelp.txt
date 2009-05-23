@@ -137,6 +137,11 @@ Options:
               Checks for updates to scripts and
               application.
 
+ /getScripts                                  (/getScripts)
+              Checks for other search source 
+              scripts which may be available for
+              download.
+
  /separateInstance                            (/separateInstance)
               Starts a new instance as a new
               process, which will neither re-use

@@ -7,11 +7,11 @@ namespace AlbumArtDownloader
 	/// <summary>
 	/// Window to show available updates
 	/// </summary>
-	public partial class UpdatesViewer : Window
+	public partial class NewScriptsViewer : Window
 	{
 		private Updates mUpdates;
 
-		public UpdatesViewer()
+		public NewScriptsViewer()
 		{
 			InitializeComponent();
 		}
@@ -24,7 +24,7 @@ namespace AlbumArtDownloader
 			}
 			else if (updates.HasApplicationUpdate)
 			{
-				mLabel.Text = "A new version of Album Art Downloader XUI is available. Click on the link below to visit the download page:";
+				mLabel.Text = "A new version of Album Art Downloader XUI is available. It is recommended that you upgrade to the latest version, as new scripts may not be compatible with the current version. Click on the link below to visit the download page:";
 				mApplicationDownloadLink.Content = updates.ApplicationUpdateName;
 				mApplicationDownloadLink.CommandParameter = updates.ApplicationUpdateUri.AbsoluteUri;
 				mApplicationDownloadLink.ToolTip = updates.ApplicationUpdateUri.AbsoluteUri;
@@ -35,17 +35,17 @@ namespace AlbumArtDownloader
 				mActionButton.IsEnabled = false;
 				mCancelButton.Content = "Close";
 			}
-			else if (!updates.ScriptUpdates.Any())
+			else if (!updates.AvailableScripts.Any())
 			{
 				//No updates available
-				mLabel.Text = "No updates are currently available.";
+				mLabel.Text = "No new scripts are currently available.";
 				mScriptUpdatesViewer.Visibility = Visibility.Hidden;
 				mActionButton.IsEnabled = false;
 				mCancelButton.Content = "Close";
 			}
 			else
 			{
-				mScriptUpdatesViewer.ItemsSource = updates.ScriptUpdates;
+				mScriptUpdatesViewer.ItemsSource = updates.AvailableScripts;
 			}
 
 			mUpdates = updates;
@@ -55,7 +55,7 @@ namespace AlbumArtDownloader
 
 		private void DisplayRestartPending()
 		{
-			mLabel.Text = "The updated scripts will be available once Album Art Downloader XUI has been restarted.";
+			mLabel.Text = "The new scripts will be available once Album Art Downloader XUI has been restarted.";
 			mScriptUpdatesViewer.Visibility = Visibility.Hidden;
 			mActionButton.Content = "Restart";
 			mCancelButton.Content = "Close";
@@ -72,7 +72,14 @@ namespace AlbumArtDownloader
 			else
 			{
 				//Update
-				mUpdates.DownloadSelectedScriptUpdates(mUpdates.ScriptUpdates);
+				mUpdates.DownloadSelectedScriptUpdates(mUpdates.AvailableScripts);
+
+				if (!mUpdates.AvailableScripts.Where(s => !s.Selected).Any())
+				{ 
+					//All scripts were selected and downloaded, so there are therefore no more available new scripts
+					Properties.Settings.Default.NewScriptsAvailable = false;
+				}
+
 				DisplayRestartPending();
 			}
 		}

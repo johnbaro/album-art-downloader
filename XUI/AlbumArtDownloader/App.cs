@@ -370,8 +370,12 @@ namespace AlbumArtDownloader
 							}
 							break;
 						case "update":
-							//Force an immediate check fro updates
+							//Force an immediate check for updates
 							Updates.CheckForUpdates(true);
+							break;
+						case "getscripts":
+							//Force an immediate check for new scripts
+							Updates.ShowNewScripts();
 							break;
 						case "separateinstance":
 							//This will already have been handled earlier, in Main()

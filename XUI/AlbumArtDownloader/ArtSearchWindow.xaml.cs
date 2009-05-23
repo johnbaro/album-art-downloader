@@ -17,6 +17,11 @@ namespace AlbumArtDownloader
 {
 	public partial class ArtSearchWindow : System.Windows.Window, INotifyPropertyChanged, IAppWindow
 	{
+		public static class Commands
+		{
+			public static RoutedUICommand GetMoreScripts = new RoutedUICommand("GetMoreScripts", "GetMoreScripts", typeof(Commands));
+		}
+
 		private Sources mSources = new Sources();
 
 		private Thread mAutoDownloadFullSizeImagesThread;
@@ -54,6 +59,7 @@ namespace AlbumArtDownloader
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Save, new ExecutedRoutedEventHandler(SaveExec)));
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.SaveAs, new ExecutedRoutedEventHandler(SaveAsExec)));
 			CommandBindings.Add(new CommandBinding(AlbumArtDownloader.Controls.ArtPanelList.Commands.Preview, new ExecutedRoutedEventHandler(PreviewExec)));
+			CommandBindings.Add(new CommandBinding(Commands.GetMoreScripts, new ExecutedRoutedEventHandler(GetMoreScriptsExec), new CanExecuteRoutedEventHandler(GetMoreScriptsCanExec)));
 
 			//Stop All is bound only when doing a search (so the Stop All button only appears while searching)
 			mStopAllCommandBinding = new CommandBinding(ApplicationCommands.Stop, new ExecutedRoutedEventHandler(StopExec));
@@ -725,6 +731,25 @@ namespace AlbumArtDownloader
 				albumArt.RetrieveFullSizeImage();
 				//Show persistant preview window
 				Common.NewPreviewWindow(this).AlbumArt = albumArt;
+			}
+		}
+
+		private void GetMoreScriptsExec(object sender, ExecutedRoutedEventArgs e)
+		{
+			Updates.ShowNewScripts();
+		}
+
+		private void GetMoreScriptsCanExec(object sender, CanExecuteRoutedEventArgs e)
+		{
+			//If not performing automatic updates, this is always available
+			if (!Properties.Settings.Default.AutoUpdateEnabled)
+			{
+				e.CanExecute = true;
+			}
+			else
+			{
+				//If performing automatic updates, then it's only available if the last time an update was perfomed, new scripts were available
+				e.CanExecute = Properties.Settings.Default.NewScriptsAvailable;
 			}
 		}
 

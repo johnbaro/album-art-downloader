@@ -14,7 +14,8 @@ namespace AlbumArtDownloader
 	public class Updates
 	{
 		//Only have one viewer window open at any one time. This is that window.
-		private static UpdatesViewer sViewer;
+		private static UpdatesViewer sUpdatesViewer;
+		private static NewScriptsViewer sNewScriptsViewer;
 
 		private static bool sRestartPending;
 
@@ -27,9 +28,20 @@ namespace AlbumArtDownloader
 			TimeSpan timeSinceLastCheck = DateTime.Now - Properties.Settings.Default.LastUpdateCheck;
 			if (forceCheck || timeSinceLastCheck > Properties.Settings.Default.AutoUpdateCheckInterval)
 			{
+				Properties.Settings.Default.LastUpdateCheck = DateTime.Now;
+			
 				//A check is due, so start the thread to asynchronously download and process the update data
-				ThreadPool.QueueUserWorkItem(new WaitCallback(PerformUpdateCheck), new PerformUpdateCheckParameters(forceCheck));
+				ThreadPool.QueueUserWorkItem(new WaitCallback(PerformUpdateCheck),
+					new PerformUpdateCheckParameters(forceCheck ? PerformUpdateCheckParameters.UI.Updates : PerformUpdateCheckParameters.UI.None));
 			}
+		}
+
+		/// <summary>
+		/// Performs a check for available updates, then shows the New Available Scripts window if any new scripts are available.
+		/// </summary>
+		public static void ShowNewScripts()
+		{
+			ThreadPool.QueueUserWorkItem(new WaitCallback(PerformUpdateCheck), new PerformUpdateCheckParameters(PerformUpdateCheckParameters.UI.NewScripts));
 		}
 
 		/// <summary>
@@ -40,8 +52,6 @@ namespace AlbumArtDownloader
 		{
 			PerformUpdateCheckParameters parameters = (PerformUpdateCheckParameters)state;
 
-			Properties.Settings.Default.LastUpdateCheck = DateTime.Now;
-			
 			Updates updates = new Updates();
 
 			try
@@ -77,17 +87,20 @@ namespace AlbumArtDownloader
 				{
 					string name = scriptUpdateXml.GetAttribute("Name");
 					string newVersion = scriptUpdateXml.GetAttribute("Version");
-
+					
 					//Check to see if there is an older version of this script to update
 					string currentVersion;
 					if (scripts.TryGetValue(name, out currentVersion))
 					{
 						if (currentVersion != newVersion)
 						{
-							Uri uri = new Uri(baseUri, scriptUpdateXml.GetAttribute("URI"));
 
-							updates.AddScriptUpdate(new ScriptUpdate(name, currentVersion, newVersion, uri));
+							updates.AddScriptUpdate(new ScriptUpdate(name, currentVersion, newVersion, GetDownloadFiles(baseUri, scriptUpdateXml)));
 						}
+					}
+					else
+					{
+						updates.AddAvailableScript(new ScriptUpdate(name, null, newVersion, GetDownloadFiles(baseUri, scriptUpdateXml)));
 					}
 				}
 			}
@@ -96,40 +109,91 @@ namespace AlbumArtDownloader
 				System.Diagnostics.Trace.TraceError("Could not parse update xml from \"{0}\": {1}", Properties.Settings.Default.UpdatesURI.AbsoluteUri, ex.Message);
 			}
 
-			if (parameters.ForceCheck || //If forcing a check, show the updates viewer regardless
-				updates.mScriptUpdates.Count > 0 || //If not forcing, only show if there are updates to be shown
-				updates.HasApplicationUpdate)
+			Properties.Settings.Default.NewScriptsAvailable = updates.mAvailableScripts.Count > 0;
+
+			if (parameters.ShowUI == PerformUpdateCheckParameters.UI.NewScripts)
 			{
 				parameters.Dispatcher.Invoke(new ThreadStart(delegate
 				{
-					if (sViewer != null)
+					if (sNewScriptsViewer != null)
 					{
-						sViewer.Close();
+						sNewScriptsViewer.Close();
 					}
-					sViewer = new UpdatesViewer();
-					sViewer.Show(updates);
-					sViewer.Closed += new EventHandler(delegate { sViewer = null; });
+					sNewScriptsViewer = new NewScriptsViewer();
+					sNewScriptsViewer.Show(updates);
+					sNewScriptsViewer.Closed += new EventHandler(delegate { sNewScriptsViewer = null; });
 				}));
+			}
+			else
+			{
+				//If not showing the New Scripts UI, and no application update is available, then check for auto-downloading new scripts
+				if (sNewScriptsViewer == null &&
+					!updates.HasApplicationUpdate && 
+					updates.mAvailableScripts.Count > 0 &&
+					Properties.Settings.Default.AutoDownloadAllScripts)
+				{
+					//Automatically download all newly available scripts
+					foreach (var script in updates.mAvailableScripts)
+					{
+						script.Download();
+					}
+
+					Properties.Settings.Default.NewScriptsAvailable = false;
+				}
+
+				if (parameters.ShowUI == PerformUpdateCheckParameters.UI.Updates || //Show the updates viewer if specifically requested.
+					updates.mScriptUpdates.Count > 0 || //If not requested, only show if there are updates to be shown
+					updates.HasApplicationUpdate)
+				{
+					parameters.Dispatcher.Invoke(new ThreadStart(delegate
+					{
+						if (sUpdatesViewer != null)
+						{
+							sUpdatesViewer.Close();
+						}
+						sUpdatesViewer = new UpdatesViewer();
+						sUpdatesViewer.Show(updates);
+						sUpdatesViewer.Closed += new EventHandler(delegate { sUpdatesViewer = null; });
+					}));
+				}
+			}
+		}
+
+		private static IEnumerable<Uri> GetDownloadFiles(Uri baseUri, XmlElement scriptUpdateXml)
+		{
+			yield return new Uri(baseUri, scriptUpdateXml.GetAttribute("URI"));
+
+			foreach (XmlElement dependencyXml in scriptUpdateXml.SelectNodes("Dependency"))
+			{
+				yield return new Uri(baseUri, dependencyXml.InnerText);
 			}
 		}
 
 		private struct PerformUpdateCheckParameters
 		{
+			public enum UI
+			{
+				None,
+				Updates,
+				NewScripts
+			}
 			private readonly Dispatcher mDispatcher;
-			private readonly bool mForceCheck;
+			private readonly UI mShowUI;
 
-			public PerformUpdateCheckParameters(bool forceCheck)
+			public PerformUpdateCheckParameters(UI showUI)
 			{
 				mDispatcher = Dispatcher.CurrentDispatcher;
-				mForceCheck = forceCheck;
+				mShowUI = showUI;
 			}
 			public Dispatcher Dispatcher { get { return mDispatcher; } }
-			public bool ForceCheck { get { return mForceCheck; } }
+			public UI ShowUI { get { return mShowUI; } }
 		}
 
 
 		#region Instance members
 		private readonly List<ScriptUpdate> mScriptUpdates = new List<ScriptUpdate>();
+		private readonly List<ScriptUpdate> mAvailableScripts = new List<ScriptUpdate>();
+		
 		private string mAppUpdateName;
 		private Uri mAppUpdateUri;
 		
@@ -140,6 +204,11 @@ namespace AlbumArtDownloader
 		private void AddScriptUpdate(ScriptUpdate scriptUpdate)
 		{
 			mScriptUpdates.Add(scriptUpdate);
+		}
+
+		private void AddAvailableScript(ScriptUpdate scriptUpdate)
+		{
+			mAvailableScripts.Add(scriptUpdate);
 		}
 
 		private void SetAppUpdate(string name, Uri uri)
@@ -157,11 +226,19 @@ namespace AlbumArtDownloader
 		/// </summary>
 		public bool RestartPending { get { return sRestartPending; } }
 
+		/// <summary>
+		/// Existing scripts for which updates are available
+		/// </summary>
 		public IEnumerable<ScriptUpdate> ScriptUpdates { get { return mScriptUpdates.AsReadOnly(); } }
+		
+		/// <summary>
+		/// New scripts for which no previous version exists
+		/// </summary>
+		public IEnumerable<ScriptUpdate> AvailableScripts { get { return mAvailableScripts.AsReadOnly(); } }
 
-		public void DownloadSelectedScriptUpdates()
+		public void DownloadSelectedScriptUpdates(IEnumerable<ScriptUpdate> scriptUpdates)
 		{
-			foreach (ScriptUpdate scriptUpdate in mScriptUpdates.Where(s => s.Selected))
+			foreach (ScriptUpdate scriptUpdate in scriptUpdates.Where(s => s.Selected))
 			{
 				scriptUpdate.Download();
 				
@@ -177,16 +254,16 @@ namespace AlbumArtDownloader
 		private readonly string mName;
 		private readonly string mOldVersion;
 		private readonly string mNewVersion;
-		private readonly Uri mUri;
+		private readonly IEnumerable<Uri> mFiles;
 		private bool mSelected;
 
-		public ScriptUpdate(string name, string oldVersion, string newVersion, Uri uri)
+		public ScriptUpdate(string name, string oldVersion, string newVersion, IEnumerable<Uri> files)
 		{
 			mName = name;
 			mOldVersion = oldVersion;
 			mNewVersion = newVersion;
-			mUri = uri;
-
+			mFiles = files;
+			
 			mSelected = true;
 		}
 
@@ -202,42 +279,45 @@ namespace AlbumArtDownloader
 
 		public void Download()
 		{
-			string filename = Path.GetFileName(mUri.LocalPath);
-
-			string targetPath = null;
-
-			foreach (string scriptsPath in App.ScriptsPaths)
+			foreach (Uri fileToDownload in mFiles)
 			{
-				//See whether the file can be written there
+				string filename = Path.GetFileName(fileToDownload.LocalPath);
+
+				string targetPath = null;
+
+				foreach (string scriptsPath in App.ScriptsPaths)
+				{
+					//See whether the file can be written there
+					try
+					{
+						targetPath = Path.Combine(scriptsPath, filename);
+						File.OpenWrite(targetPath).Close();
+						break; //If it reaches here, the file is writable
+					}
+					catch (Exception fileWriteException)
+					{
+						System.Diagnostics.Trace.TraceWarning("Could not download script update for {0} to \"{1}\": {2}", Name, targetPath, fileWriteException.Message);
+						targetPath = null;
+					}
+				}
+
+				if (targetPath == null)
+				{
+					System.Diagnostics.Trace.TraceError("Could not download script update for {0} from \"{1}\": No writable paths found.", Name, fileToDownload);
+					return;
+				}
+
 				try
 				{
-					targetPath = Path.Combine(scriptsPath, filename);
-					File.OpenWrite(targetPath).Close();
-					break; //If it reaches here, the file is writable
+					new System.Net.WebClient().DownloadFile(fileToDownload, targetPath + ".part");
+					//If it reaches here, then it was successfull - replace the existing one
+					File.Delete(targetPath);
+					File.Move(targetPath + ".part", targetPath);
 				}
-				catch(Exception fileWriteException)
+				catch (Exception ex)
 				{
-					System.Diagnostics.Trace.TraceWarning("Could not download script update for {0} to \"{1}\": {2}", Name, targetPath, fileWriteException.Message);
-					targetPath = null;
+					System.Diagnostics.Trace.TraceError("Could not download script update for {0} from \"{1}\": {2}", Name, fileToDownload, ex.Message);
 				}
-			}
-
-			if (targetPath == null)
-			{
-				System.Diagnostics.Trace.TraceError("Could not download script update for {0} from \"{1}\": No writable paths found.", Name, mUri);
-				return;
-			}
-				
-			try
-			{
-				new System.Net.WebClient().DownloadFile(mUri, targetPath + ".part");
-				//If it reaches here, then it was successfull - replace the existing one
-				File.Delete(targetPath);
-				File.Move(targetPath + ".part", targetPath);
-			}
-			catch(Exception ex)
-			{
-				System.Diagnostics.Trace.TraceError("Could not download script update for {0} from \"{1}\": {2}", Name, mUri, ex.Message);
 			}
 		}
 	}
