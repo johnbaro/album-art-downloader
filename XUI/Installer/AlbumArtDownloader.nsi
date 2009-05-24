@@ -1,5 +1,5 @@
 !define PRODUCT_NAME "Album Art Downloader XUI"
-!define PRODUCT_VERSION "0.26.2"
+!define PRODUCT_VERSION "0.27"
 !define PRODUCT_WEB_SITE "http://sourceforge.net/projects/album-art"
 !define PRODUCT_SUPPORT "http://www.hydrogenaudio.org/forums/index.php?showtopic=57392"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\AlbumArt.exe"
@@ -196,6 +196,9 @@ Section "AllCdCover"
 SectionEnd
 Section "CDCoverHideout"
   File "..\Scripts\Scripts\cdcoverhideout.boo"
+SectionEnd
+Section "Buy.com"
+  File "..\Scripts\Scripts\buy-com.boo"
 SectionEnd
 Section "PsyShop"
   File "..\Scripts\Scripts\psyshop.boo"
