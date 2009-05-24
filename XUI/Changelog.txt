@@ -5,6 +5,8 @@
      Script updates now include dependency information (except util.boo, which all depend on)
      "Get more scripts" functionality added to browse and install any available scripts
       not yet installed, with the option to do so automatically when checking for updates.
+     Made Save Images To path in search window read-only when launched from the file or foobar
+      browsers, to avoid confusion.
 
 0.26.1 Fixed settings upgrade to 0.26 bug
 

@@ -171,13 +171,13 @@
 					</Grid>
 				</GroupBox>
 
-				<Grid Grid.Row="2" Grid.ColumnSpan="3">
+				<Grid x:Name="mNormalSaveFolderControls" Grid.Row="2" Grid.ColumnSpan="3">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="Auto"/>
 						<ColumnDefinition Width="*"/>
 					</Grid.ColumnDefinitions>
 					<Label Target="{Binding ElementName=mDefaultSaveFolder}">Sa_ve images to:</Label>
-					<controls:ArtPathPatternBox Grid.Row="2" Grid.Column="1" x:Name="mDefaultSaveFolder"
+					<controls:ArtPathPatternBox Grid.Column="1" x:Name="mDefaultSaveFolder"
 												Margin="2" Padding="2">
 						<controls:ArtPathPatternBox.AdditionalPlaceholders>
 							<controls:PatternPlaceholder MenuItemHeader="_Preset" ToolTip="A custom preset string, chosen from the save button menu" Placeholder="%preset%"/>
@@ -191,8 +191,17 @@
 							<Win32:SaveFileDialog Title="Save images to" ValidateNames="False" CheckPathExists="False" OverwritePrompt="False" Filter="All Files (*.*)|*.*"/>
 						</controls:ArtPathPatternBox.BrowseDialog>
 					</controls:ArtPathPatternBox>
-
 				</Grid>
+
+				<StackPanel x:Name="mReadOnlySaveFolderControls" Orientation="Vertical" Grid.Row="2" Grid.ColumnSpan="3"
+							Visibility="Collapsed">
+					<TextBlock>Images will be saved to:</TextBlock>
+					<TextBox IsReadOnly="True" Focusable="True" Background="{x:Static SystemColors.ControlBrush}"
+							 Text="{Binding ElementName=mDefaultSaveFolder, Path=PathPattern, Mode=OneWay}"
+							 ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=Text}"/>
+					<TextBlock TextWrapping="Wrap" FontStyle="Italic">(This path was set automatically from the browser. The location of images relative to album folders can be set in the options for that window.)</TextBlock>
+				</StackPanel>
+
 			</Grid>
 		</Expander>
 

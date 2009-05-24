@@ -602,10 +602,9 @@ namespace AlbumArtDownloader
 
 		#region Default Save Folder
 		/// <summary>
-		/// This is the temporary default save path, if there is one. If the default save path
-		/// is equal to this value, it should not be saved to settings.
+		/// If true, the default save path has been temporarily fixed, and can not be modified from this window.
 		/// </summary>
-		private string mDefaultSavePathIsTemporary;
+		private bool mDefaultSavePathIsTemporary;
 		
 		private void LoadDefaultSaveFolderHistory()
 		{
@@ -618,7 +617,7 @@ namespace AlbumArtDownloader
 		}
 		private void SaveDefaultSaveFolderHistory()
 		{
-			if (!String.Equals(mDefaultSaveFolder.PathPattern, mDefaultSavePathIsTemporary, StringComparison.CurrentCultureIgnoreCase))
+			if (!mDefaultSavePathIsTemporary)
 			{
 				//Only save the default path if it isn't a temporary one
 				Properties.Settings.Default.DefaultSavePath = mDefaultSaveFolder.PathPattern;
@@ -639,9 +638,18 @@ namespace AlbumArtDownloader
 		}
 		public void SetDefaultSaveFolderPattern(string path, bool temporary)
 		{
-			if (temporary)
-				mDefaultSavePathIsTemporary = path;
-
+			mDefaultSavePathIsTemporary = temporary;
+			if (mDefaultSavePathIsTemporary)
+			{
+				mNormalSaveFolderControls.Visibility = Visibility.Collapsed;
+				mReadOnlySaveFolderControls.Visibility = Visibility.Visible;
+			}
+			else
+			{
+				mNormalSaveFolderControls.Visibility = Visibility.Visible;
+				mReadOnlySaveFolderControls.Visibility = Visibility.Collapsed;
+			}
+			
 			mDefaultSaveFolder.AddPatternToHistory(); //Save the previous value
 			mDefaultSaveFolder.PathPattern = path; //Set the new value
 		}
@@ -830,7 +838,7 @@ namespace AlbumArtDownloader
 			AlbumArtDownloader.Properties.WindowSettings.GetWindowSettings(this).LoadWindowState();
 			LoadSourceSettings();
 
-			if (String.IsNullOrEmpty(mDefaultSavePathIsTemporary)) //If a temporary save path has been set, don't override it.
+			if (!mDefaultSavePathIsTemporary) //If a temporary save path has been set, don't override it.
 			{
 				LoadDefaultSaveFolderHistory();
 			}
