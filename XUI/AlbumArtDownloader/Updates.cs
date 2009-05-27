@@ -50,112 +50,119 @@ namespace AlbumArtDownloader
 		/// </summary>
 		private static void PerformUpdateCheck(object state)
 		{
-			PerformUpdateCheckParameters parameters = (PerformUpdateCheckParameters)state;
-
-			Updates updates = new Updates();
-
 			try
 			{
-				XmlDocument updatesXml = new XmlDocument();
-				updatesXml.Load(Properties.Settings.Default.UpdatesURI.AbsoluteUri);
+				PerformUpdateCheckParameters parameters = (PerformUpdateCheckParameters)state;
 
-				Uri baseUri = new Uri(updatesXml.DocumentElement.GetAttribute("BaseURI"));
+				Updates updates = new Updates();
 
-				//Check to see if there is an application update available
-				XmlElement appUpdateXml = updatesXml.SelectSingleNode("/Updates/Application") as XmlElement;
-				if (appUpdateXml != null)
+				try
 				{
-					Version newAppVersion = new Version(appUpdateXml.GetAttribute("Version"));
+					XmlDocument updatesXml = new XmlDocument();
+					updatesXml.Load(Properties.Settings.Default.UpdatesURI.AbsoluteUri);
 
-					if (newAppVersion > Assembly.GetEntryAssembly().GetName().Version)
+					Uri baseUri = new Uri(updatesXml.DocumentElement.GetAttribute("BaseURI"));
+
+					//Check to see if there is an application update available
+					XmlElement appUpdateXml = updatesXml.SelectSingleNode("/Updates/Application") as XmlElement;
+					if (appUpdateXml != null)
 					{
-						//Theres a new application version, so return an update with just that
-						Uri uri = new Uri(baseUri, appUpdateXml.GetAttribute("URI"));
+						Version newAppVersion = new Version(appUpdateXml.GetAttribute("Version"));
 
-						updates.SetAppUpdate(appUpdateXml.GetAttribute("Name"), uri);
-					}
-				}
-
-				//Create a lookup of all current scripts and their versions
-				Dictionary<String, String> scripts = new Dictionary<String, String>();
-				foreach (IScript script in ((App)Application.Current).Scripts)
-				{
-					scripts.Add(script.Name, script.Version);
-				}
-
-				foreach (XmlElement scriptUpdateXml in updatesXml.SelectNodes("/Updates/Script"))
-				{
-					string name = scriptUpdateXml.GetAttribute("Name");
-					string newVersion = scriptUpdateXml.GetAttribute("Version");
-					
-					//Check to see if there is an older version of this script to update
-					string currentVersion;
-					if (scripts.TryGetValue(name, out currentVersion))
-					{
-						if (currentVersion != newVersion)
+						if (newAppVersion > Assembly.GetEntryAssembly().GetName().Version)
 						{
+							//Theres a new application version, so return an update with just that
+							Uri uri = new Uri(baseUri, appUpdateXml.GetAttribute("URI"));
 
-							updates.AddScriptUpdate(new ScriptUpdate(name, currentVersion, newVersion, GetDownloadFiles(baseUri, scriptUpdateXml)));
+							updates.SetAppUpdate(appUpdateXml.GetAttribute("Name"), uri);
 						}
 					}
-					else
+
+					//Create a lookup of all current scripts and their versions
+					Dictionary<String, String> scripts = new Dictionary<String, String>();
+					foreach (IScript script in ((App)Application.Current).Scripts)
 					{
-						updates.AddAvailableScript(new ScriptUpdate(name, null, newVersion, GetDownloadFiles(baseUri, scriptUpdateXml)));
+						scripts.Add(script.Name, script.Version);
+					}
+
+					foreach (XmlElement scriptUpdateXml in updatesXml.SelectNodes("/Updates/Script"))
+					{
+						string name = scriptUpdateXml.GetAttribute("Name");
+						string newVersion = scriptUpdateXml.GetAttribute("Version");
+
+						//Check to see if there is an older version of this script to update
+						string currentVersion;
+						if (scripts.TryGetValue(name, out currentVersion))
+						{
+							if (currentVersion != newVersion)
+							{
+
+								updates.AddScriptUpdate(new ScriptUpdate(name, currentVersion, newVersion, GetDownloadFiles(baseUri, scriptUpdateXml)));
+							}
+						}
+						else
+						{
+							updates.AddAvailableScript(new ScriptUpdate(name, null, newVersion, GetDownloadFiles(baseUri, scriptUpdateXml)));
+						}
+					}
+				}
+				catch (Exception ex)
+				{
+					System.Diagnostics.Trace.TraceError("Could not parse update xml from \"{0}\": {1}", Properties.Settings.Default.UpdatesURI.AbsoluteUri, ex.Message);
+				}
+
+				Properties.Settings.Default.NewScriptsAvailable = updates.mAvailableScripts.Count > 0;
+
+				if (parameters.ShowUI == PerformUpdateCheckParameters.UI.NewScripts)
+				{
+					parameters.Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(delegate
+					{
+						if (sNewScriptsViewer != null)
+						{
+							sNewScriptsViewer.Close();
+						}
+						sNewScriptsViewer = new NewScriptsViewer();
+						sNewScriptsViewer.Show(updates);
+						sNewScriptsViewer.Closed += new EventHandler(delegate { sNewScriptsViewer = null; });
+					}));
+				}
+				else
+				{
+					//If not showing the New Scripts UI, and no application update is available, then check for auto-downloading new scripts
+					if (sNewScriptsViewer == null &&
+						!updates.HasApplicationUpdate &&
+						updates.mAvailableScripts.Count > 0 &&
+						Properties.Settings.Default.AutoDownloadAllScripts)
+					{
+						//Automatically download all newly available scripts
+						foreach (var script in updates.mAvailableScripts)
+						{
+							script.Download();
+						}
+
+						Properties.Settings.Default.NewScriptsAvailable = false;
+					}
+
+					if (parameters.ShowUI == PerformUpdateCheckParameters.UI.Updates || //Show the updates viewer if specifically requested.
+						updates.mScriptUpdates.Count > 0 || //If not requested, only show if there are updates to be shown
+						updates.HasApplicationUpdate)
+					{
+						parameters.Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(delegate
+						{
+							if (sUpdatesViewer != null)
+							{
+								sUpdatesViewer.Close();
+							}
+							sUpdatesViewer = new UpdatesViewer();
+							sUpdatesViewer.Show(updates);
+							sUpdatesViewer.Closed += new EventHandler(delegate { sUpdatesViewer = null; });
+						}));
 					}
 				}
 			}
 			catch (Exception ex)
 			{
-				System.Diagnostics.Trace.TraceError("Could not parse update xml from \"{0}\": {1}", Properties.Settings.Default.UpdatesURI.AbsoluteUri, ex.Message);
-			}
-
-			Properties.Settings.Default.NewScriptsAvailable = updates.mAvailableScripts.Count > 0;
-
-			if (parameters.ShowUI == PerformUpdateCheckParameters.UI.NewScripts)
-			{
-				parameters.Dispatcher.Invoke(new ThreadStart(delegate
-				{
-					if (sNewScriptsViewer != null)
-					{
-						sNewScriptsViewer.Close();
-					}
-					sNewScriptsViewer = new NewScriptsViewer();
-					sNewScriptsViewer.Show(updates);
-					sNewScriptsViewer.Closed += new EventHandler(delegate { sNewScriptsViewer = null; });
-				}));
-			}
-			else
-			{
-				//If not showing the New Scripts UI, and no application update is available, then check for auto-downloading new scripts
-				if (sNewScriptsViewer == null &&
-					!updates.HasApplicationUpdate && 
-					updates.mAvailableScripts.Count > 0 &&
-					Properties.Settings.Default.AutoDownloadAllScripts)
-				{
-					//Automatically download all newly available scripts
-					foreach (var script in updates.mAvailableScripts)
-					{
-						script.Download();
-					}
-
-					Properties.Settings.Default.NewScriptsAvailable = false;
-				}
-
-				if (parameters.ShowUI == PerformUpdateCheckParameters.UI.Updates || //Show the updates viewer if specifically requested.
-					updates.mScriptUpdates.Count > 0 || //If not requested, only show if there are updates to be shown
-					updates.HasApplicationUpdate)
-				{
-					parameters.Dispatcher.Invoke(new ThreadStart(delegate
-					{
-						if (sUpdatesViewer != null)
-						{
-							sUpdatesViewer.Close();
-						}
-						sUpdatesViewer = new UpdatesViewer();
-						sUpdatesViewer.Show(updates);
-						sUpdatesViewer.Closed += new EventHandler(delegate { sUpdatesViewer = null; });
-					}));
-				}
+				System.Diagnostics.Trace.TraceError("Check for online updates failed: {1}", ex.Message);
 			}
 		}
 
