@@ -1,4 +1,5 @@
 0.27.1 Restored compatibility with pre-SP1 .net 3.5
+     Added arkivmusic.boo script
 
 0.27 Updated to boo 0.91
      Installer now removes iTunes.boo and rateyourmusic.boo, if present

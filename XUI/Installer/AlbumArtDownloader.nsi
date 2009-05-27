@@ -1,5 +1,5 @@
 !define PRODUCT_NAME "Album Art Downloader XUI"
-!define PRODUCT_VERSION "0.27"
+!define PRODUCT_VERSION "0.27.1"
 !define PRODUCT_WEB_SITE "http://sourceforge.net/projects/album-art"
 !define PRODUCT_SUPPORT "http://www.hydrogenaudio.org/forums/index.php?showtopic=57392"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\AlbumArt.exe"
@@ -214,6 +214,9 @@ Section "hitparade.ch"
 SectionEnd
 Section "Metal Library"
   File "..\Scripts\Scripts\metallibrary.boo"
+SectionEnd
+Section "ArkivMusic (classical)"
+  File "..\Scripts\Scripts\arkivmusic.boo"
 SectionEnd
 Section "LastFM"
   File "..\Scripts\Scripts\lastfm-cover.boo"

@@ -25,6 +25,7 @@
   <Script Name="Amazon (.jp)" URI="amazon-jp.boo" Version="0.9">
     <Dependency>amazon-common.boo</Dependency>
   </Script>
+  <Script Name="ArkivMusik" URI="arkivmusic.boo" Version="0.1" />
   <Script Name="Buy.com" URI="buy-com.boo" Version="0.3" />
   <Script Name="CDCoverHideout" URI="cdcoverhideout.boo" Version="0.2" />
   <Script Name="CD Universe" URI="cduniverse.boo" Version="0.2" />
