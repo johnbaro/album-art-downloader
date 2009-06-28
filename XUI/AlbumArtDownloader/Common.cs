@@ -123,15 +123,11 @@ namespace AlbumArtDownloader
 		/// </summary>
 		public static string SubstitutePlaceholders(string pathPattern, string artist, string album)
 		{
-			return pathPattern.Replace("%artist%", Common.MakeSafeForPath(artist))
-								.Replace("%album%", Common.MakeSafeForPath(album))
-							//Replace these too, just in case path pattern was copied and pasted with them in, for example
-								.Replace("%name%", "*")
-								.Replace("%extension%", "*")
-								.Replace("%type%", "*")
-								.Replace("%source%", "*")
-								.Replace("%size%", "*")
-								.Replace("%preset%", "*");
+			string result = pathPattern.Replace("%artist%", Common.MakeSafeForPath(artist))
+								.Replace("%album%", Common.MakeSafeForPath(album));
+			
+			//Replace these too, just in case path pattern was copied and pasted with them in, for example
+			return Regex.Replace(result, @"%(?:name|extension|source|size|preset|type(?:\([^)]*\))?)%", "*", RegexOptions.IgnoreCase);
 		}
 
 		private static Regex sPathPatternSplitter = new Regex(@"(?<fixed>(?:[^/\\*]*(?:[/\\]|$))*)(?<match>[^/\\]+)?[/\\]?(?<remainder>.*)", RegexOptions.Compiled);

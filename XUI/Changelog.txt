@@ -1,3 +1,8 @@
+0.28 Added custom labels option to %type% placeholder: %type(Unknown,Front,Back,Inlay,CD)%
+     Updated Amazon scripts to use UTF-8 encoding for artist and album name search parameters
+     Fixed bug where it was possible to resize the results thumbnails to be bigger than the results area
+     
+
 0.27.1 Restored compatibility with pre-SP1 .net 3.5
      Added arkivmusic.boo script
 

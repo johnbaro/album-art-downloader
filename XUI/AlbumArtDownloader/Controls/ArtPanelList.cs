@@ -340,12 +340,25 @@ namespace AlbumArtDownloader.Controls
 				   (!UseMaximumImageSize || size <= MaximumImageSize);
 		}
 
-		public static readonly DependencyProperty ThumbSizeProperty = DependencyProperty.Register("ThumbSize", typeof(double), typeof(ArtPanelList), new FrameworkPropertyMetadata(50D, FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault));
+		public static readonly DependencyProperty ThumbSizeProperty = DependencyProperty.Register("ThumbSize", typeof(double), typeof(ArtPanelList), new FrameworkPropertyMetadata(50D, FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, null, new CoerceValueCallback(CoerceThumbSize)));
 		/// <summary>The size of the thumbnail images to display</summary>		
 		public double ThumbSize
 		{
 			get { return (double)GetValue(ThumbSizeProperty); }
 			set { SetValue(ThumbSizeProperty, value); }
+		}
+
+		private static object CoerceThumbSize(DependencyObject sender, object value)
+		{
+			ArtPanelList artPanelList = (ArtPanelList)sender;
+			if (artPanelList.ItemsPresenter == null)
+			{
+				return value;
+			}
+
+			//Restrict to be no larger than the smallest dimension of the list control
+			double maxSize = Math.Min(artPanelList.ItemsPresenter.ActualWidth, artPanelList.ActualHeight) - 10;
+			return (double)value < maxSize ? value : maxSize;
 		}
 
 		public static readonly DependencyProperty PanelWidthProperty = DependencyProperty.Register("PanelWidth", typeof(double), typeof(ArtPanelList), new FrameworkPropertyMetadata(150D, FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, null, new CoerceValueCallback(CoercePanelWidth)));

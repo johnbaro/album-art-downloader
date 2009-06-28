@@ -7,7 +7,7 @@ class BuyDotCom(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "Buy.com"
 	Version as string:
-		get: return "0.3"
+		get: return "0.4"
 	Author as string:
 		get: return "alsaan"
 
@@ -22,13 +22,18 @@ class BuyDotCom(AlbumArtDownloader.Scripts.IScript):
 		//Check whether we actually got any relevant result or not
 		if(searchResultsHtml.IndexOf("did not return an exact match") > -1):
 			return
-				
+
+		//Remove "Similar Products in General"
+		similar = searchResultsHtml.IndexOf(">Similar Products in general<")
+		if(similar > -1):
+			searchResultsHtml = searchResultsHtml.Substring(0, similar)
+		
 		//Extract all the thumbnails and the links to product pages
 		itemsRegex = Regex("<tr><td valign=\"top\" class=\"(list|listTop)\"><a href=\"(?<productPageUrl>[^\"]*/(?<sku>[^\"]*)\\.html)\"[^>]*><img[^>]*title=\"(?<title>[^\"]*)\"[^>]*src=\"(?<thumbnailUrl>[^\"]*)\"[^>]")
 		itemsMatches = itemsRegex.Matches(searchResultsHtml)
 		
 		//Set the estimated number of covers available (approx. 1 cover per product page)
-		results.EstimatedCount = itemsMatches.Count					
+		results.EstimatedCount = itemsMatches.Count
 		
 		for itemMatch as Match in itemsMatches:
   			AddThumbnail(results,itemMatch)

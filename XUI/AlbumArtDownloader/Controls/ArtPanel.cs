@@ -143,6 +143,7 @@ namespace AlbumArtDownloader.Controls
 				else
 				{
 					ThumbSize = Math.Max(0, ThumbSize - sKeyboardSizingStep);
+					UpdateThumbSizeFromBinding();
 				}
 				e.Handled = true;
 			}
@@ -157,6 +158,7 @@ namespace AlbumArtDownloader.Controls
 				else
 				{
 					ThumbSize += sKeyboardSizingStep;
+					UpdateThumbSizeFromBinding();
 				}
 				e.Handled = true;
 			}
@@ -416,8 +418,9 @@ namespace AlbumArtDownloader.Controls
 				}
 				else
 				{
-					//Keep square aspect ratio, don't have negative size.
-					ThumbSize = Math.Max(0, Math.Max(mousePos.X, mousePos.Y));
+					//Keep square aspect ratio, don't have negative size, don't have size larger than art panel
+					ThumbSize =  Math.Max(0, Math.Max(mousePos.X, mousePos.Y));
+					UpdateThumbSizeFromBinding();
 				}
 			}
 		}
@@ -474,6 +477,14 @@ namespace AlbumArtDownloader.Controls
 			if (bindingExpression != null)
 			{
 				bindingExpression.UpdateTarget(); //Update in case of snapping
+			}
+		}
+		private void UpdateThumbSizeFromBinding()
+		{
+			BindingExpression bindingExpression = GetBindingExpression(ThumbSizeProperty);
+			if (bindingExpression != null)
+			{
+				bindingExpression.UpdateTarget(); //Update in case of restriction (to list size)
 			}
 		}
 		#endregion

@@ -7,6 +7,7 @@ using AlbumArtDownloader.Scripts;
 using System.IO;
 using System.Net;
 using System.Drawing.Imaging;
+using System.Text.RegularExpressions;
 
 namespace AlbumArtDownloader
 {
@@ -138,8 +139,9 @@ namespace AlbumArtDownloader
 									 .Replace("%source%", Program.MakeSafeForPath(mScript.Name))
 									 .Replace("%size%", String.Format("{0} x {1}", mWidth, mHeight))
 									 .Replace("%extension%", extension)
-									 .Replace("%type%", Program.MakeSafeForPath(mCoverType.ToString()))
 									 .Replace("%sequence%", sequence.ToString());
+
+			path = ReplaceCustomTypeString(path, mCoverType);
 
 			//Ensure path is absolute, if relative
 			path = Path.GetFullPath(path);
@@ -165,6 +167,27 @@ namespace AlbumArtDownloader
 			return true;
 		}
 
+		private static string ReplaceCustomTypeString(string path, CoverType coverType)
+		{
+			return Regex.Replace(path, @"%type(?:\((?<names>[^)]*)\))?%",
+				new MatchEvaluator(delegate(Match match)
+				{
+					string name;
+					string[] names = match.Groups["names"].Value.Split(',');
+					if (names.Length > (int)coverType)
+					{
+						name = names[(int)coverType];
+					}
+					else
+					{
+						//No custom name provided
+						name = coverType.ToString();
+					}
+					return name;
+				}),
+				RegexOptions.IgnoreCase);
+		}
+		
 		#region Copied from AlbumArtDownloader/BitmapHelpers.cs
 		//TODO: Refactor this out into a common library? Or at least shared file?
 
