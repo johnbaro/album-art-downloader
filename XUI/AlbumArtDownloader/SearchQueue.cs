@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Runtime.InteropServices;
+using System.Windows;
+using System.Windows.Interop;
 
 namespace AlbumArtDownloader
 {
@@ -9,6 +12,27 @@ namespace AlbumArtDownloader
 	/// </summary>
 	public class SearchQueue: INotifyPropertyChanged
 	{
+		#region WinAPI
+		[DllImport("user32.dll")]
+		private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+
+		const UInt32 SWP_NOSIZE = 0x0001;
+		const UInt32 SWP_NOMOVE = 0x0002;
+		const UInt32 SWP_NOREDRAW = 0x0008;
+		const UInt32 SWP_NOACTIVATE = 0x0010;
+		const UInt32 SWP_SHOWWINDOW = 0x0040;
+
+		[DllImport("user32.dll", SetLastError = true)]
+		static extern IntPtr GetWindow(IntPtr hWnd, uint uCmd);
+
+		private const int GW_HWNDNEXT = 0x2;
+
+		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = false)]
+		static extern IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, int wParam, int lParam);
+
+		private const UInt32 WM_NCPAINT = 0x0085;
+		#endregion
+
 		private QueueManager mManagerWindow;
 		private ObservableCollection<ArtSearchWindow> mQueue = new ObservableCollection<ArtSearchWindow>();
 		
@@ -73,7 +97,53 @@ namespace AlbumArtDownloader
 					//Dequeue and show the next window
 					ArtSearchWindow searchWindow = Queue[0];
 					mQueue.RemoveAt(0);
-					ShowSearchWindow(searchWindow);
+					if (NumberOfOpenSearchWindows == 0)
+					{
+						//Just show normally
+						ShowSearchWindow(searchWindow);
+					}
+					else
+					{
+						//Show behind existing windows, unactivated
+						searchWindow.ShowActivated = false;
+						ShowSearchWindow(searchWindow);
+
+						//Send it behind the lowest existing window.
+						IntPtr hWnd = ((HwndSource)HwndSource.FromVisual(searchWindow)).Handle;
+
+						//Find the lowest existing window
+						IntPtr bottomWindow = IntPtr.Zero;
+						IntPtr nextHWnd = hWnd;
+						do
+						{
+							nextHWnd = GetWindow(nextHWnd, GW_HWNDNEXT);
+							if (nextHWnd == IntPtr.Zero)
+							{
+								break;
+							}
+							var hwndSource = HwndSource.FromHwnd(nextHWnd);
+							if (hwndSource != null && hwndSource.RootVisual is ArtSearchWindow)
+							{
+								bottomWindow = nextHWnd;
+							}
+						} while (true);
+
+						//Send it behind that one
+						if (bottomWindow != IntPtr.Zero)
+						{
+							SetWindowPos(hWnd, bottomWindow, 0, 0, 0, 0, SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOREDRAW | SWP_NOSIZE);
+							searchWindow.Visibility = Visibility.Visible;
+
+							//HACK: Repaint all the other windows Non-Client area (as WPF screws this up)
+							foreach (Window window in Application.Current.Windows)
+							{
+								if (window.IsVisible)
+								{
+									SendMessage(((HwndSource)HwndSource.FromVisual(window)).Handle, WM_NCPAINT, 0, 0);
+								}
+							}
+						}
+					}
 				}
 				if (Queue.Count == 0)
 				{
