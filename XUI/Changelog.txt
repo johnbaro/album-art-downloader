@@ -3,6 +3,7 @@
      Fixed bug where it was possible to resize the results thumbnails to be bigger than the results area
      Remove "Similar Products in General" results from buy-com script
      Dequeued windows from the Search Queue now open below all other search windows.
+     Fixed bug where /p parameter could be ignored if many search windows were already open
 
 0.27.1 Restored compatibility with pre-SP1 .net 3.5
      Added arkivmusic.boo script
