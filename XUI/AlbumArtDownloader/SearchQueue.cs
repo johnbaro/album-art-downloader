@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
@@ -35,7 +36,8 @@ namespace AlbumArtDownloader
 
 		private QueueManager mManagerWindow;
 		private ObservableCollection<ArtSearchWindow> mQueue = new ObservableCollection<ArtSearchWindow>();
-		
+		private HashSet<ArtSearchWindow> mNoLoadFromSettingsOnShow = new HashSet<ArtSearchWindow>();
+
 		public SearchQueue()
 		{
 			SimulataneousWindowsAllowed = Properties.Settings.Default.NumberOfWindowsForQueue;
@@ -46,8 +48,13 @@ namespace AlbumArtDownloader
 		/// window is shown immediately, if there are less than <see cref="SimultaneousWindowsAllowed"/>
 		/// windows open already.
 		/// </summary>
-		public void EnqueueSearchWindow(ArtSearchWindow searchWindow)
+		/// <param name="loadFromSettingsOnShow">If true, the window will load the current settings when it is shown.</param>
+		public void EnqueueSearchWindow(ArtSearchWindow searchWindow, bool loadFromSettingsOnShow)
 		{
+			if (!loadFromSettingsOnShow) //The usual case is to load on show, but if not doing it, flag up this state so that ShowSearchWindow doesn't call LoadSettings for it
+			{
+				mNoLoadFromSettingsOnShow.Add(searchWindow);
+			}
 			if (NumberOfOpenSearchWindows < SimulataneousWindowsAllowed)
 			{
 				//Show the window immediately
@@ -160,7 +167,10 @@ namespace AlbumArtDownloader
 		/// </summary>
 		private void ShowSearchWindow(ArtSearchWindow searchWindow)
 		{
-			searchWindow.LoadSettings(); //Ensure the settings are brought up to date
+			if (!mNoLoadFromSettingsOnShow.Remove(searchWindow)) //Don't update from settings if specifically requested not to.
+			{
+				searchWindow.LoadSettings(); //Ensure the settings are brought up to date
+			}
 			searchWindow.Closed += new EventHandler(OnSearchWindowClosed);
 			searchWindow.Show();
 			NumberOfOpenSearchWindows++;

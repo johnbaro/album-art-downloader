@@ -25,7 +25,7 @@ namespace AlbumArtDownloader
 			ArtSearchWindow newWindow = new ArtSearchWindow();
 			SetupNewWindow(newWindow, existingWindow);
 			SearchQueue searchQueue = ((App)Application.Current).SearchQueue;
-			searchQueue.EnqueueSearchWindow(newWindow);
+			searchQueue.EnqueueSearchWindow(newWindow, true);
 
 			if (forceShown)
 			{

@@ -478,7 +478,7 @@ namespace AlbumArtDownloader
 				if (searchWindow == null)
 				{
 					searchWindow = new ArtSearchWindow();
-					SearchQueue.EnqueueSearchWindow(searchWindow);
+					SearchQueue.EnqueueSearchWindow(searchWindow, false); //Don't load from settings on show, otherwise they'll override the settings specified on the command line
 				}
 				else
 				{
@@ -496,7 +496,6 @@ namespace AlbumArtDownloader
 				if (excludeSources.Count > 0)
 					searchWindow.ExcludeSources(excludeSources);
 
-					
 				if (artist != null || album != null)
 				{
 					searchWindow.Search(artist, album);
