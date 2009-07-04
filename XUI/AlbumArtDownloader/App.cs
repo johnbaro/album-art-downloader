@@ -199,8 +199,8 @@ namespace AlbumArtDownloader
 		{
 			//valuedParameters is a list of parameters which must have values - they can not be just switches.
 			string[] valuedParameters = { "artist", "ar", "album", "al", "path", "p", "localimagespath", 
-										  "sources", "s", "exclude", "es", "sort", "o", "minsize", "mn",
-										  "maxsize", "mx" };
+										  "sources", "s", "exclude", "es", "include", "i", 
+										  "sort", "o", "minsize", "mn", "maxsize", "mx" };
 			Arguments arguments = new Arguments(args, valuedParameters);
 			if (arguments.Contains("?"))
 			{
@@ -217,6 +217,7 @@ namespace AlbumArtDownloader
 
 			List<String> useSources = new List<string>();
 			List<String> excludeSources = new List<string>();
+			List<String> includeSources = new List<string>();
 			string errorMessage = null;
 			bool skipNext = false;
 			foreach (Parameter parameter in arguments)
@@ -304,7 +305,12 @@ namespace AlbumArtDownloader
 						case "ae": //Compatibility: Show Existing Album Art
 							excludeSources.Add("Local Files");
 							showSearchWindow = true;
-							break; //Not currently supported
+							break;
+						case "include":
+						case "i":
+							includeSources.AddRange(parameter.Value.Split(','));
+							showSearchWindow = true;
+							break;
 						case "pf": //Compatibility: Show pictures in folder
 							break; //Not currently supported
 						case "filebrowser":
@@ -495,6 +501,8 @@ namespace AlbumArtDownloader
 					searchWindow.UseSources(useSources);
 				if (excludeSources.Count > 0)
 					searchWindow.ExcludeSources(excludeSources);
+				if (includeSources.Count > 0)
+					searchWindow.IncludeSources(includeSources);
 
 				if (artist != null || album != null)
 				{

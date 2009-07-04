@@ -4,6 +4,8 @@
      Remove "Similar Products in General" results from buy-com script
      Dequeued windows from the Search Queue now open below all other search windows.
      Fixed bug where /p parameter could be ignored if many search windows were already open
+     Added /include parameter, which causes the specified sources to be enabled without disabling
+      other sources (which /sources does)
 
 0.27.1 Restored compatibility with pre-SP1 .net 3.5
      Added arkivmusic.boo script

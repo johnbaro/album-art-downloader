@@ -65,20 +65,26 @@ Options:
               the search window after saving,
               if this option is on by default.
  
- /sources     Searches only the specified     (/sources "Amazon,Coveralia")
+ /sources     Searches only the specified     (/sources "Album Art Exchange,Coveralia")
               sources. Others are disabled.
               Separate sources with commas.
               To search all available sources,
               specify "all" here.             (/sources all)
               May be abbreviated to /s
 
- /exclude     Does not search the specified   (/exclude "Local Files,Google")
+ /exclude     Does not search the specified   (/exclude "Local Files,GoogleImage")
               sources. Separate sources with
               commas.
               May be abbreviated to /es
               For backwards compatibilty, the
               parameter "/ae off" can also be
               used to exclude "Local Files".
+
+ /include     Searches the specified sources. (/include "Local Files,Album Art Exchange")
+              Does not disable sources that
+              are not specified. Separate 
+              sources with commas.
+              May be abbreviated to /i
 
  /sort (name|size|source)[+|-]
               Sets the sorting to use for the (/sort size-)

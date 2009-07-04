@@ -584,15 +584,27 @@ namespace AlbumArtDownloader
 		/// <param name="useSources"></param>
 		public void ExcludeSources(IEnumerable<string> excludeSources)
 		{
+			SetSources(excludeSources, false);
+		}
+		/// <summary>
+		/// Enable the specified sources
+		/// </summary>
+		/// <param name="useSources"></param>
+		public void IncludeSources(IEnumerable<string> includeSources)
+		{
+			SetSources(includeSources, true);
+		}
+		private void SetSources(IEnumerable<string> sourceNames, bool enabled)
+		{
 			foreach (Source source in mSources) //Go through all the sources
 			{
-				foreach (string excludeSource in excludeSources) //Check against the list of sources to use
+				foreach (string sourceName in sourceNames) //Check against the list of sources to use
 				{
 					//Use a case insensitive check
-					if (source.Name.Equals(excludeSource, StringComparison.InvariantCultureIgnoreCase))
+					if (source.Name.Equals(sourceName, StringComparison.InvariantCultureIgnoreCase))
 					{
 						//The source name matches, so disable the source, and stop checking names
-						source.IsEnabled = false;
+						source.IsEnabled = enabled;
 						break;
 					}
 				}

@@ -22,7 +22,7 @@ namespace AlbumArtDownloader
 
 				//valuedParameters is a list of parameters which must have values - they can not be just switches.
 				string[] valuedParameters = { "artist", "ar", "album", "al", "path", "p", 
-											  "sources", "s", "exclude", "es", "minsize", "mn",
+											  "sources", "s", "exclude", "es", "include", "i", "minsize", "mn",
 											  "maxsize", "mx", "minaspect", "ma", "orientation", "r",
 											  "sequence", "seq" };
 				Arguments arguments = new Arguments(args, valuedParameters);
@@ -106,6 +106,8 @@ namespace AlbumArtDownloader
 							break;
 						case "sources":
 						case "s":
+						case "include": //Included for compatibility with GUI command line parameters. There are no defaults here, so Include and Sources have the same effect of selecting those sources.
+						case "i":
 							useScripts.AddRange(parameter.Value.Split(','));
 							warnIfNoSearch = true;
 							break;
