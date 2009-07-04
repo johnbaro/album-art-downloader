@@ -311,6 +311,18 @@
 					Command="{x:Static local:ArtSearchWindow+Commands.GetMoreScripts}"
 					Visibility="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled, Converter={StaticResource mBooleanToVisibilityConverter}}"
 					Content="Get more scripts..."/>
+			<Border Grid.Row="4" Grid.ColumnSpan="2" 
+					Visibility="{Binding ElementName=this, Path=AutoDownloadedScriptsPresent, Converter={StaticResource mBooleanToVisibilityConverter}}"
+					Margin="0 3 0 0"
+					BorderThickness="0,0,1,1" BorderBrush="{x:Static SystemColors.ControlDarkBrush}" 
+					Background="{x:Static SystemColors.InfoBrush}"
+					SnapsToDevicePixels="True">
+
+				<Button Style="{StaticResource HyperlinkButton}"
+					Margin="4,2,2,2"
+					Command="{x:Static local:ArtSearchWindow+Commands.ShowAutoDownloadedScripts}"
+					Content="New scripts downloaded..."/>
+			</Border>
 		</Grid>
 	</Grid>
 </Window>

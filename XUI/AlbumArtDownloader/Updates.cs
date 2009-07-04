@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
@@ -7,7 +9,6 @@ using System.Windows;
 using System.Windows.Threading;
 using System.Xml;
 using AlbumArtDownloader.Scripts;
-using System.IO;
 
 namespace AlbumArtDownloader
 {
@@ -18,6 +19,9 @@ namespace AlbumArtDownloader
 		private static NewScriptsViewer sNewScriptsViewer;
 
 		private static bool sRestartPending;
+
+		/// <summary>If any scripts have been automatically downloaded, they will appear in this list so that the user can be informed</summary>
+		public static ObservableCollection<ScriptUpdate> AutoDownloadedScripts = new ObservableCollection<ScriptUpdate>();
 
 		/// <summary>
 		/// Performs a check for available updates, if <see cref="Properties.Settings.Default.AutoUpdateCheckInterval"/> has elapsed since the last check was made.
@@ -137,7 +141,9 @@ namespace AlbumArtDownloader
 						//Automatically download all newly available scripts
 						foreach (var script in updates.mAvailableScripts)
 						{
+							AutoDownloadedScripts.Add(script);
 							script.Download();
+							sRestartPending = true;
 						}
 
 						Properties.Settings.Default.NewScriptsAvailable = false;

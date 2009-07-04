@@ -20,6 +20,7 @@ namespace AlbumArtDownloader
 		public static class Commands
 		{
 			public static RoutedUICommand GetMoreScripts = new RoutedUICommand("GetMoreScripts", "GetMoreScripts", typeof(Commands));
+			public static RoutedUICommand ShowAutoDownloadedScripts = new RoutedUICommand("ShowAutoDownloadedScripts", "ShowAutoDownloadedScripts", typeof(Commands));
 		}
 
 		private Sources mSources = new Sources();
@@ -60,6 +61,7 @@ namespace AlbumArtDownloader
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.SaveAs, new ExecutedRoutedEventHandler(SaveAsExec)));
 			CommandBindings.Add(new CommandBinding(AlbumArtDownloader.Controls.ArtPanelList.Commands.Preview, new ExecutedRoutedEventHandler(PreviewExec)));
 			CommandBindings.Add(new CommandBinding(Commands.GetMoreScripts, new ExecutedRoutedEventHandler(GetMoreScriptsExec), new CanExecuteRoutedEventHandler(GetMoreScriptsCanExec)));
+			CommandBindings.Add(new CommandBinding(Commands.ShowAutoDownloadedScripts, new ExecutedRoutedEventHandler(ShowAutoDownloadedScriptsExec)));
 
 			//Stop All is bound only when doing a search (so the Stop All button only appears while searching)
 			mStopAllCommandBinding = new CommandBinding(ApplicationCommands.Stop, new ExecutedRoutedEventHandler(StopExec));
@@ -94,6 +96,9 @@ namespace AlbumArtDownloader
 
 			//If the default file path pattern does not containg %preset%, the presets context menu is coerced into being hidden
 			mDefaultSaveFolder.PathPatternChanged += delegate { CoerceValue(PresetsContextMenuProperty); };
+
+			//Notify when scripts have been auto downloaded
+			Updates.AutoDownloadedScripts.CollectionChanged += delegate { NotifyPropertyChanged("AutoDownloadedScriptsPresent"); };
 		}
 
 		private void OnAutoSelectTextBoxFocusChange(object sender, KeyboardFocusChangedEventArgs e)
@@ -702,6 +707,7 @@ namespace AlbumArtDownloader
 		}
 		#endregion
 
+		#region Command Execution
 		private void CopyExec(object sender, ExecutedRoutedEventArgs e)
 		{
 			AlbumArt albumArt = (AlbumArt)mResultsViewer.GetSourceAlbumArt(e);
@@ -773,6 +779,12 @@ namespace AlbumArtDownloader
 			}
 		}
 
+		private void ShowAutoDownloadedScriptsExec(object sender, ExecutedRoutedEventArgs e)
+		{
+			new AutoDownloadedScriptsViewer().Show();
+		}
+		#endregion
+
 		#region Presets
 		private void UpdatePresetsMenu()
 		{
@@ -840,6 +852,21 @@ namespace AlbumArtDownloader
 				UpdatePresetsMenu();
 			}
 		}
+		#endregion
+
+		#region Updates
+		/// <summary>
+		/// Gets a value indicating whether any scripts have been automatically downloaded since the application was launched.
+		/// <remarks>This can only be true if the <see cref="AutoDownloadAllScripts"/> setting is set true.</remarks>
+		/// </summary>
+		public bool AutoDownloadedScriptsPresent //Property change notification set up in constructor, by name.
+		{
+			get
+			{
+				return Updates.AutoDownloadedScripts.Any();
+			}
+		}
+
 		#endregion
 
 		#region IAppWindow
