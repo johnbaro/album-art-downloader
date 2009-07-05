@@ -1,3 +1,5 @@
+0.28.1 Fixed serious bug with queued maximized windows
+
 0.28 Added custom labels option to %type% placeholder: %type(Unknown,Front,Back,Inlay,CD)%
      Updated Amazon scripts to use UTF-8 encoding for artist and album name search parameters
      Fixed bug where it was possible to resize the results thumbnails to be bigger than the results area

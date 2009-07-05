@@ -17,21 +17,27 @@ namespace AlbumArtDownloader
 		[DllImport("user32.dll")]
 		private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
 
-		const UInt32 SWP_NOSIZE = 0x0001;
-		const UInt32 SWP_NOMOVE = 0x0002;
-		const UInt32 SWP_NOREDRAW = 0x0008;
-		const UInt32 SWP_NOACTIVATE = 0x0010;
-		const UInt32 SWP_SHOWWINDOW = 0x0040;
+		private const UInt32 SWP_NOSIZE = 0x0001;
+		private const UInt32 SWP_NOMOVE = 0x0002;
+		private const UInt32 SWP_NOREDRAW = 0x0008;
+		private const UInt32 SWP_NOACTIVATE = 0x0010;
+		private const UInt32 SWP_SHOWWINDOW = 0x0040;
 
 		[DllImport("user32.dll", SetLastError = true)]
-		static extern IntPtr GetWindow(IntPtr hWnd, uint uCmd);
+		private static extern IntPtr GetWindow(IntPtr hWnd, uint uCmd);
 
 		private const int GW_HWNDNEXT = 0x2;
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = false)]
-		static extern IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, int wParam, int lParam);
+		private static extern IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, int wParam, int lParam);
 
 		private const UInt32 WM_NCPAINT = 0x0085;
+
+		[DllImport("user32.dll")]
+		private static extern IntPtr GetActiveWindow();
+
+		[DllImport("user32.dll")]
+		private static extern IntPtr SetActiveWindow(IntPtr hWnd);
 		#endregion
 
 		private QueueManager mManagerWindow;
@@ -139,7 +145,19 @@ namespace AlbumArtDownloader
 						if (bottomWindow != IntPtr.Zero)
 						{
 							SetWindowPos(hWnd, bottomWindow, 0, 0, 0, 0, SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOREDRAW | SWP_NOSIZE);
-							searchWindow.Visibility = Visibility.Visible;
+							/*
+							if (searchWindow.WindowState == WindowState.Maximized)
+							{
+								//For some reason, maximized windows can't be shown with ShowActivated set false.
+								searchWindow.WindowState = WindowState.Normal;
+								searchWindow.Visibility = Visibility.Visible;
+								searchWindow.WindowState = WindowState.Maximized;
+							}
+							else
+							{
+								searchWindow.Visibility = Visibility.Visible;
+							}
+							 * */
 
 							//HACK: Repaint all the other windows Non-Client area (as WPF screws this up)
 							foreach (Window window in Application.Current.Windows)
@@ -172,7 +190,9 @@ namespace AlbumArtDownloader
 				searchWindow.LoadSettings(); //Ensure the settings are brought up to date
 			}
 			searchWindow.Closed += new EventHandler(OnSearchWindowClosed);
+
 			searchWindow.Show();
+			
 			NumberOfOpenSearchWindows++;
 		}
 

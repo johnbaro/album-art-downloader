@@ -192,13 +192,14 @@ namespace AlbumArtDownloader.Properties
 			{
 				this.window.Closing += new CancelEventHandler(window_Closing);
 				this.window.Initialized += new EventHandler(window_Initialized);
-				this.window.Loaded += new RoutedEventHandler(window_Loaded);
+				this.window.Activated += window_Activated;
 				SetWindowSettings(window, this);
 			}
 		}
 
-		private void window_Loaded(object sender, RoutedEventArgs e)
+		private void window_Activated(object sender, EventArgs e)
 		{
+			this.window.Activated -= window_Activated; //Only do this once
 			if (this.Settings.WindowState == WindowState.Maximized)
 			{
 				this.window.WindowState = this.Settings.WindowState;
