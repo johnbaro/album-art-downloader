@@ -141,9 +141,13 @@ namespace AlbumArtDownloader
 						//Automatically download all newly available scripts
 						foreach (var script in updates.mAvailableScripts)
 						{
-							AutoDownloadedScripts.Add(script);
 							script.Download();
 							sRestartPending = true;
+
+							parameters.Dispatcher.BeginInvoke(DispatcherPriority.DataBind, new ThreadStart(delegate
+							{
+								AutoDownloadedScripts.Add(script);
+							}));
 						}
 
 						Properties.Settings.Default.NewScriptsAvailable = false;
@@ -168,7 +172,7 @@ namespace AlbumArtDownloader
 			}
 			catch (Exception ex)
 			{
-				System.Diagnostics.Trace.TraceError("Check for online updates failed: {1}", ex.Message);
+				System.Diagnostics.Trace.TraceError("Check for online updates failed: {0}", ex.Message);
 			}
 		}
 

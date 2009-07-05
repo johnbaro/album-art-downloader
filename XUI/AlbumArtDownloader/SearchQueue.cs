@@ -32,12 +32,6 @@ namespace AlbumArtDownloader
 		private static extern IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, int wParam, int lParam);
 
 		private const UInt32 WM_NCPAINT = 0x0085;
-
-		[DllImport("user32.dll")]
-		private static extern IntPtr GetActiveWindow();
-
-		[DllImport("user32.dll")]
-		private static extern IntPtr SetActiveWindow(IntPtr hWnd);
 		#endregion
 
 		private QueueManager mManagerWindow;
