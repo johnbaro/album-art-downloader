@@ -33,7 +33,7 @@
   <Script Name="Coveralia" URI="coveralia.boo" Version="0.8" />
   <Script Name="CoverIsland" URI="coverisland.boo" Version="0.5" />
   <Script Name="Darktown" URI="darktown.boo" Version="0.3" />
-  <Script Name="Discogs" URI="discogs.boo" Version="0.5" />
+  <Script Name="Discogs" URI="discogs.boo" Version="0.6" />
   <Script Name="Freecovers API" URI="freecovers-api.boo" Version="0.1" />
   <Script Name="GoogleImage" URI="google.boo" Version="0.8" />
   <Script Name="hitparade.ch" URI="hitparade.boo" Version="0.1" />
