@@ -23,10 +23,10 @@ namespace AlbumArtDownloader
 		private const UInt32 SWP_NOACTIVATE = 0x0010;
 		private const UInt32 SWP_SHOWWINDOW = 0x0040;
 
-		[DllImport("user32.dll", SetLastError = true)]
-		private static extern IntPtr GetWindow(IntPtr hWnd, uint uCmd);
-
-		private const int GW_HWNDNEXT = 0x2;
+		[DllImport("user32.dll")]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		private static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, int lParam);
+		private delegate bool EnumWindowsProc(IntPtr hwnd, int lParam);
 
 		[DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = false)]
 		private static extern IntPtr SendMessage(IntPtr hWnd, UInt32 Msg, int wParam, int lParam);
@@ -120,38 +120,23 @@ namespace AlbumArtDownloader
 
 						//Find the lowest existing window
 						IntPtr bottomWindow = IntPtr.Zero;
-						IntPtr nextHWnd = hWnd;
-						do
+						
+						EnumWindowsProc enumWindowsProc = new EnumWindowsProc(delegate(IntPtr enumHWnd, int enumLParam)
 						{
-							nextHWnd = GetWindow(nextHWnd, GW_HWNDNEXT);
-							if (nextHWnd == IntPtr.Zero)
-							{
-								break;
-							}
-							var hwndSource = HwndSource.FromHwnd(nextHWnd);
+							var hwndSource = HwndSource.FromHwnd(enumHWnd);
 							if (hwndSource != null && hwndSource.RootVisual is ArtSearchWindow)
 							{
-								bottomWindow = nextHWnd;
+								bottomWindow = enumHWnd;
 							}
-						} while (true);
-
+							return true;
+						});
+						EnumWindows(enumWindowsProc, 0);
+						GC.KeepAlive(enumWindowsProc);
+						
 						//Send it behind that one
 						if (bottomWindow != IntPtr.Zero)
 						{
 							SetWindowPos(hWnd, bottomWindow, 0, 0, 0, 0, SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOREDRAW | SWP_NOSIZE);
-							/*
-							if (searchWindow.WindowState == WindowState.Maximized)
-							{
-								//For some reason, maximized windows can't be shown with ShowActivated set false.
-								searchWindow.WindowState = WindowState.Normal;
-								searchWindow.Visibility = Visibility.Visible;
-								searchWindow.WindowState = WindowState.Maximized;
-							}
-							else
-							{
-								searchWindow.Visibility = Visibility.Visible;
-							}
-							 * */
 
 							//HACK: Repaint all the other windows Non-Client area (as WPF screws this up)
 							foreach (Window window in Application.Current.Windows)

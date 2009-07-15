@@ -37,8 +37,7 @@ namespace AlbumArtDownloader
 			mAutoDownloadFullSizeImagesThread = new Thread(new ThreadStart(AutoDownloadFullSizeImagesWorker));
 			mAutoDownloadFullSizeImagesThread.Name = "Auto Download Full Size Images";
 			mAutoDownloadFullSizeImagesThread.Priority = ThreadPriority.BelowNormal;
-			mAutoDownloadFullSizeImagesThread.Start();
-
+			
 			//Bind the SelectAll checkbox
 			Binding selectAllBinding = new Binding("AllEnabled");
 			selectAllBinding.Source = mSources;
@@ -208,6 +207,12 @@ namespace AlbumArtDownloader
 
 		private void OnAutoDownloadFullSizeImagesChanged(object sender, RoutedEventArgs e)
 		{
+			if (Properties.Settings.Default.AutoDownloadFullSizeImages != AutoDownloadFullSizeImages.Never &&
+				mAutoDownloadFullSizeImagesThread.ThreadState == ThreadState.Unstarted)
+			{
+				mAutoDownloadFullSizeImagesThread.Start();
+			}
+
 			if (Properties.Settings.Default.AutoDownloadFullSizeImages == AutoDownloadFullSizeImages.Always)
 			{
 				//Re-queue all images, to ensure they all get a chance at being auto-downloaded, even if they were skipped from having had a non-unknown size before.
@@ -502,8 +507,11 @@ namespace AlbumArtDownloader
 			string winName = state as string ?? String.Empty;
 			System.Diagnostics.Trace.TraceInformation("Starting thread tear-down for " + winName);
 
-			mAutoDownloadFullSizeImagesThread.Abort();
-			mAutoDownloadFullSizeImagesThread.Join();
+			if (mAutoDownloadFullSizeImagesThread.ThreadState != ThreadState.Unstarted)
+			{
+				mAutoDownloadFullSizeImagesThread.Abort();
+				mAutoDownloadFullSizeImagesThread.Join();
+			}
 			foreach (Source source in mSources)
 			{
 				source.TerminateSearch();

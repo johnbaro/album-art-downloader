@@ -1,4 +1,7 @@
-0.29 Updated discogs script
+0.28.2 Updated discogs script
+     Fixed crash when manually updating after automatically getting new scripts.
+     Fixed bug with command line parameters ending in \"
+     Improved reliability of queued windows showing behind existing ones
 
 0.28.1 Fixed serious bug with queued maximized windows
 

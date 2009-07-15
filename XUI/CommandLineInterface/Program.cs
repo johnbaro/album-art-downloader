@@ -101,7 +101,7 @@ namespace AlbumArtDownloader
 							break;
 						case "path":
 						case "p":
-							path = parameter.Value;
+							path = PathFix(parameter.Value);
 							warnIfNoSearch = true;
 							break;
 						case "sources":
@@ -275,6 +275,22 @@ namespace AlbumArtDownloader
 				Console.WriteLine("Unexpected faliure: " + e.Message);
 				return -1; //Faliure
 			}
+		}
+
+		/// <summary>
+		/// Hack to fix .net args processing. Removes trailing " and replaces it by \
+		/// <remarks>
+		/// If the command line includes, for example /path "c:\folder\", then the last two
+		/// characters are interpreted as an escaped " mark. This hack fixes that.
+		/// </remarks>
+		/// </summary>
+		private static string PathFix(string pathParam)
+		{
+			if (pathParam[pathParam.Length - 1] == '\"')
+			{
+				return pathParam.Substring(0, pathParam.Length - 1) + "\\";
+			}
+			return pathParam;
 		}
 
 		/// <summary>

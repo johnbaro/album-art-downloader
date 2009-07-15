@@ -266,7 +266,7 @@ namespace AlbumArtDownloader
 							break;
 						case "path":
 						case "p":
-							path = parameter.Value;
+							path = PathFix(parameter.Value);
 							//Compatibility mode: if an "f" parameter, for filename, is provided, append it to the path.
 							string filename;
 							if (arguments.TryGetParameterValue("f", out filename))
@@ -278,7 +278,7 @@ namespace AlbumArtDownloader
 						case "f":
 							break; //See case "p" for handling of this parameter
 						case "localimagespath":
-							localImagesPath = parameter.Value;
+							localImagesPath = PathFix(parameter.Value);
 							showSearchWindow = true;
 							break;
 						case "autoclose":
@@ -314,7 +314,7 @@ namespace AlbumArtDownloader
 						case "pf": //Compatibility: Show pictures in folder
 							break; //Not currently supported
 						case "filebrowser":
-							fileBrowser = parameter.Value;
+							fileBrowser = PathFix(parameter.Value);
 							showFileBrowser = true;
 							break;
 						case "foobarbrowser":
@@ -527,6 +527,22 @@ namespace AlbumArtDownloader
 			}
 
 			return true;
+		}
+
+		/// <summary>
+		/// Hack to fix .net args processing. Removes trailing " and replaces it by \
+		/// <remarks>
+		/// If the command line includes, for example /path "c:\folder\", then the last two
+		/// characters are interpreted as an escaped " mark. This hack fixes that.
+		/// </remarks>
+		/// </summary>
+		private static string PathFix(string pathParam)
+		{
+			if (pathParam[pathParam.Length - 1] == '\"')
+			{
+				return pathParam.Substring(0, pathParam.Length - 1) + "\\";
+			}
+			return pathParam;
 		}
 
 		//Any other settings loaded will also require upgrading, if the main settings do, so set this flag to indicate that.

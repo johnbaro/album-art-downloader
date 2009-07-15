@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <?xml-stylesheet type="text/xsl" href="Updates.xsl"?>
 <Updates BaseURI="http://album-art.sourceforge.net/scripts/">
-  <Application Version="0.28.1.0" Name="Album Art Downloader XUI v0.28.1" URI="http://downloads.sourceforge.net/album-art/AlbumArtDownloaderXUI-0.28.1.exe" />
+  <Application Version="0.28.2.0" Name="Album Art Downloader XUI v0.28.1" URI="http://downloads.sourceforge.net/album-art/AlbumArtDownloaderXUI-0.28.1.exe" />
   <Script Name="Album Art Exchange" URI="albumartexchange.boo" Version="0.2" />
   <Script Name="AllCdCover" URI="allcdcover.boo" Version="0.1" />
   <Script Name="Amazon (.ca)" URI="amazon-ca.boo" Version="0.10">
