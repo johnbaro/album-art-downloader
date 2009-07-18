@@ -112,7 +112,11 @@ namespace AlbumArtDownloader
 					else
 					{
 						//Show behind existing windows, unactivated
-						searchWindow.ShowActivated = false;
+						if (!App.UsePreSP1Compatibility)
+						{
+							//ShowActivated not supported pre SP1.
+							searchWindow.ShowActivated = false;
+						}
 						ShowSearchWindow(searchWindow);
 
 						//Send it behind the lowest existing window.

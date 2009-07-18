@@ -97,7 +97,12 @@ namespace AlbumArtDownloader
 			mDefaultSaveFolder.PathPatternChanged += delegate { CoerceValue(PresetsContextMenuProperty); };
 
 			//Notify when scripts have been auto downloaded
-			Updates.AutoDownloadedScripts.CollectionChanged += delegate { NotifyPropertyChanged("AutoDownloadedScriptsPresent"); };
+			Updates.AutoDownloadedScripts.CollectionChanged += OnAutoDownloadedScriptsChanged;
+		}
+
+		private void OnAutoDownloadedScriptsChanged(object sender, NotifyCollectionChangedEventArgs e)
+		{
+			NotifyPropertyChanged("AutoDownloadedScriptsPresent");
 		}
 
 		private void OnAutoSelectTextBoxFocusChange(object sender, KeyboardFocusChangedEventArgs e)
@@ -486,6 +491,9 @@ namespace AlbumArtDownloader
 
 		protected override void OnClosed(EventArgs e)
 		{
+			//Unhook script download notification
+			Updates.AutoDownloadedScripts.CollectionChanged -= OnAutoDownloadedScriptsChanged;
+
 			string winName = ((IAppWindow)this).Description;
 
 			//Tear down all the threads in the background
