@@ -32,12 +32,12 @@ namespace AlbumArtDownloader
 
 		public ArtSearchWindow()
 		{
-			InitializeComponent();
-			
 			mAutoDownloadFullSizeImagesThread = new Thread(new ThreadStart(AutoDownloadFullSizeImagesWorker));
 			mAutoDownloadFullSizeImagesThread.Name = "Auto Download Full Size Images";
 			mAutoDownloadFullSizeImagesThread.Priority = ThreadPriority.BelowNormal;
-			
+
+			InitializeComponent();
+
 			//Bind the SelectAll checkbox
 			Binding selectAllBinding = new Binding("AllEnabled");
 			selectAllBinding.Source = mSources;

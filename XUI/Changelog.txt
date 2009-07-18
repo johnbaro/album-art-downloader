@@ -1,3 +1,5 @@
+0.28.3 Fixed stupid Auto Download Images crash with 0.28.2
+
 0.28.2 Updated discogs script
      Fixed crash when manually updating after automatically getting new scripts.
      Fixed bug with command line parameters ending in \"
