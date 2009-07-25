@@ -85,7 +85,22 @@ namespace AlbumArtDownloader
 			AlbumArt albumArt = (AlbumArt)AlbumArt;
 			if (albumArt != null)
 			{
+				string preset = e.Parameter as String;
+				if (preset != null)
+				{
+					albumArt.Preset = preset;
+				}
+				else if (Properties.Settings.Default.Presets.Length > 0)
+				{
+					albumArt.Preset = Properties.Settings.Default.Presets[0].Value;
+				}
+				else
+				{
+					albumArt.Preset = null;
+				}
+
 				albumArt.PropertyChanged += AutoCloseOnSave;
+
 				albumArt.Save();
 			}
 		}
@@ -189,6 +204,14 @@ namespace AlbumArtDownloader
 
 			double halfViewportHeight = scrollViewer.ViewportHeight / 2;
 			scrollViewer.ScrollToVerticalOffset((scrollViewer.VerticalOffset + halfViewportHeight) * deltaZoom - halfViewportHeight);
+		}
+
+		public static readonly DependencyProperty PresetsContextMenuProperty = ArtPanel.PresetsContextMenuProperty.AddOwner(typeof(ArtPreviewWindow));
+		/// <summary>The menu to display when the Save button dropper is clicked</summary>
+		public ContextMenu PresetsContextMenu
+		{
+			get { return (ContextMenu)GetValue(PresetsContextMenuProperty); }
+			set { SetValue(PresetsContextMenuProperty, value); }
 		}
 		#endregion
 

@@ -20,8 +20,9 @@ namespace AlbumArtDownloader.Scripts
 		//NOTE: These values are currently directly user-visible in the UI
 		Unknown, 
 		Front, 
-		Back, 
-		Inlay, 
+		Back,
+		Inlay, //"Inlay" provided for backwards compatiblity. New term is "Inside"
+		Inside = Inlay,
 		CD
 	}
 

@@ -65,7 +65,7 @@ namespace AlbumArtDownloader.Controls
 				formattedTextInfo = new FormattedTextInfo(text, culture, textBlock);
 				sFormattedTextCache[key] = formattedTextInfo;
 			}
-			return formattedTextInfo.MeasureWidth();
+			return formattedTextInfo.Width;
 		}
 
 		/// <summary>
@@ -73,26 +73,32 @@ namespace AlbumArtDownloader.Controls
 		/// </summary>
 		private class FormattedTextInfo
 		{
-			private FormattedText mFormattedText;
-
-			private CultureInfo mCulture;
+			private readonly double mWidth;
+			
+			private int mCultureId;
 			private FlowDirection mFlowDirection;
-			private Typeface mTypeface;
+			private int mFontFamilyId;
+			private int mFontStyleId;
+			private int mFontWeightId;
+			private int mFontStretchId;
 			private double mFontSize;
 
 			public FormattedTextInfo(string text, CultureInfo culture, TextBlock textBlock)
 			{
-				mCulture = culture;
+				mCultureId = culture.LCID;
 				mFlowDirection = textBlock.FlowDirection;
-				mTypeface = new Typeface(textBlock.FontFamily, textBlock.FontStyle, textBlock.FontWeight, textBlock.FontStretch);
+				mFontFamilyId = textBlock.FontFamily.GetHashCode();
+				mFontStyleId = textBlock.FontStyle.GetHashCode();
+				mFontWeightId = textBlock.FontWeight.GetHashCode();
+				mFontStretchId = textBlock.FontStretch.GetHashCode();
 				mFontSize = textBlock.FontSize;
 				
-				mFormattedText = new FormattedText(	text, 
-													mCulture, 
-													mFlowDirection,
-													mTypeface,
-													mFontSize,
-													null);
+				mWidth = new FormattedText(	text, 
+											culture, 
+											mFlowDirection,
+											new Typeface(textBlock.FontFamily, textBlock.FontStyle, textBlock.FontWeight, textBlock.FontStretch),
+											mFontSize,
+											null).Width;
 			}
 
 			
@@ -102,19 +108,19 @@ namespace AlbumArtDownloader.Controls
 			public bool IsEquivalent(CultureInfo culture, TextBlock textBlock)
 			{
 				return
-					culture == mCulture &&
+					culture.LCID == mCultureId &&
 					textBlock.FlowDirection == mFlowDirection &&
-					textBlock.FontFamily.Equals(mTypeface.FontFamily) &&
-					textBlock.FontStyle == mTypeface.Style &&
-					textBlock.FontWeight == mTypeface.Weight &&
-					textBlock.FontStretch == mTypeface.Stretch &&
+					textBlock.FontFamily.GetHashCode() == mFontFamilyId &&
+					textBlock.FontStyle.GetHashCode() == mFontStyleId &&
+					textBlock.FontWeight.GetHashCode() == mFontWeightId &&
+					textBlock.FontStretch.GetHashCode() == mFontStretchId &&
 					textBlock.FontSize == mFontSize
 				;
 			}
 
-			public double MeasureWidth()
+			public double Width
 			{
-				return mFormattedText.Width;
+				get { return mWidth; }
 			}
 		}
 		#endregion

@@ -115,7 +115,7 @@ namespace AlbumArtDownloader
 						if (!App.UsePreSP1Compatibility)
 						{
 							//ShowActivated not supported pre SP1.
-							searchWindow.ShowActivated = false;
+							SetShowActivated(searchWindow, false);
 						}
 						ShowSearchWindow(searchWindow);
 
@@ -160,6 +160,13 @@ namespace AlbumArtDownloader
 						mManagerWindow.Close();
 				}
 			}
+		}
+
+		//This method exists to isolate the ShowActivated member, which is unsupported under SP1.
+		//This method may not be called if App.UsePreSP1Compatiblity is set false, as it will crash (before even executing the method)
+		private void SetShowActivated(ArtSearchWindow window, bool showActivated)
+		{
+			window.ShowActivated = false;
 		}
 
 		/// <summary>

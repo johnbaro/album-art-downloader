@@ -375,7 +375,7 @@ namespace AlbumArtDownloader.Properties {
   <Preset><Name>Default</Name><Value></Value></Preset>
   <Preset><Name>Front</Name><Value>-Front</Value></Preset>
   <Preset><Name>Back</Name><Value>-Back</Value></Preset>
-  <Preset><Name>Inlay</Name><Value>-Inlay</Value></Preset>
+  <Preset><Name>Inside</Name><Value>-Inside</Value></Preset>
   <Preset><Name>CD</Name><Value>-CD</Value></Preset>
 </ArrayOfPreset>")]
         public AlbumArtDownloader.Preset[] Presets {

@@ -78,8 +78,8 @@ namespace AlbumArtDownloader
 							Environment.Exit(-1); //Ensure exit
 							return;
 						}
-						App.UsePreSP1Compatibility = true;
 					}
+					App.UsePreSP1Compatibility = true;
 
 				}
 				#endregion
@@ -538,7 +538,7 @@ namespace AlbumArtDownloader
 		/// </summary>
 		private static string PathFix(string pathParam)
 		{
-			if (pathParam[pathParam.Length - 1] == '\"')
+			if (!String.IsNullOrEmpty(pathParam) && pathParam[pathParam.Length - 1] == '\"')
 			{
 				return pathParam.Substring(0, pathParam.Length - 1) + "\\";
 			}

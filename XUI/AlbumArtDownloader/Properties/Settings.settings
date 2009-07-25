@@ -103,7 +103,7 @@
   &lt;Preset&gt;&lt;Name&gt;Default&lt;/Name&gt;&lt;Value&gt;&lt;/Value&gt;&lt;/Preset&gt;
   &lt;Preset&gt;&lt;Name&gt;Front&lt;/Name&gt;&lt;Value&gt;-Front&lt;/Value&gt;&lt;/Preset&gt;
   &lt;Preset&gt;&lt;Name&gt;Back&lt;/Name&gt;&lt;Value&gt;-Back&lt;/Value&gt;&lt;/Preset&gt;
-  &lt;Preset&gt;&lt;Name&gt;Inlay&lt;/Name&gt;&lt;Value&gt;-Inlay&lt;/Value&gt;&lt;/Preset&gt;
+  &lt;Preset&gt;&lt;Name&gt;Inside&lt;/Name&gt;&lt;Value&gt;-Inside&lt;/Value&gt;&lt;/Preset&gt;
   &lt;Preset&gt;&lt;Name&gt;CD&lt;/Name&gt;&lt;Value&gt;-CD&lt;/Value&gt;&lt;/Preset&gt;
 &lt;/ArrayOfPreset&gt;</Value>
     </Setting>

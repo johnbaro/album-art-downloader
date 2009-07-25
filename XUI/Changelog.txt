@@ -1,3 +1,10 @@
+0.29 Further pre-SP1 compatibility fixes.
+     Clicking the Save button now uses the Default (first) preset, if presets are used.
+     Added Presets dropdown to save button in Preview window
+     Fixed crash when /fileBrowser argument is used without path parameter
+     Renamed term "Inlay" to "Inside", as it applies more generically to any artwork from
+      the inside of the jewel case, not just the inlay.
+
 0.28.3 Fixed stupid Auto Download Images crash with 0.28.2
 
 0.28.2 Updated discogs script

@@ -108,9 +108,10 @@
 					<TextBox x:Name="mFilePathTextBox" VerticalAlignment="Top"/>
 					<Button x:Name="mFilePathBrowse" Grid.Column="1" Content="..." FontSize="10" Height="{Binding ElementName=mFilePathTextBox, Path=ActualHeight, Mode=OneWay}" Style="{x:Null}"/>
 				</Grid>
-				<Button Style="{StaticResource ToolbarButton}" Command="ApplicationCommands.Save" Grid.Column="2">
+				<controls:SplitButton Command="ApplicationCommands.Save" VerticalAlignment="Top" Grid.Row="1" Grid.Column="2" MenuToolTip="Save As..." Menu="{Binding ElementName=this, Path=PresetsContextMenu}">
 					<Image Source="/Controls/Xaml/save.png" Stretch="None" ToolTip="Save"/>
-				</Button>
+				</controls:SplitButton>
+
 				<Image Grid.Column="2" Grid.Row="1" VerticalAlignment="Top" Source="/Controls/Xaml/wait.png" Stretch="None" Visibility="{Binding IsSaving, Converter={StaticResource mBooleanToVisibilityConverter}}" ToolTip="Saving..." Cursor="Wait"/>
 				
 				<Border Grid.Column="3" Grid.RowSpan="3" BorderBrush="{x:Static SystemColors.ControlDarkBrush}" BorderThickness="1,0,0,0" Margin="5,3,5,3"/>

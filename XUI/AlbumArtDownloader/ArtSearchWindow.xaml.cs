@@ -749,6 +749,14 @@ namespace AlbumArtDownloader
 				{
 					albumArt.Preset = preset;
 				}
+				else if (Properties.Settings.Default.Presets.Length > 0)
+				{
+					albumArt.Preset = Properties.Settings.Default.Presets[0].Value;
+				}
+				else
+				{
+					albumArt.Preset = null;
+				}
 
 				albumArt.Save();
 			}
@@ -772,7 +780,15 @@ namespace AlbumArtDownloader
 			{
 				albumArt.RetrieveFullSizeImage();
 				//Show persistant preview window
-				Common.NewPreviewWindow(this).AlbumArt = albumArt;
+				var previewWindow = Common.NewPreviewWindow(this);
+				previewWindow.AlbumArt = albumArt;
+				//Bind to the presets context menu
+				BindingOperations.SetBinding(previewWindow, ArtPreviewWindow.PresetsContextMenuProperty, new Binding()
+				{
+					Source = this,
+					Path = new PropertyPath(PresetsContextMenuProperty),
+					Mode = BindingMode.OneWay
+				});
 			}
 		}
 
