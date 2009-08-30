@@ -1,4 +1,5 @@
 import System
+import System.Xml
 import AlbumArtDownloader.Scripts
 import util
 
@@ -11,7 +12,7 @@ class LastFmCover(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "LastFM Cover"
 	Version as string:
-		get: return "0.3"
+		get: return "0.4"
 	Author as string:
 		get: return "daju"
 	
