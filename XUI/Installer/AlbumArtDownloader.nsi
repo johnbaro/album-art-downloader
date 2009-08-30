@@ -165,6 +165,9 @@ SectionEnd
 Section "Yes24"
   File "..\Scripts\Scripts\yes24.boo"
 SectionEnd
+Section "YesAsia"
+  File "..\Scripts\Scripts\yesasia.boo"
+SectionEnd
 Section "Juno Records"
   File "..\Scripts\Scripts\juno-records.boo"
 SectionEnd
