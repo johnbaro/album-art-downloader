@@ -122,10 +122,6 @@ SectionGroup "Amazon"
 	  File "..\Scripts\Scripts\amazon-common.boo"
       File "..\Scripts\Scripts\amazon-com.boo"
 	SectionEnd
-    Section /o "Amazon MP3 (US)"
-	  File "..\Scripts\Scripts\amazon-common.boo"
-      File "..\Scripts\Scripts\amazon-com-mp3.boo"
-	SectionEnd	
 	Section /o "Amazon (UK)"
 	  File "..\Scripts\Scripts\amazon-common.boo"
 	  File "..\Scripts\Scripts\amazon-co-uk.boo"
