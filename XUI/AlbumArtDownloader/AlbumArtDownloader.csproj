@@ -235,6 +235,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Controls\Xaml\Separator.generic.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="RenameArt.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="NewScriptsViewer.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -302,6 +308,9 @@
     <Compile Include="Controls\VirtualFileDragger.cs" />
     <Compile Include="AutoDownloadedScriptsViewer.xaml.cs">
       <DependentUpon>AutoDownloadedScriptsViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="RenameArt.xaml.cs">
+      <DependentUpon>RenameArt.xaml</DependentUpon>
     </Compile>
     <Compile Include="NewScriptsViewer.xaml.cs">
       <DependentUpon>NewScriptsViewer.xaml</DependentUpon>

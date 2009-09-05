@@ -529,14 +529,6 @@ namespace AlbumArtDownloader
 		public bool IsFullSize
 		{
 			get { return mIsFullSize; }
-			set
-			{
-				if (mIsFullSize != value)
-				{
-					mIsFullSize = value;
-					NotifyPropertyChanged("IsFullSize");
-				}
-			}
 		}
 		#endregion
 

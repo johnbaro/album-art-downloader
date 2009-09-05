@@ -1,3 +1,5 @@
+0.30 Added context menu options for image file links in file and foobar browsers
+
 0.29 Further pre-SP1 compatibility fixes.
      Clicking the Save button now uses the Default (first) preset, if presets are used.
      Added Presets dropdown to save button in Preview window

@@ -11,6 +11,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using System.Windows.Media.Imaging;
 using AlbumArtDownloader.Controls;
+using System.Runtime.InteropServices;
 
 namespace AlbumArtDownloader
 {
@@ -22,6 +23,12 @@ namespace AlbumArtDownloader
 			public static RoutedUICommand GetArtwork = new RoutedUICommand("Get Artwork", "GetArtwork", typeof(Commands));
 			/// <summary>Displays the file passed in as the parameter to the command in Windows Explorer</summary>
 			public static RoutedUICommand ShowInExplorer = new RoutedUICommand("Show in Explorer", "ShowInExplorer", typeof(Commands));
+			/// <summary>Displays the file in the preview window</summary>
+			public static RoutedUICommand Preview = new RoutedUICommand("Preview", "Preview", typeof(Commands));
+			/// <summary>Shows a dialog to rename the file</summary>
+			public static RoutedUICommand Rename = new RoutedUICommand("Rename", "Rename", typeof(Commands));
+			/// <summary>Deletes the file (to the recycle bin)</summary>
+			public static RoutedUICommand Delete = new RoutedUICommand("Delete", "Delete", typeof(Commands));
 		}
 
 		private ObservableAlbumCollection mAlbums;
@@ -40,6 +47,9 @@ namespace AlbumArtDownloader
 			CommandBindings.Add(new CommandBinding(Commands.SelectMissing, new ExecutedRoutedEventHandler(SelectMissingExec)));
 			CommandBindings.Add(new CommandBinding(Commands.GetArtwork, new ExecutedRoutedEventHandler(GetArtworkExec), new CanExecuteRoutedEventHandler(GetArtworkCanExec)));
 			CommandBindings.Add(new CommandBinding(Commands.ShowInExplorer, new ExecutedRoutedEventHandler(ShowInExplorerExec)));
+			CommandBindings.Add(new CommandBinding(Commands.Preview, new ExecutedRoutedEventHandler(PreviewExec)));
+			CommandBindings.Add(new CommandBinding(Commands.Delete, new ExecutedRoutedEventHandler(DeleteArtFileExec)));
+			CommandBindings.Add(new CommandBinding(Commands.Rename, new ExecutedRoutedEventHandler(RenameArtFileExec)));
 
 			CreateArtFileSearchThread();
 		}
@@ -214,7 +224,76 @@ namespace AlbumArtDownloader
 			if (e.Parameter is string)
 			{
 				//TODO: Validation that this is a file path?
-				System.Diagnostics.Process.Start("explorer.exe", "/select,\"" + e.Parameter + "\"");
+				System.Diagnostics.Process.Start("explorer.exe", "/select,\"" + (string)e.Parameter + "\"");
+			}
+		}
+
+		private void PreviewExec(object sender, ExecutedRoutedEventArgs e)
+		{
+			string filePath = e.Parameter as string;
+			if (!String.IsNullOrEmpty(filePath))
+			{
+				LocalFilesSource source = new LocalFilesSource()
+				{
+					SearchPathPattern = filePath,
+					DefaultFilePath = "",
+					MaximumResults = 1
+				};
+				source.SearchCompleted += new EventHandler(delegate {
+					if (source.Results.Count > 0)
+					{
+						var previewWindow = Common.NewPreviewWindow(Window.GetWindow(this) as IAppWindow);
+						var albumArt = source.Results[0];
+						albumArt.FilePath = filePath;
+						previewWindow.AlbumArt = albumArt;
+					}
+					else
+					{
+						System.Diagnostics.Trace.TraceError("Could not obtain AlbumArt for local file: " + source.SearchPathPattern);
+					}
+				});
+				source.Search(null, null);
+				
+				//AlbumArt preview = new AlbumArt(null, 
+			}
+		}
+
+		private void DeleteArtFileExec(object sender, ExecutedRoutedEventArgs e)
+		{
+			string filePath = e.Parameter as string;
+			if (!String.IsNullOrEmpty(filePath))
+			{
+				DeleteFileToRecycleBin(filePath);
+
+				CheckForChangedArt(e);
+			}
+		}
+
+		private void RenameArtFileExec(object sender, ExecutedRoutedEventArgs e)
+		{
+			string filePath = e.Parameter as string;
+			if (!String.IsNullOrEmpty(filePath))
+			{
+				var renameWindow = new RenameArt(filePath);
+				renameWindow.Owner = Window.GetWindow(this);
+				if (renameWindow.ShowDialog().GetValueOrDefault())
+				{
+					CheckForChangedArt(e);
+				}
+			}
+		}
+
+		//Pass in the ExecutedRoutedEventArgs from the Exec method to check for changed artwork as a result of that command
+		private void CheckForChangedArt(ExecutedRoutedEventArgs e)
+		{
+			var item = e.OriginalSource as ListViewItem;
+			if (item != null)
+			{
+				var album = item.Content as Album;
+				if (album != null)
+				{
+					QueueAlbumForArtFileSearch(album);
+				}
 			}
 		}
 		#endregion
@@ -596,5 +675,37 @@ namespace AlbumArtDownloader
 			}
 		}
 		#endregion
-	}
+	
+		#region Delete to Recycle Bin
+		[StructLayout(LayoutKind.Sequential, CharSet=CharSet.Auto, Pack=1)] 
+		private struct SHFILEOPSTRUCT 
+		{ 
+			public IntPtr hwnd; 
+			[MarshalAs(UnmanagedType.U4)] public int wFunc; 
+			public string pFrom; 
+			public string pTo; 
+			public short fFlags; 
+			[MarshalAs(UnmanagedType.Bool)] public bool fAnyOperationsAborted; 
+			public IntPtr hNameMappings; 
+			public string lpszProgressTitle; 
+		} 
+
+		[DllImport("shell32.dll", CharSet=CharSet.Auto)] 
+		private static extern int SHFileOperation(ref SHFILEOPSTRUCT FileOp); 
+		private const int FO_DELETE = 3; 
+		private const int FOF_ALLOWUNDO = 0x40; 
+		//private const int FOF_NOCONFIRMATION = 0x10;    //No prompt dialogs 
+
+		private static void DeleteFileToRecycleBin(string filePath)
+		{
+			//Useage
+			SHFILEOPSTRUCT shf = new SHFILEOPSTRUCT();
+			shf.wFunc = FO_DELETE;
+			shf.fFlags = FOF_ALLOWUNDO;
+			shf.pFrom = filePath + "\0";
+
+			SHFileOperation(ref shf);
+		}
+		#endregion
+	}	
 }

@@ -256,6 +256,14 @@ namespace AlbumArtDownloader
 		/// </summary>
 		public void Search(string artist, string album)
 		{
+			if (artist == null)
+			{
+				artist = String.Empty;
+			}
+			if (album == null)
+			{
+				album = String.Empty;
+			}
 			//Start a new search thread (which will take care of aborting the old one, and assigning itself as the current one)
 			new Thread(new ParameterizedThreadStart(SearchWorker)) { Name = String.Format("{0} search", Name) }.Start(new SearchThreadParameters(Dispatcher.CurrentDispatcher, artist, album));
 		}

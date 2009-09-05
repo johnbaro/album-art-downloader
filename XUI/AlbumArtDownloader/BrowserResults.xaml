@@ -129,6 +129,14 @@
 										</Style.Triggers>
 									</Style>
 								</Button.Style>
+								<Button.ContextMenu>
+									<ContextMenu>
+										<MenuItem FontWeight="Bold" Header="_Show in Explorer" Command="{x:Static local:BrowserResults+Commands.ShowInExplorer}" CommandParameter="{Binding ArtFile}"/>
+										<MenuItem Header="_Preview..." Command="{x:Static local:BrowserResults+Commands.Preview}" CommandParameter="{Binding ArtFile}"/>
+										<MenuItem Header="_Rename..." Command="{x:Static local:BrowserResults+Commands.Rename}"  CommandParameter="{Binding ArtFile}"/>
+										<MenuItem Header="_Delete" Command="{x:Static local:BrowserResults+Commands.Delete}" CommandParameter="{Binding ArtFile}"/>
+									</ContextMenu>
+								</Button.ContextMenu>
 							</Button>
 						</StackPanel>
 					</DataTemplate>

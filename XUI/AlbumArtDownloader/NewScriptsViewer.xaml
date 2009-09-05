@@ -18,6 +18,7 @@
 				<ResourceDictionary Source="/Controls/Xaml/SimpleList.generic.xaml"/>
 				<ResourceDictionary Source="/Controls/Xaml/OverflowTextBlock.generic.xaml"/>
 				<ResourceDictionary Source="/Controls/Xaml/HyperlinkButton.generic.xaml"/>
+				<ResourceDictionary Source="/Controls/Xaml/Separator.generic.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 
 			<Style TargetType="Button">
@@ -26,18 +27,7 @@
 				<Setter Property="Padding" Value="4,0,4,0"/>
 				<Setter Property="Margin" Value="0,0,0,5"/>
 			</Style>
-			<Style TargetType="Separator">
-				<Setter Property="Template">
-					<Setter.Value>
-						<ControlTemplate TargetType="Separator">
-							<Border BorderThickness="0,0,1,1" BorderBrush="{x:Static SystemColors.ControlLightLightBrush}" SnapsToDevicePixels="True">
-								<Border BorderBrush="{x:Static SystemColors.ControlDarkBrush}" BorderThickness="1,1,0,0"/>
-							</Border>
-						</ControlTemplate>
-					</Setter.Value>
-				</Setter>
-			</Style>
-
+			
 			<controls:StringFormatterConverter x:Key="mStringFormatterConverter"/>
 
 			<properties:Settings x:Key="mSettings"/>

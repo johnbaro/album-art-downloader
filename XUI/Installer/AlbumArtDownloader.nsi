@@ -1,5 +1,5 @@
 !define PRODUCT_NAME "Album Art Downloader XUI"
-!define PRODUCT_VERSION "0.29"
+!define PRODUCT_VERSION "0.30"
 !define PRODUCT_WEB_SITE "http://sourceforge.net/projects/album-art"
 !define PRODUCT_SUPPORT "http://www.hydrogenaudio.org/forums/index.php?showtopic=57392"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\AlbumArt.exe"
@@ -109,120 +109,138 @@ Section -ScriptsPath
   #delete obsolete scripts
   Delete "$INSTDIR\Scripts\iTunes.boo"
   Delete "$INSTDIR\Scripts\rateyourmusic.boo"
+  Delete "$INSTDIR\Scripts\amazon-com-mp3.boo"  
 SectionEnd
 
 SectionGroup "Image Download Scripts"
-#iTunes script currently blocked by apple, so don't include it
-#Section "iTunes Music Shop"
-#  File "..\Scripts\Scripts\iTunes.boo"
-#SectionEnd
+	SectionGroup "General"
+		SectionGroup "Amazon"
+			Section "Amazon (US)"
+			  File "..\Scripts\Scripts\amazon-common.boo"
+			  File "..\Scripts\Scripts\amazon-com.boo"
+			SectionEnd
+			Section /o "Amazon (UK)"
+			  File "..\Scripts\Scripts\amazon-common.boo"
+			  File "..\Scripts\Scripts\amazon-co-uk.boo"
+			SectionEnd
+			Section /o "Amazon (CA)"
+			  File "..\Scripts\Scripts\amazon-common.boo"
+			  File "..\Scripts\Scripts\amazon-ca.boo"
+			SectionEnd
+			Section /o "Amazon (DE)"
+			  File "..\Scripts\Scripts\amazon-common.boo"
+			  File "..\Scripts\Scripts\amazon-de.boo"
+			SectionEnd
+			Section /o "Amazon (FR)"
+			  File "..\Scripts\Scripts\amazon-common.boo"
+			  File "..\Scripts\Scripts\amazon-fr.boo"
+			SectionEnd
+			Section /o "Amazon (JP)"
+			  File "..\Scripts\Scripts\amazon-common.boo"
+			  File "..\Scripts\Scripts\amazon-jp.boo"
+			SectionEnd
+		SectionGroupEnd
+		Section "Google"
+		  File "..\Scripts\Scripts\google.boo"
+		SectionEnd
+		Section "Coveralia"
+		  File "..\Scripts\Scripts\coveralia.boo"
+		SectionEnd
+		Section "Cover-Paradies"
+		  File "..\Scripts\Scripts\cover-paradies.boo"
+		SectionEnd
+		Section "CD Universe"
+		  File "..\Scripts\Scripts\cduniverse.boo"
+		SectionEnd
+		Section "Discogs"
+		  File "..\Scripts\Scripts\discogs.boo"
+		SectionEnd
+		Section "CoverIsland"
+		  File "..\Scripts\Scripts\coverisland.boo"
+		SectionEnd
+		Section "FreeCovers"
+		  #Remove old freecovers script
+		  Delete "$INSTDIR\Scripts\freecovers.boo"
+		  File "..\Scripts\Scripts\freecovers-api.boo"
+		SectionEnd
+		#Rate Your Music script currently inoperational due to defensive site changes
+		#Section "Rate Your Music"
+		#  File "..\Scripts\Scripts\rateyourmusic.boo"
+		#SectionEnd
+		Section "Album Art Exchange"
+		  File "..\Scripts\Scripts\albumartexchange.boo"
+		SectionEnd
+		Section "DarkTown"
+		  File "..\Scripts\Scripts\darktown.boo"
+		SectionEnd
+		Section "AllCdCover"
+		  File "..\Scripts\Scripts\allcdcover.boo"
+		SectionEnd
+		Section "CDCoverHideout"
+		  File "..\Scripts\Scripts\cdcoverhideout.boo"
+		SectionEnd
+		Section "Buy.com"
+		  File "..\Scripts\Scripts\buy-com.boo"
+		SectionEnd
+		Section "hitparade.ch"
+		  File "..\Scripts\Scripts\hitparade.boo"
+		SectionEnd
+		Section "LastFM"
+		  File "..\Scripts\Scripts\lastfm-cover.boo"
+		SectionEnd
+		#iTunes script currently blocked by apple, so don't include it
+		#Section "iTunes Music Shop"
+		#  File "..\Scripts\Scripts\iTunes.boo"
+		#SectionEnd
+	SectionGroupEnd
+	
+	SectionGroup "Dance, Trance"
+		Section "Juno Records"
+		  File "..\Scripts\Scripts\juno-records.boo"
+		SectionEnd
+		Section "PsyShop"
+		  File "..\Scripts\Scripts\psyshop.boo"
+		SectionEnd
+	SectionGroupEnd
+	
+	SectionGroup "Punk, Metal, Rock"
+		Section "Encyclopaedia Metallum"
+		  File "..\Scripts\Scripts\metal-archives.boo"
+		SectionEnd
+		Section "Metal Library"
+		  File "..\Scripts\Scripts\metallibrary.boo"
+		SectionEnd
+		Section "RevHQ"
+		  File "..\Scripts\Scripts\revhq.boo"
+		SectionEnd
+		Section "MusicMight"
+		  File "..\Scripts\Scripts\musicmight.boo"
+		SectionEnd
+	SectionGroupEnd
 
-SectionGroup "Amazon"
-    Section "Amazon (US)"
-	  File "..\Scripts\Scripts\amazon-common.boo"
-      File "..\Scripts\Scripts\amazon-com.boo"
-	SectionEnd
-	Section /o "Amazon (UK)"
-	  File "..\Scripts\Scripts\amazon-common.boo"
-	  File "..\Scripts\Scripts\amazon-co-uk.boo"
-	SectionEnd
-	Section /o "Amazon (CA)"
-	  File "..\Scripts\Scripts\amazon-common.boo"
-	  File "..\Scripts\Scripts\amazon-ca.boo"
-	SectionEnd
-	Section /o "Amazon (DE)"
-	  File "..\Scripts\Scripts\amazon-common.boo"
-	  File "..\Scripts\Scripts\amazon-de.boo"
-	SectionEnd
-	Section /o "Amazon (FR)"
-	  File "..\Scripts\Scripts\amazon-common.boo"
-	  File "..\Scripts\Scripts\amazon-fr.boo"
-	SectionEnd
-	Section /o "Amazon (JP)"
-	  File "..\Scripts\Scripts\amazon-common.boo"
-	  File "..\Scripts\Scripts\amazon-jp.boo"
-	SectionEnd
-SectionGroupEnd
-Section "Google"
-  File "..\Scripts\Scripts\google.boo"
-SectionEnd
-Section "Coveralia"
-  File "..\Scripts\Scripts\coveralia.boo"
-SectionEnd
-Section "Cover-Paradies"
-  File "..\Scripts\Scripts\cover-paradies.boo"
-SectionEnd
-Section "CD Universe"
-  File "..\Scripts\Scripts\cduniverse.boo"
-SectionEnd
-Section "Discogs"
-  File "..\Scripts\Scripts\discogs.boo"
-SectionEnd
-Section "Yes24"
-  File "..\Scripts\Scripts\yes24.boo"
-SectionEnd
-Section "YesAsia"
-  File "..\Scripts\Scripts\yesasia.boo"
-SectionEnd
-Section "Juno Records"
-  File "..\Scripts\Scripts\juno-records.boo"
-SectionEnd
-Section "CoverIsland"
-  File "..\Scripts\Scripts\coverisland.boo"
-SectionEnd
-Section "FreeCovers"
-  #Remove old freecovers script
-  Delete "$INSTDIR\Scripts\freecovers.boo"
-  File "..\Scripts\Scripts\freecovers-api.boo"
-SectionEnd
+	SectionGroup "Eastern"
+		Section "Yes24"
+		  File "..\Scripts\Scripts\yes24.boo"
+		SectionEnd
+		Section "YesAsia"
+		  File "..\Scripts\Scripts\yesasia.boo"
+		SectionEnd
+		Section "maniadb"
+		  File "..\Scripts\Scripts\maniadb.boo"
+		SectionEnd
+	SectionGroupEnd
 
-#Rate Your Music script currently inoperational due to defensive site changes
-#Section "Rate Your Music"
-#  File "..\Scripts\Scripts\rateyourmusic.boo"
-#SectionEnd
-
-Section "Album Art Exchange"
-  File "..\Scripts\Scripts\albumartexchange.boo"
-SectionEnd
-Section "maniadb"
-  File "..\Scripts\Scripts\maniadb.boo"
-SectionEnd
-Section "DarkTown"
-  File "..\Scripts\Scripts\darktown.boo"
-SectionEnd
-Section "AllCdCover"
-  File "..\Scripts\Scripts\allcdcover.boo"
-SectionEnd
-Section "CDCoverHideout"
-  File "..\Scripts\Scripts\cdcoverhideout.boo"
-SectionEnd
-Section "Buy.com"
-  File "..\Scripts\Scripts\buy-com.boo"
-SectionEnd
-Section "PsyShop"
-  File "..\Scripts\Scripts\psyshop.boo"
-SectionEnd
-Section "RevHQ"
-  File "..\Scripts\Scripts\revhq.boo"
-SectionEnd
-Section "Encyclopaedia Metallum"
-  File "..\Scripts\Scripts\metal-archives.boo"
-SectionEnd
-Section "hitparade.ch"
-  File "..\Scripts\Scripts\hitparade.boo"
-SectionEnd
-Section "Metal Library"
-  File "..\Scripts\Scripts\metallibrary.boo"
-SectionEnd
-Section "ArkivMusic (classical)"
-  File "..\Scripts\Scripts\arkivmusic.boo"
-SectionEnd
-Section "LastFM"
-  File "..\Scripts\Scripts\lastfm-cover.boo"
-SectionEnd
-Section "LastFM Artist (artist images)"
-  File "..\Scripts\Scripts\lastfm-artist.boo"
-SectionEnd
+	SectionGroup "Classical"
+		Section "ArkivMusic"
+		  File "..\Scripts\Scripts\arkivmusic.boo"
+		SectionEnd
+	SectionGroupEnd
+	
+	SectionGroup "Artist Images"
+		Section "LastFM Artist"
+			File "..\Scripts\Scripts\lastfm-artist.boo"
+		SectionEnd
+	SectionGroupEnd
 SectionGroupEnd
 
 Section -Post
