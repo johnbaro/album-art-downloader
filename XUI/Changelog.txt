@@ -1,4 +1,9 @@
 0.30 Added context menu options for image file links in file and foobar browsers
+      Options: Open in Explorer, Preview, Rename, Delete
+     Added MusicMight and YesAsia scripts
+     Changed Amazon scripts to use html scraping instead of API (as Amazon have blocked
+      public access to their API)
+     In the installer, organised scripts by general genre categories
 
 0.29 Further pre-SP1 compatibility fixes.
      Clicking the Save button now uses the Default (first) preset, if presets are used.

@@ -7,10 +7,13 @@ class MusicMight(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "MusicMight"
 	Version as string:
-		get: return "0.1"
+		get: return "0.2"
 	Author as string:
 		get: return "Alex Vallat"
 	def Search(artist as string, album as string, results as IScriptResults):
+		if String.IsNullOrEmpty(album):
+			return //Only searching on album is supported
+			
 		//Retrieve the search results page
 		searchResultsHtml as string = GetPage("http://www.musicmight.com/search?t=recording&q=" + EncodeUrl(album))
 		
