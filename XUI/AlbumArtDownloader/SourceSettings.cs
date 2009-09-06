@@ -67,5 +67,19 @@ namespace AlbumArtDownloader
 				this["UseMaximumResults"] = value;
 			}
 		}
+
+		[DefaultSettingValueAttribute("False")]
+		[UserScopedSetting]
+		public bool IsPrimary
+		{
+			get
+			{
+				return ((bool)(this["IsPrimary"]));
+			}
+			set
+			{
+				this["IsPrimary"] = value;
+			}
+		}
 	}
 }

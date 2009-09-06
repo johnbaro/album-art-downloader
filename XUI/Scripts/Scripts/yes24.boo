@@ -10,7 +10,7 @@ class Yes24:
 	static SourceCreator as string:
 		get: return "Alex Vallat"
 	static SourceVersion as string:
-		get: return "0.4"
+		get: return "0.5"
 	static def GetThumbs(coverart,artist,album):
 		encoding = Encoding.GetEncoding("euc-kr")
 		url = String.Format("http://www.yes24.com/searchCenter/searchDetailResult.aspx?qtitle={0}&qauthor={1}", HttpUtility.UrlEncode(album, encoding), HttpUtility.UrlEncode(artist, encoding))
@@ -25,11 +25,8 @@ class Yes24:
 		for goodsNoMatch as Match in goodsNoMatches:
 			title = goodsNoMatch.Groups["title"].Value
 			
-			//Get the image results
-			imageResults = GetPage(String.Format("http://www.yes24.com/Goods/FTGoodsView.aspx?goodsNo={0}", goodsNoMatch.Groups["goodsNo"].Value), encoding)
-			imageUri = Regex("<img id=\"mainImage\"[^>]+src=\"(?<imageUri>[^\"]+/)M\"").Matches(imageResults)[0].Groups["imageUri"].Value
-			
-			coverart.AddThumb(imageUri + "M", title, -1, -1, imageUri + "L")
+			imageUri = "http://image.yes24.com/goods/" + goodsNoMatch.Groups["goodsNo"].Value
+			coverart.AddThumb(imageUri + "/M", title, -1, -1, imageUri + "/L")
 	
 	static def GetPage(url as string, encoding as Encoding):
 			request = System.Net.HttpWebRequest.Create(url)

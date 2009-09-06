@@ -1,9 +1,14 @@
 0.30 Added context menu options for image file links in file and foobar browsers
       Options: Open in Explorer, Preview, Rename, Delete
      Added MusicMight and YesAsia scripts
+     Updated CDUniverse and Yes24 scripts (fixes for site changes)
+     Removed CDCoverHideout script (site has gone down)
      Changed Amazon scripts to use html scraping instead of API (as Amazon have blocked
       public access to their API)
      In the installer, organised scripts by general genre categories
+     Added a "Search first" option to sources. If any sources have this option checked, sources
+      without the option checked will only be searched if the first ones return no results, or
+      when the Search button is clicked a second time.
 
 0.29 Further pre-SP1 compatibility fixes.
      Clicking the Save button now uses the Default (first) preset, if presets are used.

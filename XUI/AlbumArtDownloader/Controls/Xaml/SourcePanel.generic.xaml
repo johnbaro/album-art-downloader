@@ -130,6 +130,7 @@
 									<Grid.RowDefinitions>
 										<RowDefinition Height="Auto"/>
 										<RowDefinition Height="Auto"/>
+										<RowDefinition Height="Auto"/>
 									</Grid.RowDefinitions>
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition Width="Auto"/>
@@ -139,7 +140,8 @@
 													Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Source.MaximumResults}"
 													HasValue="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Source.UseMaximumResults}"/>
 									<TextBlock Grid.Column="1" Margin="0,5,0,0">results</TextBlock>
-									<ContentControl Grid.Row="2" Grid.ColumnSpan="2" Focusable="False" Content="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Source.CustomSettingsUI, Mode=OneWay}"/>
+									<CheckBox Grid.Row="1" Grid.ColumnSpan="2" Content="Search first" IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Source.IsPrimary}"/>
+									<ContentControl Grid.Row="2" Grid.ColumnSpan="2" Margin="0,5,0,0" Focusable="False" Content="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Source.CustomSettingsUI, Mode=OneWay}"/>
 								</Grid>
 							</GroupBox>
 						</Grid>

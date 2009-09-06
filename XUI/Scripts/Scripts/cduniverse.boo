@@ -10,12 +10,12 @@ class CdUniverse:
 	static SourceCreator as string:
 		get: return "Alex Vallat"		
 	static SourceVersion as string:
-		get: return "0.2"
+		get: return "0.3"
 	static def GetThumbs(coverart,artist,album):
 		albumResults = GetPage(String.Format("http://www.cduniverse.com/sresult.asp?HT_Search_Info={0}&HT_Search=TITLE", EncodeUrl(album)))
 
 		//Get results
-		albumRegex = Regex("<a class=\"artitle\"[^>]+>\\s*(?<artist>[^<]+)\\s*</a>[^?]+\\?pid=(?<pid>\\d+)&[^>]+>\\s*(?<title>[^<]+)\\s*</a>", RegexOptions.Multiline)
+		albumRegex = Regex("<a class=\"artitle\"[^>]+>\\s*(?<artist>[^<]+)\\s*</a>[^?]+\\?pid=(?<pid>\\d+)[&\"][^>]*>\\s*(?<title>[^<]+)\\s*</a>", RegexOptions.Singleline)
 		albumMatches = albumRegex.Matches(albumResults)
 		
 		//Filter by artist

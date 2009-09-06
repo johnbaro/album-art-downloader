@@ -332,9 +332,11 @@ namespace AlbumArtDownloader
 			mSearchParameters = new SearchParameters(Artist, Album);
 
 			mDefaultSaveFolder.AddPatternToHistory();
+			//Check for no primary sources (means that every source is primary!)
+			bool allPrimary = !mSources.Any(s => s.IsPrimary && s.IsEnabled);
 			foreach (Source source in mSources)
 			{
-				if (source.IsEnabled)
+				if (source.IsEnabled && (allPrimary || source.IsPrimary)) //If the source is primary, or no sources are set to primary, include this source.
 				{
 					source.Search(mSearchParameters.Artist, mSearchParameters.Album);
 					mSearchParameters.AddSource(source);
@@ -358,7 +360,7 @@ namespace AlbumArtDownloader
 			bool searchPerformed = false;
 			foreach (Source source in mSources)
 			{
-				if (source.IsEnabled)
+				if (source.IsEnabled) //Inlcudes non-primary sources too.
 				{
 					bool performSearch = false;
 					//Perform the search if the source was not previously searched
@@ -697,9 +699,18 @@ namespace AlbumArtDownloader
 				if (source != sender && source.IsSearching)
 					return; //At least one source is still searching, so don't remove the Stop All command
 			}
-			//All sources have finished, so remove the Stop All handler
-			CommandBindings.Remove(mStopAllCommandBinding);
-			CommandManager.InvalidateRequerySuggested();
+
+			//If no results were found, perform an additional search to bring in any non-primary sources (if any)
+			if (mResultsViewer.Items.Count == 0 && mSources.Any(s => s.IsPrimary && s.IsEnabled))
+			{
+				AlterSearch();
+			}
+			else
+			{
+
+				CommandBindings.Remove(mStopAllCommandBinding);
+				CommandManager.InvalidateRequerySuggested();
+			}
 		}
 		private void StopExec(object sender, ExecutedRoutedEventArgs e)
 		{

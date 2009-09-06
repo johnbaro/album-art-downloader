@@ -99,6 +99,7 @@ namespace AlbumArtDownloader
 			this.IsEnabled = settings.Enabled;
 			this.UseMaximumResults = settings.UseMaximumResults;
 			this.MaximumResults = settings.MaximumResults;
+			this.IsPrimary = settings.IsPrimary;
 		}
 
 		/// <summary>
@@ -110,6 +111,7 @@ namespace AlbumArtDownloader
 			settings.Enabled = this.IsEnabled;
 			settings.UseMaximumResults = this.UseMaximumResults;
 			settings.MaximumResults = this.MaximumResults;
+			settings.IsPrimary = this.IsPrimary;
 		}
 
 		#region Abstract members
@@ -200,6 +202,23 @@ namespace AlbumArtDownloader
 					NotifyPropertyChanged("MaximumResults");
 					if(UseMaximumResults && MaximumResults < EstimatedResultsCount)
 						NotifyPropertyChanged("EstimatedResultsCount"); //This will be coerced to be no more than maximum results
+				}
+			}
+		}
+
+		private bool mIsPrimary = false;
+		public bool IsPrimary
+		{
+			get
+			{
+				return mIsPrimary;
+			}
+			set
+			{
+				if (mIsPrimary != value)
+				{
+					mIsPrimary = value;
+					NotifyPropertyChanged("IsPrimary");
 				}
 			}
 		}

@@ -110,6 +110,7 @@ Section -ScriptsPath
   Delete "$INSTDIR\Scripts\iTunes.boo"
   Delete "$INSTDIR\Scripts\rateyourmusic.boo"
   Delete "$INSTDIR\Scripts\amazon-com-mp3.boo"  
+  Delete "$INSTDIR\Scripts\cdcoverhideout.boo"
 SectionEnd
 
 SectionGroup "Image Download Scripts"
@@ -175,9 +176,6 @@ SectionGroup "Image Download Scripts"
 		SectionEnd
 		Section "AllCdCover"
 		  File "..\Scripts\Scripts\allcdcover.boo"
-		SectionEnd
-		Section "CDCoverHideout"
-		  File "..\Scripts\Scripts\cdcoverhideout.boo"
 		SectionEnd
 		Section "Buy.com"
 		  File "..\Scripts\Scripts\buy-com.boo"

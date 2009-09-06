@@ -24,8 +24,7 @@
   </Script>
   <Script Name="ArkivMusik" URI="arkivmusic.boo" Version="0.1" />
   <Script Name="Buy.com" URI="buy-com.boo" Version="0.4" />
-  <Script Name="CDCoverHideout" URI="cdcoverhideout.boo" Version="0.2" />
-  <Script Name="CD Universe" URI="cduniverse.boo" Version="0.2" />
+  <Script Name="CD Universe" URI="cduniverse.boo" Version="0.3" />
   <Script Name="Cover-Paradies" URI="cover-paradies.boo" Version="0.8" />
   <Script Name="Coveralia" URI="coveralia.boo" Version="0.8" />
   <Script Name="CoverIsland" URI="coverisland.boo" Version="0.5" />
@@ -43,6 +42,6 @@
   <Script Name="MusicMight" URI="musicmight.boo" Version="0.2" />
   <Script Name="Psyshop" URI="psyshop.boo" Version="0.2" />
   <Script Name="RevHQ" URI="revhq.boo" Version="0.3" />
-  <Script Name="Yes24" URI="yes24.boo" Version="0.4" />
+  <Script Name="Yes24" URI="yes24.boo" Version="0.5" />
   <Script Name="YesAsia" URI="yesasia.boo" Version="0.2" />
 </Updates>
