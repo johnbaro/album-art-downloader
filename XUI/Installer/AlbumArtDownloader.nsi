@@ -215,6 +215,12 @@ SectionGroup "Image Download Scripts"
 		  File "..\Scripts\Scripts\musicmight.boo"
 		SectionEnd
 	SectionGroupEnd
+	
+	SectionGroup "Independent"
+		Section "CDBaby"
+		  File "..\Scripts\Scripts\cdbaby.boo"
+		SectionEnd
+	SectionGroupEnd
 
 	SectionGroup "Eastern"
 		Section "Yes24"

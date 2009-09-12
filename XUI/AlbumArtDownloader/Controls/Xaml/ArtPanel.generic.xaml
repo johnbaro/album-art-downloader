@@ -372,7 +372,7 @@
 							</Button>
 							<Button Grid.Column="2" HorizontalAlignment="Right"
 									Grid.Row="0" VerticalAlignment="Top"
-									ToolTip="Show information besides thumbnail"
+									ToolTip="Show information beside thumbnail"
 									Command="{x:Static controls:ArtPanelList+Commands.ToggleInformationLocation}">
 								<Button.Style>
 									<Style TargetType="Button" BasedOn="{StaticResource FadeButton}">
