@@ -64,6 +64,11 @@ Options:
               Append "off" to disable closing (/autoclose off)
               the search window after saving,
               if this option is on by default.
+              
+              Note that this option affects
+              only the window directly opened 
+              by the command line, not any
+              existing or subsequent ones.
  
  /sources     Searches only the specified     (/sources "Album Art Exchange,Coveralia")
               sources. Others are disabled.

@@ -43,6 +43,12 @@
 											</ControlTemplate>
 										</Setter.Value>
 									</Setter>
+									<Style.Triggers>
+										<!-- Hide empty groups -->
+										<DataTrigger Binding="{Binding Path=ItemCount}" Value="0">
+											<Setter Property="Visibility" Value="Collapsed"/>
+										</DataTrigger>
+									</Style.Triggers>
 								</Style>
 							</GroupStyle.ContainerStyle>
 							<GroupStyle.Panel>

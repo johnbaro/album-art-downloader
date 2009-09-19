@@ -100,6 +100,7 @@ namespace AlbumArtDownloader
 			this.UseMaximumResults = settings.UseMaximumResults;
 			this.MaximumResults = settings.MaximumResults;
 			this.IsPrimary = settings.IsPrimary;
+			this.FullSizeOnly = settings.FullSizeOnly;
 		}
 
 		/// <summary>
@@ -112,6 +113,7 @@ namespace AlbumArtDownloader
 			settings.UseMaximumResults = this.UseMaximumResults;
 			settings.MaximumResults = this.MaximumResults;
 			settings.IsPrimary = this.IsPrimary;
+			settings.FullSizeOnly = this.FullSizeOnly;
 		}
 
 		#region Abstract members
@@ -219,6 +221,23 @@ namespace AlbumArtDownloader
 				{
 					mIsPrimary = value;
 					NotifyPropertyChanged("IsPrimary");
+				}
+			}
+		}
+
+		private bool mFullSizeOnly = false;
+		public bool FullSizeOnly
+		{
+			get
+			{
+				return mFullSizeOnly;
+			}
+			set
+			{
+				if (mFullSizeOnly != value)
+				{
+					mFullSizeOnly = value;
+					NotifyPropertyChanged("FullSizeOnly");
 				}
 			}
 		}
@@ -452,22 +471,49 @@ namespace AlbumArtDownloader
 					return;
 				}
 
-				//TODO: does downloading the thumbnail need to be asynch?
-				Bitmap thumbnailBitmap = BitmapHelpers.GetBitmap(thumbnail);
-
-				if (thumbnailBitmap != null)
+				if (mSource.FullSizeOnly || fullSizeImageCallback == null)
 				{
-					mDispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
+					Bitmap fullSize = null;
+					if (fullSizeImageCallback != null) //If fullSizeImageCallback == null, then no full size image supplied, so the thumbnail is the full size image
 					{
-						mSource.Results.Add(new AlbumArt(mSource,
-							thumbnailBitmap,
-							name,
-							infoUri,
-							fullSizeImageWidth,
-							fullSizeImageHeight,
-							fullSizeImageCallback,
-							coverType));
-					}));
+						//Try to get the full size image without getting the thumbnail
+						fullSize = mSource.RetrieveFullSizeImage(fullSizeImageCallback);
+					}
+					if (fullSize == null)
+					{
+						//Fall back on using the thumbnail as the full size
+						fullSize = BitmapHelpers.GetBitmap(thumbnail);
+					}
+					if (fullSize != null)
+					{
+						mDispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
+						{
+							mSource.Results.Add(new AlbumArt(mSource,
+								name,
+								infoUri,
+								fullSize,
+								coverType));
+						}));
+					}
+				}
+				else
+				{
+					Bitmap thumbnailBitmap = BitmapHelpers.GetBitmap(thumbnail);
+
+					if (thumbnailBitmap != null)
+					{
+						mDispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
+						{
+							mSource.Results.Add(new AlbumArt(mSource,
+								thumbnailBitmap,
+								name,
+								infoUri,
+								fullSizeImageWidth,
+								fullSizeImageHeight,
+								fullSizeImageCallback,
+								coverType));
+						}));
+					}
 				}
 			}
 			

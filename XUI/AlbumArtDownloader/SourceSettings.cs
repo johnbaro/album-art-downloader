@@ -81,5 +81,19 @@ namespace AlbumArtDownloader
 				this["IsPrimary"] = value;
 			}
 		}
+
+		[DefaultSettingValueAttribute("False")]
+		[UserScopedSetting]
+		public bool FullSizeOnly
+		{
+			get
+			{
+				return ((bool)(this["FullSizeOnly"]));
+			}
+			set
+			{
+				this["FullSizeOnly"] = value;
+			}
+		}
 	}
 }

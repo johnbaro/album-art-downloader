@@ -38,6 +38,21 @@ namespace AlbumArtDownloader
 		public AlbumArt(Source source, Bitmap thumbnail, string name, string infoUri, double width, double height, object fullSizeCallbackParameter)
 			:this(source, thumbnail, name, infoUri, width, height, fullSizeCallbackParameter, CoverType.Unknown)
 		{}
+
+		/// <summary>
+		/// Constructs an AlbumArt with an already known full-size image
+		/// </summary>
+		public AlbumArt(Source source, string name, string infoUri, Bitmap fullSizeImage, CoverType coverType)
+		{
+			mSource = source;
+			ResultName = name;
+			InfoUri = infoUri;
+			CoverType = coverType;
+
+			BitmapImage = fullSizeImage;
+			mIsFullSize = true;
+			SetImageDimensions(fullSizeImage.Width, fullSizeImage.Height);
+		}
 		
 		public void Dispose()
 		{

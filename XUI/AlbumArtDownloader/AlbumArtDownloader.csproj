@@ -295,6 +295,7 @@
     <Compile Include="Controls\NotNullConverter.cs" />
     <Compile Include="Controls\PathCompacterConverter.cs" />
     <Compile Include="Controls\PatternPlaceholder.cs" />
+    <Compile Include="Controls\SizeGroupDescription.cs" />
     <Compile Include="Controls\SizeRestrainer.cs" />
     <Compile Include="Controls\SourcePanel.cs" />
     <Compile Include="Controls\StringFormatterConverter.cs" />

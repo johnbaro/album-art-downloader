@@ -23,6 +23,8 @@ namespace AlbumArtDownloader.Controls
 		/// <summary>Grouped by result source name</summary>
 		Source,
 		/// <summary>Grouped by cover type (Front, CD, ...)</summary>
-		Type
+		Type,
+		/// <summary>Grouped by general size category</summary>
+		Size,
 	}
 }

@@ -454,6 +454,9 @@ namespace AlbumArtDownloader.Controls
 				case Grouping.Type:
 					artPanelList.Items.GroupDescriptions.Add(new System.Windows.Data.PropertyGroupDescription("CoverType"));
 					break;
+				case Grouping.Size:
+					artPanelList.Items.GroupDescriptions.Add(new SizeGroupDescription());
+					break;
 			}
 		}
 

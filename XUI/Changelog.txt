@@ -1,3 +1,8 @@
+0.31 Added "Always download full size" option to source options. When checked for a source,
+      thumbnails will be ignored and full size images downloaded immediately instead.
+     Added a new "group by" option: Size. This groups results into broad size ranges.
+     Added CDBaby script
+
 0.30 Added context menu options for image file links in file and foobar browsers
       Options: Open in Explorer, Preview, Rename, Delete
      Added MusicMight and YesAsia scripts

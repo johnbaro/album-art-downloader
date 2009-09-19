@@ -20,10 +20,5 @@ namespace AlbumArtDownloader.Controls
 
 			return (albumArt.IsSourceLocal ? "Local" : "Online") + " results";
 		}
-
-		public override bool NamesMatch(object groupName, object itemName)
-		{
-			return base.NamesMatch(groupName, itemName);
-		}
 	}
 }

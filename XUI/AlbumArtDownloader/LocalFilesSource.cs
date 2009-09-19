@@ -96,7 +96,7 @@ namespace AlbumArtDownloader
 							//Create an in-memory copy so that the bitmap file isn't in use, and can be replaced
 							byte[] fileBytes = File.ReadAllBytes(filename); //Read the file, closing it after use
 							Bitmap bitmap = new Bitmap(new MemoryStream(fileBytes)); //NOTE: Do not dispose of MemoryStream, or it will cause later saving of the bitmap to throw a generic GDI+ error (annoyingly)
-							results.Add(bitmap, Path.GetFileName(filename), filename, bitmap.Width, bitmap.Height, bitmap);
+							results.Add(bitmap, Path.GetFileName(filename), filename, bitmap.Width, bitmap.Height, null);
 						}
 						else
 						{
