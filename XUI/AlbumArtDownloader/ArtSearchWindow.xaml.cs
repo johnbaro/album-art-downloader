@@ -74,6 +74,8 @@ namespace AlbumArtDownloader
 				mSources.Add(scriptSource);
 				//Hook the complete event to know when to hide the Stop All button
 				scriptSource.SearchCompleted += OnSourceSearchCompleted;
+				//Hook the Property Changed event to know when to recalculate whether the search will be extended
+				scriptSource.PropertyChanged += OnSourcePropertyChanged;
 			}
 
 			LocalFilesSource localFilesSource = new LocalFilesSource();
@@ -82,6 +84,7 @@ namespace AlbumArtDownloader
 			mDefaultSaveFolder.PathPatternChanged += delegate(object sender, DependencyPropertyChangedEventArgs e) { localFilesSource.DefaultFilePath = (string)e.NewValue; };
 			mSources.Add(localFilesSource);
 			localFilesSource.SearchCompleted += OnSourceSearchCompleted;
+			localFilesSource.PropertyChanged += OnSourcePropertyChanged;
 
 			LoadSettings();
 			//Initial value of AutoClose is taken from settings. May be overriden by command line parameters
@@ -258,31 +261,41 @@ namespace AlbumArtDownloader
 
 		#region Searching
 
-		public static readonly DependencyProperty ArtistProperty = DependencyProperty.Register("Artist", typeof(string), typeof(ArtSearchWindow));
+		public static readonly DependencyProperty ArtistProperty = DependencyProperty.Register("Artist", typeof(string), typeof(ArtSearchWindow), new FrameworkPropertyMetadata(String.Empty, new PropertyChangedCallback(OnSearchParameterChanged)));
 		public string Artist
 		{
 			get { return (string)GetValue(ArtistProperty); }
 			set { SetValue(ArtistProperty, value); }
 		}
 
-		public static readonly DependencyProperty AlbumProperty = DependencyProperty.Register("Album", typeof(string), typeof(ArtSearchWindow));
+		public static readonly DependencyProperty AlbumProperty = DependencyProperty.Register("Album", typeof(string), typeof(ArtSearchWindow), new FrameworkPropertyMetadata(String.Empty, new PropertyChangedCallback(OnSearchParameterChanged)));
 		public string Album
 		{
 			get { return (string)GetValue(AlbumProperty); }
 			set { SetValue(AlbumProperty, value); }
 		}
 
+		private static void OnSearchParameterChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+		{
+			((ArtSearchWindow)sender).UpdateExtendSearch();
+		}
+
 		private SearchParameters mSearchParameters;
 		private void FindExec(object sender, RoutedEventArgs e)
 		{
-			//Check to see whether current results can be altered, or a new search is required
+			//Check to see whether current results can be extended, or a new search is required
 			if (mSearchParameters != null)
 			{
-				//Can only enhance if the artist and album to search for are identical
+				//Can only extend if the artist and album to search for are identical
 				if (Artist == mSearchParameters.Artist && Album == mSearchParameters.Album)
 				{
-					AlterSearch();
-					return;
+					if (AlterSearch())
+					{
+						//If the search was successfully altered, no further work to be done
+						return;
+					}
+					//Otherwise, if no alteration could be made, re-perform the search
+					//TODO: Anything more sensible that could be done instead?
 				}
 			}
 			if (mSources.CombinedResults.Count > 0 && Properties.Settings.Default.OpenResultsInNewWindow)
@@ -355,9 +368,10 @@ namespace AlbumArtDownloader
 		/// <summary>
 		/// Alters the existing search to include or exclude additional sources
 		/// </summary>
-		private void AlterSearch()
+		private bool AlterSearch()
 		{
 			bool searchPerformed = false;
+			bool sourcesRemoved = false;
 			foreach (Source source in mSources)
 			{
 				if (source.IsEnabled) //Inlcudes non-primary sources too.
@@ -388,13 +402,73 @@ namespace AlbumArtDownloader
 					source.AbortSearch();
 					source.Results.Clear();
 
-					mSearchParameters.RemoveSource(source);
+					if (mSearchParameters.RemoveSource(source))
+					{
+						sourcesRemoved = true;
+					}
 				}
 			}
 			if (searchPerformed && !CommandBindings.Contains(mStopAllCommandBinding))
 			{
 				CommandBindings.Add(mStopAllCommandBinding);
 			}
+
+			return searchPerformed || sourcesRemoved;
+		}
+
+		/// <summary>Cached value for the ExtendSearch property</summary>
+		private bool? mExtendSearch;
+		/// <summary>
+		/// If true, when the Search button is clicked it will extend the existing search by adding new
+		/// results from more sources, rather than performing a new search.
+		/// </summary>
+		public bool ExtendSearch
+		{
+			get
+			{
+				if (mExtendSearch.HasValue)
+				{
+					//Return the cached value
+					return mExtendSearch.Value;
+				}
+
+				//Check to see whether current results can be extended, or a new search is required
+				if (mSearchParameters == null)
+				{
+					//No current search, so search is New.
+					return false;
+				}
+				//Can only extend if the artist and album to search for are identical
+				if (!String.Equals(Artist, mSearchParameters.Artist, StringComparison.Ordinal) ||
+					!String.Equals(Album, mSearchParameters.Album, StringComparison.Ordinal))
+				{
+					//Search terms mismatch, so search is New.
+					return false;
+				}
+				//Check if there are any new sources to be searched
+				foreach (Source source in mSources)
+				{
+					if (source.IsEnabled && //Inlcudes non-primary sources too.
+						(!mSearchParameters.ContainsSource(source) ||  //The source was not previously searched (may have been newly selected, or may be due to Search First behaviour)
+						 source.SettingsChanged)) //The source must be re-searched as its settings changed
+					{
+						return true;
+					}
+				}
+				return false; //No new sources will be searched, so search won't be extended.
+			}
+		}
+
+		private void UpdateExtendSearch()
+		{
+			mExtendSearch = null; //Clear the cached value
+			NotifyPropertyChanged("ExtendSearch"); //Cause the property to be re-queried
+		}
+
+		private void OnSourcePropertyChanged(object sender, PropertyChangedEventArgs e)
+		{
+			//If a source has changed (become enabled or disabled, or had its settings changed) then this may indicate that search will now be (or no longer be) extended
+			UpdateExtendSearch();
 		}
 		#endregion
 

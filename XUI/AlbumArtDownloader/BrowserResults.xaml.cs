@@ -253,8 +253,6 @@ namespace AlbumArtDownloader
 					}
 				});
 				source.Search(null, null);
-				
-				//AlbumArt preview = new AlbumArt(null, 
 			}
 		}
 

@@ -12,18 +12,21 @@ namespace AlbumArtDownloader.Controls
 	/// </summary>
 	internal class SizeGroupDescription : GroupDescription
 	{
-		private static readonly int[] sSizeGroupings = new[] { 1000, 700, 540, 400 };
+		private static readonly int[] sSizeGroupings = new[] { 1000, 700, 540, 400, 0 };
 		private static readonly string[] sSizeLabels = new[] { "Extra-Large", "Large", "Medium", "Small", "Extra-Small" };
-		private static readonly string[] sSizeGroups = new string[sSizeLabels.Length];
+		private static readonly string[] sSizeGroups = new string[sSizeLabels.Length + 1];
 
 		static SizeGroupDescription()
 		{
-			for (int i = 0; i < sSizeGroupings.Length; i++)
+			for (int i = 0; i < sSizeGroupings.Length - 1; i++)
 			{
 				sSizeGroups[i] = String.Format(CultureInfo.CurrentUICulture, "{0} (over {1} x {1})", sSizeLabels[i], sSizeGroupings[i]);
 			}
-			int last = sSizeGroups.Length - 1;
-			sSizeGroups[last] = String.Format(CultureInfo.CurrentUICulture, "{0} (below {1} x {1})", sSizeLabels[last], sSizeGroupings[last - 1]);
+			int smallest = sSizeGroupings.Length - 1;
+			sSizeGroups[smallest] = String.Format(CultureInfo.CurrentUICulture, "{0} (below {1} x {1})", sSizeLabels[smallest], sSizeGroupings[smallest - 1]);
+			
+			sSizeGroups[sSizeGroups.Length - 1] = "Unknown";
+
 		}
 		public SizeGroupDescription()
 		{

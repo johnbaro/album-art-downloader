@@ -56,8 +56,8 @@ namespace AlbumArtDownloader
 		/// This flag is set true whenever a setting is changed, and
 		/// reset to false when a search is performed. It can then be
 		/// used to determine whether or not a new search is needed to
-		/// be performed for this source (if the artist and album haven't)
-		/// chagned.
+		/// be performed for this source (if the artist and album haven't
+		/// changed).
 		/// </summary>
 		public bool SettingsChanged
 		{
@@ -237,6 +237,8 @@ namespace AlbumArtDownloader
 				if (mFullSizeOnly != value)
 				{
 					mFullSizeOnly = value;
+
+					SettingsChanged = true;
 					NotifyPropertyChanged("FullSizeOnly");
 				}
 			}

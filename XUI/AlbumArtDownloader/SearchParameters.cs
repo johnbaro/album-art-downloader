@@ -29,9 +29,9 @@ namespace AlbumArtDownloader
 			mSources[source] = null;
 		}
 
-		public void RemoveSource(Source source)
+		public bool RemoveSource(Source source)
 		{
-			mSources.Remove(source);
+			return mSources.Remove(source);
 		}
 
 		public bool ContainsSource(Source source)
