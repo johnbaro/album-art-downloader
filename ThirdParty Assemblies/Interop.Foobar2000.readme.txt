@@ -1,0 +1,9 @@
+The Foobar2000 COM Automation Server component is a COM component that Album Art Downloader XUI
+uses to access the Foobar2000 media library. If not present at run-time, the Foobar Browser will
+not work, and will display a link to the user to show them where they can download and install
+the component, if they choose to do so.
+
+Unfortunately, I haven't found a way of making it optional for compilation, so to compile Album
+Art Downloader XUI from source, you must have this component installed. It can be downloaded from:
+
+http://www.hydrogenaudio.org/forums/index.php?showtopic=39946
