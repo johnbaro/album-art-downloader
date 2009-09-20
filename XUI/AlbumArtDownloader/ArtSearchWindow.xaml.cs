@@ -644,7 +644,7 @@ namespace AlbumArtDownloader
 
 		#region Disabling Sources
 		/// <summary>
-		/// Disable all sources except those specified
+		/// Disable all sources except those specified. Source names prefixed with F: will be marked as Search First (Primary), all others will not.
 		/// </summary>
 		public void UseSources(IEnumerable<string> useSources)
 		{
@@ -664,11 +664,15 @@ namespace AlbumArtDownloader
 					source.IsEnabled = false; //Disabled unless it's name matches
 					foreach (string useSource in useSources) //Check against the list of sources to use
 					{
+						string sourceName; bool primary;
+						ParseUseSource(useSource, out sourceName, out primary);
+
 						//Use a case insensitive check
-						if (source.Name.Equals(useSource, StringComparison.InvariantCultureIgnoreCase))
+						if (source.Name.Equals(sourceName, StringComparison.InvariantCultureIgnoreCase))
 						{
 							//The source name matches, so use it. Enable it, and stop checking names.
 							source.IsEnabled = true;
+							source.IsPrimary = primary;
 							break;
 						}
 					}
@@ -691,20 +695,42 @@ namespace AlbumArtDownloader
 		{
 			SetSources(includeSources, true);
 		}
-		private void SetSources(IEnumerable<string> sourceNames, bool enabled)
+		private void SetSources(IEnumerable<string> useSources, bool enabled)
 		{
 			foreach (Source source in mSources) //Go through all the sources
 			{
-				foreach (string sourceName in sourceNames) //Check against the list of sources to use
+				foreach (string useSource in useSources) //Check against the list of sources to use
 				{
+					string sourceName; bool primary;
+					ParseUseSource(useSource, out sourceName, out primary);
+
 					//Use a case insensitive check
 					if (source.Name.Equals(sourceName, StringComparison.InvariantCultureIgnoreCase))
 					{
 						//The source name matches, so disable the source, and stop checking names
 						source.IsEnabled = enabled;
+
+						//If the source hasn't been disabled, and has been prefixed with f:, then mark it as primary. Don't unmark existing sources if not specified with f:
+						if (enabled && primary)
+						{
+							source.IsPrimary = true;
+						}
 						break;
 					}
 				}
+			}
+		}
+		private static void ParseUseSource(string useSource, out string sourceName, out bool primary)
+		{
+			if (useSource.StartsWith("f:", StringComparison.OrdinalIgnoreCase))
+			{
+				sourceName = useSource.Substring(2); //Strip off the f: part
+				primary = true;
+			}
+			else
+			{
+				sourceName = useSource;
+				primary = false;
 			}
 		}
 		#endregion

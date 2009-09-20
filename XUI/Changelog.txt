@@ -3,6 +3,8 @@
      Added a new "group by" option: Size. This groups results into broad size ranges.
      Search button now reads "Extend Search" if pressing it would result in adding new
       results to the existing search, rather than starting a new one.
+     The /include and /sources parameter now accept source names prefixed with F:, to indicate
+      that the source should have the Search First setting set for it.
      Added CDBaby script
 
 0.30 Added context menu options for image file links in file and foobar browsers
