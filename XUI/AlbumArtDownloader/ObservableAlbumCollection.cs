@@ -177,7 +177,23 @@ namespace AlbumArtDownloader
 		}
 		public int IndexOf(Album album)
 		{
-			return mAlbumsByIndex.IndexOf(album);
+			//Obtain the stored album with the same artist and name as the specified one (as this collection maintains uniqueness by artist/name
+			string artistNameKey = album.Artist.ToLowerInvariant();
+			string albumNameKey = album.Name.ToLowerInvariant();
+
+			Dictionary<string, Album> artistAlbums;
+			lock (this)
+			{
+				if (mAlbumsByArtist.TryGetValue(artistNameKey, out artistAlbums))
+				{
+					Album canonicalAlbum;
+					if (artistAlbums.TryGetValue(albumNameKey, out canonicalAlbum))
+					{
+						return mAlbumsByIndex.IndexOf(canonicalAlbum);
+					}
+				}
+			}
+			return -1;
 		}
 
 		object IList.this[int index]
