@@ -73,8 +73,16 @@ Options:
  /sources     Searches only the specified     (/sources "Album Art Exchange,Coveralia")
               sources. Others are disabled.
               Separate sources with commas.
+              
+              Sources may be prefixed with F: (/sources "Album Art Exchange,F:Coveralia")
+              to indicate it should have the 
+              Search First setting set for it.
+              Other sources will have Search
+              First unset.
+              
               To search all available sources,
               specify "all" here.             (/sources all)
+              
               May be abbreviated to /s
 
  /exclude     Does not search the specified   (/exclude "Local Files,GoogleImage")
@@ -89,6 +97,13 @@ Options:
               Does not disable sources that
               are not specified. Separate 
               sources with commas.
+              
+              Sources may be prefixed with F: (/include "F:Local Files,Album Art Exchange")
+              to indicate it should have the 
+              Search First setting set for it.
+              Other sources will have their
+              Search First setting remain unchanged.
+              
               May be abbreviated to /i
 
  /sort (name|size|source)[+|-]

@@ -1,3 +1,6 @@
+0.31.1 Fixed minor bug with Various Artists detection
+       Added description of F: prefix to command line documentation
+
 0.31 Added "Always download full size" option to source options. When checked for a source,
       thumbnails will be ignored and full size images downloaded immediately instead.
      Added a new "group by" option: Size. This groups results into broad size ranges.
