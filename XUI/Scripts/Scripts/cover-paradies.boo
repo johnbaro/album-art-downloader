@@ -13,12 +13,14 @@ class CoverParadies:
 	static SourceCreator as string:
 		get: return "Alex Vallat"
 	static SourceVersion as string:
-		get: return "0.8"
+		get: return "0.9"
 	static def GetThumbs(coverart,artist,album):
 		query as string = artist + " " + album
 		query.Replace(' ','+')
 		
 		searchResults = Post("http://www.cover-paradies.to/?Module=ExtendedSearch", String.Format("StartSearch=true&PagePos=0&SearchString={0}&StringMode=Wild&DisplayStyle=Text&HideDetails=Yes&PageLimit=1000&SektionID-2=Yes", EncodeUrl(query)))
+		
+		System.IO.File.WriteAllText("cover-paradies.log", searchResults)
 		
 		//Get results
 		resultsRegex = Regex(";ID=(?<ID>\\d+)\">(?!\\s*<img)", RegexOptions.Singleline)
@@ -49,15 +51,24 @@ class CoverParadies:
 
 	static def Post(url as String, content as String):
 		request = System.Net.HttpWebRequest.Create(url)
-		request.Method="POST"
-		request.ContentType = "application/x-www-form-urlencoded"
-		bytes = System.Text.UTF8Encoding().GetBytes(content)
-		request.ContentLength = bytes.Length
-		stream = request.GetRequestStream()
-		stream.Write(bytes,0,bytes.Length)
-		stream.Close()
-		streamresponse = request.GetResponse().GetResponseStream()
-		return System.IO.StreamReader(streamresponse).ReadToEnd()
+		
+		servicePoint = (request as System.Net.HttpWebRequest).ServicePoint;
+		prevValue = servicePoint.Expect100Continue;
+		servicePoint.Expect100Continue = false;
+
+		try:
+			request.Method="POST"
+			request.ContentType = "application/x-www-form-urlencoded"
+			bytes = System.Text.UTF8Encoding().GetBytes(content)
+			request.ContentLength = bytes.Length
+			stream = request.GetRequestStream()
+			stream.Write(bytes,0,bytes.Length)
+			stream.Close()
+			streamresponse = request.GetResponse().GetResponseStream()
+			return System.IO.StreamReader(streamresponse).ReadToEnd()
+		ensure:
+			servicePoint.Expect100Continue = prevValue;
+
 			
 	static def GetResult(param):
 		return String.Format("http://www.cover-paradies.to/res/exe/GetElement.php?ID={0}", param)
