@@ -106,7 +106,7 @@ Options:
               
               May be abbreviated to /i
 
- /sort (name|size|source)[+|-]
+ /sort (name|size|area|source|type)[+|-]
               Sets the sorting to use for the (/sort size-)
               results.
               May be abbreviated to /o        (/o size-)
@@ -120,7 +120,21 @@ Options:
               of:
                name (may be abbreviated to n) (/o n+)
                size (may be abbreviated to s)
+               area (may be abbreviated to a)
                source (may be abbreviated to o)
+               type (may be abbreviated to t)
+ /group (none|local|source|type|size)
+              Sets the grouping to use for    (/group source)
+              the results.
+              May be abbreviated to /o        (/o source)
+              
+              The avaialable grouping options
+              are:
+               none (may be abbreviated to n) (/o n)
+               local (may be abbreviated to l)
+               source (may be abbreviated to o)
+               type (may be abbreviated to t)
+               size (may be abbreviated to s)
 
  /minSize     Specifies the minimum size of   (/minSize 300)
               image, in pixels, to filter the 

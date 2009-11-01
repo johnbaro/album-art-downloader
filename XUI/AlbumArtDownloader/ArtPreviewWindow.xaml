@@ -29,6 +29,7 @@
 			<controls:LogarithmicScaleConverter x:Key="mLogarithmicScaleConverter"/>
 			<BooleanToVisibilityConverter x:Key="mBooleanToVisibilityConverter"/>
 
+			<properties:Settings x:Key="mSettings"/>
 		</ResourceDictionary>
 	</Window.Resources>
 	<Grid FocusManager.FocusedElement="{Binding ElementName=mImageScroller, Mode=OneTime}">
@@ -52,7 +53,7 @@
 			</Border.Background>
 			<Grid>
 				<Grid.Resources>
-					<Style x:Key="ToolbarButton" TargetType="Button" BasedOn="{StaticResource FadeButton}">
+					<Style x:Key="ToolbarButton" TargetType="ButtonBase" BasedOn="{StaticResource FadeButton}">
 						<Setter Property="VerticalAlignment" Value="Top"/>
 						<Setter Property="Grid.Row" Value="1"/>
 					</Style>
@@ -65,6 +66,8 @@
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="Auto"/>
 					<ColumnDefinition Width="*"/>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="Auto"/>
 					<ColumnDefinition Width="Auto"/>
 					<ColumnDefinition Width="Auto"/>
 					<ColumnDefinition Width="Auto"/>
@@ -128,6 +131,29 @@
 				<Button Style="{StaticResource ToolbarButton}" Command="NavigationCommands.IncreaseZoom" Grid.Column="6">
 					<Image Source="ZoomIn.png" Stretch="None" ToolTip="Zoom In"/>
 				</Button>
+
+				<Border Grid.Column="7" Grid.RowSpan="3" BorderBrush="{x:Static SystemColors.ControlDarkBrush}" BorderThickness="1,0,0,0" Margin="5,3,5,3"/>
+
+				<ToggleButton Grid.Column="8" IsChecked="{Binding Source={StaticResource mSettings}, Path=Default.ShowPixelsWhenZoomed}">
+					<ToggleButton.Style>
+						<Style TargetType="ToggleButton" BasedOn="{StaticResource ToolbarButton}">
+							<Setter Property="BorderThickness" Value="1"/>
+							<Setter Property="BorderBrush" Value="Transparent"/>
+
+							<Style.Triggers>
+								<Trigger Property="IsChecked" Value="True">
+									<Setter Property="Background" Value="#FFE1E6E8"/>
+									<Setter Property="BorderBrush" Value="#FF316AC5"/>
+								</Trigger>
+								<Trigger Property="IsMouseOver" Value="True">
+									<Setter Property="Background" Value="#FF98B5E2"/>
+									<Setter Property="BorderBrush" Value="#FF4B4B6F"/>
+								</Trigger>
+							</Style.Triggers>
+						</Style>
+					</ToggleButton.Style>
+					<Image Source="ShowPixels.png" Stretch="None" ToolTip="Show Pixels"/>
+				</ToggleButton>
 			</Grid>
 		</Border>
 		<ScrollViewer x:Name="mImageScroller" Grid.Row="2" Focusable="True" KeyboardNavigation.IsTabStop="True"

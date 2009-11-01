@@ -7,6 +7,7 @@ using System.Reflection;
 using System.ServiceModel;
 using System.Windows;
 using AlbumArtDownloader.Scripts;
+using AlbumArtDownloader.Controls;
 using Microsoft.Win32;
 
 namespace AlbumArtDownloader
@@ -200,7 +201,7 @@ namespace AlbumArtDownloader
 			//valuedParameters is a list of parameters which must have values - they can not be just switches.
 			string[] valuedParameters = { "artist", "ar", "album", "al", "path", "p", "localimagespath", 
 										  "sources", "s", "exclude", "es", "include", "i", 
-										  "sort", "o", "minsize", "mn", "maxsize", "mx" };
+										  "sort", "o", "group", "g", "minsize", "mn", "maxsize", "mx" };
 			Arguments arguments = new Arguments(args, valuedParameters);
 			if (arguments.Contains("?"))
 			{
@@ -213,6 +214,7 @@ namespace AlbumArtDownloader
 			bool startFoobarBrowserSearch = false;
 			string artist = null, album = null, path = null, localImagesPath = null, fileBrowser = null, sortField = null;
 			ListSortDirection sortDirection = ListSortDirection.Ascending;
+			Grouping? grouping = null;
 			int? minSize = null, maxSize = null;
 
 			List<String> useSources = new List<string>();
@@ -348,8 +350,45 @@ namespace AlbumArtDownloader
 								case "o":
 									sortField = "SourceName";
 									break;
+								case "type":
+								case "t":
+									sortField = "CoverType";
+									break;
+								case "area":
+								case "a":
+									sortField = "ImageArea";
+									break;
 								default:
 									errorMessage = "Unexpected sort field: " + sortName;
+									break;
+							}
+							break;
+						case "group":
+						case "g":
+							switch (parameter.Value.ToLower())
+							{
+								case "none":
+								case "n":
+									grouping = Grouping.None;
+									break;
+								case "local":
+								case "l":
+									grouping = Grouping.Local;
+									break;
+								case "source":
+								case "o":
+									grouping = Grouping.Source;
+									break;
+								case "type":
+								case "t":
+									grouping = Grouping.Type;
+									break;
+								case "size":
+								case "s":
+									grouping = Grouping.Size;
+									break;
+								default:
+									errorMessage = "Unexpected grouping: " + parameter.Value;
 									break;
 							}
 							break;
@@ -414,6 +453,11 @@ namespace AlbumArtDownloader
 			{
 				//Set the sort
 				AlbumArtDownloader.Properties.Settings.Default.ResultsSorting = new SortDescription(sortField, sortDirection);
+			}
+			if (grouping.HasValue)
+			{
+				//Set the grouping
+				AlbumArtDownloader.Properties.Settings.Default.ResultsGrouping = grouping.Value;
 			}
 			if (minSize.HasValue)
 			{

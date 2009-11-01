@@ -117,6 +117,8 @@
 								<MenuItem Header="_Copy" InputGestureText="" Command="ApplicationCommands.Copy" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=OneTime}"/>
 								<MenuItem Header="_Save" InputGestureText="" Command="ApplicationCommands.Save" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=OneTime}"/>
 								<MenuItem Header="Save _As..." Command="ApplicationCommands.SaveAs" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=OneTime}"/>
+								<Separator/>
+								<MenuItem Header="_Remove" InputGestureText="" Command="ApplicationCommands.Delete" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=OneTime}"/>
 							</ContextMenu>
 						</Grid.ContextMenu>
 						<Grid Margin="5,5,5,5" Width="{Binding ThumbSize, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Height="{Binding RelativeSource={RelativeSource Self}, Path=Width, Mode=OneWay}" MinHeight="20" MinWidth="20" VerticalAlignment="Top">
@@ -170,12 +172,12 @@
 								<Border BorderBrush="{x:Static SystemColors.ControlDarkDarkBrush}" BorderThickness="0,0,1,1" Background="{x:Static SystemColors.ControlBrush}">
 									<Border BorderBrush="{x:Static SystemColors.ControlLightLightBrush}" BorderThickness="1,1,0,0">
 										<Border BorderBrush="{x:Static SystemColors.ControlDarkDarkBrush}" BorderThickness="1,1,0,0" Margin="3,3,4,4">
-											<Grid>
+											<Grid ClipToBounds="True">
 												<Grid.RowDefinitions>
 													<RowDefinition Height="Auto"/>
 													<RowDefinition Height="*"/>
 												</Grid.RowDefinitions>
-												<Image Grid.RowSpan="2" Source="{Binding Path=AlbumArt.Image, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Width="{TemplateBinding ImagePopupWidth}" Height="{TemplateBinding ImagePopupHeight}" Stretch="Fill" 
+												<Image x:Name="test" Grid.RowSpan="2" Source="{Binding Path=AlbumArt.Image, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Width="{TemplateBinding ImagePopupWidth}" Height="{TemplateBinding ImagePopupHeight}" Stretch="Fill" 
 													   MinWidth="{Binding ElementName=PART_ImageDisplay, Path=ActualWidth}" MinHeight="{Binding ElementName=PART_ImageDisplay, Path=ActualHeight}">
 													<Image.Style>
 														<Style TargetType="Image">
@@ -186,6 +188,9 @@
 															</Style.Triggers>
 														</Style>
 													</Image.Style>
+													<Image.RenderTransform>
+														<ScaleTransform x:Name="PART_ImagePopupZoom"/>
+													</Image.RenderTransform>
 												</Image>
 
 												<StackPanel Orientation="Horizontal" Visibility="{Binding Path=AlbumArt.IsDownloading, Converter={StaticResource mBooleanToVisibilityConverter}, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}">
@@ -202,6 +207,38 @@
 														<TextBlock Padding="1,1,0,0" Foreground="White" Text="Full size image is being downloaded..."/>
 														<TextBlock Foreground="Black" Text="Full size image is being downloaded..."/>
 													</Grid>
+												</StackPanel>
+												
+												<StackPanel Orientation="Horizontal">
+													<StackPanel.Background>
+														<SolidColorBrush Color="White" Opacity="0.6"/>
+													</StackPanel.Background>
+													<Image Source="\ZoomIn.png" HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="None" ToolTip="Full size image is being downloaded..."/>
+													<!-- BitmapEffects have serious performance implications, so until WPF fixes that, use two identical text blocks to make a white drop shadow.
+													<TextBlock.BitmapEffect>
+														<DropShadowBitmapEffect Color="White" Direction="315" ShadowDepth="2" Softness="0.3"/>
+													</TextBlock.BitmapEffect>
+													-->
+													<Grid Margin="5,1,0,0" >
+														<TextBlock x:Name="mZoomText" Padding="1,1,0,0" Foreground="White">
+															<TextBlock.Text>
+																<MultiBinding Converter="{StaticResource mStringFormatterConverter}" ConverterParameter="{}Zoom: {0:p0}" Mode="OneWay">
+																	<Binding ElementName="PART_ImagePopupZoom" Path="ScaleX" Mode="OneWay"/>
+																</MultiBinding>
+															</TextBlock.Text>
+														</TextBlock>
+														<TextBlock Foreground="Black" Text="{Binding ElementName=mZoomText, Path=Text}"/>
+													</Grid>
+													<StackPanel.Style>
+														<Style TargetType="StackPanel">
+															<Style.Triggers>
+																<DataTrigger Binding="{Binding ElementName=PART_ImagePopupZoom, Path=ScaleX}" Value="1">
+																	<!-- Don't show the zoom indicator when at 1:1 zoom -->
+																	<Setter Property="Visibility" Value="Collapsed"/>
+																</DataTrigger>
+															</Style.Triggers>
+														</Style>
+													</StackPanel.Style>
 												</StackPanel>
 											</Grid>
 										</Border>
@@ -308,6 +345,10 @@
 											</MultiDataTrigger>
 											<DataTrigger Binding="{Binding Path=AlbumArt.IsFullSize, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Value="False" >
 												<Setter Property="Foreground" Value="{x:Static SystemColors.ControlDarkBrush}"/>
+											</DataTrigger>
+											<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:ArtPanelList}}, Path=SortDescription.PropertyName, Mode=OneWay}"
+														Value="ImageArea">
+												<Setter Property="FontWeight" Value="Bold"/>
 											</DataTrigger>
 										</Style.Triggers>
 									</Style>

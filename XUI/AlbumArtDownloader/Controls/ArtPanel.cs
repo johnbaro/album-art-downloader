@@ -14,6 +14,7 @@ namespace AlbumArtDownloader.Controls
 {
 	[TemplatePart(Name = "PART_ImageDisplay", Type = typeof(Image))]
 	[TemplatePart(Name = "PART_ImagePopup", Type = typeof(Popup))]
+	[TemplatePart(Name = "PART_ImagePopupZoom", Type = typeof(ScaleTransform))]
 	[TemplatePart(Name = "PART_ImageResizer", Type = typeof(FrameworkElement))]
 	[TemplatePart(Name = "PART_ImageArea", Type = typeof(FrameworkElement))]
 	[TemplatePart(Name = "PART_PanelResizer", Type = typeof(FrameworkElement))]
@@ -114,7 +115,16 @@ namespace AlbumArtDownloader.Controls
 					ImageDisplay.PreviewMouseLeftButtonDown += new MouseButtonEventHandler(ImageDisplay_PreviewMouseLeftButtonDown);
 					ImageDisplay.PreviewMouseLeftButtonUp += new MouseButtonEventHandler(ImageDisplay_PreviewMouseLeftButtonUp);
 					ImageDisplay.PreviewMouseMove += new MouseEventHandler(ImageDisplay_PreviewMouseMove);
+					ImageDisplay.PreviewMouseWheel += new MouseWheelEventHandler(ImageDisplay_PreviewMouseWheel);
+
 					ImagePopup.PreviewMouseLeftButtonUp += new MouseButtonEventHandler(ImagePopup_PreviewMouseLeftButtonUp);
+
+					if (ImagePopupZoom != null)
+					{
+						//Set the initial scroll location (centered)
+						ImagePopupZoom.CenterX = ImagePopupWidth / 2;
+						ImagePopupZoom.CenterY = ImagePopupHeight / 2;
+					}
 				}
 			}
 
@@ -222,6 +232,174 @@ namespace AlbumArtDownloader.Controls
 			}));
 		}
 
+		#region Zoom
+		/// <summary>The factor by which the zoom is changed by the mouse wheel with Ctrl held down</summary>
+		private static readonly double sZoomWheelFactor = 1.3; //NOTE: Must be greater than sZoomSnapping
+		
+		private void ImageDisplay_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
+		{
+			//If showing the image, use the mouse wheel to zoom in and out
+			if (ImagePopup.IsOpen && ImagePopupZoom != null)
+			{
+				//Zoom
+				double popupZoom;
+				popupZoom = ImagePopupZoom.ScaleX;
+
+				if (e.Delta > 0)
+					popupZoom *= sZoomWheelFactor;
+				else if (e.Delta < 0)
+					popupZoom /= sZoomWheelFactor;
+
+				popupZoom = Math.Max(popupZoom, 1D); //Don't allow zooming out
+
+				ImagePopupZoom.ScaleX = ImagePopupZoom.ScaleY = popupZoom;
+
+				if (popupZoom > 1D)
+				{
+					StartPanning();
+				}
+				else
+				{
+					StopPanning();
+					//Reset pan to center
+					ImagePopupZoom.CenterX = ImagePopupWidth / 2;
+					ImagePopupZoom.CenterY = ImagePopupHeight / 2;
+				}
+
+				e.Handled = true;
+			}
+		}
+
+		private bool IsPopupZoomed
+		{
+			get
+			{
+				return ImagePopupZoom != null && ImagePopupZoom.ScaleX > 1D;
+			}
+		}
+		#endregion
+
+		#region Pan
+		private static readonly TimeSpan sPanScrollRate = TimeSpan.FromMilliseconds(100);
+		private static readonly double sPanScollSpeed = 0.005D; //Effectively a magic number, determined by experimentation.
+		private enum PanDirection
+		{
+			None,
+			North,
+			NorthEast,
+			East,
+			SouthEast,
+			South,
+			SouthWest,
+			West,
+			NorthWest
+		}
+
+		private DispatcherTimer mScroller;
+		private ScrollOrigin mScrollOrigin;
+		private Vector mCurrentPanAmount;
+
+		private void StartPanning()
+		{
+			if (mScrollOrigin == null && ImagePopup != null && ImagePopup.Child != null && ImageDisplay != null && ImagePopupZoom != null)
+			{
+				//Show the pan origin
+				Point location = ImageDisplay.TranslatePoint(mMouseDownLocation, ImagePopup.Child);
+				mScrollOrigin = new ScrollOrigin(ImagePopup.Child, location);
+				AdornerLayer.GetAdornerLayer(ImagePopup.Child).Add(mScrollOrigin);
+
+				//Show the panning cursor
+				SetPanning(PanDirection.None, 0D);
+
+				//Start the panning scroller
+				System.Diagnostics.Debug.Assert(mScroller == null, "Only one scroller timer should exist at any time");
+				mScroller = new DispatcherTimer(sPanScrollRate, DispatcherPriority.Input, OnScrollerTick, Dispatcher);
+			}
+		}
+
+		private void StopPanning()
+		{
+			if (mScrollOrigin != null && ImagePopup != null && ImagePopup.Child != null)
+			{
+				//Stop the panning scroller
+				mScroller.Stop();
+				mScroller.Tick -= OnScrollerTick;
+				mScroller = null;
+
+				//Remove the pan origin
+				AdornerLayer.GetAdornerLayer(ImagePopup.Child).Remove(mScrollOrigin);
+				mScrollOrigin = null;
+
+				//Stop showing the panning cursor
+				Mouse.OverrideCursor = null;
+			}
+		}
+		
+		private void SetPanning(PanDirection direction, double amount)
+		{
+			if(ImagePopupZoom == null)
+			{
+				return; //Can't do any panning if there's no zoom transform.
+			}
+
+			double straightAmount = amount * sPanScollSpeed / ImagePopupZoom.ScaleX; //Panning should be scale-independent
+			//If at a 45 degree angle, then the amount to scroll in the vertical and horizontal directions, to get the same distance in angular movement
+			double angleAmount = Math.Sqrt(straightAmount * straightAmount / 2);
+			
+			switch (direction)
+			{
+				case PanDirection.None:
+					mCurrentPanAmount = new Vector(0, 0);
+					Mouse.OverrideCursor = Cursors.ScrollAll;
+					break;
+				case PanDirection.North:
+					mCurrentPanAmount = new Vector(0, -straightAmount);
+					Mouse.OverrideCursor = Cursors.ScrollN;
+					break;
+				case PanDirection.NorthEast:
+					mCurrentPanAmount = new Vector(angleAmount, -angleAmount);
+					Mouse.OverrideCursor = Cursors.ScrollNE;
+					break;
+				case PanDirection.East:
+					mCurrentPanAmount = new Vector(straightAmount, 0);
+					Mouse.OverrideCursor = Cursors.ScrollE;
+					break;
+				case PanDirection.SouthEast:
+					mCurrentPanAmount = new Vector(angleAmount, angleAmount);
+					Mouse.OverrideCursor = Cursors.ScrollSE;
+					break;
+				case PanDirection.South:
+					mCurrentPanAmount = new Vector(0, straightAmount);
+					Mouse.OverrideCursor = Cursors.ScrollS;
+					break;
+				case PanDirection.SouthWest:
+					mCurrentPanAmount = new Vector(-angleAmount, angleAmount);
+					Mouse.OverrideCursor = Cursors.ScrollSW;
+					break;
+				case PanDirection.West:
+					mCurrentPanAmount = new Vector(-straightAmount, 0);
+					Mouse.OverrideCursor = Cursors.ScrollW;
+					break;
+				case PanDirection.NorthWest:
+					mCurrentPanAmount = new Vector(-angleAmount, -angleAmount);
+					Mouse.OverrideCursor = Cursors.ScrollNW;
+					break;
+				default:
+					System.Diagnostics.Debug.Fail("Unexpected pan direction");
+					break;
+			}
+		}
+
+		private void OnScrollerTick(object sender, EventArgs e)
+		{
+			if (ImagePopupZoom != null && mCurrentPanAmount.LengthSquared > 0D)
+			{
+				ImagePopupZoom.CenterX = Math.Max(0, Math.Min(ImagePopupWidth, ImagePopupZoom.CenterX + mCurrentPanAmount.X));
+				ImagePopupZoom.CenterY = Math.Max(0, Math.Min(ImagePopupHeight, ImagePopupZoom.CenterY + mCurrentPanAmount.Y));
+			}
+		}
+		#endregion
+
 		private void ImagePopup_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
 		{
 			CloseImagePopup();
@@ -232,18 +410,35 @@ namespace AlbumArtDownloader.Controls
 			AlbumArt.RetrieveFullSizeImage();
 			if (ImagePopup != null && !ImagePopup.IsOpen)
 			{
+				if (!App.UsePreSP1Compatibility) //NearestNeighbor scaling was introduced with SP1
+				{
+					if (Properties.Settings.Default.ShowPixelsWhenZoomed)
+					{
+						RenderOptions.SetBitmapScalingMode(ImagePopup.Child, BitmapScalingMode.NearestNeighbor);
+					}
+					else
+					{
+						RenderOptions.SetBitmapScalingMode(ImagePopup.Child, BitmapScalingMode.Unspecified);
+					}
+				}
+
 				CoerceValue(ImagePopupWidthProperty);
 				CoerceValue(ImagePopupHeightProperty);
 				ImagePopup.IsOpen = true;
+
+				if (IsPopupZoomed)
+				{
+					StartPanning();
+				}
 			}
 		}
-
 
 		private void CloseImagePopup()
 		{
 			if (ImagePopup != null && ImagePopup.IsOpen)
 			{
 				ImagePopup.IsOpen = false;
+				StopPanning();
 			}
 		}
 
@@ -320,9 +515,9 @@ namespace AlbumArtDownloader.Controls
 
 			return new Size(maxWidth, maxHeight);
 		}
-		#endregion
 
-		#region Drag as File
+		#region Drag
+		private const double Octant = 360D / 8;
 		private Point mMouseDownLocation;
 
 		private void ImageDisplay_PreviewMouseMove(object sender, MouseEventArgs e)
@@ -330,14 +525,82 @@ namespace AlbumArtDownloader.Controls
 			if (e.LeftButton == MouseButtonState.Pressed)
 			{
 				Vector offset = e.GetPosition(ImageDisplay) - mMouseDownLocation;
+
 				if (Math.Abs(offset.X) > Math.Max(sMinimumDragDistance, SystemParameters.MinimumHorizontalDragDistance) ||
 					Math.Abs(offset.Y) > Math.Max(sMinimumDragDistance, SystemParameters.MinimumVerticalDragDistance))
 				{
-					CloseImagePopup();
-					StartDrag();
+
+					if (IsPopupZoomed) //Only pan when zoomed in
+					{
+						PanDirection direction = PanDirection.None;
+
+						double angle = Vector.AngleBetween(new Vector(0, -1), offset);
+						if (angle < 0)
+						{
+							angle += 360;
+						}
+						System.Diagnostics.Debug.Assert(angle >= 0 && angle < 360, "Expecting angle to be in range 0 <= angle < 360");
+
+						if (angle > Octant * 7.5)
+						{
+							direction = PanDirection.North;
+						}
+						else if (angle > Octant * 6.5)
+						{
+							direction = PanDirection.NorthWest;
+						}
+						else if (angle > Octant * 5.5)
+						{
+							direction = PanDirection.West;
+						}
+						else if (angle > Octant * 4.5)
+						{
+							direction = PanDirection.SouthWest;
+						}
+						else if (angle > Octant * 3.5)
+						{
+							direction = PanDirection.South;
+						}
+						else if (angle > Octant * 2.5)
+						{
+							direction = PanDirection.SouthEast;
+						}
+						else if (angle > Octant * 1.5)
+						{
+							direction = PanDirection.East;
+						}
+						else if (angle > Octant * 0.5)
+						{
+							direction = PanDirection.NorthEast;
+						}
+						else
+						{
+							direction = PanDirection.North;
+						}
+
+						SetPanning(direction, offset.LengthSquared);
+					}
+					else
+					{
+						//Not zoomed in, so start a drag
+						CloseImagePopup();
+						StartDrag();
+					}
+				}
+				else
+				{
+					if (IsPopupZoomed)
+					{
+						SetPanning(PanDirection.None, 0D);
+					}
 				}
 			}
 		}
+		#endregion
+
+		#endregion
+
+		#region Drag as File
 
 		/// <summary>
 		/// Starts a drag of this result as a file (suitable for dropping on Windows Explorer)
@@ -699,6 +962,23 @@ namespace AlbumArtDownloader.Controls
 				}
 
 				return mCachedImagePopup;
+			}
+		}
+
+		private ScaleTransform mCachedImagePopupZoom;
+		protected ScaleTransform ImagePopupZoom
+		{
+			get
+			{
+				if (mCachedImagePopupZoom == null)
+				{
+					if (Template != null)
+					{
+						mCachedImagePopupZoom = Template.FindName("PART_ImagePopupZoom", this) as ScaleTransform;
+					}
+				}
+
+				return mCachedImagePopupZoom;
 			}
 		}
 

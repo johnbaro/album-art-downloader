@@ -12,7 +12,7 @@ namespace AlbumArtDownloader.Controls
 	/// </summary>
 	internal class SizeGroupDescription : GroupDescription
 	{
-		private static readonly int[] sSizeGroupings = new[] { 1000, 700, 540, 400, 0 };
+		private static readonly int[] sSizeGroupings = new[] { 1000, 700, 520, 400, 0 };
 		private static readonly string[] sSizeLabels = new[] { "Extra-Large", "Large", "Medium", "Small", "Extra-Small" };
 		private static readonly string[] sSizeGroups = new string[sSizeLabels.Length + 1];
 

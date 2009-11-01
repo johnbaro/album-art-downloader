@@ -91,8 +91,9 @@ namespace AlbumArtDownloader
 			{
 				if (mAlbumsByArtist.TryGetValue(artistNameKey, out artistAlbums))
 				{
-					if (artistAlbums.Remove(albumNameKey))
+					if (artistAlbums.TryGetValue(albumNameKey, out album))
 					{
+						artistAlbums.Remove(albumNameKey);
 						mAlbumsByIndex.Remove(album);
 						mVersion++;
 						RaiseCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, album));

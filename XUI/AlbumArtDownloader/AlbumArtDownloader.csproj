@@ -295,6 +295,7 @@
     <Compile Include="Controls\NotNullConverter.cs" />
     <Compile Include="Controls\PathCompacterConverter.cs" />
     <Compile Include="Controls\PatternPlaceholder.cs" />
+    <Compile Include="Controls\ScrollOrigin.cs" />
     <Compile Include="Controls\SizeGroupDescription.cs" />
     <Compile Include="Controls\SizeRestrainer.cs" />
     <Compile Include="Controls\SourcePanel.cs" />
@@ -326,6 +327,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="extendsearch.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Controls\scrollorigin.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="ShowPixels.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

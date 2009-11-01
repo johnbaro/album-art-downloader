@@ -1,4 +1,14 @@
-0.31.1 Fixed minor bug with Various Artists detection
+0.32 Tweaked Medium size group to be 520-700 instead of 540-700
+     Removed debug code from Cover-Paradies script that would produce a cover-paradies.log file.
+     Added option to sort by Area (similar to size, but sorts by width x height)
+     Added command line support for sorting by type and area, and for grouping
+     Add "Remove" command to the results context menu. This allows for manually removing results
+      from the list.
+     Experimental zoom support for popup preview (use the scroll wheel while it's visible)
+     Added "Show Pixels" button to Preview window toolbar. This is an option to use Nearest
+      Neighbour (Box) scaling when zoomed in. It does not affect the display at 100% or below.
+
+0.32.1 Fixed minor bug with Various Artists detection
        Added description of F: prefix to command line documentation
 
 0.31 Added "Always download full size" option to source options. When checked for a source,

@@ -58,6 +58,7 @@ namespace AlbumArtDownloader
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Copy, new ExecutedRoutedEventHandler(CopyExec)));
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Save, new ExecutedRoutedEventHandler(SaveExec)));
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.SaveAs, new ExecutedRoutedEventHandler(SaveAsExec)));
+			CommandBindings.Add(new CommandBinding(ApplicationCommands.Delete, new ExecutedRoutedEventHandler(DeleteExec)));
 			CommandBindings.Add(new CommandBinding(AlbumArtDownloader.Controls.ArtPanelList.Commands.Preview, new ExecutedRoutedEventHandler(PreviewExec)));
 			CommandBindings.Add(new CommandBinding(Commands.GetMoreScripts, new ExecutedRoutedEventHandler(GetMoreScriptsExec), new CanExecuteRoutedEventHandler(GetMoreScriptsCanExec)));
 			CommandBindings.Add(new CommandBinding(Commands.ShowAutoDownloadedScripts, new ExecutedRoutedEventHandler(ShowAutoDownloadedScriptsExec)));
@@ -96,11 +97,18 @@ namespace AlbumArtDownloader
 			mArtist.GotKeyboardFocus += OnAutoSelectTextBoxFocusChange;
 			mAlbum.GotKeyboardFocus += OnAutoSelectTextBoxFocusChange;
 
+			mArtist.PreviewMouseLeftButtonDown += new MouseButtonEventHandler(testtripleclick);
+
 			//If the default file path pattern does not containg %preset%, the presets context menu is coerced into being hidden
 			mDefaultSaveFolder.PathPatternChanged += delegate { CoerceValue(PresetsContextMenuProperty); };
 
 			//Notify when scripts have been auto downloaded
 			Updates.AutoDownloadedScripts.CollectionChanged += OnAutoDownloadedScriptsChanged;
+		}
+
+		void testtripleclick(object sender, MouseButtonEventArgs e)
+		{
+			System.Diagnostics.Debug.WriteLine(e.ClickCount);
 		}
 
 		private void OnAutoDownloadedScriptsChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -837,7 +845,7 @@ namespace AlbumArtDownloader
 		#region Command Execution
 		private void CopyExec(object sender, ExecutedRoutedEventArgs e)
 		{
-			AlbumArt albumArt = (AlbumArt)mResultsViewer.GetSourceAlbumArt(e);
+			AlbumArt albumArt = mResultsViewer.GetSourceAlbumArt(e);
 			if (albumArt != null)
 			{
 				albumArt.CopyToClipboard();
@@ -846,7 +854,7 @@ namespace AlbumArtDownloader
 
 		private void SaveExec(object sender, ExecutedRoutedEventArgs e)
 		{
-			AlbumArt albumArt = (AlbumArt)mResultsViewer.GetSourceAlbumArt(e);
+			AlbumArt albumArt = mResultsViewer.GetSourceAlbumArt(e);
 			if (albumArt != null)
 			{
 				if (AutoClose)
@@ -875,12 +883,26 @@ namespace AlbumArtDownloader
 
 		private void SaveAsExec(object sender, ExecutedRoutedEventArgs e)
 		{
-			AlbumArt albumArt = (AlbumArt)mResultsViewer.GetSourceAlbumArt(e);
+			AlbumArt albumArt = mResultsViewer.GetSourceAlbumArt(e);
 			if (albumArt != null)
 			{
 				albumArt.PropertyChanged -= AutoCloseOnSave; //No auto-close for SaveAs operation.
 
 				albumArt.SaveAs();
+			}
+		}
+
+		/// <summary>
+		/// Removes the album art from the results list.
+		/// </summary>
+		/// <param name="sender"></param>
+		/// <param name="e"></param>
+		private void DeleteExec(object sender, ExecutedRoutedEventArgs e)
+		{
+			AlbumArt albumArt = mResultsViewer.GetSourceAlbumArt(e);
+			if (albumArt != null)
+			{
+				albumArt.Remove();
 			}
 		}
 

@@ -258,6 +258,17 @@ namespace AlbumArtDownloader
 		}
 
 		/// <summary>
+		/// Area of the image, in pixels. Intended for use with sorting.
+		/// </summary>
+		public double ImageArea
+		{
+			get
+			{
+				return ImageHeight * ImageWidth;
+			}
+		}
+
+		/// <summary>
 		/// Sets the width and height of the image in a single operation, to avoid redundant coercion and ImageSizeChanged events.
 		/// </summary>
 		/// <param name="width"></param>
@@ -280,6 +291,8 @@ namespace AlbumArtDownloader
 			if (changed)
 			{
 				CoerceValue(FilePathProperty);
+
+				NotifyPropertyChanged("ImageArea");
 
 				//Raise the ImageSizeChanged event
 				var temp = ImageSizeChanged;
@@ -661,5 +674,13 @@ namespace AlbumArtDownloader
 			}
 		}
 		#endregion
+
+		/// <summary>
+		/// Removes this result from the source that it belongs to.
+		/// </summary>
+		public void Remove()
+		{
+			mSource.Results.Remove(this);
+		}
 	}
 }

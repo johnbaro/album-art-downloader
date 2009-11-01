@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using AlbumArtDownloader.Controls;
 
 namespace AlbumArtDownloader
@@ -38,6 +39,8 @@ namespace AlbumArtDownloader
 			mFilePathBrowse.PreviewLostKeyboardFocus += new KeyboardFocusChangedEventHandler(FilePathBrowse_LostKeyboardFocus);
 			mFilePathTextBox.KeyDown += new KeyEventHandler(FilePathTextBox_KeyDown);
 			mFilePathBrowse.Click += new RoutedEventHandler(FilePathBrowse_Click);
+
+			Properties.Settings.Default.PropertyChanged += OnPropertyChanged;
 		}
 
 		#region Drag panning
@@ -131,6 +134,32 @@ namespace AlbumArtDownloader
 		}
 		#endregion
 
+		private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+		{
+			if (e.PropertyName == "ShowPixelsWhenZoomed")
+			{
+				UpdateBitmapScalingMode();
+			}
+		}
+
+		private void UpdateBitmapScalingMode()
+		{
+			if (!App.UsePreSP1Compatibility) //NearestNeighbor scaling was introduced with SP1
+			{
+				if (Zoom <= 1D || !Properties.Settings.Default.ShowPixelsWhenZoomed)
+				{
+					//Zoomed out, or opted out of accurate pixel display - use default high quality resizing
+					RenderOptions.SetBitmapScalingMode(mImageScroller, BitmapScalingMode.Unspecified);
+				}
+				else
+				{
+					//Zoomed in, use accurate pixel resizing
+					RenderOptions.SetBitmapScalingMode(mImageScroller, BitmapScalingMode.NearestNeighbor);
+				}
+			}
+		}
+
+
 		private void OnMouseWheel(object sender, MouseWheelEventArgs e)
 		{
 			if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
@@ -195,7 +224,8 @@ namespace AlbumArtDownloader
 		}
 		private static void OnZoomChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
 		{
-			ScrollViewer scrollViewer = ((ArtPreviewWindow)sender).mImageScroller;
+			var artPreviewWindow = (ArtPreviewWindow)sender;
+			ScrollViewer scrollViewer = artPreviewWindow.mImageScroller;
 
 			double deltaZoom = (double)e.NewValue / (double)e.OldValue;
 	
@@ -204,6 +234,8 @@ namespace AlbumArtDownloader
 
 			double halfViewportHeight = scrollViewer.ViewportHeight / 2;
 			scrollViewer.ScrollToVerticalOffset((scrollViewer.VerticalOffset + halfViewportHeight) * deltaZoom - halfViewportHeight);
+
+			artPreviewWindow.UpdateBitmapScalingMode();
 		}
 
 		public static readonly DependencyProperty PresetsContextMenuProperty = ArtPanel.PresetsContextMenuProperty.AddOwner(typeof(ArtPreviewWindow));
