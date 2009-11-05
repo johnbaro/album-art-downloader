@@ -109,7 +109,7 @@
 						<ColumnDefinition Width="Auto"/>
 					</Grid.ColumnDefinitions>
 					<TextBox x:Name="mFilePathTextBox" VerticalAlignment="Top"/>
-					<Button x:Name="mFilePathBrowse" Grid.Column="1" Content="..." FontSize="10" Height="{Binding ElementName=mFilePathTextBox, Path=ActualHeight, Mode=OneWay}" Style="{x:Null}"/>
+					<Button x:Name="mFilePathBrowse" Grid.Column="1" Content="..." Padding="0,-2,0,-2" Margin="0" Height="{Binding ElementName=mFilePathTextBox, Path=ActualHeight, Mode=OneWay}" Style="{x:Null}" MinWidth="{x:Static SystemParameters.VerticalScrollBarWidth}"/>
 				</Grid>
 				<controls:SplitButton Command="ApplicationCommands.Save" VerticalAlignment="Top" Grid.Row="1" Grid.Column="2" MenuToolTip="Save As..." Menu="{Binding ElementName=this, Path=PresetsContextMenu}">
 					<Image Source="/Controls/Xaml/save.png" Stretch="None" ToolTip="Save"/>

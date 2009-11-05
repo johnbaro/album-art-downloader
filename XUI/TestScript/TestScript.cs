@@ -5,6 +5,9 @@ using AlbumArtDownloader.Scripts;
 using System.Drawing;
 using System.Xml;
 using System.Text.RegularExpressions;
+using System.Net;
+using System.IO;
+using System.Net.Cache;
 
 namespace TestScript
 {
@@ -25,76 +28,94 @@ namespace TestScript
 			get { return typeof(TestScript).Assembly.GetName().Version.ToString(); }
 		}
 
+		public static string GetPage(Stream pageStream, Encoding encoding)
+		{
+			return new StreamReader(pageStream, encoding).ReadToEnd();
+		}
+
+		public static string GetPage(string url)
+		{
+			return GetPage(GetPageStream(url, null, false), Encoding.UTF8);
+		}
+
+		public static Stream GetPageStream(string url, string referer, bool useFirefoxHeaders)
+		{
+			HttpWebRequest request = WebRequest.Create(url) as HttpWebRequest;
+			if (!string.IsNullOrEmpty(referer))
+			{
+				request.Referer = referer;
+			}
+			if (useFirefoxHeaders)
+			{
+				request.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8";
+				request.Headers.Add("KEEP_ALIVE", "300");
+				request.Headers.Add("ACCEPT_CHARSET", "ISO-8859-1,utf-8;q=0.7,*;q=0.7");
+				request.Headers.Add("ACCEPT_LANGUAGE", "en-us,en;q=0.5");
+				request.UserAgent = "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.0.3) Gecko/2008092417 Firefox/3.0.3 ";
+			}
+			return request.GetResponse().GetResponseStream();
+		}
+
+ 
+
+ 
+
+
+
+
 		public void Search(string artist, string album, IScriptResults results)
 		{
-			/*
-			var x= new XmlDocument();
-			x.Load("http://ecs.amazonaws.com/onca/xml?Service=AWSECommerceService&AWSAccessKeyId=1MV23E34ARMVYMBDZB02&Operation=ItemSearch&SearchIndex=Music&ItemPage=1&ResponseGroup=ItemAttributes,Images&Keywords="+artist+" "+album);
-
-			XmlNamespaceManager nsmgr = new XmlNamespaceManager(x.NameTable);
-			nsmgr.AddNamespace("a", "http://webservices.amazon.com/AWSECommerceService/2005-10-05");
-			XmlNodeList nodes=x.SelectNodes("a:ItemSearchResponse/a:Items/a:Item", nsmgr);
-			results.SetCountEstimate(nodes.Count);
-			foreach (XmlNode node in nodes)
-			{
-				results.AddThumb(node.SelectSingleNode("a:MediumImage/a:URL", nsmgr).InnerText, node.SelectSingleNode("a:ItemAttributes/a:Artist", nsmgr).InnerText + " - " + node.SelectSingleNode("a:ItemAttributes/a:Title", nsmgr).InnerText, int.Parse(node.SelectSingleNode("a:LargeImage/a:Width", nsmgr).InnerText), int.Parse(node.SelectSingleNode("a:LargeImage/a:Height", nsmgr).InnerText), node.SelectSingleNode("a:LargeImage/a:URL", nsmgr).InnerText);
-			}
-			
-			results.EstimatedCount = 2;
-			Bitmap thumbnail = new Bitmap(typeof(TestScript), "testThumbnail.jpg");
-			Bitmap fullSize = new Bitmap(typeof(TestScript), "testFullsize.jpg");
-			results.Add(thumbnail, "Bitmap", 600, 600, fullSize);
-			results.Add(@"file://C:\Documents and Settings\David Vallat\My Documents\Alexander\foobar2000\CoverDownloader\AlbumArtDownloader\XUI\TestScript\testThumbnail.jpg", "String", 400, 400, @"file://C:\Documents and Settings\David Vallat\My Documents\Alexander\foobar2000\CoverDownloader\AlbumArtDownloader\XUI\TestScript\testFullsize.jpg");
-			results.Add(thumbnail, "No Fullsize", null);
-			
-			results.EstimatedCount = 5;			
-			System.Threading.Thread.Sleep(3000);
-			results.Add("http://ec2.images-amazon.com/images/P/B0000C7GG2.01._AA240_SCLZZZZZZZ_.jpg", "URL", "http://ec2.images-amazon.com/images/P/B0000C7GG2.01._SS500_SCLZZZZZZZ_.jpg");
-			results.Add(@"file://C:\Documents and Settings\David Vallat\My Documents\Alexander\foobar2000\CoverDownloader\AlbumArtDownloader\XUI\TestScript\testThumbnail.png", "PNG format", 600, 600, @"file://C:\Documents and Settings\David Vallat\My Documents\Alexander\foobar2000\CoverDownloader\AlbumArtDownloader\XUI\TestScript\testFullsize.png");
-			results.Add(@"http://www.google.com/invalid", "Not valid url", null);
-			 */
-			
-			/*
-			string searchResultsHtml = GetPage("http://www.metal-archives.com/advanced.php?band_name=" + artist + "&release_name=" + album);
-
-			var matches = new Regex("href=\"release\\.php\\?id=(?<id>(?<idPart>\\d){4,})\">(?<name>.*?)</a>", RegexOptions.IgnoreCase).Matches(searchResultsHtml);
-
-			results.EstimatedCount = matches.Count;
-
-			foreach (Match match in matches)
-			{
-				var name = match.Groups["name"].Value.Replace("<strong>","").Replace("</strong>", "");
-			
-				var idParts = match.Groups["idPart"].Captures;
-				var url = String.Format("http://www.metal-archives.com/images/{0}/{1}/{2}/{3}/{4}.jpg", idParts[0], idParts[1], idParts[2], idParts[3], match.Groups["id"].Value);
-
-				results.Add(url, name, null, -1, -1, null, CoverType.Front);
-
-			}
-			 * */
-			
-			//*
 			int numberOfResults = 50;
 			results.EstimatedCount = numberOfResults;
 			Random rnd = new Random();
 			for (int i = 0; i < numberOfResults; i++)
 			{
 				Bitmap thumbnail = new Bitmap(typeof(TestScript), "testThumbnail.jpg");
-				Bitmap fullSize = new Bitmap(typeof(TestScript), "testHuge.jpg");
+				Bitmap fullSize = new Bitmap(typeof(TestScript), "testFullsize.jpg");
 				results.Add(thumbnail, i.ToString(), "notauri", 1000 + rnd.Next(6) * 100, rnd.Next(1,1600), fullSize,(CoverType)rnd.Next((int)CoverType.Unknown, (int)CoverType.CD));
 				//System.Threading.Thread.Sleep(1000);
 			}
-			 //*/
 		}
+
+		public static string Post(string url, string content)
+		{
+			WebRequest request = WebRequest.Create(url);
+
+			var servicePoint = ((HttpWebRequest)request).ServicePoint;
+
+			bool prevValue = servicePoint.Expect100Continue;
+			servicePoint.Expect100Continue = false;
+
+			try
+			{
+				request.Method = "POST";
+				request.ContentType = "application/x-www-form-urlencoded";
+				byte[] bytes = new UTF8Encoding().GetBytes(content);
+				request.ContentLength = bytes.Length;
+				Stream requestStream = request.GetRequestStream();
+				requestStream.Write(bytes, 0, bytes.Length);
+				requestStream.Close();
+			
+				return new StreamReader(request.GetResponse().GetResponseStream()).ReadToEnd();
+
+			}
+			finally
+			{
+				servicePoint.Expect100Continue = prevValue;
+			}
+		}
+
+ 
+
 
 		public object RetrieveFullSizeImage(object fullSizeCallbackParameter)
 		{
 			return fullSizeCallbackParameter;
 		}
 
-		private string GetPage(string uri)
+		/*private string GetPage(string uri)
 		{
 			return new System.Net.WebClient().DownloadString(uri);
-		}
+		}*/
 	}
 }

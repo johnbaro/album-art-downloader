@@ -10,8 +10,10 @@
 		<Setter Property="Cursor" Value="Hand"/>
 		<Setter Property="Opacity" Value="0.5"/>
 		<Setter Property="Background" Value="{x:Null}"/>
+        <Setter Property="BorderBrush" Value="{x:Null}"/>
+        <Setter Property="BorderThickness" Value="0"/>
 
-		<Setter Property="Template">
+        <Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="ButtonBase">
 					<Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}">

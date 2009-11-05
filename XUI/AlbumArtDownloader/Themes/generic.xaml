@@ -13,4 +13,5 @@
 		<ResourceDictionary Source="/Controls/Xaml/EditableCell.generic.xaml"/>
 		<ResourceDictionary Source="/Controls/Xaml/SplitFadeButton.generic.xaml"/>
 	</ResourceDictionary.MergedDictionaries>
+    
 </ResourceDictionary>

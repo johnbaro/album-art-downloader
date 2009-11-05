@@ -56,7 +56,7 @@
 			</Grid.ColumnDefinitions>
 			<Label Target="{Binding ElementName=mFilePathBox}" Padding="0,0,0,4">_Search for audio files in:</Label>
 			<TextBox Grid.Row="1" x:Name="mFilePathBox" Text="{Binding Source={StaticResource mSettings}, Path=Default.FileBrowseRoot, UpdateSourceTrigger=PropertyChanged}" />
-			<Button Grid.Row="1" x:Name="mBrowse" Grid.Column="1" Content="..." Padding="0,-2,0,-2" Margin="0"/>
+			<Button Grid.Row="1" x:Name="mBrowse" Grid.Column="1" Content="..." Padding="0,-2,0,-2" Margin="0" MinWidth="{x:Static SystemParameters.VerticalScrollBarWidth}"/>
 			<Button x:Name="mSearch" Padding="5,-5,5,-5" Margin="5,0,0,0" Grid.Column="2" Grid.RowSpan="2" Command="ApplicationCommands.Find" IsDefault="True">
 				<StackPanel Orientation="Horizontal">
 					<Image Source="search.ico" Margin="0,4,0,0"/>

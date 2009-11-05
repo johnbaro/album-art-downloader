@@ -385,7 +385,7 @@
 										<ColumnDefinition Width="Auto"/>
 									</Grid.ColumnDefinitions>
 									<TextBox x:Name="PART_FilePathTextBox" FontSize="10" VerticalAlignment="Top"/>
-									<Button x:Name="PART_FilePathBrowse" Grid.Column="1" Content="..." FontSize="10" Height="{Binding ElementName=PART_FilePathTextBox, Path=ActualHeight, Mode=OneWay}"/>
+									<Button x:Name="PART_FilePathBrowse" Grid.Column="1" Content="..." FontSize="10" Padding="0,-2,0,-2" Margin="0" Height="{Binding ElementName=PART_FilePathTextBox, Path=ActualHeight, Mode=OneWay}" MinWidth="{x:Static SystemParameters.VerticalScrollBarWidth}"/>
 								</Grid>
 								<controls:SplitButton Command="ApplicationCommands.Save" VerticalAlignment="Top" Grid.Column="1" MenuToolTip="Save As..." Menu="{TemplateBinding PresetsContextMenu}">
 									<Image Source="save.png" Stretch="None" ToolTip="Save"/>

@@ -56,7 +56,7 @@ namespace AlbumArtDownloader.Controls
 			if (PathEditor != null)
 			{
 				//Make it mimic the editable area of a combo box
-				PathEditor.Margin = new Thickness(0, 0, SystemParameters.VerticalScrollBarWidth, 0);
+				PathEditor.Margin = new Thickness(1, 1, SystemParameters.VerticalScrollBarWidth, 1);
 				PathEditor.KeyDown += new KeyEventHandler(OnPathEditorKeyDown);
 				PathEditor.PreviewKeyDown += new KeyEventHandler(OnPathEditorPreviewKeyDown);
 				if (PathEditorHistory != null)

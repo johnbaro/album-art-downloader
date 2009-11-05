@@ -240,8 +240,8 @@
 				</Style>
 			</StackPanel.Style>
 			
-			<TextBlock Margin="2" Padding="5,1,2,2" VerticalAlignment="Top">Group by:</TextBlock>
-			<ComboBox x:Name="mGroupingPicker" Style="{StaticResource HyperlinkCombo}" Padding="2,0,2,2" IsEditable="False" HorizontalContentAlignment="Right"
+			<TextBlock Margin="2" Padding="5,1,0,1" VerticalAlignment="Bottom">Group by:</TextBlock>
+			<ComboBox x:Name="mGroupingPicker" Style="{StaticResource HyperlinkCombo}" Padding="3" IsEditable="False" HorizontalContentAlignment="Right"
 					  SelectedIndex="{Binding Source={StaticResource mSettings}, Path=Default.ResultsGrouping, Converter={StaticResource mEnumIndexConverter}}">
 				<!-- Must match AlbumArtDownloader.Controls.Grouping enum -->
 				<ComboBoxItem>None</ComboBoxItem>

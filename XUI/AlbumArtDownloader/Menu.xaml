@@ -18,7 +18,6 @@
 					<MenuItem Header="_File Browser..." Command="{x:Static local:Menu+Commands.NewFileBrowser}"/>
 					<MenuItem Header="F_oobar Browser..." Command="{x:Static local:Menu+Commands.NewFoobarBrowser}"/>
 				</MenuItem>
-				<Separator/>
 				<MenuItem Command="ApplicationCommands.Close"/>
 				<Separator/>
 				<MenuItem Command="{x:Static local:Menu+Commands.Exit}"/>

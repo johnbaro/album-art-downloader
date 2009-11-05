@@ -97,18 +97,11 @@ namespace AlbumArtDownloader
 			mArtist.GotKeyboardFocus += OnAutoSelectTextBoxFocusChange;
 			mAlbum.GotKeyboardFocus += OnAutoSelectTextBoxFocusChange;
 
-			mArtist.PreviewMouseLeftButtonDown += new MouseButtonEventHandler(testtripleclick);
-
 			//If the default file path pattern does not containg %preset%, the presets context menu is coerced into being hidden
 			mDefaultSaveFolder.PathPatternChanged += delegate { CoerceValue(PresetsContextMenuProperty); };
 
 			//Notify when scripts have been auto downloaded
 			Updates.AutoDownloadedScripts.CollectionChanged += OnAutoDownloadedScriptsChanged;
-		}
-
-		void testtripleclick(object sender, MouseButtonEventArgs e)
-		{
-			System.Diagnostics.Debug.WriteLine(e.ClickCount);
 		}
 
 		private void OnAutoDownloadedScriptsChanged(object sender, NotifyCollectionChangedEventArgs e)

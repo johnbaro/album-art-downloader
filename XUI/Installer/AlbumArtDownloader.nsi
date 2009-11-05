@@ -24,7 +24,7 @@ SetCompressor lzma
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 
 OutFile "../../Releases/AlbumArtDownloaderXUI-${PRODUCT_VERSION}.exe"
-InstallDir "$PROGRAMFILES\AlbumArtDownloader"
+InstallDir "$PROGRAMFILES64\AlbumArtDownloader"
 Icon "${NSISDIR}\Contrib\Graphics\Icons\modern-install.ico"
 UninstallIcon "${NSISDIR}\Contrib\Graphics\Icons\modern-uninstall.ico"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
