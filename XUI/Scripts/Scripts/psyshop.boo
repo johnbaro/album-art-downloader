@@ -11,8 +11,11 @@ class Psyshop:
 	static SourceCreator as string:
 		get: return "Alex Vallat"
 	static SourceVersion as string:
-		get: return "0.2"
+		get: return "0.3"
 	static def GetThumbs(coverart,artist,album):
+		artist = StripCharacters("&.'\";:?!", artist)
+		album = StripCharacters("&.'\";:?!", album)
+
 		query as string = artist + " " + album
 		query.Replace(' ','+')
 		resultsPage = Post("http://217.160.136.176/cgi-bin/search.cgi", String.Format("boolean=AND&case=INSENSITIVE&cd=TRUE&terms={0}", EncodeUrl(query)))

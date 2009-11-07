@@ -5,10 +5,13 @@ class GoogleImage(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "GoogleImage"
 	Version as string:
-		get: return "0.8"
+		get: return "0.9"
 	Author as string:
 		get: return "Alex Vallat"
 	def Search(artist as string, album as string, results as IScriptResults):
+		artist = StripCharacters("&.'\";:?!", artist)
+		album = StripCharacters("&.'\";:?!", album)
+
 		imagesHtml = GetPageIsoLatin1("http://images.google.com/images?gbv=1&q=" + EncodeUrl(artist + " " + album))
 
 		imageMatches = @/(?i)\/imgres\?imgurl=(?<fullSize>[^&]+)&imgrefurl=(?<infoUri>[^&]+)[^>]+?&h=(?<height>\d+)&w=(?<width>\d+)[^>]+?&tbnid=(?<tbnid>[^&]+)/.Matches(imagesHtml)

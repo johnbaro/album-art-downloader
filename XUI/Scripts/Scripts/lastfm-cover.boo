@@ -12,7 +12,7 @@ class LastFmCover(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "LastFM Cover"
 	Version as string:
-		get: return "0.4"
+		get: return "0.5"
 	Author as string:
 		get: return "daju"
 	
@@ -29,6 +29,9 @@ class LastFmCover(AlbumArtDownloader.Scripts.IScript):
 	
 	
 	def Search(artist as string, album as string, results as IScriptResults):
+		artist = StripCharacters("&.'\";:?!", artist)
+		album = StripCharacters("&.'\";:?!", album)
+
 		if(artist!= null and album!=null):
 			encodedArtist = EncodeUrl(artist)
 			encodedAlbum = EncodeUrl(album)

@@ -70,3 +70,8 @@ def EncodeUrlIsoLatin1(url as string):
 	encoding as Encoding = Encoding.GetEncoding("iso-8859-1")#iso-latin-1
 	return EncodeUrl(url, encoding)
 
+def StripCharacters(charactersToStrip as string, stringToStrip as string):
+	if(String.IsNullOrEmpty(stringToStrip):
+		return stringToStrip
+	
+	return Regex.Replace(stringToStrip, "[${charactersToStrip}]", "")

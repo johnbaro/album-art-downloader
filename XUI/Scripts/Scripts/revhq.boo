@@ -11,8 +11,11 @@ class RevHQ:
 	static SourceCreator as string:
 		get: return "Alex Vallat"
 	static SourceVersion as string:
-		get: return "0.3"
+		get: return "0.4"
 	static def GetThumbs(coverart,artist,album):
+		artist = StripCharacters("&.'\";:?!", artist)
+		album = StripCharacters("&.'\";:?!", album)
+
 		if(String.IsNullOrEmpty(album)):
 			return //Can't search without the album title to search for
 		

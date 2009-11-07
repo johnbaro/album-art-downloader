@@ -7,11 +7,13 @@ class BuyDotCom(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "Buy.com"
 	Version as string:
-		get: return "0.4"
+		get: return "0.5"
 	Author as string:
 		get: return "alsaan"
 
 	def Search(artist as string, album as string, results as IScriptResults):
+		artist = StripCharacters("&.'\";:?!", artist)
+		album = StripCharacters("&.'\";:?!", album)
 	  	  	  
 		searchUrl as string = "http://www.buy.com/retail/usersearchresults.asp?qu={0}&querytype=music&store=6&als=3&loc=109"
 		searchParameter as string = "${artist} ${album}".Trim().Replace(" ","+")

@@ -9,11 +9,14 @@ class JunoRecords:
 	static SourceName as string:
 		get: return "Juno Records"
 	static SourceVersion as string:
-		get: return "0.3"
+		get: return "0.4"
 	static SourceCreator as string:
 		get: return "Marc Landis"
 
 	static def GetThumbs(coverart,artist,album):
+		artist = StripCharacters("&.'\";:?!", artist)
+		album = StripCharacters("&.'\";:?!", album)
+
 		query as string = artist + " " + album
 		query = EncodeUrl(query)
 		

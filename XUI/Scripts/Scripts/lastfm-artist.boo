@@ -6,10 +6,12 @@ class LastFmArtist(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "LastFM Artist"
 	Version as string:
-		get: return "0.2"
+		get: return "0.3"
 	Author as string:
 		get: return "Alex Vallat"
 	def Search(artist as string, album as string, results as IScriptResults):
+		artist = StripCharacters("&.'\";:?!", artist)
+
 		encodedArtist = EncodeUrl(artist)
 		imagesHtml = GetPage("http://www.last.fm/music/${encodedArtist}/+images")
 

@@ -9,6 +9,8 @@
       Neighbour (Box) scaling when zoomed in. It does not affect the display at 100% or below.
      Installer now points to "Program Files" rather than "Program Files (x86)" on 64 bit systems.
      UI Fixes for Windows 7
+     Added Archambault and HMV Canada scripts
+     All scripts now strip the characters: &.;:?!'" from artist and album field.
 
 0.32.1 Fixed minor bug with Various Artists detection
        Added description of F: prefix to command line documentation

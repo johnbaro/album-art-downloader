@@ -10,11 +10,14 @@ class freecoversApi(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "Freecovers API"
 	Version as string:
-		get: return "0.1"
+		get: return "0.2"
 	Author as string:
 		get: return "daju"
 	
 	def Search(artist as string, album as string, results as IScriptResults):
+		artist = StripCharacters("&.'\";:?!", artist)
+		album = StripCharacters("&.'\";:?!", album)
+
 		searchFor = EncodeUrlIsoLatin1("${artist} ${album}")
 		
 		baseUrl = "http://www.freecovers.net/api/search/"

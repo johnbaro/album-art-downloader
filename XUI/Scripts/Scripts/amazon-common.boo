@@ -7,7 +7,7 @@ abstract class Amazon(AlbumArtDownloader.Scripts.IScript):
 	virtual Name as string:
 		get: return "Amazon (.${Suffix})"
 	Version as string:
-		get: return "0.1s"
+		get: return "0.2s"
 	Author as string:
 		get: return "Alex Vallat"
 	abstract protected Suffix as string:
@@ -17,6 +17,9 @@ abstract class Amazon(AlbumArtDownloader.Scripts.IScript):
 	
 	def Search(artist as string, album as string, results as IScriptResults):
 
+		artist = StripCharacters("&.'\";:?!", artist)
+		album = StripCharacters("&.'\";:?!", album)
+		
 		resultsPage = GetPage(GetPageStream("http://www.amazon.${Suffix}/gp/search/ref=sr_adv_m_pop/?search-alias=popular&field-artist=${EncodeUrl(artist)}&field-title=${EncodeUrl(album)}&sort=relevancerank", null, true))
 		
 		resultsRegex = Regex("<div\\s[^>]*class\\s*=\\s*\"productImage\"[^>]*>.*?\\ssrc\\s*=\\s*\"(?<image>http://ecx.*?\\._)(?<thumb>(?:[^_]+_){2})(?<ext>\\.[^\"]+)\".*?<div\\s[^>]*class\\s*=\\s*\"productTitle\"[^>]*>\\s*<a\\s[^>]*href\\s*=\\s*\"(?<url>[^\"]+)[^>]+>\\s*(?<title>.*?)</a>\\s*<span\\s[^>]*class=\"ptBrand\"[^>]*>(?:[^<]+<a\\s[^>]*>)?\\s*(?:by |von |de )?(?<artist>[^<]+)", RegexOptions.Singleline | RegexOptions.IgnoreCase)

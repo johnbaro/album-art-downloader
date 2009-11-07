@@ -7,10 +7,13 @@ class YesAsia(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "YesAsia"
 	Version as string:
-		get: return "0.2"
+		get: return "0.3"
 	Author as string:
 		get: return "Alex Vallat"
 	def Search(artist as string, album as string, results as IScriptResults):
+		artist = StripCharacters("&.'\";:?!", artist)
+		album = StripCharacters("&.'\";:?!", album)
+
 		//Retrieve the search results page
 		searchResultsHtml as string = GetPage("http://www.yesasia.com/global/search-music/0-0-0-bpt.48_bt.48_cioos.true_q." + EncodeUrl(artist + " " + album) + "_ss.101-en/list.html")
 		

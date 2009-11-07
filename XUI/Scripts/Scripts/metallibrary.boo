@@ -7,10 +7,13 @@ class MetalLibrary(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "Metal Library"
 	Version as string:
-		get: return "0.1"
+		get: return "0.2"
 	Author as string:
 		get: return "Alex Vallat"
 	def Search(artist as string, album as string, results as IScriptResults):
+		artist = StripCharacters("&.'\";:?!", artist)
+		album = StripCharacters("&.'\";:?!", album)
+
 		//Retrieve the artist page
 		artistPrefix = artist.Replace(" ", ".")
 		artistPage as string = GetPage("http://${artistPrefix}.metallibrary.ru")

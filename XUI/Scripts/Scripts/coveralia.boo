@@ -10,8 +10,11 @@ class Coveralia:
 	static SourceCreator as string:
 		get: return "Alex Vallat"
 	static SourceVersion as string:
-		get: return "0.8"
+		get: return "0.9"
 	static def GetThumbs(coverart,artist,album):
+		artist = StripCharacters("&.'\";:?!", artist)
+		album = StripCharacters("&.'\";:?!", album)
+
 		query as string = artist + " " + album
 		query.Replace(' ','+')
 		resultResults = GetPageIsoLatin1(String.Format("http://www.coveralia.com/mostrar.php?bus={0}&bust=2", EncodeUrlIsoLatin1(query)))

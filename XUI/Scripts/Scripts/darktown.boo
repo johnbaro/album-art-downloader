@@ -11,11 +11,14 @@ class darktown(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "Darktown"
 	Version as string:
-		get: return "0.3"
+		get: return "0.4"
 	Author as string:
 		get: return "daju"
 	
 	def Search(artist as string, album as string, results as IScriptResults):
+		artist = StripCharacters("&.'\";:?!", artist)
+		album = StripCharacters("&.'\";:?!", album)
+
 		toSearchFor = "${artist} ${album}"
 		toSearchFor = toSearchFor.Trim() #delete unnessary whitespaces
 		toSearchFor = EncodeUrlIsoLatin1(toSearchFor)# iso-latin-1 encoding is nessecary for searching  for "Die Ärzte"

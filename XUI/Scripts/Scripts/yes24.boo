@@ -10,8 +10,11 @@ class Yes24:
 	static SourceCreator as string:
 		get: return "Alex Vallat"
 	static SourceVersion as string:
-		get: return "0.5"
+		get: return "0.6"
 	static def GetThumbs(coverart,artist,album):
+		artist = StripCharacters("&.'\";:?!", artist)
+		album = StripCharacters("&.'\";:?!", album)
+
 		encoding = Encoding.GetEncoding("euc-kr")
 		url = String.Format("http://www.yes24.com/searchCenter/searchDetailResult.aspx?qtitle={0}&qauthor={1}", HttpUtility.UrlEncode(album, encoding), HttpUtility.UrlEncode(artist, encoding))
 		

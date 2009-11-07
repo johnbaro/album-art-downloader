@@ -18,6 +18,8 @@
 !macroend
 !define EnableSection '!insertmacro SecEnable'
 
+#Set Admin execution so that Vista and 7 install the start menu shortcuts to the right place, and uninstall them too.
+RequestExecutionLevel admin
 
 SetCompressor lzma
 
@@ -185,6 +187,12 @@ SectionGroup "Image Download Scripts"
 		SectionEnd
 		Section "LastFM"
 		  File "..\Scripts\Scripts\lastfm-cover.boo"
+		SectionEnd
+		Section "Archambault"
+		  File "..\Scripts\Scripts\archambault.boo"
+		SectionEnd
+		Section "HMV Canada"
+		  File "..\Scripts\Scripts\hmv-canada.boo"
 		SectionEnd
 		#iTunes script currently blocked by apple, so don't include it
 		#Section "iTunes Music Shop"

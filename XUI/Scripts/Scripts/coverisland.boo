@@ -11,8 +11,11 @@ class CoverIsland:
 	static SourceCreator as string:
 		get: return "Alex Vallat"
 	static SourceVersion as string:
-		get: return "0.5"
+		get: return "0.6"
 	static def GetThumbs(coverart,artist,album):
+		artist = StripCharacters("&.'\";:?!", artist)
+		album = StripCharacters("&.'\";:?!", album)
+
 		if not String.IsNullOrEmpty(artist):
 			firstLetter = artist[0]
 		elif not String.IsNullOrEmpty(album):
@@ -32,7 +35,7 @@ class CoverIsland:
 			except e as System.Net.WebException: //Catch the 404 and break out of the loop - no more pages left
 				return //No results found
 			//Check if results are found here
-			resultsRegex = Regex(String.Format("<option value=\"(?<value>[^\"]+)\">(?<title>[^<]*{0}[^<]+{1}[^<]*)(?=<)", artist.Replace(' ','_'), album.Replace(' ','_')), RegexOptions.Multiline | RegexOptions.IgnoreCase)
+			resultsRegex = Regex(String.Format("<option value=\"(?<value>[^\"]+)\">(?<title>[^<]*{0}[^<]+{1}[^<]*)(?=<)", artist, album), RegexOptions.Multiline | RegexOptions.IgnoreCase)
 			resultMatches = resultsRegex.Matches(listPage)
 			if resultMatches.Count > 0:
 				break //Found some results

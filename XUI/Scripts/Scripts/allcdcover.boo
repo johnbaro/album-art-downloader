@@ -10,11 +10,14 @@ class AllCdCovers(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "AllCdCover"
 	Version as string:
-		get: return "0.1"
+		get: return "0.2"
 	Author as string:
 		get: return "daju"
 	
 	def Search(artist as string, album as string, results as IScriptResults):
+		artist = StripCharacters("&.'\";:?!", artist)
+		album = StripCharacters("&.'\";:?!", album)
+
 		searchFor = EncodeUrl("${artist} ${album}".Trim())
 		baseUrl = "http://www.allcdcovers.com/search/music/all/"
 		allResultsPage = GetPage(GetPageStream("${baseUrl}${searchFor}", null, true))

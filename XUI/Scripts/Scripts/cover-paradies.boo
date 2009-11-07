@@ -13,8 +13,11 @@ class CoverParadies:
 	static SourceCreator as string:
 		get: return "Alex Vallat"
 	static SourceVersion as string:
-		get: return "0.10"
+		get: return "0.11"
 	static def GetThumbs(coverart,artist,album):
+		artist = StripCharacters("&.'\";:?!", artist)
+		album = StripCharacters("&.'\";:?!", album)
+
 		query as string = artist + " " + album
 		query.Replace(' ','+')
 		
