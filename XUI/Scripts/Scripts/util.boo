@@ -37,7 +37,6 @@ def EncodeUrl(url as string):
 	return EncodeUrl(url, Encoding.UTF8)
 
 def EncodeUrl(url as string, encoding as Encoding):
-	url = url.Replace("&","%26").Replace("?","%3F")
 	return System.Web.HttpUtility.UrlEncode(url, encoding)
 
 
@@ -71,7 +70,7 @@ def EncodeUrlIsoLatin1(url as string):
 	return EncodeUrl(url, encoding)
 
 def StripCharacters(charactersToStrip as string, stringToStrip as string):
-	if(String.IsNullOrEmpty(stringToStrip):
+	if(string.IsNullOrEmpty(stringToStrip)):
 		return stringToStrip
 	
 	return Regex.Replace(stringToStrip, "[${charactersToStrip}]", "")

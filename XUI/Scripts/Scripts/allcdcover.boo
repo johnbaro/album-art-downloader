@@ -10,7 +10,7 @@ class AllCdCovers(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "AllCdCover"
 	Version as string:
-		get: return "0.2"
+		get: return "0.3"
 	Author as string:
 		get: return "daju"
 	
@@ -21,7 +21,8 @@ class AllCdCovers(AlbumArtDownloader.Scripts.IScript):
 		searchFor = EncodeUrl("${artist} ${album}".Trim())
 		baseUrl = "http://www.allcdcovers.com/search/music/all/"
 		allResultsPage = GetPage(GetPageStream("${baseUrl}${searchFor}", null, true))
-		resultRegex = Regex("<a href=\"/show/(?<singleResultPage>[^\"]+)\">(?<typeName>[^<]+)</a>")
+		
+		resultRegex = Regex("<a href=\"/show/(?<singleResultPage>[^\"]+)\"><img[^>]+><br />(?<typeName>[^<]+)</a>")
 		resultMatches = resultRegex.Matches(allResultsPage)
 		results.EstimatedCount = resultMatches.Count
 		for resultMatch as Match in resultMatches:

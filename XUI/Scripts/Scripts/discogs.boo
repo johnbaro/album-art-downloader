@@ -16,7 +16,7 @@ class Discogs:
 		album = StripCharacters("&.'\";:?!", album)
 
 		query as string = artist + " " + album
-		query.Replace(' ','+')
+		
 		obidResults = GetPage(String.Format("http://www.discogs.com/search?type=all&q={0}", EncodeUrl(query)))
 			
 		//Get obids

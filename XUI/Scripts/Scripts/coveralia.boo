@@ -16,7 +16,7 @@ class Coveralia:
 		album = StripCharacters("&.'\";:?!", album)
 
 		query as string = artist + " " + album
-		query.Replace(' ','+')
+		
 		resultResults = GetPageIsoLatin1(String.Format("http://www.coveralia.com/mostrar.php?bus={0}&bust=2", EncodeUrlIsoLatin1(query)))
 		
 		//Get results

@@ -11,7 +11,7 @@ class HMVCanada(AlbumArtDownloader.Scripts.IScript):
 		get: return "Sebastien Leclerc"
 
 	def Search(artist as string, album as string, results as IScriptResults):
-		if String.IsNullOrEmpty(album):
+		if string.IsNullOrEmpty(album):
 			return //Only searching on album is supported
 
 		album = StripCharacters("&.'\";:?!", album)

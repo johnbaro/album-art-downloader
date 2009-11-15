@@ -64,7 +64,6 @@
 							<Grid.RowDefinitions>
 								<RowDefinition Height="Auto"/>
 								<RowDefinition Height="Auto"/>
-								<RowDefinition Height="Auto"/>
 							</Grid.RowDefinitions>
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="Auto"/>
@@ -76,7 +75,7 @@
 							<TextBlock Grid.Column="1" Grid.ColumnSpan="2" Text="{Binding Path=Name, Mode=OneWay}"/>
 
 							<controls:SizeRestrainer Grid.Row="1" Grid.Column="1">
-								<TextBlock x:Name="versionInfo" FontStyle="Italic" Foreground="Silver" Style="{StaticResource OverflowTextBlock}">
+								<TextBlock x:Name="versionInfo" FontStyle="Italic" Foreground="Silver" Style="{StaticResource OverflowTextBlock}" Margin="0,0,0,-2">
 									<TextBlock.Text>
 										<MultiBinding Converter="{StaticResource mStringFormatterConverter}" ConverterParameter="{}Current version: v{0}  ->  New version: v{1}" Mode="OneWay">
 											<Binding Path="OldVersion" Mode="OneWay"/>

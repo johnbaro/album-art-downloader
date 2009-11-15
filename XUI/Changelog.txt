@@ -10,7 +10,10 @@
      Installer now points to "Program Files" rather than "Program Files (x86)" on 64 bit systems.
      UI Fixes for Windows 7
      Added Archambault and HMV Canada scripts
-     All scripts now strip the characters: &.;:?!'" from artist and album field.
+     All scripts now strip the characters: &.;:?!'" from artist and album field. (this is under review)
+     Improved Amazon script handling of character entities in titles
+     Fixed bug with Cover-Paradies script
+     Updated to latest version of Boo (0.9.2)
 
 0.32.1 Fixed minor bug with Various Artists detection
        Added description of F: prefix to command line documentation

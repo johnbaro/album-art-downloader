@@ -17,7 +17,7 @@ class Psyshop:
 		album = StripCharacters("&.'\";:?!", album)
 
 		query as string = artist + " " + album
-		query.Replace(' ','+')
+		
 		resultsPage = Post("http://217.160.136.176/cgi-bin/search.cgi", String.Format("boolean=AND&case=INSENSITIVE&cd=TRUE&terms={0}", EncodeUrl(query)))
 		
 		//Get results

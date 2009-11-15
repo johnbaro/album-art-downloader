@@ -19,7 +19,6 @@ class CoverParadies:
 		album = StripCharacters("&.'\";:?!", album)
 
 		query as string = artist + " " + album
-		query.Replace(' ','+')
 		
 		searchResults = Post("http://www.cover-paradies.to/?Module=ExtendedSearch", String.Format("StartSearch=true&PagePos=0&SearchString={0}&StringMode=Wild&DisplayStyle=Text&HideDetails=Yes&PageLimit=1000&SektionID-2=Yes", EncodeUrl(query)))
 		
@@ -38,7 +37,7 @@ class CoverParadies:
 			title = titleRegex.Matches(albumPage)[0].Groups["title"].Value //Expecting only one match
 			
 			//Get all the images for the album
-			imagesRegex = Regex("ID=(?<fullSizeID>\\d+)\"><img [^>]+? src=\"(?<thumb>[^\"]+)\" alt=\"(?<imageName>[^\"]+)\".+? (?<width>\\d+) x (?<height>\\d+) px", RegexOptions.Singleline)
+			imagesRegex = Regex("ID=(?<fullSizeID>\\d+)\"><img [^>]+? src=\"(?<thumb>[^\"]+)\" alt=\"(?<imageName>[^\"]+)\".+? (?<width>[\\d.]+) x (?<height>[\\d.]+) px", RegexOptions.Singleline)
 			imageMatches = imagesRegex.Matches(albumPage)
 			
 			for imageMatch as Match in imageMatches:
@@ -48,7 +47,9 @@ class CoverParadies:
 				else:
 					imageTitle = title
 				
-				coverart.Add(GetPageStream(imageMatch.Groups["thumb"].Value, "http://www.cover-paradies.to"), imageTitle, albumPageUri, Int32.Parse(imageMatch.Groups["width"].Value), Int32.Parse(imageMatch.Groups["height"].Value), imageMatch.Groups["fullSizeID"].Value, string2coverType(coverTypeString))		
+				de = System.Globalization.CultureInfo.GetCultureInfo("de-DE") //Numbers are in DE culture (. for thousands separater, not for decimal point)
+				thousands = System.Globalization.NumberStyles.AllowThousands //Numbers have thousands separators.
+				coverart.Add(GetPageStream(imageMatch.Groups["thumb"].Value, "http://www.cover-paradies.to"), imageTitle, albumPageUri, Int32.Parse(imageMatch.Groups["width"].Value, thousands, de), Int32.Parse(imageMatch.Groups["height"].Value, thousands, de), imageMatch.Groups["fullSizeID"].Value, string2coverType(coverTypeString))		
 
 	static def Post(url as String, content as String):
 		request = System.Net.HttpWebRequest.Create(url)
