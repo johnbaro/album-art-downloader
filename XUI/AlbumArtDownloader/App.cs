@@ -201,7 +201,8 @@ namespace AlbumArtDownloader
 			//valuedParameters is a list of parameters which must have values - they can not be just switches.
 			string[] valuedParameters = { "artist", "ar", "album", "al", "path", "p", "localimagespath", 
 										  "sources", "s", "exclude", "es", "include", "i", 
-										  "sort", "o", "group", "g", "minsize", "mn", "maxsize", "mx" };
+										  "sort", "o", "group", "g", "minsize", "mn", "maxsize", "mx",
+										  "covertype", "t"};
 			Arguments arguments = new Arguments(args, valuedParameters);
 			if (arguments.Contains("?"))
 			{
@@ -216,6 +217,7 @@ namespace AlbumArtDownloader
 			ListSortDirection sortDirection = ListSortDirection.Ascending;
 			Grouping? grouping = null;
 			int? minSize = null, maxSize = null;
+			AllowedCoverType? coverType = null;
 
 			List<String> useSources = new List<string>();
 			List<String> excludeSources = new List<string>();
@@ -414,6 +416,43 @@ namespace AlbumArtDownloader
 								errorMessage = "The /maxSize parameter must be a number: " + parameter.Value + "\n  " + e.Message;
 							}
 							break;
+						case "covertype":
+						case "t":
+							coverType = default(AllowedCoverType);
+							foreach (String allowedCoverType in parameter.Value.ToLower().Split(','))
+							{
+								switch (allowedCoverType)
+								{
+									case "front":
+									case "f":
+										coverType |= AllowedCoverType.Front;
+										break;
+									case "back":
+									case "b":
+										coverType |= AllowedCoverType.Back;
+										break;
+									case "inside":
+									case "i":
+										coverType |= AllowedCoverType.Inside;
+										break;
+									case "cd":
+									case "c":
+										coverType |= AllowedCoverType.CD;
+										break;
+									case "unknown":
+									case "u":
+										coverType |= AllowedCoverType.Unknown;
+										break;
+									case "any":
+									case "a":
+										coverType |= AllowedCoverType.Any;
+										break;
+									default:
+										errorMessage = "Unrecognized cover type: " + parameter.Value;
+										break;
+								}
+							}
+							break;
 						case "update":
 							//Force an immediate check for updates
 							Updates.CheckForUpdates(true);
@@ -486,6 +525,10 @@ namespace AlbumArtDownloader
 					AlbumArtDownloader.Properties.Settings.Default.MaximumImageSize = maxSize.Value;
 					AlbumArtDownloader.Properties.Settings.Default.UseMaximumImageSize = true;
 				}
+			}
+			if (coverType.HasValue)
+			{
+				AlbumArtDownloader.Properties.Settings.Default.AllowedCoverTypes = coverType.Value;
 			}
 
 			if (!showFileBrowser && !showFoobarBrowser && !showSearchWindow) //If no windows will be shown, show the search window
@@ -563,6 +606,11 @@ namespace AlbumArtDownloader
 					SearchQueue.ForceSearchWindow(searchWindow);
 				}
 			}
+
+			//DEBUG:
+			var autoDownloader = new AutoDownloader();
+			autoDownloader.Add(new Album(null, "Test", "Test"), "Test");
+			autoDownloader.Show();
 
 			if (AlbumArtDownloader.Properties.Settings.Default.AutoUpdateEnabled)
 			{

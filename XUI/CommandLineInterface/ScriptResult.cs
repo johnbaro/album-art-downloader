@@ -38,6 +38,8 @@ namespace AlbumArtDownloader
 			mCoverType = coverType;
 		}
 
+		public CoverType CoverType { get { return mCoverType; } }
+
 		private void DownloadImage()
 		{
 			if (!mImageDownloaded)

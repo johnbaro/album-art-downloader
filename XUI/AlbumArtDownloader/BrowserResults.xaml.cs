@@ -10,8 +10,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using System.Windows.Media.Imaging;
-using AlbumArtDownloader.Controls;
 using System.Runtime.InteropServices;
+using AlbumArtDownloader.Controls;
 
 namespace AlbumArtDownloader
 {
@@ -102,23 +102,33 @@ namespace AlbumArtDownloader
 		private static readonly int sSearchWindowCascadeOffset = 20;
 		private void GetArtworkExec(object sender, ExecutedRoutedEventArgs e)
 		{
-			//Warn if there are a lot of selected items
-			if (SelectedItems.Count > Properties.Settings.Default.EnqueueWarning)
+			AutoDownloader autoDownloader = null;
+
+			if (Properties.Settings.Default.FileBrowseAutoDownload)
 			{
-				EnqueueWarning enqueueWarning = new EnqueueWarning();
-				enqueueWarning.Owner = Window.GetWindow(this);
-				enqueueWarning.NumberToEnqueue = SelectedItems.Count;
-
-				if (!enqueueWarning.ShowDialog().GetValueOrDefault())
+				autoDownloader = new AutoDownloader();
+				autoDownloader.AlbumArtworkUpdated += OnAlbumArtworkUpdated;
+			}
+			else
+			{
+				//Warn if there are a lot of selected items
+				if (SelectedItems.Count > Properties.Settings.Default.EnqueueWarning)
 				{
-					//Cancelled
-					return;
-				}
+					EnqueueWarning enqueueWarning = new EnqueueWarning();
+					enqueueWarning.Owner = Window.GetWindow(this);
+					enqueueWarning.NumberToEnqueue = SelectedItems.Count;
 
-				//Trim the selection back to the number to enqueue
-				while (SelectedItems.Count > enqueueWarning.NumberToEnqueue)
-				{
-					SelectedItems.RemoveAt(SelectedItems.Count - 1);
+					if (!enqueueWarning.ShowDialog().GetValueOrDefault())
+					{
+						//Cancelled
+						return;
+					}
+
+					//Trim the selection back to the number to enqueue
+					while (SelectedItems.Count > enqueueWarning.NumberToEnqueue)
+					{
+						SelectedItems.RemoveAt(SelectedItems.Count - 1);
+					}
 				}
 			}
 
@@ -153,30 +163,41 @@ namespace AlbumArtDownloader
 					rootedArtFileSearchPattern = Path.Combine(album.BasePath, artFileSearchPattern);
 				}
 
-				ArtSearchWindow searchWindow = Common.NewSearchWindow(Window.GetWindow(this) as IAppWindow);
-				searchWindow.Top += i * sSearchWindowCascadeOffset;
-				searchWindow.Left += i * sSearchWindowCascadeOffset;
-
-				//TODO: Neater laying out of windows which would go off the screen. Note how Firefox handles this, for example, when opening lots of new non-maximised windows.
-				//TODO: Multimonitor support.
-				if (searchWindow.Left + searchWindow.Width > SystemParameters.PrimaryScreenWidth)
+				if (Properties.Settings.Default.FileBrowseAutoDownload)
 				{
-					//For the present, just make sure that the window doesn't leave the screen.
-					searchWindow.Left = SystemParameters.PrimaryScreenWidth - searchWindow.Width;
+					autoDownloader.Add(album, rootedArtFileSearchPattern);
 				}
-				if (searchWindow.Top + searchWindow.Height > SystemParameters.PrimaryScreenHeight)
+				else
 				{
-					searchWindow.Top = SystemParameters.PrimaryScreenHeight - searchWindow.Height;
+					ArtSearchWindow searchWindow = Common.NewSearchWindow(Window.GetWindow(this) as IAppWindow);
+					searchWindow.Top += i * sSearchWindowCascadeOffset;
+					searchWindow.Left += i * sSearchWindowCascadeOffset;
+
+					//TODO: Neater laying out of windows which would go off the screen. Note how Firefox handles this, for example, when opening lots of new non-maximised windows.
+					//TODO: Multimonitor support.
+					if (searchWindow.Left + searchWindow.Width > SystemParameters.PrimaryScreenWidth)
+					{
+						//For the present, just make sure that the window doesn't leave the screen.
+						searchWindow.Left = SystemParameters.PrimaryScreenWidth - searchWindow.Width;
+					}
+					if (searchWindow.Top + searchWindow.Height > SystemParameters.PrimaryScreenHeight)
+					{
+						searchWindow.Top = SystemParameters.PrimaryScreenHeight - searchWindow.Height;
+					}
+
+					searchWindow.SetDefaultSaveFolderPattern(rootedArtFileSearchPattern, true); //Default save to the location where the image was searched for.
+					searchWindow.Search(album.Artist, album.Name); //Kick off the search.
+
+					//Watch for the window being closed to update the status of the artwork
+					mSearchWindowAlbumLookup.Add(searchWindow, album);
+					searchWindow.Closed += OnSearchWindowClosed;
+
+					i++;
 				}
-
-				searchWindow.SetDefaultSaveFolderPattern(rootedArtFileSearchPattern, true); //Default save to the location where the image was searched for.
-				searchWindow.Search(album.Artist, album.Name); //Kick off the search.
-
-				//Watch for the window being closed to update the status of the artwork
-				mSearchWindowAlbumLookup.Add(searchWindow, album);
-				searchWindow.Closed += OnSearchWindowClosed;
-
-				i++;
+			}
+			if (Properties.Settings.Default.FileBrowseAutoDownload)
+			{
+				autoDownloader.Show();
 			}
 		}
 
@@ -192,6 +213,11 @@ namespace AlbumArtDownloader
 
 				QueueAlbumForArtFileSearch(album);
 			}
+		}
+
+		private void OnAlbumArtworkUpdated(object sender, AlbumArtworkUpdatedEventArgs e)
+		{
+			QueueAlbumForArtFileSearch(e.Album);
 		}
 
 		protected override void OnMouseDoubleClick(MouseButtonEventArgs e)

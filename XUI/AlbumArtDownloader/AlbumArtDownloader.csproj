@@ -235,6 +235,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="AutoDownloader.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\Xaml\Separator.generic.xaml">
       <SubType>Designer</SubType>
     </Page>
@@ -277,6 +281,9 @@
     <Resource Include="Controls\Xaml\toggleDown.png" />
     <Resource Include="Controls\Xaml\toggleUp.png" />
     <Resource Include="Controls\Xaml\wait.png" />
+    <Compile Include="AutoDownloader.xaml.cs">
+      <DependentUpon>AutoDownloader.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Enums.cs" />
     <Compile Include="Controls\ArtPanel.cs" />
     <Compile Include="Controls\ArtPanelList.cs" />
@@ -288,6 +295,7 @@
     <Compile Include="Controls\EqualityConverter.cs" />
     <Compile Include="Controls\FileNameConverter.cs" />
     <Compile Include="Controls\FileSizeConverter.cs" />
+    <Compile Include="Controls\FlagCheckBox.cs" />
     <Compile Include="Controls\LimitBox.cs" />
     <Compile Include="Controls\LocalGroupDescription.cs" />
     <Compile Include="Controls\LogarithmicScaleConverter.cs" />

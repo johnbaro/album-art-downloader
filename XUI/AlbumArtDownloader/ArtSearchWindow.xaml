@@ -106,94 +106,9 @@
 		<Expander Style="{StaticResource HyperlinkExpander}" Padding="0" Margin="0" Grid.Row="2"
 				  Header="Options..." BorderBrush="{x:Static SystemColors.ControlDarkBrush}"
 				  x:Name="mOptionsBox">
-			<Grid>
-				<Grid.Resources>
-					<Style TargetType="CheckBox">
-						<Setter Property="Margin" Value="5,5,2,2"/>
-					</Style>
-				</Grid.Resources>
-				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="Auto"/>
-					<RowDefinition Height="Auto"/>
-				</Grid.RowDefinitions>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="Auto"/>
-					<ColumnDefinition Width="Auto"/>
-					<ColumnDefinition Width="*"/>
-				</Grid.ColumnDefinitions>
-				
-				<CheckBox Grid.Row="0" IsChecked="{Binding Source={StaticResource mSettings}, Path=Default.OpenResultsInNewWindow}">Open search results in new _window</CheckBox>
-				<CheckBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Content="Automatically _close after saving"
-						  IsChecked="{Binding ElementName=this, Path=AutoClose}"/>
+			<DockPanel>
 
-				<GroupBox Header="Automatically download full-size images" Grid.Row="1"
-						  RadioButton.Checked="OnAutoDownloadFullSizeImagesChanged">
-					<GroupBox.Resources>
-						<Style TargetType="RadioButton">
-							<Setter Property="Margin" Value="2"/>
-						</Style>
-					</GroupBox.Resources>
-					<StackPanel DataContext="{StaticResource mSettings}">
-						<RadioButton Content="Always">
-							<RadioButton.IsChecked>
-								<Binding Path="Default.AutoDownloadFullSizeImages" Converter="{StaticResource mEqualityConverter}">
-									<Binding.ConverterParameter>
-										<local:AutoDownloadFullSizeImages>Always</local:AutoDownloadFullSizeImages>
-									</Binding.ConverterParameter>
-								</Binding>
-							</RadioButton.IsChecked>
-						</RadioButton>
-						<RadioButton Content="Only when size is unknown">
-							<RadioButton.IsChecked>
-								<Binding Path="Default.AutoDownloadFullSizeImages" Converter="{StaticResource mEqualityConverter}">
-									<Binding.ConverterParameter>
-										<local:AutoDownloadFullSizeImages>WhenSizeUnknown</local:AutoDownloadFullSizeImages>
-									</Binding.ConverterParameter>
-								</Binding>
-							</RadioButton.IsChecked>
-						</RadioButton>
-						<RadioButton Content="Never">
-							<RadioButton.IsChecked>
-								<Binding Path="Default.AutoDownloadFullSizeImages" Converter="{StaticResource mEqualityConverter}">
-									<Binding.ConverterParameter>
-										<local:AutoDownloadFullSizeImages>Never</local:AutoDownloadFullSizeImages>
-									</Binding.ConverterParameter>
-								</Binding>
-							</RadioButton.IsChecked>
-						</RadioButton>
-					</StackPanel>
-				</GroupBox>
-
-				<GroupBox Header="Filter by image size" Grid.Row="1" Grid.Column="1" Margin="4,0,0,0">
-					<GroupBox.Resources>
-						<Style TargetType="RadioButton">
-							<Setter Property="Margin" Value="2"/>
-						</Style>
-					</GroupBox.Resources>
-					<Grid Grid.IsSharedSizeScope="True">
-						<Grid.RowDefinitions>
-							<RowDefinition Height="Auto"/>
-							<RowDefinition Height="Auto"/>
-						</Grid.RowDefinitions>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="*"/>
-							<ColumnDefinition Width="Auto"/>
-						</Grid.ColumnDefinitions>
-						<Grid.Resources>
-							<Style TargetType="TextBlock">
-								<Setter Property="Margin" Value="0,5,0,0"/>
-								<Setter Property="Grid.Column" Value="2"/>
-							</Style>
-						</Grid.Resources>
-						<controls:LimitBox Label="Minimum" Value="{Binding Source={StaticResource mSettings}, Path=Default.MinimumImageSize}" HasValue="{Binding Source={StaticResource mSettings}, Path=Default.UseMinimumImageSize}"/>
-						<TextBlock>px</TextBlock>
-						<controls:LimitBox Grid.Row="1" Label="Maximum" Value="{Binding Source={StaticResource mSettings}, Path=Default.MaximumImageSize}" HasValue="{Binding Source={StaticResource mSettings}, Path=Default.UseMaximumImageSize}"/>
-						<TextBlock Grid.Row="1">px</TextBlock>
-					</Grid>
-				</GroupBox>
-
-				<Grid x:Name="mNormalSaveFolderControls" Grid.Row="2" Grid.ColumnSpan="3">
+				<Grid x:Name="mNormalSaveFolderControls" DockPanel.Dock="Bottom">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="Auto"/>
 						<ColumnDefinition Width="*"/>
@@ -216,7 +131,7 @@
 					</controls:ArtPathPatternBox>
 				</Grid>
 
-				<StackPanel x:Name="mReadOnlySaveFolderControls" Orientation="Vertical" Grid.Row="2" Grid.ColumnSpan="3"
+				<StackPanel x:Name="mReadOnlySaveFolderControls" Orientation="Vertical" DockPanel.Dock="Bottom"
 							Visibility="Collapsed">
 					<TextBlock>Images will be saved to:</TextBlock>
 					<TextBox IsReadOnly="True" Focusable="True" Background="{x:Static SystemColors.ControlBrush}"
@@ -225,7 +140,122 @@
 					<TextBlock TextWrapping="Wrap" FontStyle="Italic">(This path was set automatically from the browser. The location of images relative to album folders can be set in the options for that window.)</TextBlock>
 				</StackPanel>
 
-			</Grid>
+				<ScrollViewer VerticalScrollBarVisibility="Hidden" HorizontalScrollBarVisibility="Auto">
+					<Grid>
+						<Grid.Resources>
+							<Style TargetType="CheckBox">
+								<Setter Property="Margin" Value="5,5,2,2"/>
+							</Style>
+						</Grid.Resources>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto"/>
+							<RowDefinition Height="Auto"/>
+						</Grid.RowDefinitions>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto"/>
+							<ColumnDefinition Width="Auto"/>
+							<ColumnDefinition Width="Auto"/>
+						</Grid.ColumnDefinitions>
+
+						<CheckBox Grid.Row="0" IsChecked="{Binding Source={StaticResource mSettings}, Path=Default.OpenResultsInNewWindow}">Open search results in new _window</CheckBox>
+						<CheckBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Content="Automatically _close after saving"
+							  IsChecked="{Binding ElementName=this, Path=AutoClose}"/>
+
+						<GroupBox Header="Automatically download full-size images" Grid.Row="1"
+							  RadioButton.Checked="OnAutoDownloadFullSizeImagesChanged">
+							<GroupBox.Resources>
+								<Style TargetType="RadioButton">
+									<Setter Property="Margin" Value="2"/>
+								</Style>
+							</GroupBox.Resources>
+							<StackPanel DataContext="{StaticResource mSettings}">
+								<RadioButton Content="Always">
+									<RadioButton.IsChecked>
+										<Binding Path="Default.AutoDownloadFullSizeImages" Converter="{StaticResource mEqualityConverter}">
+											<Binding.ConverterParameter>
+												<local:AutoDownloadFullSizeImages>Always</local:AutoDownloadFullSizeImages>
+											</Binding.ConverterParameter>
+										</Binding>
+									</RadioButton.IsChecked>
+								</RadioButton>
+								<RadioButton Content="Only when size is unknown">
+									<RadioButton.IsChecked>
+										<Binding Path="Default.AutoDownloadFullSizeImages" Converter="{StaticResource mEqualityConverter}">
+											<Binding.ConverterParameter>
+												<local:AutoDownloadFullSizeImages>WhenSizeUnknown</local:AutoDownloadFullSizeImages>
+											</Binding.ConverterParameter>
+										</Binding>
+									</RadioButton.IsChecked>
+								</RadioButton>
+								<RadioButton Content="Never">
+									<RadioButton.IsChecked>
+										<Binding Path="Default.AutoDownloadFullSizeImages" Converter="{StaticResource mEqualityConverter}">
+											<Binding.ConverterParameter>
+												<local:AutoDownloadFullSizeImages>Never</local:AutoDownloadFullSizeImages>
+											</Binding.ConverterParameter>
+										</Binding>
+									</RadioButton.IsChecked>
+								</RadioButton>
+							</StackPanel>
+						</GroupBox>
+
+						<GroupBox Header="Filter by image size" Grid.Row="1" Grid.Column="1" Margin="4,0,0,0">
+							<GroupBox.Resources>
+								<Style TargetType="RadioButton">
+									<Setter Property="Margin" Value="2"/>
+								</Style>
+							</GroupBox.Resources>
+							<Grid>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+								</Grid.RowDefinitions>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="*"/>
+									<ColumnDefinition Width="Auto"/>
+								</Grid.ColumnDefinitions>
+								<Grid.Resources>
+									<Style TargetType="TextBlock">
+										<Setter Property="Margin" Value="0,5,0,0"/>
+										<Setter Property="Grid.Column" Value="2"/>
+									</Style>
+								</Grid.Resources>
+								<controls:LimitBox Label="Minimum" Value="{Binding Source={StaticResource mSettings}, Path=Default.MinimumImageSize}" HasValue="{Binding Source={StaticResource mSettings}, Path=Default.UseMinimumImageSize}"/>
+								<TextBlock>px</TextBlock>
+								<controls:LimitBox Grid.Row="1" Label="Maximum" Value="{Binding Source={StaticResource mSettings}, Path=Default.MaximumImageSize}" HasValue="{Binding Source={StaticResource mSettings}, Path=Default.UseMaximumImageSize}"/>
+								<TextBlock Grid.Row="1">px</TextBlock>
+							</Grid>
+						</GroupBox>
+
+						<GroupBox Header="Filter by cover types" Grid.Row="1"  Grid.Column="2" Margin="4,0,0,0">
+							<Grid>
+								<Grid.Resources>
+									<Style TargetType="controls:FlagCheckBoxAllowedCoverType">
+										<Setter Property="Margin" Value="2,2,5,2"/>
+										<Setter Property="Value" Value="{Binding Source={StaticResource mSettings}, Path=Default.AllowedCoverTypes}"/>
+										<Setter Property="Content" Value="{Binding RelativeSource={RelativeSource Self}, Path=Flag}"/>
+									</Style>
+								</Grid.Resources>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+									<RowDefinition Height="Auto"/>
+								</Grid.RowDefinitions>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="Auto"/>
+									<ColumnDefinition Width="Auto"/>
+								</Grid.ColumnDefinitions>
+								<controls:FlagCheckBoxAllowedCoverType Flag="Front" Grid.Row="0" Grid.Column="0"/>
+								<controls:FlagCheckBoxAllowedCoverType Flag="Inside" Grid.Row="1" Grid.Column="0"/>
+								<controls:FlagCheckBoxAllowedCoverType Flag="Unknown" Grid.Row="2" Grid.Column="0"/>
+								<controls:FlagCheckBoxAllowedCoverType Flag="Back" Grid.Row="0" Grid.Column="1"/>
+								<controls:FlagCheckBoxAllowedCoverType Flag="CD" Grid.Row="1" Grid.Column="1"/>
+								<controls:FlagCheckBoxAllowedCoverType Flag="Any" Content="Select All" FontStyle="Italic" Grid.Row="2" Grid.Column="1"/>
+							</Grid>
+						</GroupBox>
+					</Grid>
+				</ScrollViewer>
+			</DockPanel>
 		</Expander>
 
 		<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
@@ -268,6 +298,7 @@
 								MinimumImageSize="{Binding Default.MinimumImageSize, Mode=OneWay}"
 								UseMaximumImageSize="{Binding Default.UseMaximumImageSize, Mode=OneWay}"
 								MaximumImageSize="{Binding Default.MaximumImageSize, Mode=OneWay}"
+								AllowedCoverTypes="{Binding Default.AllowedCoverTypes, Mode=OneWay}"
 								InformationLocation="{Binding Default.InformationLocation}"
 								PresetsContextMenu="{Binding ElementName=this, Path=PresetsContextMenu, Mode=OneWay}"
 							   />

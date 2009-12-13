@@ -82,6 +82,7 @@
 					<RowDefinition Height="Auto"/>
 					<RowDefinition Height="Auto"/>
 					<RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
 				</Grid.RowDefinitions>
 				<CheckBox x:Name="mIncludeSubfolders" IsChecked="{Binding Source={StaticResource mSettings}, Path=Default.FileBrowseSubfolders}">Include subfolders when searching for audio files</CheckBox>
 				<GroupBox Grid.Row="1" Header="Album and Artist information" Margin="0,5,0,0">
@@ -123,6 +124,28 @@
 						<Win32:OpenFileDialog Title="Path to find images" ValidateNames="False" CheckFileExists="False" CheckPathExists="False" Filter="All Files (*.*)|*.*"/>
 					</controls:ArtPathPatternBox.BrowseDialog>
 				</controls:ArtPathPatternBox>
+                <GroupBox Grid.Row="4" Header="Get artwork for multiple albums">
+                    <StackPanel>
+                        <RadioButton Margin="4" Content="Let me choose the best result for each album">
+                            <RadioButton.IsChecked>
+                                <Binding Source="{StaticResource mSettings}" Path="Default.FileBrowseAutoDownload" Converter="{StaticResource mEqualityConverter}">
+                                    <Binding.ConverterParameter>
+                                        <System:Boolean>False</System:Boolean>
+                                    </Binding.ConverterParameter>
+                                </Binding>
+                            </RadioButton.IsChecked>
+                        </RadioButton>
+                        <RadioButton Margin="4" Content="Automatically download the first result that meets set criteria">
+                            <RadioButton.IsChecked>
+                                <Binding Source="{StaticResource mSettings}" Path="Default.FileBrowseAutoDownload" Converter="{StaticResource mEqualityConverter}">
+                                    <Binding.ConverterParameter>
+                                        <System:Boolean>True</System:Boolean>
+                                    </Binding.ConverterParameter>
+                                </Binding>
+                            </RadioButton.IsChecked>
+                        </RadioButton>
+                    </StackPanel>
+                </GroupBox>
 			</Grid>
 		</Expander>
         <local:BrowserResults Grid.Row="3" x:Name="mResults"

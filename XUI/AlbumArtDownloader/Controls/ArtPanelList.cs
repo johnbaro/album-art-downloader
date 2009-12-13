@@ -274,7 +274,7 @@ namespace AlbumArtDownloader.Controls
 
 		#region Properties
 		public static readonly DependencyProperty UseMinimumImageSizeProperty = DependencyProperty.Register("UseMinimumImageSize", typeof(bool), typeof(ArtPanelList),
-			new FrameworkPropertyMetadata(false, new PropertyChangedCallback(OnImageSizeLimitChanged)));
+			new FrameworkPropertyMetadata(false, new PropertyChangedCallback(OnFilterPropertyChanged)));
 		/// <summary>Whether to use the Minimum size setting.</summary>		
 		public bool UseMinimumImageSize
 		{
@@ -282,7 +282,7 @@ namespace AlbumArtDownloader.Controls
 			set { SetValue(UseMinimumImageSizeProperty, value); }
 		}
 		public static readonly DependencyProperty UseMaximumImageSizeProperty = DependencyProperty.Register("UseMaximumImageSize", typeof(bool), typeof(ArtPanelList),
-			new FrameworkPropertyMetadata(false, new PropertyChangedCallback(OnImageSizeLimitChanged)));
+			new FrameworkPropertyMetadata(false, new PropertyChangedCallback(OnFilterPropertyChanged)));
 		/// <summary>Whether to use the Maximum size setting.</summary>		
 		public bool UseMaximumImageSize
 		{
@@ -290,7 +290,7 @@ namespace AlbumArtDownloader.Controls
 			set { SetValue(UseMaximumImageSizeProperty, value); }
 		}
 		public static readonly DependencyProperty MinimumImageSizeProperty = DependencyProperty.Register("MinimumImageSize", typeof(int), typeof(ArtPanelList),
-			new FrameworkPropertyMetadata(0, new PropertyChangedCallback(OnImageSizeLimitChanged)));
+			new FrameworkPropertyMetadata(0, new PropertyChangedCallback(OnFilterPropertyChanged)));
 		/// <summary>The minimum size of image to display. Images smaller than this will be filtered out.</summary>		
 		public int MinimumImageSize
 		{
@@ -298,34 +298,50 @@ namespace AlbumArtDownloader.Controls
 			set { SetValue(MinimumImageSizeProperty, value); }
 		}
 		public static readonly DependencyProperty MaximumImageSizeProperty = DependencyProperty.Register("MaximumImageSize", typeof(int), typeof(ArtPanelList),
-			new FrameworkPropertyMetadata(0, new PropertyChangedCallback(OnImageSizeLimitChanged)));
+			new FrameworkPropertyMetadata(0, new PropertyChangedCallback(OnFilterPropertyChanged)));
 		/// <summary>The Maximum size of image to display. Images larger than this will be filtered out.</summary>		
 		public int MaximumImageSize
 		{
 			get { return (int)GetValue(MaximumImageSizeProperty); }
 			set { SetValue(MaximumImageSizeProperty, value); }
 		}
-		private static void OnImageSizeLimitChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+		public static readonly DependencyProperty AllowedCoverTypesProperty = DependencyProperty.Register("AllowedCoverTypes", typeof(AllowedCoverType), typeof(ArtPanelList),
+			new FrameworkPropertyMetadata(AllowedCoverType.Any, new PropertyChangedCallback(OnFilterPropertyChanged)));
+		/// <summary>The cover types to display. Images with other cover types will be filtered out.</summary>
+		public AllowedCoverType AllowedCoverTypes
+		{
+			get { return (AllowedCoverType)GetValue(AllowedCoverTypesProperty); }
+			set { SetValue(AllowedCoverTypesProperty, value); }
+		}
+
+		private static void OnFilterPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
 		{
 			ArtPanelList artPanelList = (ArtPanelList)sender;
 
-			if (!artPanelList.UseMaximumImageSize && !artPanelList.UseMinimumImageSize)
+			if (!artPanelList.UseMaximumImageSize && !artPanelList.UseMinimumImageSize && (artPanelList.AllowedCoverTypes == AllowedCoverType.Any))
 			{
 				artPanelList.Items.Filter = null; //No filtering required
 			}
 			else
 			{
-				artPanelList.Items.Filter = new Predicate<object>(artPanelList.SizeFilter); //Apply the new minimum image size filter
+				artPanelList.Items.Filter = new Predicate<object>(artPanelList.FilterPredicate); //Apply the new filter
 			}
 		}
-		private bool SizeFilter(object item)
+		private bool FilterPredicate(object item)
 		{
 			AlbumArt albumArt = item as AlbumArt;
 			if (albumArt == null)
 				return true; //Can't filter it, don't know what it is
 
+			var coverType = Common.MakeAllowedCoverType(albumArt.CoverType);
+			if ((coverType & AllowedCoverTypes) != coverType)
+			{
+				//Album is of a type that's been filtered out
+				return false;
+			}
+
 			if (!UseMaximumImageSize && !UseMinimumImageSize)
-				return true; //No filtering required
+				return true; //No size filtering required
 
 			//Both width and height must be bigger, so use the smallest of the two
 			double size = Math.Min(albumArt.ImageWidth, albumArt.ImageHeight);

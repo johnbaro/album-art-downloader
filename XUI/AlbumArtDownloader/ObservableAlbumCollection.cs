@@ -41,6 +41,11 @@ namespace AlbumArtDownloader
 		}
 		public void Insert(int index, Album album)
 		{
+			if (index > Count || index < 0)
+			{
+				throw new ArgumentOutOfRangeException("index", index, null);
+			}
+
 			//Check for uniquness
 			string artistNameKey = album.Artist.ToLowerInvariant();
 			string albumNameKey = album.Name.ToLowerInvariant();

@@ -24,7 +24,7 @@ namespace AlbumArtDownloader
 				string[] valuedParameters = { "artist", "ar", "album", "al", "path", "p", 
 											  "sources", "s", "exclude", "es", "include", "i", "minsize", "mn",
 											  "maxsize", "mx", "minaspect", "ma", "orientation", "r",
-											  "sequence", "seq" };
+											  "covertype", "t", "sequence", "seq" };
 				Arguments arguments = new Arguments(args, valuedParameters);
 				if (arguments.Contains("?") || arguments.Count == 0)
 				{
@@ -55,6 +55,8 @@ namespace AlbumArtDownloader
 		{
 			string artist = null, album = null, path = null;
 			int? minSize = null, maxSize = null;
+			AllowedCoverType? coverType = null;
+
 			float minAspect = 0;
 			int sequence = 1;
 			List<String> useScripts = new List<string>();
@@ -172,6 +174,7 @@ namespace AlbumArtDownloader
 									errorMessage = "The /orientation parameter must be either 'portrait' or 'landscape': '" + parameter.Value + "'";
 									break;
 							}
+							warnIfNoSearch = true;
 							break;
 						case "sequence":
 						case "seq":
@@ -182,6 +185,44 @@ namespace AlbumArtDownloader
 							if (sequence <= 0)
 							{
 								errorMessage = "The /sequence (/seq) parameter must be greater than 0";
+							}
+							warnIfNoSearch = true;
+							break;
+						case "covertype":
+						case "t":
+							coverType = default(AllowedCoverType);
+							foreach (String allowedCoverType in parameter.Value.ToLower().Split(','))
+							{
+								switch (allowedCoverType)
+								{
+									case "front":
+									case "f":
+										coverType |= AllowedCoverType.Front;
+										break;
+									case "back":
+									case "b":
+										coverType |= AllowedCoverType.Back;
+										break;
+									case "inside":
+									case "i":
+										coverType |= AllowedCoverType.Inside;
+										break;
+									case "cd":
+									case "c":
+										coverType |= AllowedCoverType.CD;
+										break;
+									case "unknown":
+									case "u":
+										coverType |= AllowedCoverType.Unknown;
+										break;
+									case "any":
+									case "a":
+										coverType |= AllowedCoverType.Any;
+										break;
+									default:
+										errorMessage = "Unrecognized cover type: " + parameter.Value;
+										break;
+								}
 							}
 							warnIfNoSearch = true;
 							break;
@@ -260,7 +301,7 @@ namespace AlbumArtDownloader
 			//perform the actual search
 			try
 			{
-				if (Search(scripts, artist, album, path, minSize, maxSize, minAspect, requiredOrientation, sequence))
+				if (Search(scripts, artist, album, path, minSize, maxSize, minAspect, requiredOrientation, coverType, sequence))
 				{
 					return 0; //Success
 				}
@@ -296,7 +337,7 @@ namespace AlbumArtDownloader
 		/// <summary>
 		/// Perform the actual search, download and save of art
 		/// </summary>
-		private static bool Search(IEnumerable<IScript> scripts, string artist, string album, string path, int? minSize, int? maxSize, float minAspect, Orientation requiredOrientation, int targetSequence)
+		private static bool Search(IEnumerable<IScript> scripts, string artist, string album, string path, int? minSize, int? maxSize, float minAspect, Orientation requiredOrientation, AllowedCoverType? coverType, int targetSequence)
 		{
 			//Replace the artist and album placeholders in the path
 			path = path.Replace("%artist%", MakeSafeForPath(artist))
@@ -318,7 +359,8 @@ namespace AlbumArtDownloader
 				}
 				foreach (ScriptResult result in scriptResults.Results)
 				{
-					if( CheckImageDimensions(result, minSize, maxSize, minAspect, requiredOrientation, false) && //Quick check of reported dimensions
+					if( CheckCoverType(result, coverType) && //Quick check of reported cover type
+						CheckImageDimensions(result, minSize, maxSize, minAspect, requiredOrientation, false) && //Quick check of reported dimensions
 						CheckImageDimensions(result, minSize, maxSize, minAspect, requiredOrientation, true)) //Full check of downloaded image dimensions
 					{
 						if (++sequence == targetSequence) //Discard sequence-1 results.
@@ -336,6 +378,16 @@ namespace AlbumArtDownloader
 				}
 			}
 			return false; //No result found
+		}
+
+		private static bool CheckCoverType(ScriptResult result, AllowedCoverType? allowedCoverTypes)
+		{
+			if (allowedCoverTypes.HasValue)
+			{
+				var coverType = MakeAllowedCoverType(result.CoverType);
+				return ((coverType & allowedCoverTypes.Value) == coverType); //Cover type is one of the allowed types
+			}
+			return true; //allowedCoverTypes not specified, so allow any result.
 		}
 
 		private static bool CheckImageDimensions(ScriptResult result, int? minSize, int? maxSize, float minAspect, Orientation requiredOrientation, bool forceDownload)
@@ -367,7 +419,7 @@ namespace AlbumArtDownloader
 			return	(!minSize.HasValue || size >= minSize.Value) &&
 					(!maxSize.HasValue || size <= maxSize.Value);
 		}
-		//MakeSafeForPath copied from Common.cs
+		//MakeSafeForPath and MakeAllowedCoverType copied from Common.cs
 		/// <summary>
 		/// Ensures that a string is safe to be part of a file path by replacing all illegal
 		/// characters with underscores.
@@ -397,6 +449,23 @@ namespace AlbumArtDownloader
 			{
 				return value;
 			}
+		}
+		internal static AllowedCoverType MakeAllowedCoverType(CoverType scriptCoverType)
+		{
+			switch (scriptCoverType)
+			{
+				case CoverType.Unknown:
+					return AllowedCoverType.Unknown;
+				case CoverType.Front:
+					return AllowedCoverType.Front;
+				case CoverType.Back:
+					return AllowedCoverType.Back;
+				case CoverType.Inside:
+					return AllowedCoverType.Inside;
+				case CoverType.CD:
+					return AllowedCoverType.CD;
+			}
+			return AllowedCoverType.Unknown;
 		}
 
 		private static void ShowCommandArgs()

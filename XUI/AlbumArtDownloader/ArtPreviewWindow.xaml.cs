@@ -43,6 +43,12 @@ namespace AlbumArtDownloader
 			Properties.Settings.Default.PropertyChanged += OnPropertyChanged;
 		}
 
+		protected override void OnClosed(EventArgs e)
+		{
+			Properties.Settings.Default.PropertyChanged -= OnPropertyChanged;
+			base.OnClosed(e);
+		}
+
 		#region Drag panning
 		private Point? mPreviousMousePosition;
 		private void OnMouseDown(object sender, MouseButtonEventArgs e)

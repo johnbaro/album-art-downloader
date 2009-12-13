@@ -37,7 +37,7 @@
   <Script Name="hitparade.ch" URI="hitparade.boo" Version="0.2" />
   <Script Name="HMV Canada" URI="hmv-canada.boo" Version="0.2" />
   <Script Name="Juno Records" URI="juno-records.boo" Version="0.4" />
-  <Script Name="LastFM Artist" URI="lastfm-artist.boo" Version="0.3" />
+  <Script Name="LastFM Artist" URI="lastfm-artist.boo" Version="0.4" />
   <Script Name="LastFM Cover" URI="lastfm-cover.boo" Version="0.5" />
   <Script Name="maniadb" URI="maniadb.boo" Version="0.2" />
   <Script Name="Encyclopaedia Metallum" URI="metal-archives.boo" Version="0.2" />

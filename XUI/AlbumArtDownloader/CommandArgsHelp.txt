@@ -148,7 +148,26 @@ Options:
               results by. Either horizontal or
               vertical dimensions may be under
               this value.
-              May be abbreviated to /mx       (/mx 1000)              
+              May be abbreviated to /mx       (/mx 1000)
+
+ /coverType   Specifies the type(s) of cover  (/coverType front)
+              to find. Separate types with
+              commas. Available types are:    (/coverType front,unknown)
+              
+               Front
+               Back
+               Inside
+               CD
+               Unknown
+              
+              As a shortcut to specifying all (/coverType any)
+              types, the special type Any may 
+              be used.
+              
+              Types may be abbreviated to     (/coverType f,b,u)
+              their first letter.
+              
+              May be abbreviated to /t        (/t c,u)
 
  /fileBrowser                                 (/fileBrowser "\Music")
               Opens a File Browser window. If

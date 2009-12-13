@@ -4,6 +4,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
+using AlbumArtDownloader.Scripts;
 
 namespace AlbumArtDownloader
 {
@@ -326,6 +327,24 @@ namespace AlbumArtDownloader
 				}
 			}
 			return null;
+		}
+
+		public static AllowedCoverType MakeAllowedCoverType(CoverType scriptCoverType)
+		{
+			switch (scriptCoverType)
+			{
+				case CoverType.Unknown:
+					return AllowedCoverType.Unknown;
+				case CoverType.Front:
+					return AllowedCoverType.Front;
+				case CoverType.Back:
+					return AllowedCoverType.Back;
+				case CoverType.Inside:
+					return AllowedCoverType.Inside;
+				case CoverType.CD:
+					return AllowedCoverType.CD;
+			}
+			return AllowedCoverType.Unknown;
 		}
 	}
 }
