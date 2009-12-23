@@ -170,9 +170,10 @@ SectionGroup "Image Download Scripts"
 		#Section "Rate Your Music"
 		#  File "..\Scripts\Scripts\rateyourmusic.boo"
 		#SectionEnd
-		Section "Album Art Exchange"
-		  File "..\Scripts\Scripts\albumartexchange.boo"
-		SectionEnd
+		#AlbumArtExchange removed on request from site owner
+		#Section "Album Art Exchange"
+		#  File "..\Scripts\Scripts\albumartexchange.boo"
+		#SectionEnd
 		Section "DarkTown"
 		  File "..\Scripts\Scripts\darktown.boo"
 		SectionEnd

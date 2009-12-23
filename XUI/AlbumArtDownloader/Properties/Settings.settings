@@ -137,5 +137,8 @@
     <Setting Name="AllowedCoverTypes" Type="AlbumArtDownloader.AllowedCoverType" Scope="User">
       <Value Profile="(Default)">Any</Value>
     </Setting>
+    <Setting Name="ShowAutoDownloadWarning" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

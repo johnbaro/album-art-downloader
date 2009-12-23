@@ -30,6 +30,7 @@
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="*"/>
+			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 		
 		<local:Menu Margin="-5,-6,-5,5"/>
@@ -106,5 +107,19 @@
 				</DataTemplate>
 			</ListBox.ItemTemplate>
 		</ListBox>
+		
+		<Button Grid.Row="4" Margin="1, 0, 0, 0"
+				Click="OnAutomaticDownloadClick"
+				Content="Automatically download and save results for the remaining queued searches">
+			<Button.Style>
+				<Style TargetType="Button" BasedOn="{StaticResource HyperlinkButton}">
+					<Style.Triggers>
+						<DataTrigger Binding="{Binding Path=SearchQueue.Queue.Count, Mode=OneWay}" Value="0">
+							<Setter Property="Visibility" Value="Collapsed"/>
+						</DataTrigger>
+					</Style.Triggers>
+				</Style>
+			</Button.Style>
+		</Button>
 	</Grid>
 </Window>

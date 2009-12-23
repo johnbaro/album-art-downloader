@@ -1,12 +1,14 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
+using System.Windows.Media.Imaging;
 
 namespace AlbumArtDownloader
 {
 	/// <summary>
 	/// An album, as found by one of the Browser tasks
 	/// </summary>
-	internal class Album: INotifyPropertyChanged
+	public class Album: INotifyPropertyChanged
 	{
 		public Album(string basePath, string artistName, string albumName)
 		{
@@ -53,11 +55,10 @@ namespace AlbumArtDownloader
 			}
 		}
 
-
 		/// <summary>
 		/// The art file, or null if none has been found
 		/// <remarks>Note that this will not automatically set <see cref="ArtFileSize"/>, that must
-		/// be set separately if required.</remarks>
+		/// be set separately if required, or use the <see cref="SetArtFile"/> to attempt to do so automatically</remarks>
 		/// </summary>
 		private string mArtFile;
 		public string ArtFile
@@ -135,6 +136,46 @@ namespace AlbumArtDownloader
 					mArtFileStatus = value;
 					NotifyPropertyChanged("ArtFileStatus");
 				}
+			}
+		}
+
+		/// <summary>
+		/// Sets all properties related to an album having a file present:
+		/// <see cref="ArtFile"/> set to <paramref name="filePath"/>
+		/// <see cref="ArtFileStatus"/> set to <see cref="ArtFileStatus.Present"/>
+		/// <see cref="ArtFileSize"/> set to the file size (or 0 if it could not be determined)
+		/// <see cref="ArtFileWidth"/> and <see cref="ArtFileHeight"/> to the file image dimensions (or 0 if they could not be determined)
+		/// </summary>
+		/// <param name="filePath"></param>
+		public void SetArtFile(string filePath)
+		{
+			ArtFile = filePath;
+			ArtFileStatus = ArtFileStatus.Present;
+
+			try
+			{
+				ArtFileSize = new FileInfo(filePath).Length;
+			}
+			catch (Exception)
+			{
+				//Ignore exceptions when reading the filesize it's not important
+				ArtFileSize = 0;
+			}
+
+			//Attempt to get the image dimesions
+			try
+			{
+				using (var fileStream = File.OpenRead(filePath))
+				{
+					var bitmapDecoder = BitmapDecoder.Create(fileStream, BitmapCreateOptions.DelayCreation, BitmapCacheOption.None);
+					ArtFileWidth = bitmapDecoder.Frames[0].PixelWidth;
+					ArtFileHeight = bitmapDecoder.Frames[0].PixelHeight;
+				}
+			}
+			catch (Exception)
+			{
+				//Ignore exceptions when reading the dimensions, they aren't important
+				ArtFileWidth = ArtFileHeight = 0;
 			}
 		}
 

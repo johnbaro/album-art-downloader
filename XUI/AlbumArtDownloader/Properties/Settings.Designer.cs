@@ -506,5 +506,17 @@ namespace AlbumArtDownloader.Properties {
                 this["AllowedCoverTypes"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool ShowAutoDownloadWarning {
+            get {
+                return ((bool)(this["ShowAutoDownloadWarning"]));
+            }
+            set {
+                this["ShowAutoDownloadWarning"] = value;
+            }
+        }
     }
 }

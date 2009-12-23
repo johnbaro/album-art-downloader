@@ -8,6 +8,7 @@ namespace AlbumArtDownloader
 	public partial class RenameArt : Window
 	{
 		private readonly string mCurrentFile;
+		private string mNewFile;
 
 		public RenameArt()
 		{
@@ -20,12 +21,17 @@ namespace AlbumArtDownloader
 			InitializeComponent();
 
 			// load the image, specify CacheOption so the file is not locked
-			var image = new BitmapImage();
-			image.BeginInit();
-			image.CacheOption = BitmapCacheOption.OnLoad;
-			image.UriSource = new Uri(CurrentFile);
-			image.EndInit();
-			mPreview.Source = image;
+			try
+			{
+				var image = new BitmapImage();
+				image.BeginInit();
+				image.CacheOption = BitmapCacheOption.OnLoad;
+				image.UriSource = new Uri(CurrentFile);
+				image.EndInit();
+				mPreview.Source = image;
+			}
+			catch (Exception)
+			{ } //Setting the preview image isn't important
 
 			string fileName = Path.GetFileName(CurrentFile);
 			mNewNameBox.Text = fileName;
@@ -45,7 +51,8 @@ namespace AlbumArtDownloader
 				//Try to perform the actual rename
 				try
 				{
-					File.Move(CurrentFile, Path.Combine(Path.GetDirectoryName(CurrentFile), mNewNameBox.Text));
+					mNewFile = Path.Combine(Path.GetDirectoryName(CurrentFile), mNewNameBox.Text);
+					File.Move(CurrentFile, NewFile);
 				}
 				catch (Exception ex)
 				{
@@ -70,6 +77,18 @@ namespace AlbumArtDownloader
 		public string CurrentFile
 		{
 			get { return mCurrentFile; }
+		}
+
+		public string NewFile
+		{
+			get
+			{
+				if (mNewFile == null)
+				{
+					return CurrentFile;
+				}
+				return mNewFile;
+			}
 		}
 	}
 }

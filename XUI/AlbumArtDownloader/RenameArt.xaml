@@ -20,8 +20,9 @@
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="/Controls/Xaml/Separator.generic.xaml"/>
+				<ResourceDictionary Source="/Controls/Xaml/OverflowTextBlock.generic.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
-			
+
 			<controls:FileNameConverter x:Key="mFileNameConverter"/>
 		</ResourceDictionary>
 	</Window.Resources>
@@ -48,9 +49,11 @@
 
 		<Label Grid.Column="1" Grid.Row="2" Target="{Binding ElementName=mNewNameBox}">_New Name:</Label>
 		<TextBox x:Name="mNewNameBox" Grid.Column="1" Grid.Row="3"/>
-		<TextBlock x:Name="mFailureMessage" Foreground="Red" TextWrapping="Wrap" Grid.Column="1" Grid.Row="4" Visibility="Collapsed"/>
+		<TextBlock x:Name="mFailureMessage" Foreground="Red" Grid.Column="1" Grid.Row="4" Visibility="Hidden"
+				   TextWrapping="NoWrap" Style="{StaticResource OverflowTextBlock}">
+		</TextBlock>
 
-		<Separator Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="2" Margin="0,10,0,10"/>
+		<Separator Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="2" Margin="0,0,0,10"/>
 		<StackPanel Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
 			<StackPanel.Resources>
 				<Style TargetType="Button">

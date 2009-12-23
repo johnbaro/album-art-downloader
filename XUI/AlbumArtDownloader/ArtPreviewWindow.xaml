@@ -21,6 +21,7 @@
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="/Controls/Xaml/FadeButton.generic.xaml"/>
 				<ResourceDictionary Source="/Controls/Xaml/Statusbar.generic.xaml"/>
+				<ResourceDictionary Source="/Controls/Xaml/ProgressBar.generic.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 
 			<controls:TooltipEnabledOnOverflowConverter x:Key="mTooltipEnabledOnOverflowConverter"/>
@@ -197,24 +198,7 @@
 						   Visibility="{Binding IsDownloading, Converter={StaticResource mBooleanToVisibilityConverter}}">
 				<StackPanel Orientation="Horizontal">
 					<TextBlock>Full size image is being downloaded...</TextBlock>
-					<ProgressBar Width="100" Margin="5,-1,2,-1" IsIndeterminate="True">
-						<ProgressBar.Style>
-							<Style TargetType="ProgressBar">
-								<Style.Triggers>
-									<Trigger Property="IsVisible" Value="False">
-										<!-- Windows Vista will keep animating a progress bar even when it is not visible,
-										and XP will animate inderterminate ones like this one, so nuke the thing by giving
-										it an empty control template -->
-										<Setter Property="Template">
-											<Setter.Value>
-												<ControlTemplate TargetType="ProgressBar" />
-											</Setter.Value>
-										</Setter>
-									</Trigger>
-								</Style.Triggers>
-							</Style>
-						</ProgressBar.Style>
-					</ProgressBar>
+					<ProgressBar Width="100" Margin="5,-1,2,-1" IsIndeterminate="True" />
 				</StackPanel>
 			</StatusBarItem>
 			<StatusBarItem ToolTip="Source" BorderThickness="0">

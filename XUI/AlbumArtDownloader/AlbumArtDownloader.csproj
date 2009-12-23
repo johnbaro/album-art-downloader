@@ -184,7 +184,6 @@
     </Compile>
     <Compile Include="FileSearcher.cs" />
     <Compile Include="ScriptSource.cs" />
-    <Compile Include="FoundAlbumArtEventArgs.cs" />
     <Compile Include="LocalFilesSource.cs" />
     <Page Include="LocalFilesSourceSettings.xaml" />
     <Compile Include="LocalFilesSourceSettings.xaml.cs">
@@ -239,7 +238,16 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\Xaml\ProgressBar.generic.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Controls\Xaml\Separator.generic.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="AutoDownloaderQueue.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="AutoDownloadWarning.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Include="RenameArt.xaml">
@@ -318,6 +326,12 @@
     <Compile Include="Controls\VirtualFileDragger.cs" />
     <Compile Include="AutoDownloadedScriptsViewer.xaml.cs">
       <DependentUpon>AutoDownloadedScriptsViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AutoDownloaderQueue.xaml.cs">
+      <DependentUpon>AutoDownloaderQueue.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AutoDownloadWarning.xaml.cs">
+      <DependentUpon>AutoDownloadWarning.xaml</DependentUpon>
     </Compile>
     <Compile Include="RenameArt.xaml.cs">
       <DependentUpon>RenameArt.xaml</DependentUpon>

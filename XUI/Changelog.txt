@@ -1,6 +1,10 @@
 0.33 Fixed LastFM Artist search script
      Added support for filtering by cover type to both UI and command line
       (/coverType from the command line)
+     Removed AlbumArtExchange.com script (at request of site owner)
+     Fixed bug where Delete command would not work under a 64bit OS
+     Fixed bug with radiobuttons not properly updating
+     Added Automatic Download and Save feature (for batch downloading)
 
 0.32 Tweaked Medium size group to be 520-700 instead of 540-700
      Removed debug code from Cover-Paradies script that would produce a cover-paradies.log file.

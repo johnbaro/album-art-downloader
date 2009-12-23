@@ -57,7 +57,7 @@
 			<Label Target="{Binding ElementName=mFilePathBox}" Padding="0,0,0,4">_Search for audio files in:</Label>
 			<TextBox Grid.Row="1" x:Name="mFilePathBox" Text="{Binding Source={StaticResource mSettings}, Path=Default.FileBrowseRoot, UpdateSourceTrigger=PropertyChanged}" />
 			<Button Grid.Row="1" x:Name="mBrowse" Grid.Column="1" Content="..." Padding="0,-2,0,-2" Margin="0" MinWidth="{x:Static SystemParameters.VerticalScrollBarWidth}"/>
-			<Button x:Name="mSearch" Padding="5,-5,5,-5" Margin="5,0,0,0" Grid.Column="2" Grid.RowSpan="2" Command="ApplicationCommands.Find" IsDefault="True">
+			<Button x:Name="mSearch" Padding="5,-5,5,-5" Margin="5,0,0,0" Grid.Column="2" Grid.RowSpan="2" Command="ApplicationCommands.Find" IsDefault="True" MinWidth="116">
 				<StackPanel Orientation="Horizontal">
 					<Image Source="search.ico" Margin="0,4,0,0"/>
 					<Label>_Search</Label>
@@ -87,7 +87,7 @@
 				<CheckBox x:Name="mIncludeSubfolders" IsChecked="{Binding Source={StaticResource mSettings}, Path=Default.FileBrowseSubfolders}">Include subfolders when searching for audio files</CheckBox>
 				<GroupBox Grid.Row="1" Header="Album and Artist information" Margin="0,5,0,0">
 					<StackPanel>
-						<RadioButton Content="Use ID3 tags from files" Margin="4">
+						<RadioButton Content="Use ID3 tags from files" Margin="4" GroupName="ungrouped-4">
 							<RadioButton.IsChecked>
 								<Binding Source="{StaticResource mSettings}" Path="Default.FileBrowseUsePathPattern" Converter="{StaticResource mEqualityConverter}">
 									<Binding.ConverterParameter>
@@ -96,7 +96,7 @@
 								</Binding>
 							</RadioButton.IsChecked>
 						</RadioButton>
-						<RadioButton x:Name="mUseFilePathPattern" Content="Use file path pattern matching:" Margin="4">
+						<RadioButton x:Name="mUseFilePathPattern" Content="Use file path pattern matching:" Margin="4" GroupName="ungrouped-5">
 							<RadioButton.IsChecked>
 								<Binding Source="{StaticResource mSettings}" Path="Default.FileBrowseUsePathPattern" Converter="{StaticResource mEqualityConverter}">
 									<Binding.ConverterParameter>
@@ -126,7 +126,7 @@
 				</controls:ArtPathPatternBox>
                 <GroupBox Grid.Row="4" Header="Get artwork for multiple albums">
                     <StackPanel>
-                        <RadioButton Margin="4" Content="Let me choose the best result for each album">
+                        <RadioButton Margin="4" Content="Let me choose the best result for each album" GroupName="ungrouped-6">
                             <RadioButton.IsChecked>
                                 <Binding Source="{StaticResource mSettings}" Path="Default.FileBrowseAutoDownload" Converter="{StaticResource mEqualityConverter}">
                                     <Binding.ConverterParameter>
@@ -135,7 +135,7 @@
                                 </Binding>
                             </RadioButton.IsChecked>
                         </RadioButton>
-                        <RadioButton Margin="4" Content="Automatically download the first result that meets set criteria">
+                        <RadioButton Margin="4" Content="Automatically download and save the first result that meets set criteria" GroupName="ungrouped-7">
                             <RadioButton.IsChecked>
                                 <Binding Source="{StaticResource mSettings}" Path="Default.FileBrowseAutoDownload" Converter="{StaticResource mEqualityConverter}">
                                     <Binding.ConverterParameter>

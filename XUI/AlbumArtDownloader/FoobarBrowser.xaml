@@ -23,6 +23,7 @@
 				<ResourceDictionary Source="/Controls/Xaml/HyperlinkExpander.generic.xaml"/>
 				<ResourceDictionary Source="/Controls/Xaml/Statusbar.generic.xaml"/>
 				<ResourceDictionary Source="/Controls/Xaml/OverflowTextBlock.generic.xaml"/>
+				<ResourceDictionary Source="/Controls/Xaml/ProgressBar.generic.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 
 			<controls:StringFormatterConverter x:Key="mStringFormatterConverter"/>
@@ -101,7 +102,7 @@
 					</Style>
 				</ComboBox.Style>
 			</ComboBox>
-			<Button x:Name="mSearch" Padding="5,-5,5,-5" Margin="5,0,0,0" Grid.Column="2" Grid.RowSpan="2" Command="ApplicationCommands.Find" IsDefault="True">
+			<Button x:Name="mSearch" Padding="5,-5,5,-5" Margin="5,0,0,0" Grid.Column="2" Grid.RowSpan="2" Command="ApplicationCommands.Find" IsDefault="True" MinWidth="116">
 				<StackPanel Orientation="Horizontal">
 					<Image Source="search.ico" Margin="0,4,0,0"/>
 					<Label>_Search</Label>
@@ -138,7 +139,7 @@
 				</controls:ArtPathPatternBox>
                 <GroupBox Grid.Row="2" Header="Get artwork for multiple albums">
                     <StackPanel>
-                        <RadioButton Margin="4" Content="Let me choose the best result for each album">
+                        <RadioButton Margin="4" Content="Let me choose the best result for each album" GroupName="ungrouped-8">
                             <RadioButton.IsChecked>
                                 <Binding Source="{StaticResource mSettings}" Path="Default.FileBrowseAutoDownload" Converter="{StaticResource mEqualityConverter}">
                                     <Binding.ConverterParameter>
@@ -147,7 +148,7 @@
                                 </Binding>
                             </RadioButton.IsChecked>
                         </RadioButton>
-                        <RadioButton Margin="4" Content="Automatically download the first result that meets set criteria">
+                        <RadioButton Margin="4" Content="Automatically download and save the first result that meets set criteria" GroupName="ungrouped-9">
                             <RadioButton.IsChecked>
                                 <Binding Source="{StaticResource mSettings}" Path="Default.FileBrowseAutoDownload" Converter="{StaticResource mEqualityConverter}">
                                     <Binding.ConverterParameter>
@@ -206,7 +207,7 @@
 				<ProgressBar Value="{Binding Progress, Mode=OneWay}" Maximum="{Binding ProgressMax, Mode=OneWay}"
 							 Width="100" Margin="5,-4,2,-6">
 					<ProgressBar.Style>
-						<Style TargetType="ProgressBar">
+						<Style TargetType="ProgressBar" BasedOn="{StaticResource {x:Type ProgressBar}}">
 							<Setter Property="Visibility" Value="Collapsed"/>
 							<Style.Triggers>
 								<DataTrigger Binding="{Binding State}" Value="FindingFiles">

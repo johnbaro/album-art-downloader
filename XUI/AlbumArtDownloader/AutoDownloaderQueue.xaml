@@ -4,7 +4,7 @@
 	xmlns:local="clr-namespace:AlbumArtDownloader"
     xmlns:controls="clr-namespace:AlbumArtDownloader.Controls"
 
-    x:Class="AlbumArtDownloader.BrowserResults"
+    x:Class="AlbumArtDownloader.AutoDownloaderQueue"
     
     DataContext="{Binding RelativeSource={RelativeSource Self}}"
 
@@ -35,12 +35,18 @@
 					</DataTrigger>
 				</Style.Triggers>
 			</Style>
+
+			<ContextMenu x:Key="mItemContextMenu">
+				<MenuItem Header="Search in New _Window" Command="{x:Static local:AutoDownloader+Commands.NewSearchWindow}"/>
+			</ContextMenu>
+
 		</ResourceDictionary>
 	</controls:SortableListView.Resources>
 
 	<controls:SortableListView.ItemContainerStyle>
 		<!-- Set row backgrounds for present or missing artwork -->
 		<Style TargetType="ListViewItem">
+			<Setter Property="ContextMenu" Value="{StaticResource mItemContextMenu}"/>
 			<Style.Triggers>
 				<DataTrigger Binding="{Binding ArtFileStatus}" Value="Present">
 					<Setter Property="Background" Value="#FFE5FFE5" />
@@ -53,28 +59,6 @@
 	</controls:SortableListView.ItemContainerStyle>
 	<controls:SortableListView.View>
 		<GridView>
-			<GridViewColumn>
-				<GridViewColumn.Header>
-					<GridViewColumnHeader Command="ApplicationCommands.SelectAll">
-						<CheckBox ToolTip="Select All" IsChecked="{Binding Path=AllSelected}" Margin="2,0,2,0"/>
-					</GridViewColumnHeader>
-				</GridViewColumn.Header>
-				<GridViewColumn.CellTemplate>
-					<DataTemplate>
-						<CheckBox IsChecked="{Binding Path=IsSelected, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"/>
-					</DataTemplate>
-				</GridViewColumn.CellTemplate>
-			</GridViewColumn>
-			<controls:SortableGridViewColumn Header="Folder" SortPropertyName="BasePath" Width="175" IsVisible="False">
-				<controls:SortableGridViewColumn.CellTemplate>
-					<DataTemplate>
-						<Button Margin="4,0,0,0" Style="{StaticResource HyperlinkButton}" 
-										Command="{x:Static local:CommonCommands.ShowInExplorer}" CommandParameter="{Binding BasePath}"
-										Content="{Binding BasePath}" 
-										ToolTip="{Binding BasePath}"/>
-					</DataTemplate>
-				</controls:SortableGridViewColumn.CellTemplate>
-			</controls:SortableGridViewColumn>
 			<controls:SortableGridViewColumn Header="Artist" SortPropertyName="Artist" DisplayMemberBinding="{Binding Artist}" Width="175"/>
 			<controls:SortableGridViewColumn Header="Album" SortPropertyName="Name" DisplayMemberBinding="{Binding Name}" Width="175"/>
 			<controls:SortableGridViewColumn Header="Artwork Status" SortPropertyName="ArtFileStatus" Width="122">
@@ -109,14 +93,14 @@
                                                 <Setter Property="Text" Value="Found:"/>
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding ArtFileStatus}" Value="Missing">
-                                                <Setter Property="Text" Value="Not Present"/>
+                                                <Setter Property="Text" Value="Not Found"/>
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
                                 </TextBlock.Style>
                             </TextBlock>
 							<Button Margin="4,0,0,0"
-										Command="{x:Static local:CommonCommands.ShowInExplorer}" CommandParameter="{Binding ArtFile}"
+										Command="{x:Static local:AutoDownloaderQueue+Commands.ShowInResults}" CommandParameter="{Binding}"
 										Content="{Binding ArtFile, Converter={StaticResource mFileNameConverter}}" 
 										ToolTip="{Binding ArtFile}">
 								<Button.Style>
@@ -131,10 +115,13 @@
 								</Button.Style>
 								<Button.ContextMenu>
 									<ContextMenu>
-										<MenuItem FontWeight="Bold" Header="Show in _Explorer" Command="{x:Static local:CommonCommands.ShowInExplorer}" CommandParameter="{Binding ArtFile}"/>
-										<MenuItem Header="_Preview..." Command="{x:Static local:CommonCommands.Preview}" CommandParameter="{Binding ArtFile}"/>
-										<MenuItem Header="_Rename..." Command="{x:Static local:CommonCommands.Rename}"  CommandParameter="{Binding ArtFile}"/>
-										<MenuItem Header="_Delete" Command="{x:Static local:CommonCommands.Delete}" CommandParameter="{Binding ArtFile}"/>
+										<MenuItem FontWeight="Bold" Header="Show in _Results" Command="{x:Static local:AutoDownloaderQueue+Commands.ShowInResults}" CommandParameter="{Binding}"/>
+										<MenuItem Header="Show in _Explorer" Command="{x:Static local:CommonCommands.ShowInExplorer}" CommandParameter="{Binding ArtFile}"/>
+										<MenuItem Header="_Preview..." Command="{x:Static local:CommonCommands.Preview}" CommandParameter="{Binding}"/>
+										<MenuItem Header="_Rename..." Command="{x:Static local:CommonCommands.Rename}"  CommandParameter="{Binding}"/>
+										<MenuItem Header="_Delete" Command="{x:Static local:CommonCommands.Delete}" CommandParameter="{Binding}"/>
+										<Separator/>
+										<MenuItem Header="Search in New _Window" Command="{x:Static local:AutoDownloader+Commands.NewSearchWindow}"/>
 									</ContextMenu>
 								</Button.ContextMenu>
 							</Button>

@@ -607,11 +607,6 @@ namespace AlbumArtDownloader
 				}
 			}
 
-			//DEBUG:
-			var autoDownloader = new AutoDownloader();
-			autoDownloader.Add(new Album(null, "Test", "Test"), "Test");
-			autoDownloader.Show();
-
 			if (AlbumArtDownloader.Properties.Settings.Default.AutoUpdateEnabled)
 			{
 				//Check for updates if enough time has elapsed.

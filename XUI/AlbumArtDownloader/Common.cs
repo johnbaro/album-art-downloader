@@ -5,6 +5,8 @@ using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
 using AlbumArtDownloader.Scripts;
+using System.Windows.Input;
+using System.Runtime.InteropServices;
 
 namespace AlbumArtDownloader
 {
@@ -101,6 +103,41 @@ namespace AlbumArtDownloader
 				{
 					newWindow.Top = SystemParameters.PrimaryScreenHeight - newWindow.Height;
 				}
+			}
+		}
+		#endregion
+
+		#region Cascade
+
+		public class WindowCascade
+		{
+			/// <summary>
+			/// When creating new multiple windows, offset each by this amount so that they aren't all on top of each other.
+			/// </summary>
+			private static readonly int sSearchWindowCascadeOffset = 20;
+			private int mWindowCount;
+
+			public WindowCascade()
+			{ }
+
+			public void Arrange(IAppWindow window)
+			{
+				window.Top += mWindowCount * sSearchWindowCascadeOffset;
+				window.Left += mWindowCount * sSearchWindowCascadeOffset;
+
+				//TODO: Neater laying out of windows which would go off the screen. Note how Firefox handles this, for example, when opening lots of new non-maximised windows.
+				//TODO: Multimonitor support.
+				if (window.Left + window.Width > SystemParameters.PrimaryScreenWidth)
+				{
+					//For the present, just make sure that the window doesn't leave the screen.
+					window.Left = SystemParameters.PrimaryScreenWidth - window.Width;
+				}
+				if (window.Top + window.Height > SystemParameters.PrimaryScreenHeight)
+				{
+					window.Top = SystemParameters.PrimaryScreenHeight - window.Height;
+				}
+
+				mWindowCount++;
 			}
 		}
 		#endregion
@@ -345,6 +382,161 @@ namespace AlbumArtDownloader
 					return AllowedCoverType.CD;
 			}
 			return AllowedCoverType.Unknown;
+		}
+
+		#region Delete to Recycle Bin
+		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto, Pack = 1)]
+		private struct SHFILEOPSTRUCT32
+		{
+			internal IntPtr hwnd;
+			internal uint wFunc;
+			[MarshalAs(UnmanagedType.LPTStr)]
+			internal string pFrom;
+			[MarshalAs(UnmanagedType.LPTStr)]
+			internal string pTo;
+			internal ushort fFlags;
+			internal bool fAnyOperationsAborted;
+			internal IntPtr hNameMappings;
+			[MarshalAs(UnmanagedType.LPTStr)]
+			internal string lpszProgressTitle;
+		}
+		[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+		private struct SHFILEOPSTRUCT64
+		{
+			internal IntPtr hwnd;
+			internal uint wFunc;
+			[MarshalAs(UnmanagedType.LPTStr)]
+			internal string pFrom;
+			[MarshalAs(UnmanagedType.LPTStr)]
+			internal string pTo;
+			internal ushort fFlags;
+			internal bool fAnyOperationsAborted;
+			internal IntPtr hNameMappings;
+			[MarshalAs(UnmanagedType.LPTStr)]
+			internal string lpszProgressTitle;
+		}
+
+		[DllImport("shell32.dll", EntryPoint = "SHFileOperation", CharSet = CharSet.Auto, SetLastError = true)]
+		private static extern int SHFileOperation32(ref SHFILEOPSTRUCT32 lpFileOp);
+
+		[DllImport("shell32.dll", EntryPoint = "SHFileOperation", CharSet = CharSet.Auto, SetLastError = true)]
+		private static extern int SHFileOperation64(ref SHFILEOPSTRUCT64 lpFileOp);
+
+		private const int FO_DELETE = 3;
+		private const int FOF_ALLOWUNDO = 0x40;
+		//private const int FOF_NOCONFIRMATION = 0x10;    //No prompt dialogs 
+
+		public static bool DeleteFileToRecycleBin(string filePath)
+		{
+			int retVal;
+			if (IntPtr.Size == 4) //32 bit
+			{
+				var shf = new SHFILEOPSTRUCT32();
+				shf.wFunc = FO_DELETE;
+				shf.fFlags = FOF_ALLOWUNDO;
+				shf.pFrom = filePath + "\0";
+
+				retVal = SHFileOperation32(ref shf);
+			}
+			else  //64 bit (almost exactly the same, but without "Pack = 1" set.
+			{
+				var shf = new SHFILEOPSTRUCT64();
+				shf.wFunc = FO_DELETE;
+				shf.fFlags = FOF_ALLOWUNDO;
+				shf.pFrom = filePath + "\0";
+
+				retVal = SHFileOperation64(ref shf);
+			}
+			return retVal == 0;
+		}
+		#endregion
+	}
+
+	public static class CommonCommands
+	{
+		/// <summary>Displays the file passed in as the parameter to the command in Windows Explorer</summary>
+		public static RoutedUICommand ShowInExplorer = new RoutedUICommand("Show in Explorer", "ShowInExplorer", typeof(CommonCommands));
+		/// <summary>Displays the file in the preview window</summary>
+		public static RoutedUICommand Preview = new RoutedUICommand("Preview", "Preview", typeof(CommonCommands));
+		/// <summary>Shows a dialog to rename the file</summary>
+		public static RoutedUICommand Rename = new RoutedUICommand("Rename", "Rename", typeof(CommonCommands));
+		/// <summary>Deletes the file (to the recycle bin)</summary>
+		public static RoutedUICommand Delete = new RoutedUICommand("Delete", "Delete", typeof(CommonCommands));
+
+		static CommonCommands()
+		{
+			CommandManager.RegisterClassCommandBinding(typeof(Window), new CommandBinding(ShowInExplorer, new ExecutedRoutedEventHandler(ShowInExplorerExec)));
+			CommandManager.RegisterClassCommandBinding(typeof(Window), new CommandBinding(Preview, new ExecutedRoutedEventHandler(PreviewExec)));
+			CommandManager.RegisterClassCommandBinding(typeof(Window), new CommandBinding(Delete, new ExecutedRoutedEventHandler(DeleteFileExec)));
+			CommandManager.RegisterClassCommandBinding(typeof(Window), new CommandBinding(Rename, new ExecutedRoutedEventHandler(RenameArtFileExec)));
+		}
+
+		public static void ShowInExplorerExec(object sender, ExecutedRoutedEventArgs e)
+		{
+			if (e.Parameter is string)
+			{
+				//TODO: Validation that this is a file path?
+				System.Diagnostics.Process.Start("explorer.exe", "/select,\"" + (string)e.Parameter + "\"");
+			}
+		}
+
+		public static void PreviewExec(object sender, ExecutedRoutedEventArgs e)
+		{
+			string filePath = e.Parameter as string;
+			if (!String.IsNullOrEmpty(filePath))
+			{
+				LocalFilesSource source = new LocalFilesSource()
+				{
+					SearchPathPattern = filePath,
+					DefaultFilePath = "",
+					MaximumResults = 1
+				};
+				source.SearchCompleted += new EventHandler(delegate
+				{
+					if (source.Results.Count > 0)
+					{
+						var previewWindow = Common.NewPreviewWindow(GetWindow(sender) as IAppWindow);
+						var albumArt = source.Results[0];
+						albumArt.FilePath = filePath;
+						previewWindow.AlbumArt = albumArt;
+					}
+					else
+					{
+						System.Diagnostics.Trace.TraceError("Could not obtain AlbumArt for local file: " + source.SearchPathPattern);
+					}
+				});
+				source.Search(null, null);
+			}
+		}
+
+		public static void DeleteFileExec(object sender, ExecutedRoutedEventArgs e)
+		{
+			string filePath = e.Parameter as string;
+			if (!String.IsNullOrEmpty(filePath))
+			{
+				Common.DeleteFileToRecycleBin(filePath);
+			}
+		}
+
+		public static void RenameArtFileExec(object sender, ExecutedRoutedEventArgs e)
+		{
+			string filePath = e.Parameter as string;
+			if (!String.IsNullOrEmpty(filePath))
+			{
+				var renameWindow = new RenameArt(filePath);
+				renameWindow.Owner = GetWindow(sender);
+				renameWindow.ShowDialog();
+			}
+		}
+
+		private static Window GetWindow(object sender)
+		{
+			var dependencyObject = sender as DependencyObject;
+			if (dependencyObject != null)
+			{
+				return Window.GetWindow(dependencyObject);
+			}
+			return null;
 		}
 	}
 }

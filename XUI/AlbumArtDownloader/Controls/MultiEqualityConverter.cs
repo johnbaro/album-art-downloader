@@ -15,7 +15,7 @@ namespace AlbumArtDownloader.Controls
 
 			for (int i = 1; i < values.Length; i++)
 			{
-				if (!values[0].Equals(values[i]))
+				if (!Object.Equals(values[0], values[i]))
 					return false;
 			}
 			return true;

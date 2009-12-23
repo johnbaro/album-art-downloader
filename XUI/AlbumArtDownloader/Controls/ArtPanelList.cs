@@ -6,9 +6,9 @@ using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Threading;
 
 namespace AlbumArtDownloader.Controls
 {
@@ -23,7 +23,6 @@ namespace AlbumArtDownloader.Controls
 		public static class Commands
 		{
 			public static RoutedUICommand ToggleInformationLocation = new RoutedUICommand("ToggleInformationLocation", "ToggleInformationLocation", typeof(Commands));
-			public static RoutedUICommand Preview = new RoutedUICommand("Preview", "Preview", typeof(Commands));
 		}
 
 		static ArtPanelList()
@@ -713,7 +712,7 @@ namespace AlbumArtDownloader.Controls
 		/// </summary>
 		/// <param name="e"></param>
 		/// <returns></returns>
-		public AlbumArt GetSourceAlbumArt(ExecutedRoutedEventArgs e)
+		public AlbumArt GetSourceAlbumArt(RoutedEventArgs e)
 		{
 			DependencyObject ancestorOrSelf = e.OriginalSource as DependencyObject;
 			while (ancestorOrSelf != null)

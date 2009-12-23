@@ -8,6 +8,7 @@
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="/Controls/Xaml/HyperlinkButton.generic.xaml"/>
 		<ResourceDictionary Source="/Controls/Xaml/OverflowTextBlock.generic.xaml"/>
+		<ResourceDictionary Source="/Controls/Xaml/ProgressBar.generic.xaml"/>
 	</ResourceDictionary.MergedDictionaries>
 
 	<controls:StringFormatterConverter x:Key="mStringFormatterConverter"/>
@@ -70,7 +71,7 @@
 										 Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Source.Results.Count, Mode=OneWay}"
 										 Maximum="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Source.EstimatedResultsCount, Mode=OneWay}">
 								<ProgressBar.Style>
-									<Style TargetType="ProgressBar">
+									<Style TargetType="ProgressBar" BasedOn="{StaticResource {x:Type ProgressBar}}">
 										<Setter Property="Visibility" Value="Collapsed"/>
 										<Setter Property="ToolTip">
 											<Setter.Value>
@@ -111,14 +112,6 @@
 												</Setter>
 												<Setter Property="IsIndeterminate" Value="True"/>
 											</MultiDataTrigger>
-											<Trigger Property="IsVisible" Value="False">
-												<!-- Windows Vista will keep animating a progress bar even when it is not visible, so nuke the thing by giving it an empty control template -->
-												<Setter Property="Template">
-													<Setter.Value>
-														<ControlTemplate TargetType="ProgressBar" />
-													</Setter.Value>
-												</Setter>
-											</Trigger>
 										</Style.Triggers>
 									</Style>
 								</ProgressBar.Style>

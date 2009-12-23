@@ -85,5 +85,27 @@ namespace AlbumArtDownloader
 				}
 			}
 		}
+
+		private void OnAutomaticDownloadClick(object sender, RoutedEventArgs e)
+		{
+			var searchQueue = ((App)Application.Current).SearchQueue.Queue;
+			if (searchQueue.Count > 0)
+			{
+				var autoDownloader = new AutoDownloader();
+
+				while (searchQueue.Count > 0)
+				{
+					var window = searchQueue[0];
+					bool ignored;
+					Album album = new Album(null, window.Artist, window.Album);
+					album.ArtFile = window.GetDefaultSaveFolderPattern(out ignored);
+					autoDownloader.Add(album);
+
+					RemoveFromQueue(window);
+				}
+
+				autoDownloader.Show();
+			}
+		}
 	}
 }

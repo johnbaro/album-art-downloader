@@ -169,7 +169,7 @@
 								</Style>
 							</GroupBox.Resources>
 							<StackPanel DataContext="{StaticResource mSettings}">
-								<RadioButton Content="Always">
+								<RadioButton Content="Always" GroupName="ungrouped-1">
 									<RadioButton.IsChecked>
 										<Binding Path="Default.AutoDownloadFullSizeImages" Converter="{StaticResource mEqualityConverter}">
 											<Binding.ConverterParameter>
@@ -178,7 +178,7 @@
 										</Binding>
 									</RadioButton.IsChecked>
 								</RadioButton>
-								<RadioButton Content="Only when size is unknown">
+								<RadioButton Content="Only when size is unknown" GroupName="ungrouped-2">
 									<RadioButton.IsChecked>
 										<Binding Path="Default.AutoDownloadFullSizeImages" Converter="{StaticResource mEqualityConverter}">
 											<Binding.ConverterParameter>
@@ -187,7 +187,7 @@
 										</Binding>
 									</RadioButton.IsChecked>
 								</RadioButton>
-								<RadioButton Content="Never">
+								<RadioButton Content="Never" GroupName="ungrouped-3">
 									<RadioButton.IsChecked>
 										<Binding Path="Default.AutoDownloadFullSizeImages" Converter="{StaticResource mEqualityConverter}">
 											<Binding.ConverterParameter>
@@ -316,23 +316,7 @@
 			<TextBlock DockPanel.Dock="Left" Margin="0,0,2,0">Downloading full size images...</TextBlock>
 			<ProgressBar Margin="5,2,3,1"
 						 Value="{Binding ElementName=this, Path=AutoDownloadingProgressValue, Mode=OneWay}"
-						 Maximum="{Binding ElementName=this, Path=AutoDownloadingProgressMaximum, Mode=OneWay}">
-				<ProgressBar.Style>
-					<Style TargetType="ProgressBar">
-						<Style.Triggers>
-							<Trigger Property="IsVisible" Value="False">
-								<!-- Windows Vista will keep animating a progress bar even when it is not visible, so nuke the thing by giving
-										it an empty control template -->
-								<Setter Property="Template">
-									<Setter.Value>
-										<ControlTemplate TargetType="ProgressBar" />
-									</Setter.Value>
-								</Setter>
-							</Trigger>
-						</Style.Triggers>
-					</Style>
-				</ProgressBar.Style>
-			</ProgressBar>
+						 Maximum="{Binding ElementName=this, Path=AutoDownloadingProgressMaximum, Mode=OneWay}" />
 		</DockPanel>
 		
 		<Grid Grid.Column="3" Grid.Row="1" Grid.RowSpan="5">

@@ -10,7 +10,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Threading;
 using System.Windows.Media.Imaging;
-using System.Runtime.InteropServices;
 using AlbumArtDownloader.Controls;
 
 namespace AlbumArtDownloader
@@ -21,14 +20,6 @@ namespace AlbumArtDownloader
 		{
 			public static RoutedUICommand SelectMissing = new RoutedUICommand("Select Missing", "SelectMissing", typeof(Commands));
 			public static RoutedUICommand GetArtwork = new RoutedUICommand("Get Artwork", "GetArtwork", typeof(Commands));
-			/// <summary>Displays the file passed in as the parameter to the command in Windows Explorer</summary>
-			public static RoutedUICommand ShowInExplorer = new RoutedUICommand("Show in Explorer", "ShowInExplorer", typeof(Commands));
-			/// <summary>Displays the file in the preview window</summary>
-			public static RoutedUICommand Preview = new RoutedUICommand("Preview", "Preview", typeof(Commands));
-			/// <summary>Shows a dialog to rename the file</summary>
-			public static RoutedUICommand Rename = new RoutedUICommand("Rename", "Rename", typeof(Commands));
-			/// <summary>Deletes the file (to the recycle bin)</summary>
-			public static RoutedUICommand Delete = new RoutedUICommand("Delete", "Delete", typeof(Commands));
 		}
 
 		private ObservableAlbumCollection mAlbums;
@@ -46,10 +37,8 @@ namespace AlbumArtDownloader
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Delete, new ExecutedRoutedEventHandler(DeleteExec)));
 			CommandBindings.Add(new CommandBinding(Commands.SelectMissing, new ExecutedRoutedEventHandler(SelectMissingExec)));
 			CommandBindings.Add(new CommandBinding(Commands.GetArtwork, new ExecutedRoutedEventHandler(GetArtworkExec), new CanExecuteRoutedEventHandler(GetArtworkCanExec)));
-			CommandBindings.Add(new CommandBinding(Commands.ShowInExplorer, new ExecutedRoutedEventHandler(ShowInExplorerExec)));
-			CommandBindings.Add(new CommandBinding(Commands.Preview, new ExecutedRoutedEventHandler(PreviewExec)));
-			CommandBindings.Add(new CommandBinding(Commands.Delete, new ExecutedRoutedEventHandler(DeleteArtFileExec)));
-			CommandBindings.Add(new CommandBinding(Commands.Rename, new ExecutedRoutedEventHandler(RenameArtFileExec)));
+			CommandBindings.Add(new CommandBinding(CommonCommands.Delete, new ExecutedRoutedEventHandler(DeleteArtFileExec)));
+			CommandBindings.Add(new CommandBinding(CommonCommands.Rename, new ExecutedRoutedEventHandler(RenameArtFileExec)));
 
 			CreateArtFileSearchThread();
 		}
@@ -96,18 +85,13 @@ namespace AlbumArtDownloader
 			e.CanExecute = SelectedItems.Count > 0; //Can't execute if there aren't any selected items.
 		}
 
-		/// <summary>
-		/// When creating new multiple search windows, offset each by this amount so that they aren't all on top of each other.
-		/// </summary>
-		private static readonly int sSearchWindowCascadeOffset = 20;
 		private void GetArtworkExec(object sender, ExecutedRoutedEventArgs e)
 		{
 			AutoDownloader autoDownloader = null;
 
-			if (Properties.Settings.Default.FileBrowseAutoDownload)
+			if (SelectedItems.Count > 1 && Properties.Settings.Default.FileBrowseAutoDownload)
 			{
 				autoDownloader = new AutoDownloader();
-				autoDownloader.AlbumArtworkUpdated += OnAlbumArtworkUpdated;
 			}
 			else
 			{
@@ -149,7 +133,7 @@ namespace AlbumArtDownloader
 			}
 			//Replace other wildcards with the %name%, so that for local files search they become wildcards again
 			artFileSearchPattern = artFileSearchPattern.Replace("*", "%name%");
-			int i = 0;
+			var cascade = new Common.WindowCascade();
 			foreach (Album album in SelectedItems)
 			{
 				//If the image path is relative, get an absolute path for it.
@@ -165,25 +149,13 @@ namespace AlbumArtDownloader
 
 				if (Properties.Settings.Default.FileBrowseAutoDownload)
 				{
-					autoDownloader.Add(album, rootedArtFileSearchPattern);
+					album.ArtFile = rootedArtFileSearchPattern; //The destination filename to download to
+					autoDownloader.Add(album);
 				}
 				else
 				{
 					ArtSearchWindow searchWindow = Common.NewSearchWindow(Window.GetWindow(this) as IAppWindow);
-					searchWindow.Top += i * sSearchWindowCascadeOffset;
-					searchWindow.Left += i * sSearchWindowCascadeOffset;
-
-					//TODO: Neater laying out of windows which would go off the screen. Note how Firefox handles this, for example, when opening lots of new non-maximised windows.
-					//TODO: Multimonitor support.
-					if (searchWindow.Left + searchWindow.Width > SystemParameters.PrimaryScreenWidth)
-					{
-						//For the present, just make sure that the window doesn't leave the screen.
-						searchWindow.Left = SystemParameters.PrimaryScreenWidth - searchWindow.Width;
-					}
-					if (searchWindow.Top + searchWindow.Height > SystemParameters.PrimaryScreenHeight)
-					{
-						searchWindow.Top = SystemParameters.PrimaryScreenHeight - searchWindow.Height;
-					}
+					cascade.Arrange(searchWindow);
 
 					searchWindow.SetDefaultSaveFolderPattern(rootedArtFileSearchPattern, true); //Default save to the location where the image was searched for.
 					searchWindow.Search(album.Artist, album.Name); //Kick off the search.
@@ -191,8 +163,6 @@ namespace AlbumArtDownloader
 					//Watch for the window being closed to update the status of the artwork
 					mSearchWindowAlbumLookup.Add(searchWindow, album);
 					searchWindow.Closed += OnSearchWindowClosed;
-
-					i++;
 				}
 			}
 			if (Properties.Settings.Default.FileBrowseAutoDownload)
@@ -213,11 +183,6 @@ namespace AlbumArtDownloader
 
 				QueueAlbumForArtFileSearch(album);
 			}
-		}
-
-		private void OnAlbumArtworkUpdated(object sender, AlbumArtworkUpdatedEventArgs e)
-		{
-			QueueAlbumForArtFileSearch(e.Album);
 		}
 
 		protected override void OnMouseDoubleClick(MouseButtonEventArgs e)
@@ -245,66 +210,16 @@ namespace AlbumArtDownloader
 			//Do nothing for double click happening elsewhere.
 		}
 
-		private void ShowInExplorerExec(object sender, ExecutedRoutedEventArgs e)
-		{
-			if (e.Parameter is string)
-			{
-				//TODO: Validation that this is a file path?
-				System.Diagnostics.Process.Start("explorer.exe", "/select,\"" + (string)e.Parameter + "\"");
-			}
-		}
-
-		private void PreviewExec(object sender, ExecutedRoutedEventArgs e)
-		{
-			string filePath = e.Parameter as string;
-			if (!String.IsNullOrEmpty(filePath))
-			{
-				LocalFilesSource source = new LocalFilesSource()
-				{
-					SearchPathPattern = filePath,
-					DefaultFilePath = "",
-					MaximumResults = 1
-				};
-				source.SearchCompleted += new EventHandler(delegate {
-					if (source.Results.Count > 0)
-					{
-						var previewWindow = Common.NewPreviewWindow(Window.GetWindow(this) as IAppWindow);
-						var albumArt = source.Results[0];
-						albumArt.FilePath = filePath;
-						previewWindow.AlbumArt = albumArt;
-					}
-					else
-					{
-						System.Diagnostics.Trace.TraceError("Could not obtain AlbumArt for local file: " + source.SearchPathPattern);
-					}
-				});
-				source.Search(null, null);
-			}
-		}
-
 		private void DeleteArtFileExec(object sender, ExecutedRoutedEventArgs e)
 		{
-			string filePath = e.Parameter as string;
-			if (!String.IsNullOrEmpty(filePath))
-			{
-				DeleteFileToRecycleBin(filePath);
-
-				CheckForChangedArt(e);
-			}
+			CommonCommands.DeleteFileExec(sender, e);
+			CheckForChangedArt(e);
 		}
 
 		private void RenameArtFileExec(object sender, ExecutedRoutedEventArgs e)
 		{
-			string filePath = e.Parameter as string;
-			if (!String.IsNullOrEmpty(filePath))
-			{
-				var renameWindow = new RenameArt(filePath);
-				renameWindow.Owner = Window.GetWindow(this);
-				if (renameWindow.ShowDialog().GetValueOrDefault())
-				{
-					CheckForChangedArt(e);
-				}
-			}
+			CommonCommands.RenameArtFileExec(sender, e);
+			CheckForChangedArt(e);
 		}
 
 		//Pass in the ExecutedRoutedEventArgs from the Exec method to check for changed artwork as a result of that command
@@ -643,34 +558,7 @@ namespace AlbumArtDownloader
 								}
 								foreach (string artFile in Common.ResolvePathPattern(artFileSearchPattern))
 								{
-									album.ArtFile = artFile;
-									album.ArtFileStatus = ArtFileStatus.Present;
-
-									try
-									{
-										album.ArtFileSize = new FileInfo(artFile).Length;
-									}
-									catch (Exception)
-									{
-										//Ignore exceptions when reading the filesize it's not important
-										album.ArtFileSize = 0;
-									}
-
-									//Attempt to get the image dimesions
-									try
-									{
-										using (var fileStream = File.OpenRead(artFile))
-										{
-											var bitmapDecoder = BitmapDecoder.Create(fileStream, BitmapCreateOptions.DelayCreation, BitmapCacheOption.None);
-											album.ArtFileWidth = bitmapDecoder.Frames[0].PixelWidth;
-											album.ArtFileHeight = bitmapDecoder.Frames[0].PixelHeight;
-										}
-									}
-									catch (Exception)
-									{
-										//Ignore exceptions when reading the dimensions, they aren't important
-										album.ArtFileWidth = album.ArtFileHeight = 0;
-									}
+									album.SetArtFile(artFile);
 
 									break; //Only use the first art file that matches, if there are multiple matches.
 								}
@@ -697,38 +585,6 @@ namespace AlbumArtDownloader
 				State = BrowserState.Stopped;
 				return;
 			}
-		}
-		#endregion
-	
-		#region Delete to Recycle Bin
-		[StructLayout(LayoutKind.Sequential, CharSet=CharSet.Auto, Pack=1)] 
-		private struct SHFILEOPSTRUCT 
-		{ 
-			public IntPtr hwnd; 
-			[MarshalAs(UnmanagedType.U4)] public int wFunc; 
-			public string pFrom; 
-			public string pTo; 
-			public short fFlags; 
-			[MarshalAs(UnmanagedType.Bool)] public bool fAnyOperationsAborted; 
-			public IntPtr hNameMappings; 
-			public string lpszProgressTitle; 
-		} 
-
-		[DllImport("shell32.dll", CharSet=CharSet.Auto)] 
-		private static extern int SHFileOperation(ref SHFILEOPSTRUCT FileOp); 
-		private const int FO_DELETE = 3; 
-		private const int FOF_ALLOWUNDO = 0x40; 
-		//private const int FOF_NOCONFIRMATION = 0x10;    //No prompt dialogs 
-
-		private static void DeleteFileToRecycleBin(string filePath)
-		{
-			//Useage
-			SHFILEOPSTRUCT shf = new SHFILEOPSTRUCT();
-			shf.wFunc = FO_DELETE;
-			shf.fFlags = FOF_ALLOWUNDO;
-			shf.pFrom = filePath + "\0";
-
-			SHFileOperation(ref shf);
 		}
 		#endregion
 	}	

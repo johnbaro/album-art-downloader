@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:local="clr-namespace:AlbumArtDownloader"
 	xmlns:controls="clr-namespace:AlbumArtDownloader.Controls"
 	xmlns:System="clr-namespace:System;assembly=mscorlib"
 	xmlns:ThemesClassic="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Classic"
@@ -113,7 +114,7 @@
 						</Grid.ColumnDefinitions>
 						<Grid.ContextMenu>
 							<ContextMenu>
-								<MenuItem Header="_Preview..." Command="{x:Static controls:ArtPanelList+Commands.Preview}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=OneTime}"/>
+								<MenuItem Header="_Preview..." Command="{x:Static local:CommonCommands.Preview}" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=OneTime}"/>
 								<MenuItem Header="_Copy" InputGestureText="" Command="ApplicationCommands.Copy" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=OneTime}"/>
 								<MenuItem Header="_Save" InputGestureText="" Command="ApplicationCommands.Save" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=OneTime}"/>
 								<MenuItem Header="Save _As..." Command="ApplicationCommands.SaveAs" CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=OneTime}"/>
@@ -213,7 +214,7 @@
 													<StackPanel.Background>
 														<SolidColorBrush Color="White" Opacity="0.6"/>
 													</StackPanel.Background>
-													<Image Source="\ZoomIn.png" HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="None" ToolTip="Full size image is being downloaded..."/>
+													<Image Source="\ZoomIn.png" HorizontalAlignment="Left" VerticalAlignment="Top" Stretch="None"/>
 													<!-- BitmapEffects have serious performance implications, so until WPF fixes that, use two identical text blocks to make a white drop shadow.
 													<TextBlock.BitmapEffect>
 														<DropShadowBitmapEffect Color="White" Direction="315" ShadowDepth="2" Softness="0.3"/>

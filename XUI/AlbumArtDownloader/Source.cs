@@ -292,7 +292,7 @@ namespace AlbumArtDownloader
 		#endregion
 
 		/// <summary>
-		/// Begins an asynchronous search. Results are raised by <see cref="FoundAlbumArt"/> events.
+		/// Begins an asynchronous search. Results are added to the observable <see cref="Results"/> collection.
 		/// </summary>
 		public void Search(string artist, string album)
 		{
@@ -404,7 +404,44 @@ namespace AlbumArtDownloader
 			}
 		}
 
-		
+		#region QueryContinue
+		/// <summary>
+		/// This event is raised before and after each search result is provided by the script.
+		/// If set to Cancel, then the search will be aborted.
+		/// It is called synchronously on the same thread as the search - the search will not
+		/// continue until the event handler returns.
+		/// </summary>
+		public event CancelEventHandler QueryContinueSearch;
+
+		/// <summary>
+		/// This method is called before and after each search result is provided by the script.
+		/// If it returns false, the search will be aborted.
+		/// </summary>
+		/// <returns>True to keep searching, False to abort.</returns>
+		private bool QueryContinueSearchInternal()
+		{
+			if (UseMaximumResults && Results.Count >= MaximumResults)
+			{
+				return false; //Abort due to reaching maximum result count
+			}
+
+			CancelEventHandler temp = QueryContinueSearch;
+			if (temp != null)
+			{
+				var e = new CancelEventArgs();
+				temp(this, e);
+
+				if (e.Cancel)
+				{
+					return false; //Abort due to event handler requesting cancellation
+				}
+			}
+			return true; //Do not abort - keep searching
+		}
+
+		#endregion
+
+
 		private class ScriptResults : IScriptResults
 		{
 			private Source mSource;
@@ -463,10 +500,14 @@ namespace AlbumArtDownloader
 			{
 				Add(thumbnail, name, infoUri, fullSizeImageWidth, fullSizeImageHeight, fullSizeImageCallback, CoverType.Unknown);
 			}
+			public void Add(object thumbnail, string name, object fullSizeImageCallback, CoverType coverType)
+			{
+				Add(thumbnail, name, String.Empty, -1, -1, fullSizeImageCallback, coverType);
+			}
 			
 			public void Add(object thumbnail, string name, string infoUri, int fullSizeImageWidth, int fullSizeImageHeight, object fullSizeImageCallback, CoverType coverType)
 			{
-				if (mSource.UseMaximumResults && mSource.Results.Count >= mSource.MaximumResults)
+				if (!mSource.QueryContinueSearchInternal())
 				{
 					//Break out of this search
 					mSource.AbortSearch();
@@ -517,11 +558,13 @@ namespace AlbumArtDownloader
 						}));
 					}
 				}
-			}
-			
-			public void Add(object thumbnail, string name, object fullSizeImageCallback, CoverType coverType)
-			{
-				Add(thumbnail, name, String.Empty, -1, -1, fullSizeImageCallback, coverType);
+
+				if (!mSource.QueryContinueSearchInternal())
+				{
+					//Break out of this search
+					mSource.AbortSearch();
+					return;
+				}
 			}
 		}
 	}

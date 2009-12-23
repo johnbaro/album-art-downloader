@@ -59,7 +59,7 @@ namespace AlbumArtDownloader
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Save, new ExecutedRoutedEventHandler(SaveExec)));
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.SaveAs, new ExecutedRoutedEventHandler(SaveAsExec)));
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Delete, new ExecutedRoutedEventHandler(DeleteExec)));
-			CommandBindings.Add(new CommandBinding(AlbumArtDownloader.Controls.ArtPanelList.Commands.Preview, new ExecutedRoutedEventHandler(PreviewExec)));
+			CommandBindings.Add(new CommandBinding(CommonCommands.Preview, new ExecutedRoutedEventHandler(PreviewExec)));
 			CommandBindings.Add(new CommandBinding(Commands.GetMoreScripts, new ExecutedRoutedEventHandler(GetMoreScriptsExec), new CanExecuteRoutedEventHandler(GetMoreScriptsCanExec)));
 			CommandBindings.Add(new CommandBinding(Commands.ShowAutoDownloadedScripts, new ExecutedRoutedEventHandler(ShowAutoDownloadedScriptsExec)));
 
@@ -788,6 +788,15 @@ namespace AlbumArtDownloader
 			
 			mDefaultSaveFolder.AddPatternToHistory(); //Save the previous value
 			mDefaultSaveFolder.PathPattern = path; //Set the new value
+		}
+		/// <summary>
+		/// Gets the default save folder pattern, with a flag to indicate whether it was set on
+		/// a temporary basis by <see cref="SetDefaultSaveFolderPattern"/>
+		/// </summary>
+		public string GetDefaultSaveFolderPattern(out bool isTemporary)
+		{
+			isTemporary = mDefaultSavePathIsTemporary;
+			return mDefaultSaveFolder.PathPattern;
 		}
 		#endregion
 

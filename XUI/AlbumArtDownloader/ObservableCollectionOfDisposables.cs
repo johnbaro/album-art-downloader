@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
 
 namespace AlbumArtDownloader
 {
@@ -10,6 +11,8 @@ namespace AlbumArtDownloader
 	internal class ObservableCollectionOfDisposables<T> : ObservableCollection<T>
 		where T : IDisposable
 	{
+		private HashSet<T> mDetachingItems = new HashSet<T>();
+
 		protected override void ClearItems()
 		{
 			foreach (T item in this)
@@ -23,9 +26,31 @@ namespace AlbumArtDownloader
 			T item = this[index];
 			
 			base.RemoveItem(index);
-			
+
 			if (item != null)
-				item.Dispose();
+			{
+				if (!mDetachingItems.Remove(item))
+				{
+					item.Dispose();
+				}
+			}
+		}
+
+		/// <summary>
+		/// Removes an item fro the collection without disposing of it.
+		/// Responsibility for the disposal of the item is taken by the caller.
+		/// </summary>
+		/// <returns>True if <paramref name="item"/> was present in the collection</returns>
+		public bool Detach(T item)
+		{
+			mDetachingItems.Add(item);
+			if (!Remove(item))
+			{
+				//Failed to remove item, so it is no longer being detached.
+				mDetachingItems.Remove(item);
+				return false;
+			}
+			return true;
 		}
 	}
 }
