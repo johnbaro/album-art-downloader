@@ -245,12 +245,12 @@
 									<ColumnDefinition Width="Auto"/>
 									<ColumnDefinition Width="Auto"/>
 								</Grid.ColumnDefinitions>
-								<controls:FlagCheckBoxAllowedCoverType Flag="Front" Grid.Row="0" Grid.Column="0"/>
-								<controls:FlagCheckBoxAllowedCoverType Flag="Inside" Grid.Row="1" Grid.Column="0"/>
-								<controls:FlagCheckBoxAllowedCoverType Flag="Unknown" Grid.Row="2" Grid.Column="0"/>
-								<controls:FlagCheckBoxAllowedCoverType Flag="Back" Grid.Row="0" Grid.Column="1"/>
-								<controls:FlagCheckBoxAllowedCoverType Flag="CD" Grid.Row="1" Grid.Column="1"/>
-								<controls:FlagCheckBoxAllowedCoverType Flag="Any" Content="Select All" FontStyle="Italic" Grid.Row="2" Grid.Column="1"/>
+								<controls:FlagCheckBoxAllowedCoverType Flag="{x:Static local:AllowedCoverType.Front}" Grid.Row="0" Grid.Column="0"/>
+								<controls:FlagCheckBoxAllowedCoverType Flag="{x:Static local:AllowedCoverType.Inside}" Grid.Row="1" Grid.Column="0"/>
+								<controls:FlagCheckBoxAllowedCoverType Flag="{x:Static local:AllowedCoverType.Unknown}" Grid.Row="2" Grid.Column="0"/>
+								<controls:FlagCheckBoxAllowedCoverType Flag="{x:Static local:AllowedCoverType.Back}" Grid.Row="0" Grid.Column="1"/>
+								<controls:FlagCheckBoxAllowedCoverType Flag="{x:Static local:AllowedCoverType.CD}" Grid.Row="1" Grid.Column="1"/>
+								<controls:FlagCheckBoxAllowedCoverType Flag="{x:Static local:AllowedCoverType.Any}" Content="Select All" FontStyle="Italic" Grid.Row="2" Grid.Column="1"/>
 							</Grid>
 						</GroupBox>
 					</Grid>

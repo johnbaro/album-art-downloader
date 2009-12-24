@@ -34,7 +34,7 @@ namespace AlbumArtDownloader.Controls
 
 		private int FlagInternal
 		{
-			get { return Convert.ToInt32(Convert.ChangeType(Flag, typeof(Enum))); }
+			get { return Convert.ToInt32(Flag); }
 			set { Flag = (TEnum)Enum.ToObject(typeof(TEnum), value); }
 		}
 		#endregion
@@ -54,7 +54,7 @@ namespace AlbumArtDownloader.Controls
 
 		private int ValueInternal
 		{
-			get { return Convert.ToInt32(Convert.ChangeType(Value, typeof(Enum))); }
+			get { return Convert.ToInt32(Value); }
 			set { Value = (TEnum)Enum.ToObject(typeof(TEnum), value); }
 		}
 		#endregion
