@@ -134,7 +134,7 @@ namespace AlbumArtDownloader
 			{
 				if (mAlbumsByArtist.TryGetValue(artistNameKey, out artistAlbums))
 				{
-					if (!artistAlbums.ContainsKey(albumNameKey))
+					if (artistAlbums.ContainsKey(albumNameKey))
 					{
 						return true;
 					}

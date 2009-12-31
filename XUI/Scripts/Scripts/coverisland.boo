@@ -11,36 +11,22 @@ class CoverIsland:
 	static SourceCreator as string:
 		get: return "Alex Vallat"
 	static SourceVersion as string:
-		get: return "0.6"
-	static def GetThumbs(coverart,artist,album):
+		get: return "0.7"
+	static def GetThumbs(coverart, artist as string, album as string):
 		artist = StripCharacters("&.'\";:?!", artist)
 		album = StripCharacters("&.'\";:?!", album)
 
 		if not String.IsNullOrEmpty(artist):
-			firstLetter = artist[0]
+			firstLetter = artist.ToLower()[0]
 		elif not String.IsNullOrEmpty(album):
-			firstLetter = album[0]
+			firstLetter = album.ToLower()[0]
 		else:
 			return //Nothing to search for
 		
-		//Get results (trying each page in turn)
-		sequence = 1		
-		while sequence < 100: //Sanity check, don't expect there to be more than 100 pages per letter
-			try:
-				sequenceChar = ""
-				if(sequence > 1):
-					sequenceChar = sequence.ToString()
-				
-				listPage = GetPage(String.Format("http://www.coverisland.com/copertine/Audio/{0}{1}.asp", firstLetter, sequenceChar))
-			except e as System.Net.WebException: //Catch the 404 and break out of the loop - no more pages left
-				return //No results found
-			//Check if results are found here
-			resultsRegex = Regex(String.Format("<option value=\"(?<value>[^\"]+)\">(?<title>[^<]*{0}[^<]+{1}[^<]*)(?=<)", artist, album), RegexOptions.Multiline | RegexOptions.IgnoreCase)
-			resultMatches = resultsRegex.Matches(listPage)
-			if resultMatches.Count > 0:
-				break //Found some results
-			//Otherwise, go round and try the next page	
-			sequence++
+		listPage = GetPage("http://www.coverisland.com/copertine/cover.php?op=down&ty=1&let=" + firstLetter)
+		
+		resultsRegex = Regex(String.Format("<option value=\"(?<value>[^\"]+)\">(?<title>[^<]*{0}[^<]+{1}[^<]*)(?=<)", artist, album), RegexOptions.Multiline | RegexOptions.IgnoreCase)
+		resultMatches = resultsRegex.Matches(listPage)
 		
 		coverart.SetCountEstimate(resultMatches.Count)
 		
@@ -71,12 +57,13 @@ class CoverIsland:
 				imageTypes.Add("cd2")
 		
 			for typeName in imageTypes:
-				imageResult = Post("http://www.coverisland.com/copertine/down.asp", String.Format("tipologia=Audio&title={0}&type=-{1}&segno={2}", title, typeName, segno))
-				imageRegex = Regex("'(?<image>http\\://www\\.coverforum\\.net/view\\.php\\?[^']+)'", RegexOptions.Multiline)
+				imageResult = Post("http://www.coverisland.com/copertine/cover.php?op=cvr&ty=1&let=" + firstLetter, String.Format("title={0}&type=-{1}&segno={2}", title, typeName, segno))
+				imageRegex = Regex("\"(?<image>http\\://www\\.coverisland\\.com/view\\.php\\?[^\"]+)\"", RegexOptions.IgnoreCase)
 				imageMatches = imageRegex.Matches(imageResult)
 				for imageMatch as Match in imageMatches: //Only expecting one, really.
 					url = imageMatch.Groups["image"].Value
-					request = System.Net.HttpWebRequest.Create(url)
+					request as System.Net.HttpWebRequest = System.Net.HttpWebRequest.Create(url)
+					request.Referer = "http://www.coverisland.com/copertine/cover.php?op=cvr&ty=1&let=" + firstLetter;
 					response = request.GetResponse()
 					if response.ContentType.StartsWith("image/"):
 						coverart.Add(

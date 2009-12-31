@@ -2,14 +2,17 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Threading;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using AlbumArtDownloader.Controls;
 
 namespace AlbumArtDownloader
@@ -551,6 +554,7 @@ namespace AlbumArtDownloader
 							foreach (string imagePathPatternAlternate in ImagePathPattern.Split('|'))
 							{
 								string artFileSearchPattern = Common.SubstitutePlaceholders(imagePathPatternAlternate, album.Artist, album.Name);
+								Regex artFileCheckPattern = MakeCheckPattern(imagePathPatternAlternate, album.Artist, album.Name);
 
 								if (!Path.IsPathRooted(artFileSearchPattern))
 								{
@@ -558,9 +562,12 @@ namespace AlbumArtDownloader
 								}
 								foreach (string artFile in Common.ResolvePathPattern(artFileSearchPattern))
 								{
-									album.SetArtFile(artFile);
+									if (artFileCheckPattern.IsMatch(artFile))
+									{
+										album.SetArtFile(artFile);
 
-									break; //Only use the first art file that matches, if there are multiple matches.
+										break; //Only use the first art file that matches, if there are multiple matches.
+									}
 								}
 								//If a matching art file is found, don't search further alternates
 								if (album.ArtFileStatus == ArtFileStatus.Present)
@@ -585,6 +592,30 @@ namespace AlbumArtDownloader
 				State = BrowserState.Stopped;
 				return;
 			}
+		}
+
+		/// <summary>A regex part that will match any of the valid extensions for image encoders</summary>
+		private static string sImageEncoderExtensions = "(?:" + String.Join("|", (from encoder in ImageCodecInfo.GetImageEncoders() select encoder.FilenameExtension.Replace("*.", "") //Remove *.
+																																									.Replace(';', '|')) //Use | instead of ; as a separator
+																																									.ToArray()) + ")";
+		/// <summary>Creates a regex that will match paths that can match pathPattern.</summary>
+		private Regex MakeCheckPattern(string pathPattern, string artist, string album)
+		{
+			string result = pathPattern.Replace("%artist%", Common.MakeSafeForPath(artist))
+										.Replace("%album%", Common.MakeSafeForPath(album));
+
+			result = Regex.Escape(result) + "$"; //Start by escaping the whole thing, and requiring it to be the end of the path
+			result = Regex.Replace(result, @"(\\\\|/)", @"[\\/]"); //Replace all / or \ characters with [\/] to allow matching either path character
+			result = Regex.Replace(result, @"\\(\*|\?)", @"[^\\/]$1?"); //Replace * (and ?) with [^\/]*? to match within the path segment only, and non-greedy
+
+			//restrict the extension placeholder to be a valid extension
+			result = result.Replace("%extension%", sImageEncoderExtensions);
+										
+			//TODO: more specific replacements for any remaining placeholders
+			//Replace remaining placeholders with [^\/]*? to match within the path segment
+			result = Regex.Replace(result, @"%(?:name|source|size|preset|type(?:\([^)]*\))?)%", @"[^\\/]*?", RegexOptions.IgnoreCase);
+
+			return new Regex(result, RegexOptions.IgnoreCase);
 		}
 		#endregion
 	}	

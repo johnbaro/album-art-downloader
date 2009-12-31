@@ -1,3 +1,9 @@
+0.34 Added Lala script
+     Fixed CoverIsland, Encyclopaedie Metallum and Archambault scripts
+     File and Foobar existing image file searching now only matches supported image file extensions
+      for the %extension% placeholder
+     Fixed bug with Various Artists detection for multi-folder albums
+     
 0.33 Fixed LastFM Artist search script
      Added support for filtering by cover type to both UI and command line
       (/coverType from the command line)

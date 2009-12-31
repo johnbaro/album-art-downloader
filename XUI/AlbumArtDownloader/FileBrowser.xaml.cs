@@ -495,14 +495,20 @@ namespace AlbumArtDownloader
 					//This is a various artists album, so replace them with a single Various Artists album
 					Dispatcher.Invoke(DispatcherPriority.DataBind, new ThreadStart(delegate
 					{
-						//Add replacement VA album
-						mAlbums.Insert(mAlbums.IndexOf(folder[0]),
-										new Album(basePath, sVariousArtistsName, albumName));
-
+						Album variousArtistsAlbum = new Album(basePath, sVariousArtistsName, albumName);
+						if (!mAlbums.Contains(variousArtistsAlbum)) //If this album already exists, no need to add it again.
+						{
+							//Add replacement VA album
+							mAlbums.Insert(mAlbums.IndexOf(folder[0]), variousArtistsAlbum);
+						}
+						
 						//Remove individual albums
 						foreach (Album album in folder)
 						{
-							mAlbums.Remove(album);
+							if(album.Artist != sVariousArtistsName) //If, by chance, one of the albums was already called "Various Artists", then it will have merged with the newly added one.
+							{
+								mAlbums.Remove(album);
+							}
 						}
 					}));
 				}

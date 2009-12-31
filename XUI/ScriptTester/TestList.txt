@@ -1,5 +1,5 @@
 ;Source Name	Artist	Album
-Album Art Exchange	Muse	The Resistance
+;Album Art Exchange	Muse	The Resistance
 AllCdCover	Muse	The Resistance
 Amazon (.ca)	Muse	The Resistance
 Amazon (.co.uk)	Muse	The Resistance
@@ -30,5 +30,6 @@ Psyshop	Aquafur	Fuzzy Emotions
 RevHQ	Ultra Violence	Brick Rain
 Yes24	Muse	The Resistance
 YesAsia	Muse	The Resistance
-Archambault	Nickelback	Dark Horse
+Archambault	Lady Gaga	The Fame Monster
 HMV Canada	<ignored>	Crazy Love
+Lala	Muse	The Resistance

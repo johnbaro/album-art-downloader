@@ -21,14 +21,14 @@
   <Script Name="Amazon (.jp)" URI="amazon-jp.boo" Version="0.2s">
     <Dependency>amazon-common.boo</Dependency>
   </Script>
-  <Script Name="Archambault" URI="archambault.boo" Version="0.2" />
+  <Script Name="Archambault" URI="archambault.boo" Version="0.3" />
   <Script Name="ArkivMusik" URI="arkivmusic.boo" Version="0.2" />
   <Script Name="Buy.com" URI="buy-com.boo" Version="0.5" />
   <Script Name="CD Baby" URI="cdbaby.boo" Version="0.2" />
   <Script Name="CD Universe" URI="cduniverse.boo" Version="0.4" />
   <Script Name="Cover-Paradies" URI="cover-paradies.boo" Version="0.11" />
   <Script Name="Coveralia" URI="coveralia.boo" Version="0.9" />
-  <Script Name="CoverIsland" URI="coverisland.boo" Version="0.6" />
+  <Script Name="CoverIsland" URI="coverisland.boo" Version="0.7" />
   <Script Name="Darktown" URI="darktown.boo" Version="0.4" />
   <Script Name="Discogs" URI="discogs.boo" Version="0.7" />
   <Script Name="Freecovers API" URI="freecovers-api.boo" Version="0.2" />
@@ -36,10 +36,11 @@
   <Script Name="hitparade.ch" URI="hitparade.boo" Version="0.2" />
   <Script Name="HMV Canada" URI="hmv-canada.boo" Version="0.2" />
   <Script Name="Juno Records" URI="juno-records.boo" Version="0.4" />
+  <Script Name="Lala" URI="lala.boo" Version="0.1" />
   <Script Name="LastFM Artist" URI="lastfm-artist.boo" Version="0.4" />
   <Script Name="LastFM Cover" URI="lastfm-cover.boo" Version="0.5" />
   <Script Name="maniadb" URI="maniadb.boo" Version="0.2" />
-  <Script Name="Encyclopaedia Metallum" URI="metal-archives.boo" Version="0.2" />
+  <Script Name="Encyclopaedia Metallum" URI="metal-archives.boo" Version="0.3" />
   <Script Name="Metal Library" URI="metallibrary.boo" Version="0.2" />
   <Script Name="MusicMight" URI="musicmight.boo" Version="0.3" />
   <Script Name="Psyshop" URI="psyshop.boo" Version="0.3" />

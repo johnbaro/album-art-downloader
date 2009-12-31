@@ -23,7 +23,7 @@ class Lala(AlbumArtDownloader.Scripts.IScript):
 			title = match.Groups["artist"].Value + " - " + match.Groups["title"].Value
 			id = match.Groups["id"].Value
 			
-			results.Add("http://album-images.pplala.com/servlet/ArtWorkServlet/${id}/xs", title, "http://www.lala.com/#album/${id}", 550, 550, "http://album-images.pplala.com/servlet/ArtWorkServlet/${id}/xl", CoverType.Front)
+			results.Add("http://album-images.pplala.com/servlet/ArtWorkServlet/${id}/xs", title, "http://www.lala.com/#album/${id}", -1, -1, "http://album-images.pplala.com/servlet/ArtWorkServlet/${id}/xl", CoverType.Front)
 
 	def RetrieveFullSizeImage(fullSizeCallbackParameter):
 		return fullSizeCallbackParameter

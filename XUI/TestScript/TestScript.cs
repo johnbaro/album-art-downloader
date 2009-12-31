@@ -72,7 +72,8 @@ namespace TestScript
 			{
 				Bitmap thumbnail = new Bitmap(typeof(TestScript), "testThumbnail.jpg");
 				Bitmap fullSize = new Bitmap(typeof(TestScript), "testFullsize.jpg");
-				results.Add(thumbnail, i.ToString(), "notauri", 1000 + rnd.Next(6) * 100, rnd.Next(1,1600), fullSize,(CoverType)rnd.Next((int)CoverType.Unknown, (int)CoverType.CD + 1));
+				//results.Add(thumbnail, i.ToString(), "notauri", 1000 + rnd.Next(6) * 100, rnd.Next(1, 1600), fullSize, (CoverType)rnd.Next((int)CoverType.Unknown, (int)CoverType.CD + 1));
+				results.Add(thumbnail, i.ToString(), "notauri", -1, -1, fullSize, (CoverType)rnd.Next((int)CoverType.Unknown, (int)CoverType.CD + 1));
 				//System.Threading.Thread.Sleep(1000);
 			}
 		}
