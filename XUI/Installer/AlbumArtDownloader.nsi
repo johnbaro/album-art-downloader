@@ -195,6 +195,9 @@ SectionGroup "Image Download Scripts"
 		Section "HMV Canada"
 		  File "..\Scripts\Scripts\hmv-canada.boo"
 		SectionEnd
+		Section "Lala"
+		  File "..\Scripts\Scripts\lala.boo"
+		SectionEnd
 		#iTunes script currently blocked by apple, so don't include it
 		#Section "iTunes Music Shop"
 		#  File "..\Scripts\Scripts\iTunes.boo"

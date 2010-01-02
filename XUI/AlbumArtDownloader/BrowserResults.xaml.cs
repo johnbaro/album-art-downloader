@@ -150,7 +150,7 @@ namespace AlbumArtDownloader
 					rootedArtFileSearchPattern = Path.Combine(album.BasePath, artFileSearchPattern);
 				}
 
-				if (Properties.Settings.Default.FileBrowseAutoDownload)
+				if (autoDownloader != null)
 				{
 					album.ArtFile = rootedArtFileSearchPattern; //The destination filename to download to
 					autoDownloader.Add(album);
@@ -168,7 +168,7 @@ namespace AlbumArtDownloader
 					searchWindow.Closed += OnSearchWindowClosed;
 				}
 			}
-			if (Properties.Settings.Default.FileBrowseAutoDownload)
+			if (autoDownloader != null)
 			{
 				autoDownloader.Show();
 			}
@@ -598,6 +598,9 @@ namespace AlbumArtDownloader
 		private static string sImageEncoderExtensions = "(?:" + String.Join("|", (from encoder in ImageCodecInfo.GetImageEncoders() select encoder.FilenameExtension.Replace("*.", "") //Remove *.
 																																									.Replace(';', '|')) //Use | instead of ; as a separator
 																																									.ToArray()) + ")";
+		/// <summary>A regex part that will match any of the valid values for cover type</summary>
+		private static string sCoverTypes = "(?:" + String.Join("|", Enum.GetNames(typeof(AlbumArtDownloader.Scripts.CoverType))) + ")";
+		
 		/// <summary>Creates a regex that will match paths that can match pathPattern.</summary>
 		private Regex MakeCheckPattern(string pathPattern, string artist, string album)
 		{
@@ -610,10 +613,20 @@ namespace AlbumArtDownloader
 
 			//restrict the extension placeholder to be a valid extension
 			result = result.Replace("%extension%", sImageEncoderExtensions);
+			//restrict the size placeholder to be in the format sizes are written out in
+			result = result.Replace("%size%", @"\d+ x \d+");
+			//replace the type placeholder with the possible type values
+			result = result.Replace("%type%", sCoverTypes);
+			//replace custom type placeholder with the values it describes
+			result = Regex.Replace(result, @"%type(?:\\\((?<names>[^)]*)\\\))%",
+				new MatchEvaluator(delegate(Match match)
+				{
+					return "(?:" + match.Groups["names"].Value.Replace(',', '|') + ")";
+				}),
+				RegexOptions.IgnoreCase);
 										
-			//TODO: more specific replacements for any remaining placeholders
 			//Replace remaining placeholders with [^\/]*? to match within the path segment
-			result = Regex.Replace(result, @"%(?:name|source|size|preset|type(?:\([^)]*\))?)%", @"[^\\/]*?", RegexOptions.IgnoreCase);
+			result = Regex.Replace(result, @"%(?:name|source|preset)%", @"[^\\/]*?", RegexOptions.IgnoreCase);
 
 			return new Regex(result, RegexOptions.IgnoreCase);
 		}
