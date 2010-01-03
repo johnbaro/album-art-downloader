@@ -164,6 +164,10 @@ namespace AlbumArtDownloader
 
 		public void Add(Album album)
 		{
+			//Substitute Album and Artist placeholders, as the AlbumArt won't do this
+			album.ArtFile = album.ArtFile.Replace("%artist%", Common.MakeSafeForPath(album.Artist))
+										 .Replace("%album%", Common.MakeSafeForPath(album.Name));
+
 			album.ArtFileStatus = ArtFileStatus.Queued;
 			mQueueList.Albums.Add(album);
 

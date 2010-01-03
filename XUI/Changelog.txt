@@ -1,3 +1,6 @@
+0.34.1
+     Fixed bug where %artist% and %album% placeholders were not replaced in Automatic Downloader
+     
 0.34 Added Lala script
      Fixed CoverIsland, Encyclopaedie Metallum and Archambault scripts
      File and Foobar existing image file searching now applies more restrictive
