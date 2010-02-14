@@ -112,11 +112,24 @@ namespace AlbumArtDownloader
 		private void OnAutoSelectTextBoxFocusChange(object sender, KeyboardFocusChangedEventArgs e)
 		{
 			TextBox textBox = sender as TextBox;
-			//If the textbox gains focus, but not from app gaining focus, and not from mouse press, then select its contents
-			if (textBox != null && e.OldFocus != null && Mouse.LeftButton != MouseButtonState.Pressed)
+			//If the textbox gains focus, but not from app gaining focus, and not from mouse press or context menu, then select its contents
+			if (textBox != null && e.OldFocus != null && !BelongsToContextMenu(e.OldFocus as FrameworkElement) && Mouse.LeftButton != MouseButtonState.Pressed)
 			{
 				textBox.SelectAll();
 			}
+		}
+
+		private static bool BelongsToContextMenu(FrameworkElement element)
+		{
+			while (element != null)
+			{
+				if (element is ContextMenu)
+				{
+					return true;
+				}
+				element = element.Parent as FrameworkElement;
+			}
+			return false;
 		}
 
 		private void OnLoaded(object sender, RoutedEventArgs e)
