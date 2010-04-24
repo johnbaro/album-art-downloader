@@ -38,10 +38,10 @@ Options:
               are searched.
               May be abbreviated to /s          (/s "Amazon,Coveralia")
 
- /exclude     Does not search the specified     (/exclude "Local Files,Google")
+ /exclude     Does not search the specified     (/exclude "Lala,Google")
               sources. Separate sources with
               commas.
-              May be abbreviated to /es         (/es "Local Files,Google")
+              May be abbreviated to /es         (/es "Lala,Google")
 
  /minSize     Specifies the minimum size of         (/minSize 300)
               image, in pixels, to use.
@@ -95,7 +95,7 @@ Options:
               
  /sequence    Specifies which result to use, if     (/sequence 2)
               more than one are found. For
-              example, passing 2 as the value
+         googl     example, passing 2 as the value
               here would ignore the first result
               found, and use the second.
               May be abbreviated to /seq            (/seq 2)

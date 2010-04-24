@@ -12,7 +12,7 @@ class LastFmCover(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "LastFM Cover"
 	Version as string:
-		get: return "0.5"
+		get: return "0.6"
 	Author as string:
 		get: return "daju"
 	
@@ -53,6 +53,7 @@ class LastFmCover(AlbumArtDownloader.Scripts.IScript):
 					if mediumImageNodes.Count == 1:
 						mediumImageUrl = mediumImageNodes[0].InnerText;
 					name = resultArtist+" - "+resultAlbum
+					
 					found = false
 					counter = Sizes.Length-1
 					# Because all images look the same, only the picture with the highest
@@ -66,7 +67,26 @@ class LastFmCover(AlbumArtDownloader.Scripts.IScript):
 							found = true
 							results.EstimatedCount += resultNodes.Count
 							for node in resultNodes:
-								picUrl = node.InnerText
+								
+								#try to find an original image instead
+								picUrl = Regex.Replace(node.InnerText, "(?<=/)[^/]+(?=/[^/]+$)", "_")
+								checkForOriginal = System.Net.HttpWebRequest.Create(picUrl) as System.Net.HttpWebRequest
+								checkForOriginal.Method = "HEAD";
+
+								try:
+									response = checkForOriginal.GetResponse() as System.Net.HttpWebResponse
+									if response.StatusCode == System.Net.HttpStatusCode.OK and response.ContentLength > 0:
+										#if found, then we don't know the size (but assume it's better than the api supplied one?)
+										px = -1
+									else:
+										//Couldn't find the original, so use the API supplied URI
+										picUrl = node.InnerText
+									
+									response.Close()
+								except e as System.Net.WebException:
+									//Couldn't find the original, so use the API supplied URI
+									picUrl = node.InnerText
+									
 								thumbnailUrl = null
 								if mediumImageUrl != null:
 									thumbnailUrl = mediumImageUrl

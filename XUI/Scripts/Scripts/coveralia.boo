@@ -10,7 +10,7 @@ class Coveralia:
 	static SourceCreator as string:
 		get: return "Alex Vallat"
 	static SourceVersion as string:
-		get: return "0.9"
+		get: return "0.10"
 	static def GetThumbs(coverart,artist,album):
 		artist = StripCharacters("&.'\";:?!", artist)
 		album = StripCharacters("&.'\";:?!", album)
@@ -28,7 +28,7 @@ class Coveralia:
 			//Get the result page
 			resultPage = GetPageIsoLatin1(String.Format("http://www.coveralia.com{0}", resultMatch.Groups["url"].Value))
 			
-			labelRegex = Regex("<span class=\"disco1\"><a[^>]+>(?<artist>[^<]+)</a>\\s*</span>\\s*<br>\\s*<span class=\"disco2\">(?<album>[^<]+)", RegexOptions.Multiline)
+			labelRegex = Regex("<title>(?<title>[^<]+?)\\s(?:-\\s*)?caratulas", RegexOptions.IgnoreCase)
 			labelMatch = labelRegex.Match(resultPage) //Expecting one match
 			
 			imagePageRegex = Regex("<a href=\"/caratulas/(?<imageName>[^\"]+)\"><img src=\"http://images.coveralia.com/audio/thumbs/(?<thumbID>[^\"]+)\"")
@@ -57,7 +57,7 @@ class Coveralia:
 				if fullSizeImageMatch.Success:
 					coverart.Add(
 						String.Format("http://images.coveralia.com/audio/thumbs/{0}", imagePageMatch.Groups["thumbID"].Value),
-						labelMatch.Groups["artist"].Value + " - " + labelMatch.Groups["album"].Value+ " - " + coverTypeString,
+						labelMatch.Groups["title"].Value + " - " + coverTypeString,
 						fullSizeImagePageUrl,
 						-1,
 						-1,
