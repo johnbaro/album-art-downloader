@@ -9,7 +9,7 @@ class JunoRecords:
 	static SourceName as string:
 		get: return "Juno Records"
 	static SourceVersion as string:
-		get: return "0.4"
+		get: return "0.5"
 	static SourceCreator as string:
 		get: return "Marc Landis"
 
@@ -23,7 +23,7 @@ class JunoRecords:
 		searchResults = GetPage("http://www.juno.co.uk/search/?as=1&q=${query}&s_search_precision=any&s_search_type=all&s_search_music=1&s_music_product_type=all&s_media_type=all-media&s_merchandise_id=3&s_genre_id=0000&s_released=&s_start_date=&s_end_date=")
 		
 		//Get obids
-		resultsRegex = Regex("class=\"productcover\"><a href=\"products/(?<ID>.*?.htm)", RegexOptions.Singleline)
+		resultsRegex = Regex("<a class=\"productimage\" href=\"products/(?<ID>.*?.htm)", RegexOptions.Singleline)
 		resultMatches = resultsRegex.Matches(searchResults)
 		coverart.SetCountEstimate(resultMatches.Count * 2) //Estimate 2 covers per result. Results may vary.
 

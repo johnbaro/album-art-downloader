@@ -1,5 +1,5 @@
 !define PRODUCT_NAME "Album Art Downloader XUI"
-!define PRODUCT_VERSION "0.34.1"
+!define PRODUCT_VERSION "0.35"
 !define PRODUCT_WEB_SITE "http://sourceforge.net/projects/album-art"
 !define PRODUCT_SUPPORT "http://www.hydrogenaudio.org/forums/index.php?showtopic=57392"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\AlbumArt.exe"
@@ -195,9 +195,6 @@ SectionGroup "Image Download Scripts"
 		Section "HMV Canada"
 		  File "..\Scripts\Scripts\hmv-canada.boo"
 		SectionEnd
-		Section "Lala"
-		  File "..\Scripts\Scripts\lala.boo"
-		SectionEnd
 		#iTunes script currently blocked by apple, so don't include it
 		#Section "iTunes Music Shop"
 		#  File "..\Scripts\Scripts\iTunes.boo"
@@ -223,9 +220,9 @@ SectionGroup "Image Download Scripts"
 		Section "RevHQ"
 		  File "..\Scripts\Scripts\revhq.boo"
 		SectionEnd
-		Section "MusicMight"
-		  File "..\Scripts\Scripts\musicmight.boo"
-		SectionEnd
+		#Section "MusicMight"
+		#  File "..\Scripts\Scripts\musicmight.boo"
+		#SectionEnd
 	SectionGroupEnd
 	
 	SectionGroup "Independent"

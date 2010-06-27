@@ -10,7 +10,7 @@ class Yes24:
 	static SourceCreator as string:
 		get: return "Alex Vallat"
 	static SourceVersion as string:
-		get: return "0.6"
+		get: return "0.7"
 	static def GetThumbs(coverart,artist,album):
 		artist = StripCharacters("&.'\";:?!", artist)
 		album = StripCharacters("&.'\";:?!", album)
@@ -21,7 +21,7 @@ class Yes24:
 		goodsNoResults = GetPage(url, encoding)
 		
 		//Get goodsNo
-		goodsNoRegex = Regex("goodsNo=(?<goodsNo>\\d+)'><b>(?<title>[^<]+)</b></a>", RegexOptions.Multiline)
+		goodsNoRegex = Regex("/goods/(?<goodsNo>\\d+)'><b>(?<title>[^<]+)</b></a>", RegexOptions.Multiline)
 		goodsNoMatches = goodsNoRegex.Matches(goodsNoResults)
 		coverart.SetCountEstimate(goodsNoMatches.Count)
 

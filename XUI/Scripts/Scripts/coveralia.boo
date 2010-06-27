@@ -10,7 +10,7 @@ class Coveralia:
 	static SourceCreator as string:
 		get: return "Alex Vallat"
 	static SourceVersion as string:
-		get: return "0.10"
+		get: return "0.11"
 	static def GetThumbs(coverart,artist,album):
 		artist = StripCharacters("&.'\";:?!", artist)
 		album = StripCharacters("&.'\";:?!", album)
@@ -20,7 +20,7 @@ class Coveralia:
 		resultResults = GetPageIsoLatin1(String.Format("http://www.coveralia.com/mostrar.php?bus={0}&bust=2", EncodeUrlIsoLatin1(query)))
 		
 		//Get results
-		resultRegex = Regex("<a href=\"(?<url>/discos/[^\"]+)\" class=\"texto9\">", RegexOptions.Multiline)
+		resultRegex = Regex("<a href=\"(?<url>/discos/[^\"]+\\.php)\">", RegexOptions.Multiline)
 		resultMatches = resultRegex.Matches(resultResults)
 		coverart.EstimatedCount = resultMatches.Count * 3 //Estimate each result has front, back and CD images
 
@@ -31,7 +31,7 @@ class Coveralia:
 			labelRegex = Regex("<title>(?<title>[^<]+?)\\s(?:-\\s*)?caratulas", RegexOptions.IgnoreCase)
 			labelMatch = labelRegex.Match(resultPage) //Expecting one match
 			
-			imagePageRegex = Regex("<a href=\"/caratulas/(?<imageName>[^\"]+)\"><img src=\"http://images.coveralia.com/audio/thumbs/(?<thumbID>[^\"]+)\"")
+			imagePageRegex = Regex("<a href=\"/caratulas/(?<imageName>[^\"]+)\"[^>]*><img src=\"http://images.coveralia.com/audio/thumbs/(?<thumbID>[^\"]+)\"")
 			imagePageMatches = imagePageRegex.Matches(resultPage)
 			
 			coverart.EstimatedCount += imagePageMatches.Count - 3 //Adjust estimated count based on number of matches found here
@@ -51,7 +51,7 @@ class Coveralia:
 				fullSizeImagePage = GetPage(fullSizeImagePageUrl)
 				
 				//Width and Height in the html are not the actual width and height of the image, they are always around 500, so ignore them.
-				fullSizeImageRegex = Regex("src=\"(?<url>http://images\\.coveralia\\.com/audio/[^\"]+)\"")
+				fullSizeImageRegex = Regex("src=\"(?<url>http://images\\.coveralia\\.com/audio/[^\"]+)\"[^>]*class=\"caratula\"")
 				fullSizeImageMatch = fullSizeImageRegex.Match(fullSizeImagePage) //Expecting only one match
 				
 				if fullSizeImageMatch.Success:

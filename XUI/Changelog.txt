@@ -1,3 +1,8 @@
+0.35 Interaction between context menu and auto select all in artist and album search boxes fixed
+     Stop All during Search First bug fixed
+     Removed Lala and MusicMight scripts, as the services are no longer availble
+     Updated scripts: ArkivMusic, Cover-Paradies, Coveralia, Juno-Records, Yes24
+
 0.34.1
      Fixed bug where %artist% and %album% placeholders were not replaced in Automatic Downloader
      

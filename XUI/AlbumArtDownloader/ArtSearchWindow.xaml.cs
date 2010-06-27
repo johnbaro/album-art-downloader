@@ -29,6 +29,7 @@ namespace AlbumArtDownloader
 		private AutoResetEvent mAutoDownloadFullSizeImagesTrigger = new AutoResetEvent(true);
 		private Queue<AlbumArt> mResultsToAutoDownloadFullSizeImages = new Queue<AlbumArt>();
 		private CommandBinding mStopAllCommandBinding;
+		private bool mPreventSecondarySearch = false;
 
 		public ArtSearchWindow()
 		{
@@ -297,6 +298,8 @@ namespace AlbumArtDownloader
 		private SearchParameters mSearchParameters;
 		private void FindExec(object sender, RoutedEventArgs e)
 		{
+			mPreventSecondarySearch = false;
+
 			//Check to see whether current results can be extended, or a new search is required
 			if (mSearchParameters != null)
 			{
@@ -356,6 +359,8 @@ namespace AlbumArtDownloader
 		/// </summary>
 		private void StartSearch()
 		{
+			mPreventSecondarySearch = false; //New search, so allow secondaries
+			
 			mSearchParameters = new SearchParameters(Artist, Album);
 
 			mDefaultSaveFolder.AddPatternToHistory();
@@ -824,8 +829,9 @@ namespace AlbumArtDownloader
 			}
 
 			//If no results were found, perform an additional search to bring in any non-primary sources (if any)
-			if (mResultsViewer.Items.Count == 0 && mSources.Any(s => s.IsPrimary && s.IsEnabled))
+			if (!mPreventSecondarySearch && mResultsViewer.Items.Count == 0 && mSources.Any(s => s.IsPrimary && s.IsEnabled))
 			{
+				mPreventSecondarySearch = true; //Don't 'tertiary' search!
 				AlterSearch();
 			}
 			else
@@ -837,6 +843,7 @@ namespace AlbumArtDownloader
 		}
 		private void StopExec(object sender, ExecutedRoutedEventArgs e)
 		{
+			mPreventSecondarySearch = true; //Don't secondary search if stop is pressed during primary
 			//Stop all the sources
 			foreach (Source source in mSources)
 			{
