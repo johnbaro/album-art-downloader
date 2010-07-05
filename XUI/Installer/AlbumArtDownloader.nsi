@@ -249,6 +249,12 @@ SectionGroup "Image Download Scripts"
 		SectionEnd
 	SectionGroupEnd
 	
+	SectionGroup "Video Game Music"
+		Section "VGMdb"
+		  File "..\Scripts\Scripts\vgmdb.boo"
+		SectionEnd
+	SectionGroupEnd
+	
 	SectionGroup "Artist Images"
 		Section "LastFM Artist"
 			File "..\Scripts\Scripts\lastfm-artist.boo"

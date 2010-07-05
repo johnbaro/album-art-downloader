@@ -43,6 +43,7 @@
   <Script Name="Metal Library" URI="metallibrary.boo" Version="0.2" />
   <Script Name="Psyshop" URI="psyshop.boo" Version="0.3" />
   <Script Name="RevHQ" URI="revhq.boo" Version="0.4" />
+  <Script Name="VGMdb" URI="vgmdb.boo" Version="0.4" />
   <Script Name="Yes24" URI="yes24.boo" Version="0.7" />
   <Script Name="YesAsia" URI="yesasia.boo" Version="0.3" />
 </Updates>
