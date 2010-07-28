@@ -56,9 +56,29 @@ namespace TestScript
 			return request.GetResponse().GetResponseStream();
 		}
 
- 
 
- 
+
+		public static string GetPage(String url, String postData, CookieContainer cookies)
+		{
+			HttpWebRequest request = System.Net.HttpWebRequest.Create(url) as HttpWebRequest;
+
+			if (postData != null)
+			{
+				request.Method = "POST";
+				request.ContentType = "application/x-www-form-urlencoded";
+				var bytes = new System.Text.UTF8Encoding().GetBytes(postData);
+				request.ContentLength = bytes.Length;
+				var stream = request.GetRequestStream();
+				stream.Write(bytes, 0, bytes.Length);
+				stream.Close();
+			}
+
+			request.CookieContainer = cookies;
+
+			var response = request.GetResponse();
+			var streamresponse = response.GetResponseStream();
+			return new System.IO.StreamReader(streamresponse).ReadToEnd();
+		}
 
 
 

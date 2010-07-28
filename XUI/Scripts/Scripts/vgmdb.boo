@@ -18,7 +18,7 @@ class Vgmdb(AlbumArtDownloader.Scripts.IScript):
 	Author as string:
 		get: return "Alex Vallat"
 	Version as string:
-		get: return "0.4"
+		get: return "0.5"
 	
 	def Search(artist as string, album as string, results as IScriptResults):
 		if(artist.Equals("Various Artists", StringComparison.OrdinalIgnoreCase)):
@@ -33,10 +33,8 @@ class Vgmdb(AlbumArtDownloader.Scripts.IScript):
 			GetPage("http://vgmdb.net/forums/login.php?do=login", "vb_login_username=${EncodeUrl(VGMDB_UserName)}&vb_login_password=${EncodeUrl(VGMDB_Password)}&s=&securitytoken=guest&do=login&vb_login_md5password=&vb_login_md5password_utf=", mCookies)
 			//Fix for VGMDB returning cookies scoped to ".vgmdb.net"
 			mCookies.SetCookies(Uri("http://vgmdb.net"), mCookies.GetCookieHeader(Uri("http://www.vgmdb.net")).Replace("; ", ","))
-			
-			Console.WriteLine(mCookies.GetCookieHeader(Uri("http://vgmdb.net/search?do=results")))
 		
-		resultsPage = GetPage("http://vgmdb.net/search?do=results", "action=advancedsearch&albumtitles=${EncodeUrl(album)}&catalognum=&eanupcjan=&dosearch=Search+Albums+Now&pubtype%5B0%5D=1&pubtype%5B1%5D=1&pubtype%5B2%5D=1&distype%5B0%5D=1&distype%5B1%5D=1&distype%5B2%5D=1&distype%5B3%5D=1&distype%5B4%5D=1&distype%5B5%5D=1&distype%5B6%5D=1&distype%5B7%5D=1&composer=${EncodeUrl(artist)}&arranger=&performer=&lyricist=&publisher=&game=&trackname=&caption=&notes=&anyfield=&releasedatemodifier=is&day=0&month=0&year=0&discsmodifier=is&discs=&pricemodifier=is&price_value=&tracklistmodifier=is&tracklists=&scanmodifier=is&scans=&albumadded=&albumlastedit=&scanupload=&tracklistadded=&tracklistlastedit=&sortby=albumtitle&orderby=ASC&childmodifier=0", mCookies )
+		resultsPage = GetPage("http://vgmdb.net/search?do=results", "action=advancedsearch&albumtitles=${EncodeUrl(album)}&catalognum=&eanupcjan=&dosearch=Search+Albums+Now&pubtype%5B0%5D=1&pubtype%5B1%5D=1&pubtype%5B2%5D=1&distype%5B0%5D=1&distype%5B1%5D=1&distype%5B2%5D=1&distype%5B3%5D=1&distype%5B4%5D=1&distype%5B5%5D=1&distype%5B6%5D=1&distype%5B7%5D=1&composer=${EncodeUrl(artist)}&arranger=&performer=&lyricist=&publisher=&game=&trackname=&caption=&notes=&anyfield=&releasedatemodifier=is&day=0&month=0&year=0&discsmodifier=is&discs=&pricemodifier=is&price_value=&tracklistmodifier=is&tracklists=&scanmodifier=is&scans=&albumadded=&albumlastedit=&scanupload=&tracklistadded=&tracklistlastedit=&sortby=albumtitle&orderby=ASC&childmodifier=0&src=aad", mCookies )
 		
 		//Get results
 		resultsRegex = Regex("href=\"http://vgmdb\\.net/album/(?<id>\\d+)\" title='(?<title>[^']+)'", RegexOptions.IgnoreCase)
