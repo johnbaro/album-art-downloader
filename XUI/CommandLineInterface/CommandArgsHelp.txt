@@ -95,10 +95,17 @@ Options:
               
  /sequence    Specifies which result to use, if     (/sequence 2)
               more than one are found. For
-         googl     example, passing 2 as the value
+              example, passing 2 as the value
               here would ignore the first result
               found, and use the second.
               May be abbreviated to /seq            (/seq 2)
+
+ /fetchAll    Saves every results found as a file.  (/fetchAll)
+              To ensure unique filenames, use of the
+              %sequence% variable is recommended in
+              the path, otherwise the same file may
+              be overwritten multiple times.
+              May be abbreviated to /fa              (/fa)
  
  /listSources Produces a list of all available      (/listSources)
               sources to search.

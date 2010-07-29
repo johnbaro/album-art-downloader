@@ -12,43 +12,33 @@ namespace AlbumArtDownloader
 	{
 		static int Main(string[] args)
 		{
-			bool origCursorVisible = Console.CursorVisible; //To restore it to its previous state
-			Console.CursorVisible = false;
-			try
+			Console.Write("Album Art Downloader XUI Command Line Interface version ");
+			Console.WriteLine(Assembly.GetEntryAssembly().GetName().Version);
+			Console.WriteLine();
+
+			//valuedParameters is a list of parameters which must have values - they can not be just switches.
+			string[] valuedParameters = { "artist", "ar", "album", "al", "path", "p", 
+										  "sources", "s", "exclude", "es", "include", "i", "minsize", "mn",
+										  "maxsize", "mx", "minaspect", "ma", "orientation", "r",
+										  "covertype", "t", "sequence", "seq" };
+			Arguments arguments = new Arguments(args, valuedParameters);
+			if (arguments.Contains("?") || arguments.Count == 0)
 			{
-				Console.Write("Album Art Downloader XUI Command Line Interface version ");
-				Console.WriteLine(Assembly.GetEntryAssembly().GetName().Version);
-				Console.WriteLine();
-
-				//valuedParameters is a list of parameters which must have values - they can not be just switches.
-				string[] valuedParameters = { "artist", "ar", "album", "al", "path", "p", 
-											  "sources", "s", "exclude", "es", "include", "i", "minsize", "mn",
-											  "maxsize", "mx", "minaspect", "ma", "orientation", "r",
-											  "covertype", "t", "sequence", "seq" };
-				Arguments arguments = new Arguments(args, valuedParameters);
-				if (arguments.Contains("?") || arguments.Count == 0)
-				{
-					ShowCommandArgs();
-					WaitForExit(0);
-					return 0;
-				}
-
-				if (!ScriptManager.CompileIfRequired())
-				{
-					WaitForExit(-1);
-					return -1; //Failed
-				}
-				ScriptManager.LoadScripts();
-
-				int exitCode = ProcessCommandArgs(arguments);
-				WaitForExit(exitCode);
-				return exitCode; //Success
+				ShowCommandArgs();
+				WaitForExit(0);
+				return 0;
 			}
-			finally
+
+			if (!ScriptManager.CompileIfRequired())
 			{
-				//Restore cursor visibility
-				Console.CursorVisible = origCursorVisible;
+				WaitForExit(-1);
+				return -1; //Failed
 			}
+			ScriptManager.LoadScripts();
+
+			int exitCode = ProcessCommandArgs(arguments);
+			WaitForExit(exitCode);
+			return exitCode; //Success
 		}
 
 		private static int ProcessCommandArgs(Arguments arguments)
@@ -64,6 +54,7 @@ namespace AlbumArtDownloader
 			Orientation requiredOrientation = Orientation.None;
 
 			bool warnIfNoSearch = false; //If search-like parameters are present, warn if search terms are not.
+			bool fetchAllResults = false;
 			string errorMessage = null;
 			foreach (Parameter parameter in arguments)
 			{
@@ -231,6 +222,10 @@ namespace AlbumArtDownloader
 							ListScripts();
 							//No warnIfNoSearch
 							break;
+						case "fetchall":
+						case "fa":
+							fetchAllResults = true;
+							break;
 						default:
 							errorMessage = "Unexpected command line parameter: " + parameter.Name;
 							break;
@@ -301,7 +296,7 @@ namespace AlbumArtDownloader
 			//perform the actual search
 			try
 			{
-				if (Search(scripts, artist, album, path, minSize, maxSize, minAspect, requiredOrientation, coverType, sequence))
+				if (Search(scripts, artist, album, path, minSize, maxSize, minAspect, requiredOrientation, coverType, sequence, fetchAllResults))
 				{
 					return 0; //Success
 				}
@@ -337,8 +332,10 @@ namespace AlbumArtDownloader
 		/// <summary>
 		/// Perform the actual search, download and save of art
 		/// </summary>
-		private static bool Search(IEnumerable<IScript> scripts, string artist, string album, string path, int? minSize, int? maxSize, float minAspect, Orientation requiredOrientation, AllowedCoverType? coverType, int targetSequence)
+		private static bool Search(IEnumerable<IScript> scripts, string artist, string album, string path, int? minSize, int? maxSize, float minAspect, Orientation requiredOrientation, AllowedCoverType? coverType, int targetSequence, bool fetchAllResults)
 		{
+			bool foundResult = false;
+
 			//Replace the artist and album placeholders in the path
 			path = path.Replace("%artist%", MakeSafeForPath(artist))
 					   .Replace("%album%", MakeSafeForPath(album));
@@ -363,11 +360,16 @@ namespace AlbumArtDownloader
 						CheckImageDimensions(result, minSize, maxSize, minAspect, requiredOrientation, false) && //Quick check of reported dimensions
 						CheckImageDimensions(result, minSize, maxSize, minAspect, requiredOrientation, true)) //Full check of downloaded image dimensions
 					{
-						if (++sequence == targetSequence) //Discard sequence-1 results.
+						if (++sequence == targetSequence || fetchAllResults) //Discard sequence-1 results, unless fetching all results
 						{
 							if (result.Save(path, sequence))
 							{
-								return true;
+								if (!fetchAllResults)
+								{
+									//Unless fetching all results, once one is found, stop searching.
+									return true;
+								}
+								foundResult = true; //Note that a result was found, to indicate success.
 							}
 							else
 							{
@@ -377,7 +379,7 @@ namespace AlbumArtDownloader
 					}
 				}
 			}
-			return false; //No result found
+			return foundResult;
 		}
 
 		private static bool CheckCoverType(ScriptResult result, AllowedCoverType? allowedCoverTypes)

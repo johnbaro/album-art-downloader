@@ -7,7 +7,7 @@ class MetalLibrary(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "Metal Library"
 	Version as string:
-		get: return "0.2"
+		get: return "0.3"
 	Author as string:
 		get: return "Alex Vallat"
 	def Search(artist as string, album as string, results as IScriptResults):
@@ -18,7 +18,7 @@ class MetalLibrary(AlbumArtDownloader.Scripts.IScript):
 		artistPrefix = artist.Replace(" ", ".")
 		artistPage as string = GetPage("http://${artistPrefix}.metallibrary.ru")
 		
-		albumMatches = Regex("<a href=\"(?<url>/bands/discographies/[^\"]+)\">\"${album}\"</a>", RegexOptions.IgnoreCase).Matches(artistPage)
+		albumMatches = Regex("<a href=\"(?<url>/bands/discographies/[^\"]+)\">\"[^\"]*${album}[^\"]*\"</a>", RegexOptions.IgnoreCase).Matches(artistPage)
 		
 		results.EstimatedCount = albumMatches.Count
 		

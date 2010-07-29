@@ -768,7 +768,7 @@ namespace AlbumArtDownloader
 			get
 			{
 				//Scripts may be in a "scripts" subfolder of the application folder
-				yield return Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "scripts");
+				yield return Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Scripts");
 
 				//They may also be in the scripts cache file path.
 				yield return Path.GetDirectoryName(BooScriptsCacheFile);
@@ -782,7 +782,7 @@ namespace AlbumArtDownloader
 			get
 			{
 				if (mBooScriptsCacheFile == null)
-					mBooScriptsCacheFile = Path.Combine(Path.Combine(Path.GetDirectoryName(ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath), "scripts"), sBooScriptCacheDll);
+					mBooScriptsCacheFile = Path.Combine(Path.Combine(Path.GetDirectoryName(ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath), "Scripts"), sBooScriptCacheDll);
 
 				return mBooScriptsCacheFile;
 			}

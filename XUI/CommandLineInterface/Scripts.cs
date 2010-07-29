@@ -101,7 +101,7 @@ namespace AlbumArtDownloader
 			get
 			{
 				if (mBooScriptsCacheFile == null)
-					mBooScriptsCacheFile = Path.Combine(Path.Combine(Path.GetDirectoryName(ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath), "scripts"), sBooScriptCacheDll);
+					mBooScriptsCacheFile = Path.Combine(Path.Combine(Path.GetDirectoryName(ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath), "Scripts"), sBooScriptCacheDll);
 
 				return mBooScriptsCacheFile;
 			}
@@ -115,7 +115,7 @@ namespace AlbumArtDownloader
 			get
 			{
 				//Scripts may be in a "scripts" subfolder of the application folder
-				yield return Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "scripts");
+				yield return Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Scripts");
 
 				//They may also be in the scripts cache file path.
 				yield return Path.GetDirectoryName(BooScriptsCacheFile);
@@ -247,51 +247,61 @@ namespace AlbumArtDownloader
 				}
 				Console.Write("\nCompiling scripts... ");
 				
-				//Report compilation progress
-				//Ensure the progress bar is not larger than the remaining width
-				int progressBarWidth = Math.Min(30, Console.WindowWidth - Console.CursorLeft - 1);
-				//Align the progress bar to the right
-				ProgressBar progressBar = new ProgressBar(new WritePoint(Console.WindowWidth - progressBarWidth - 1, Console.CursorTop), progressBarWidth);
-				progressBar.Maximum = compiler.Parameters.Pipeline.Count;
-				compiler.Parameters.Pipeline.BeforeStep += new CompilerStepEventHandler(
-					delegate(object sender, CompilerStepEventArgs args)
+				bool origCursorVisible = Console.CursorVisible; //To restore it to its previous state
+				Console.CursorVisible = false;
+				try
+				{
+					//Report compilation progress
+					//Ensure the progress bar is not larger than the remaining width
+					int progressBarWidth = Math.Min(30, Console.WindowWidth - Console.CursorLeft - 1);
+					//Align the progress bar to the right
+					ProgressBar progressBar = new ProgressBar(new WritePoint(Console.WindowWidth - progressBarWidth - 1, Console.CursorTop), progressBarWidth);
+					progressBar.Maximum = compiler.Parameters.Pipeline.Count;
+					compiler.Parameters.Pipeline.BeforeStep += new CompilerStepEventHandler(
+						delegate(object sender, CompilerStepEventArgs args)
+						{
+							progressBar.Value++;
+						}
+					);
+					CompilerContext compilerContext = compiler.Run();
+
+					progressBar.Clear();
+
+					bool result;
+					if (compilerContext.Errors.Count > 0)
 					{
-						progressBar.Value++;
+						Console.WriteLine("failed.");
+						result = false; //faliure
 					}
-				);
-				CompilerContext compilerContext = compiler.Run();
+					else if (compilerContext.Warnings.Count > 0)
+					{
+						Console.WriteLine("done, but with warnings.");
+						result = true; //Allow to continue
+					}
+					else
+					{
+						Console.WriteLine("done.");
+						result = true; //Success
+					}
 
-				progressBar.Clear();
+					//Report warnings and errors
+					foreach (CompilerWarning warning in compilerContext.Warnings)
+					{
+						ReportCompilerIssue("warning", warning.LexicalInfo, warning.Code, warning.Message);
+					}
+					foreach (CompilerError error in compilerContext.Errors)
+					{
+						ReportCompilerIssue("error", error.LexicalInfo, error.Code, error.Message);
+					}
 
-				bool result;
-				if (compilerContext.Errors.Count > 0)
-				{
-					Console.WriteLine("failed.");
-					result = false; //faliure
+					Console.WriteLine();
+					return result;
 				}
-				else if (compilerContext.Warnings.Count > 0)
+				finally
 				{
-					Console.WriteLine("done, but with warnings.");
-					result = true; //Allow to continue
+					//Restore cursor visibility
+					Console.CursorVisible = origCursorVisible;
 				}
-				else
-				{
-					Console.WriteLine("done.");
-					result = true; //Success
-				}
-
-				//Report warnings and errors
-				foreach (CompilerWarning warning in compilerContext.Warnings)
-				{
-					ReportCompilerIssue("warning", warning.LexicalInfo, warning.Code, warning.Message);
-				}
-				foreach (CompilerError error in compilerContext.Errors)
-				{
-					ReportCompilerIssue("error", error.LexicalInfo, error.Code, error.Message);
-				}
-
-				Console.WriteLine();
-				return result;
 			}
 			catch (Exception exception)
 			{
