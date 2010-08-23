@@ -152,30 +152,59 @@ namespace AlbumArtDownloader
 			ArtFile = filePath;
 			ArtFileStatus = ArtFileStatus.Present;
 
-			try
+			if (EmbeddedArtHelpers.IsEmbeddedArtPath(filePath))
 			{
-				ArtFileSize = new FileInfo(filePath).Length;
-			}
-			catch (Exception)
-			{
-				//Ignore exceptions when reading the filesize it's not important
-				ArtFileSize = 0;
-			}
-
-			//Attempt to get the image dimesions
-			try
-			{
-				using (var fileStream = File.OpenRead(filePath))
+				//Get the size of the embedded image, not the size of the file itself
+				try
 				{
-					var bitmapDecoder = BitmapDecoder.Create(fileStream, BitmapCreateOptions.DelayCreation, BitmapCacheOption.None);
-					ArtFileWidth = bitmapDecoder.Frames[0].PixelWidth;
-					ArtFileHeight = bitmapDecoder.Frames[0].PixelHeight;
+					var embeddedArt = EmbeddedArtHelpers.GetEmbeddedArt(filePath);
+					if (embeddedArt != null)
+					{
+						ArtFileSize = embeddedArt.Data.Count;
+
+						using (var dataStream = new MemoryStream(embeddedArt.Data.Data, false))
+						{
+							var bitmapDecoder = BitmapDecoder.Create(dataStream, BitmapCreateOptions.DelayCreation, BitmapCacheOption.None);
+							ArtFileWidth = bitmapDecoder.Frames[0].PixelWidth;
+							ArtFileHeight = bitmapDecoder.Frames[0].PixelHeight;
+						}
+					}
+				}
+				catch (Exception)
+				{
+					//Ignore exceptions when reading the embedded artwork; it's not important at this stage
+					ArtFileSize = 0;
+					ArtFileWidth = ArtFileHeight = 0;
 				}
 			}
-			catch (Exception)
+			else
 			{
-				//Ignore exceptions when reading the dimensions, they aren't important
-				ArtFileWidth = ArtFileHeight = 0;
+				//Not an embedded image, but an image file itself
+				try
+				{
+					ArtFileSize = new FileInfo(filePath).Length;
+				}
+				catch (Exception)
+				{
+					//Ignore exceptions when reading the filesize it's not important
+					ArtFileSize = 0;
+				}
+
+				//Attempt to get the image dimesions
+				try
+				{
+					using (var fileStream = File.OpenRead(filePath))
+					{
+						var bitmapDecoder = BitmapDecoder.Create(fileStream, BitmapCreateOptions.DelayCreation, BitmapCacheOption.None);
+						ArtFileWidth = bitmapDecoder.Frames[0].PixelWidth;
+						ArtFileHeight = bitmapDecoder.Frames[0].PixelHeight;
+					}
+				}
+				catch (Exception)
+				{
+					//Ignore exceptions when reading the dimensions, they aren't important
+					ArtFileWidth = ArtFileHeight = 0;
+				}
 			}
 		}
 

@@ -1,8 +1,9 @@
-0.37 Fixed Discogs, Juno, Metal Library and Encyclopaedia Metallum scripts
-	 Added /fetchAll parameter to command line version (aad.exe)
-	 Command line version now only hides the cursor during script compilation
-
 0.36 Added script for VGMdb, a Video Game Music site
+     Fixed Discogs, Juno, Metal Library and Encyclopaedia Metallum scripts
+     Added /fetchAll parameter to command line version (aad.exe)
+     Command line version now only hides the cursor during script compilation
+     Added read-only support for tag-embedded artwork to the file browser and local files source
+     Added support for Alternates (separated by |) to local files source path pattern
 
 0.35 Interaction between context menu and auto select all in artist and album search boxes fixed
      Stop All during Search First bug fixed

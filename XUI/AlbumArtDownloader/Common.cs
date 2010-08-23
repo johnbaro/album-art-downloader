@@ -237,7 +237,20 @@ namespace AlbumArtDownloader
 				else
 				{
 					//Normal wildcard
-					foreach (FileSystemInfo matchedPath in fixedPart.GetFileSystemInfos(searchPattern))
+					FileSystemInfo[] fileSystemInfos;
+					try
+					{
+						fileSystemInfos = fixedPart.GetFileSystemInfos(searchPattern);
+					}
+					catch (ArgumentException e)
+					{
+						System.Diagnostics.Trace.WriteLine("Path not valid for file search: " + fixedPart.FullName + "\\" + searchPattern);
+						System.Diagnostics.Trace.Indent();
+						System.Diagnostics.Trace.WriteLine(e.Message);
+						System.Diagnostics.Trace.Unindent();
+						yield break;
+					}
+					foreach (FileSystemInfo matchedPath in fileSystemInfos)
 					{
 						foreach (string result in ResolvePathPattern(Path.Combine(matchedPath.FullName, match.Groups["remainder"].Value)))
 						{
@@ -251,8 +264,20 @@ namespace AlbumArtDownloader
 				//There is no wildcard part of the path remaining, so check if it exists
 				if (Directory.Exists(pathPattern))
 				{
-					//It's a folder, so return all the files within it
-					foreach (string result in Directory.GetFiles(pathPattern))
+					string[] files = new string[0];
+					try
+					{
+						files = Directory.GetFiles(pathPattern);
+					}
+					catch (Exception e)
+					{
+						//Can't get subfolders
+						System.Diagnostics.Trace.WriteLine("Can't search inside: " + pathPattern);
+						System.Diagnostics.Trace.Indent();
+						System.Diagnostics.Trace.WriteLine(e.Message);
+						System.Diagnostics.Trace.Unindent();
+					}
+					foreach (string result in files)
 					{
 						yield return result;
 					}
@@ -467,16 +492,22 @@ namespace AlbumArtDownloader
 		{
 			CommandManager.RegisterClassCommandBinding(typeof(Window), new CommandBinding(ShowInExplorer, new ExecutedRoutedEventHandler(ShowInExplorerExec)));
 			CommandManager.RegisterClassCommandBinding(typeof(Window), new CommandBinding(Preview, new ExecutedRoutedEventHandler(PreviewExec)));
-			CommandManager.RegisterClassCommandBinding(typeof(Window), new CommandBinding(Delete, new ExecutedRoutedEventHandler(DeleteFileExec)));
-			CommandManager.RegisterClassCommandBinding(typeof(Window), new CommandBinding(Rename, new ExecutedRoutedEventHandler(RenameArtFileExec)));
+			CommandManager.RegisterClassCommandBinding(typeof(Window), new CommandBinding(Delete, new ExecutedRoutedEventHandler(DeleteFileExec), new CanExecuteRoutedEventHandler(DeleteFileCanExec)));
+			CommandManager.RegisterClassCommandBinding(typeof(Window), new CommandBinding(Rename, new ExecutedRoutedEventHandler(RenameArtFileExec), new CanExecuteRoutedEventHandler(RenameArtFileCanExec)));
 		}
 
 		public static void ShowInExplorerExec(object sender, ExecutedRoutedEventArgs e)
 		{
-			if (e.Parameter is string)
+			string filePath = e.Parameter as string;
+			if (!String.IsNullOrEmpty(filePath))
 			{
-				//TODO: Validation that this is a file path?
-				System.Diagnostics.Process.Start("explorer.exe", "/select,\"" + (string)e.Parameter + "\"");
+				//TODO: Validation that this is a valid file path?
+				if (EmbeddedArtHelpers.IsEmbeddedArtPath(filePath))
+				{
+					int ignored;
+					EmbeddedArtHelpers.SplitToFilenameAndIndex(filePath, out filePath, out ignored);
+				}
+				System.Diagnostics.Process.Start("explorer.exe", "/select,\"" + filePath + "\"");
 			}
 		}
 
@@ -518,6 +549,13 @@ namespace AlbumArtDownloader
 			}
 		}
 
+		public static void DeleteFileCanExec(object sender, CanExecuteRoutedEventArgs e)
+		{
+			string filePath = e.Parameter as string;
+			//TODO: Check for file existence and permissions here too?
+			e.CanExecute = !String.IsNullOrEmpty(filePath) && !EmbeddedArtHelpers.IsEmbeddedArtPath(filePath);
+		}
+
 		public static void RenameArtFileExec(object sender, ExecutedRoutedEventArgs e)
 		{
 			string filePath = e.Parameter as string;
@@ -527,6 +565,13 @@ namespace AlbumArtDownloader
 				renameWindow.Owner = GetWindow(sender);
 				renameWindow.ShowDialog();
 			}
+		}
+
+		public static void RenameArtFileCanExec(object sender, CanExecuteRoutedEventArgs e)
+		{
+			string filePath = e.Parameter as string;
+			//TODO: Check for file existence and permissions here too?
+			e.CanExecute = !String.IsNullOrEmpty(filePath) && !EmbeddedArtHelpers.IsEmbeddedArtPath(filePath);
 		}
 
 		private static Window GetWindow(object sender)

@@ -12,7 +12,9 @@ namespace AlbumArtDownloader.Controls
 		public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
 		{
 			if (value is string)
-				return Path.GetFileName((string)value);
+			{
+				return EmbeddedArtHelpers.GetEmbeddedFileName((string)value);
+			}
 
 			return value;
 		}

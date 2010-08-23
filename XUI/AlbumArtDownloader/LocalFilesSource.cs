@@ -71,47 +71,112 @@ namespace AlbumArtDownloader
 				((LocalFilesSourceSettings)CustomSettingsUI).mSearchPathPatternBox.AddPatternToHistory();
 			}));
 
-			string pathPattern = GetSearchPath(artist, album);
-			
 			//Avoid duplicates
 			StringDictionary addedFiles = new StringDictionary();
 
-			//Match path with wildcards
-			foreach (string filename in Common.ResolvePathPattern(pathPattern))
+			string pathPattern = GetSearchPath(artist, album);
+
+			foreach (string alternate in pathPattern.Split('|'))
 			{
-				if (!addedFiles.ContainsKey(filename)) //Don't re-add a file that's already been added
+				int? embeddedIndex = null;
+				string unembeddedPathPattern = alternate;
+					
+				if (EmbeddedArtHelpers.IsEmbeddedArtPath(alternate))
 				{
-					addedFiles.Add(filename, null);
+					//TODO: Allow a pattern to specify multiple embedded images as "<?>" or similar.
+					int i;
+					EmbeddedArtHelpers.SplitToFilenameAndIndex(alternate, out unembeddedPathPattern, out i);
+					embeddedIndex = i;
+				}
 
-					//Each filename is potentially an image, so try to load it
-					try
+				//Match path with wildcards
+				foreach (string filename in Common.ResolvePathPattern(unembeddedPathPattern))
+				{
+					if (!addedFiles.ContainsKey(filename)) //Don't re-add a file that's already been added
 					{
-						IntPtr hBitmap;
-						int status = GdipCreateBitmapFromFile(filename, out hBitmap);
-						GdipDisposeImage(new HandleRef(this, hBitmap));
-						if (status == 0)
-						{
-							//Successfully opened as image
+						addedFiles.Add(filename, null);
 
-							//Create an in-memory copy so that the bitmap file isn't in use, and can be replaced
-							byte[] fileBytes = File.ReadAllBytes(filename); //Read the file, closing it after use
-							Bitmap bitmap = new Bitmap(new MemoryStream(fileBytes)); //NOTE: Do not dispose of MemoryStream, or it will cause later saving of the bitmap to throw a generic GDI+ error (annoyingly)
-							results.Add(bitmap, Path.GetFileName(filename), filename, bitmap.Width, bitmap.Height, null);
+						if (embeddedIndex.HasValue)
+						{
+							//Read embedded image from file, rather than the file itself as an image
+							TagLib.File fileTags = null;
+							try
+							{
+								fileTags = TagLib.File.Create(filename, TagLib.ReadStyle.None);
+
+								var embeddedPictures = fileTags.Tag.Pictures;
+								if (embeddedIndex.Value == -1) //Special value indicating "all embedded images"
+								{
+									for (int i = 0; i < embeddedPictures.Length; i++)
+									{
+										AddEmbeddedPictureToResults(results, embeddedPictures, i, filename);
+									}
+								}
+								else if (embeddedPictures.Length > embeddedIndex.Value)
+								{
+									//Found the embedded image
+									AddEmbeddedPictureToResults(results, embeddedPictures, embeddedIndex.Value, filename);
+								}
+								else
+								{
+									System.Diagnostics.Trace.WriteLine("Skipping file missing specified embedded image in local file search: " + EmbeddedArtHelpers.GetEmbeddedFilePath(filename, embeddedIndex.Value));
+								}
+							}
+							catch (Exception e)
+							{
+								System.Diagnostics.Trace.WriteLine("Skipping unreadable embedded image from file in local file search: " + EmbeddedArtHelpers.GetEmbeddedFilePath(filename, embeddedIndex.Value));
+								System.Diagnostics.Trace.Indent();
+								System.Diagnostics.Trace.WriteLine(e.Message);
+								System.Diagnostics.Trace.Unindent();
+							}
+							finally
+							{
+								if (fileTags != null)
+								{
+									fileTags.Mode = TagLib.File.AccessMode.Closed;
+								}
+							}
 						}
 						else
 						{
-							System.Diagnostics.Trace.WriteLine("Skipping non-bitmap file in local file search: " + filename);
+							//Each filename is potentially an image, so try to load it
+							try
+							{
+								IntPtr hBitmap;
+								int status = GdipCreateBitmapFromFile(filename, out hBitmap);
+								GdipDisposeImage(new HandleRef(this, hBitmap));
+								if (status == 0)
+								{
+									//Successfully opened as image
+
+									//Create an in-memory copy so that the bitmap file isn't in use, and can be replaced
+									byte[] fileBytes = File.ReadAllBytes(filename); //Read the file, closing it after use
+									Bitmap bitmap = new Bitmap(new MemoryStream(fileBytes)); //NOTE: Do not dispose of MemoryStream, or it will cause later saving of the bitmap to throw a generic GDI+ error (annoyingly)
+									results.Add(bitmap, Path.GetFileName(filename), filename, bitmap.Width, bitmap.Height, null);
+								}
+								else
+								{
+									System.Diagnostics.Trace.WriteLine("Skipping non-bitmap file in local file search: " + filename);
+								}
+							}
+							catch (Exception e)
+							{
+								System.Diagnostics.Trace.WriteLine("Skipping unreadable file in local file search: " + filename);
+								System.Diagnostics.Trace.Indent();
+								System.Diagnostics.Trace.WriteLine(e.Message);
+								System.Diagnostics.Trace.Unindent();
+							}
 						}
-					}
-					catch (Exception e)
-					{
-						System.Diagnostics.Trace.WriteLine("Skipping unreadable file in local file search: " + filename);
-						System.Diagnostics.Trace.Indent();
-						System.Diagnostics.Trace.WriteLine(e.Message);
-						System.Diagnostics.Trace.Unindent();
 					}
 				}
 			}
+		}
+
+		private static void AddEmbeddedPictureToResults(AlbumArtDownloader.Scripts.IScriptResults results, TagLib.IPicture[] embeddedPictures, int embeddedIndex, string filename)
+		{
+			//Create an in-memory copy so that the bitmap file isn't in use, and can be replaced
+			Bitmap bitmap = new Bitmap(new MemoryStream(embeddedPictures[embeddedIndex].Data.Data)); //NOTE: Do not dispose of MemoryStream, or it will cause later saving of the bitmap to throw a generic GDI+ error (annoyingly)
+			results.Add(bitmap, EmbeddedArtHelpers.GetEmbeddedFilePath(Path.GetFileName(filename), embeddedIndex), filename, bitmap.Width, bitmap.Height, null);
 		}
 
 		internal override Bitmap RetrieveFullSizeImage(object fullSizeCallbackParameter)
@@ -237,11 +302,11 @@ namespace AlbumArtDownloader
 				if (String.IsNullOrEmpty(SearchPathPattern))
 				{
 					//Previous setting was to not use the search path pattern, so replicate that.
-					SearchPathPattern = "%folder%\\%filename%";
+					SearchPathPattern = "%folder%\\%filename%|%folder%\\*<*>";
 				}
 			}
 
-			[DefaultSettingValueAttribute("%folder%\\%filename%")]
+			[DefaultSettingValueAttribute("%folder%\\%filename%|%folder%\\*<*>")]
 			[UserScopedSetting]
 			public string SearchPathPattern
 			{

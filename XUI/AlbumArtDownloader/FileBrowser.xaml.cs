@@ -375,6 +375,7 @@ namespace AlbumArtDownloader
 
 			string artistName = null;
 			string albumName = null;
+			int? embeddedArtIndex = null;
 			if (filePathPattern == null)
 			{
 				//Read ID3 Tags
@@ -391,6 +392,26 @@ namespace AlbumArtDownloader
 						artistName = String.Join(" / ", fileTags.Tag.AlbumArtists);
 					}
 					albumName = fileTags.Tag.Album;
+
+					var embeddedPictures = fileTags.Tag.Pictures;
+					if (embeddedPictures.Length > 0)
+					{
+						//There's an embedded picture
+						//Check to see if there's a picture described as the front cover, to use in preference
+						for (int i = 0; i < embeddedPictures.Length; i++)
+						{
+							if (embeddedPictures[i].Type == TagLib.PictureType.FrontCover)
+							{
+								embeddedArtIndex = i;
+								break;
+							}
+						}
+						if(!embeddedArtIndex.HasValue)
+						{
+							//None of the embedded pictures were tagged as "FrontCover", so just use the first picture
+							embeddedArtIndex = 0;
+						}
+					}
 				}
 				catch (Exception e)
 				{
@@ -433,6 +454,11 @@ namespace AlbumArtDownloader
 				}
 
 				Album album = new Album(basePath, artistName, albumName);
+				if (embeddedArtIndex.HasValue)
+				{
+					//Read the picture from the data
+					album.SetArtFile(EmbeddedArtHelpers.GetEmbeddedFilePath(file.FullName, embeddedArtIndex.Value));
+				}
 
 				Dispatcher.Invoke(DispatcherPriority.DataBind, new ThreadStart(delegate
 				{

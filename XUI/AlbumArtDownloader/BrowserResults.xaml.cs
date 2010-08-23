@@ -40,8 +40,8 @@ namespace AlbumArtDownloader
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Delete, new ExecutedRoutedEventHandler(DeleteExec)));
 			CommandBindings.Add(new CommandBinding(Commands.SelectMissing, new ExecutedRoutedEventHandler(SelectMissingExec)));
 			CommandBindings.Add(new CommandBinding(Commands.GetArtwork, new ExecutedRoutedEventHandler(GetArtworkExec), new CanExecuteRoutedEventHandler(GetArtworkCanExec)));
-			CommandBindings.Add(new CommandBinding(CommonCommands.Delete, new ExecutedRoutedEventHandler(DeleteArtFileExec)));
-			CommandBindings.Add(new CommandBinding(CommonCommands.Rename, new ExecutedRoutedEventHandler(RenameArtFileExec)));
+			CommandBindings.Add(new CommandBinding(CommonCommands.Delete, new ExecutedRoutedEventHandler(DeleteArtFileExec), new CanExecuteRoutedEventHandler(CommonCommands.DeleteFileCanExec)));
+			CommandBindings.Add(new CommandBinding(CommonCommands.Rename, new ExecutedRoutedEventHandler(RenameArtFileExec), new CanExecuteRoutedEventHandler(CommonCommands.RenameArtFileCanExec)));
 
 			CreateArtFileSearchThread();
 		}
@@ -184,7 +184,10 @@ namespace AlbumArtDownloader
 				searchWindow.Closed -= OnSearchWindowClosed;
 				mSearchWindowAlbumLookup.Remove(searchWindow);
 
-				QueueAlbumForArtFileSearch(album);
+				if (album.ArtFileStatus != ArtFileStatus.Present) //If it was present before, assume it's still present - no need to re-search
+				{
+					QueueAlbumForArtFileSearch(album);
+				}
 			}
 		}
 
@@ -456,7 +459,10 @@ namespace AlbumArtDownloader
 				case NotifyCollectionChangedAction.Add:
 					foreach (Album album in e.NewItems)
 					{
-						QueueAlbumForArtFileSearch(album);
+						if (album.ArtFileStatus == ArtFileStatus.Unknown)
+						{
+							QueueAlbumForArtFileSearch(album);
+						}
 					}
 					break;
 				case NotifyCollectionChangedAction.Remove:

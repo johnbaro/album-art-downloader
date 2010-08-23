@@ -333,6 +333,7 @@
     <Compile Include="AutoDownloadWarning.xaml.cs">
       <DependentUpon>AutoDownloadWarning.xaml</DependentUpon>
     </Compile>
+    <Compile Include="EmbeddedArtHelpers.cs" />
     <Compile Include="RenameArt.xaml.cs">
       <DependentUpon>RenameArt.xaml</DependentUpon>
     </Compile>
