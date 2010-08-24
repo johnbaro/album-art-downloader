@@ -99,10 +99,13 @@ namespace AlbumArtDownloader.Controls
 		{
 			if (e.LeftButton != MouseButtonState.Pressed)
 			{
-				if (Mouse.Captured != null)
-					Mouse.Captured.ReleaseMouseCapture();
+				if (!((Mouse.Captured is ComboBox && ((ComboBox)Mouse.Captured).IsDropDownOpen))) //Combo boxes require non-pressed capture behaviour while popped up to work properly.
+				{
+					if (Mouse.Captured != null) 
+						Mouse.Captured.ReleaseMouseCapture();
 
-				OnLostMouseCapture(e);
+					OnLostMouseCapture(e);
+				}
 			}
 			else
 			{
@@ -220,7 +223,8 @@ namespace AlbumArtDownloader.Controls
 					//Unhook all events, rehook to new contents
 					foreach (AlbumArt albumArt in mAlbumArtsWithListendedEvents)
 					{
-						albumArt.ImageSizeChanged -= OnImageSizeChanged;						
+						albumArt.ImageSizeChanged -= OnImageSizeChanged;
+						albumArt.CoverTypeChanged -= OnCoverTypeChagned;
 					}
 					mAlbumArtsWithListendedEvents.Clear();
 					foreach (AlbumArt albumArt in (IEnumerable)sender)
@@ -234,6 +238,7 @@ namespace AlbumArtDownloader.Controls
 		private void RemoveAlbumArtEventHandlers(AlbumArt albumArt)
 		{
 			albumArt.ImageSizeChanged -= OnImageSizeChanged;
+			albumArt.CoverTypeChanged -= OnCoverTypeChagned;
 			mAlbumArtsWithListendedEvents.Remove(albumArt);
 		}
 
@@ -242,31 +247,48 @@ namespace AlbumArtDownloader.Controls
 			if (mAlbumArtsWithListendedEvents.Add(albumArt))
 			{
 				albumArt.ImageSizeChanged += OnImageSizeChanged;
+				albumArt.CoverTypeChanged += OnCoverTypeChagned;
 			}
 		}
 
 		private void OnImageSizeChanged(object sender, EventArgs e)
 		{
 			AlbumArt albumArt = (AlbumArt)sender;
-
-			if (UseMaximumImageSize || UseMinimumImageSize || !String.IsNullOrEmpty(SortDescription.PropertyName))
+			
+			if (UseMaximumImageSize || UseMinimumImageSize || Grouping == Grouping.Size || SortDescription.PropertyName.StartsWith("Image")) //Covers ImageWidth and ImageArea (and ImageHeight, although that shouldn't ever be set)
 			{
 				//As this panel's size has changed, it must be removed and re-added, so the list re-filters and re-sorts it
-				if (ItemsSource is IList)
-				{
-					IList itemsSource = (IList)ItemsSource;
-					itemsSource.Remove(albumArt);
-					itemsSource.Add(albumArt);
-				}
-				else if (ItemsSource == null) //If there is no items source, then Items might be directly assigned
-				{
-					Items.Remove(albumArt);
-					Items.Add(albumArt);
-				}
-				else
-				{
-					System.Diagnostics.Debug.Fail("Can't re-add the album art for re-sorting and filtering, as ItemsSource is not an IList");
-				}
+				ReFilterAndSort(albumArt);
+			}
+		}
+
+		private void OnCoverTypeChagned(object sender, EventArgs e)
+		{
+			AlbumArt albumArt = (AlbumArt)sender;
+
+			if (AllowedCoverTypes != AllowedCoverType.Any || Grouping == Grouping.Type || SortDescription.PropertyName == "CoverType")
+			{
+				//As this panel's cover type has changed, it must be removed and re-added, so the list re-filters and re-sorts it
+				ReFilterAndSort(albumArt);
+			}
+		}
+
+		private void ReFilterAndSort(AlbumArt albumArt)
+		{
+			if (ItemsSource is IList)
+			{
+				IList itemsSource = (IList)ItemsSource;
+				itemsSource.Remove(albumArt);
+				itemsSource.Add(albumArt);
+			}
+			else if (ItemsSource == null) //If there is no items source, then Items might be directly assigned
+			{
+				Items.Remove(albumArt);
+				Items.Add(albumArt);
+			}
+			else
+			{
+				System.Diagnostics.Debug.Fail("Can't re-add the album art for re-sorting and filtering, as ItemsSource is not an IList");
 			}
 		}
 		#endregion

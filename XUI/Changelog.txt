@@ -4,6 +4,7 @@
      Command line version now only hides the cursor during script compilation
      Added read-only support for tag-embedded artwork to the file browser and local files source
      Added support for Alternates (separated by |) to local files source path pattern
+     Allowed the cover type of a result to be manually corrected by clicking on it
 
 0.35 Interaction between context menu and auto select all in artist and album search boxes fixed
      Stop All during Search First bug fixed

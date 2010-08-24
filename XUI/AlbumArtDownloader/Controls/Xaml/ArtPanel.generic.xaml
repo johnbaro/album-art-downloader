@@ -9,6 +9,7 @@
 
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="/Controls/Xaml/FadeButton.generic.xaml"/>
+		<ResourceDictionary Source="/Controls/Xaml/HyperlinkCombo.generic.xaml"/>
 	</ResourceDictionary.MergedDictionaries>
 
 	<controls:StringFormatterConverter x:Key="mStringFormatterConverter"/>
@@ -16,6 +17,7 @@
 	<controls:SumConverter x:Key="mSumConverter"/>
 	<controls:MultiEqualityConverter x:Key="mMultiEqualityConverter"/>
 	<controls:TooltipEnabledOnOverflowConverter x:Key="mTooltipEnabledOnOverflowConverter"/>
+	<controls:EnumIndexConverter x:Key="mEnumIndexConverter"/>
 	<BooleanToVisibilityConverter x:Key="mBooleanToVisibilityConverter"/>
 
 	<Style x:Key="DefaultText" TargetType="TextBlock">
@@ -42,6 +44,25 @@
 				</MultiBinding>
 			</Setter.Value>
 		</Setter>
+		<Style.Triggers>
+			<DataTrigger Value="True">
+				<DataTrigger.Binding>
+					<MultiBinding Converter="{StaticResource mMultiEqualityConverter}" Mode="OneWay">
+						<Binding RelativeSource="{RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:ArtPanelList}}" Path="SortDescription.PropertyName" Mode="OneWay"/>
+						<Binding RelativeSource="{RelativeSource Self}" Path="Tag"/>
+					</MultiBinding>
+				</DataTrigger.Binding>
+				<Setter Property="FontWeight" Value="Bold"/>
+			</DataTrigger>
+		</Style.Triggers>
+	</Style>
+	<Style x:Key="HyperlinkComboValueStyle" TargetType="ComboBox" BasedOn="{StaticResource HyperlinkCombo}">
+		<Setter Property="Foreground" Value="Black"/>
+		<Setter Property="FontSize" Value="10"/>
+		<Setter Property="Padding" Value="0"/>
+		<Setter Property="Margin" Value="-1 -1 0 0" />
+		<Setter Property="Grid.Column" Value="1"/>
+		<Setter Property="Grid.ColumnSpan" Value="2"/>
 		<Style.Triggers>
 			<DataTrigger Value="True">
 				<DataTrigger.Binding>
@@ -178,7 +199,7 @@
 													<RowDefinition Height="Auto"/>
 													<RowDefinition Height="*"/>
 												</Grid.RowDefinitions>
-												<Image x:Name="test" Grid.RowSpan="2" Source="{Binding Path=AlbumArt.Image, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Width="{TemplateBinding ImagePopupWidth}" Height="{TemplateBinding ImagePopupHeight}" Stretch="Fill" 
+												<Image Grid.RowSpan="2" Source="{Binding Path=AlbumArt.Image, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Width="{TemplateBinding ImagePopupWidth}" Height="{TemplateBinding ImagePopupHeight}" Stretch="Fill" 
 													   MinWidth="{Binding ElementName=PART_ImageDisplay, Path=ActualWidth}" MinHeight="{Binding ElementName=PART_ImageDisplay, Path=ActualHeight}">
 													<Image.Style>
 														<Style TargetType="Image">
@@ -355,7 +376,15 @@
 									</Style>
 								</TextBlock.Style>
 							</TextBlock>
-							<TextBlock Tag="SourceName" Grid.Row="2" Style="{StaticResource ValueStyle}" Text="{Binding Path=AlbumArt.CoverType, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"/>
+							<ComboBox Tag="CoverType" Grid.Row="2" Style="{StaticResource HyperlinkComboValueStyle}" IsEditable="False" SelectedIndex="{Binding Path=AlbumArt.CoverType, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay, Converter={StaticResource mEnumIndexConverter}}">
+								<!-- Must match AlbumArtDownloader.Scripts.CoverType enum -->
+								<ComboBoxItem>Unknown</ComboBoxItem>
+								<ComboBoxItem>Front</ComboBoxItem>
+								<ComboBoxItem>Back</ComboBoxItem>
+								<ComboBoxItem>Inside</ComboBoxItem>
+								<ComboBoxItem>CD</ComboBoxItem>
+							</ComboBox>
+							
 							<TextBlock Tag="SourceName" Grid.Row="3" Style="{StaticResource ValueStyle}" Text="{Binding Path=AlbumArt.SourceName, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"/>
 							<Grid Grid.Row="4" Grid.Column="1" Grid.ColumnSpan="2">
 								<Grid.ColumnDefinitions>

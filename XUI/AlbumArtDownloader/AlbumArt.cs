@@ -411,17 +411,27 @@ namespace AlbumArtDownloader
 				}
 			}
 		}
+
+		public event EventHandler CoverTypeChanged;
 		
 		private CoverType mCoverType = CoverType.Unknown;
 		public CoverType CoverType
 		{
 			get { return mCoverType; }
-			private set
+			set
 			{
 				if (mCoverType != value)
 				{
 					mCoverType = value;
 					NotifyPropertyChanged("CoverType");
+					CoerceValue(FilePathProperty);
+
+					//Raise the CoverTypeChanged event
+					var temp = CoverTypeChanged;
+					if (temp != null)
+					{
+						temp(this, EventArgs.Empty);
+					}
 				}
 			}
 		}
