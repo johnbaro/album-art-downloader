@@ -171,29 +171,17 @@
 							<StackPanel DataContext="{StaticResource mSettings}">
 								<RadioButton Content="Always" GroupName="ungrouped-1">
 									<RadioButton.IsChecked>
-										<Binding Path="Default.AutoDownloadFullSizeImages" Converter="{StaticResource mEqualityConverter}">
-											<Binding.ConverterParameter>
-												<local:AutoDownloadFullSizeImages>Always</local:AutoDownloadFullSizeImages>
-											</Binding.ConverterParameter>
-										</Binding>
+										<Binding Path="Default.AutoDownloadFullSizeImages" Converter="{StaticResource mEqualityConverter}" ConverterParameter="{x:Static local:AutoDownloadFullSizeImages.Always}" />
 									</RadioButton.IsChecked>
 								</RadioButton>
 								<RadioButton Content="Only when size is unknown" GroupName="ungrouped-2">
 									<RadioButton.IsChecked>
-										<Binding Path="Default.AutoDownloadFullSizeImages" Converter="{StaticResource mEqualityConverter}">
-											<Binding.ConverterParameter>
-												<local:AutoDownloadFullSizeImages>WhenSizeUnknown</local:AutoDownloadFullSizeImages>
-											</Binding.ConverterParameter>
-										</Binding>
+										<Binding Path="Default.AutoDownloadFullSizeImages" Converter="{StaticResource mEqualityConverter}" ConverterParameter="{x:Static local:AutoDownloadFullSizeImages.WhenSizeUnknown}" />
 									</RadioButton.IsChecked>
 								</RadioButton>
 								<RadioButton Content="Never" GroupName="ungrouped-3">
 									<RadioButton.IsChecked>
-										<Binding Path="Default.AutoDownloadFullSizeImages" Converter="{StaticResource mEqualityConverter}">
-											<Binding.ConverterParameter>
-												<local:AutoDownloadFullSizeImages>Never</local:AutoDownloadFullSizeImages>
-											</Binding.ConverterParameter>
-										</Binding>
+										<Binding Path="Default.AutoDownloadFullSizeImages" Converter="{StaticResource mEqualityConverter}" ConverterParameter="{x:Static local:AutoDownloadFullSizeImages.Never}" />
 									</RadioButton.IsChecked>
 								</RadioButton>
 							</StackPanel>
