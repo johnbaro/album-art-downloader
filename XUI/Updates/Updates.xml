@@ -22,7 +22,7 @@
     <Dependency>amazon-common.boo</Dependency>
   </Script>
   <Script Name="Archambault" URI="archambault.boo" Version="0.3" />
-  <Script Name="ArkivMusik" URI="arkivmusic.boo" Version="0.3" />
+  <Script Name="ArkivMusik" URI="arkivmusic.boo" Version="0.4" />
   <Script Name="Buy.com" URI="buy-com.boo" Version="0.5" />
   <Script Name="CD Baby" URI="cdbaby.boo" Version="0.2" />
   <Script Name="CD Universe" URI="cduniverse.boo" Version="0.4" />
@@ -39,7 +39,7 @@
   <Script Name="LastFM Artist" URI="lastfm-artist.boo" Version="0.4" />
   <Script Name="LastFM Cover" URI="lastfm-cover.boo" Version="0.6" />
   <Script Name="maniadb" URI="maniadb.boo" Version="0.2" />
-  <Script Name="Encyclopaedia Metallum" URI="metal-archives.boo" Version="0.4" />
+  <Script Name="Encyclopaedia Metallum" URI="metal-archives.boo" Version="0.5" />
   <Script Name="Metal Library" URI="metallibrary.boo" Version="0.3" />
   <Script Name="Psyshop" URI="psyshop.boo" Version="0.3" />
   <Script Name="RevHQ" URI="revhq.boo" Version="0.4" />

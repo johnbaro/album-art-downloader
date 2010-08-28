@@ -7,7 +7,7 @@ class EncyclopaediaMetallum(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "Encyclopaedia Metallum"
 	Version as string:
-		get: return "0.4"
+		get: return "0.5"
 	Author as string:
 		get: return "Alex Vallat"
 	def Search(artist as string, album as string, results as IScriptResults):
@@ -17,7 +17,7 @@ class EncyclopaediaMetallum(AlbumArtDownloader.Scripts.IScript):
 		//Retrieve the search results page
 		searchResultsHtml as string = GetPage("http://www.metal-archives.com/advanced.php?band_name=${EncodeUrl(artist)}&release_name=${EncodeUrl(album)}")
 		
-		matches = Regex("href=\"release\\.php\\?id=(?<id>(?<idPart>\\d)+)&[^\"]+\">(?<name>.*?)</a>", RegexOptions.IgnoreCase).Matches(searchResultsHtml)
+		matches = Regex("href=\"release\\.php\\?id=(?<id>(?<idPart>\\d)+)[^\"]*\">(?<name>.*?)</a>", RegexOptions.IgnoreCase).Matches(searchResultsHtml)
 		
 		results.EstimatedCount = matches.Count
 		
