@@ -264,23 +264,7 @@ namespace AlbumArtDownloader
 				//There is no wildcard part of the path remaining, so check if it exists
 				if (Directory.Exists(pathPattern))
 				{
-					string[] files = new string[0];
-					try
-					{
-						files = Directory.GetFiles(pathPattern);
-					}
-					catch (Exception e)
-					{
-						//Can't get subfolders
-						System.Diagnostics.Trace.WriteLine("Can't search inside: " + pathPattern);
-						System.Diagnostics.Trace.Indent();
-						System.Diagnostics.Trace.WriteLine(e.Message);
-						System.Diagnostics.Trace.Unindent();
-					}
-					foreach (string result in files)
-					{
-						yield return result;
-					}
+					//It's a folder. Only files are required, so ignore it.
 				}
 				else if (File.Exists(pathPattern))
 				{

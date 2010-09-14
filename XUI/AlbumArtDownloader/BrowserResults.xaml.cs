@@ -613,7 +613,8 @@ namespace AlbumArtDownloader
 			string result = pathPattern.Replace("%artist%", Common.MakeSafeForPath(artist))
 										.Replace("%album%", Common.MakeSafeForPath(album));
 
-			result = Regex.Escape(result) + "$"; //Start by escaping the whole thing, and requiring it to be the end of the path
+			result = Regex.Replace(result, @".*?(^|\\|/)\.\.?(?=\\|/)", ""); //Strip off ./ or ../, and anything before it (as that can't be matched against the resulting paths, which will resolve it away)
+			result = Regex.Escape(result) + "$"; //Escape the whole thing, and require it to be the end of the path
 			result = Regex.Replace(result, @"(\\\\|/)", @"[\\/]"); //Replace all / or \ characters with [\/] to allow matching either path character
 			result = Regex.Replace(result, @"\\(\*|\?)", @"[^\\/]$1?"); //Replace * (and ?) with [^\/]*? to match within the path segment only, and non-greedy
 
