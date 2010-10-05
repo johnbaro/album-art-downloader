@@ -32,4 +32,5 @@ Yes24	Muse	The Resistance
 YesAsia	Muse	The Resistance
 Archambault	Lady Gaga	The Fame Monster
 HMV Canada	<ignored>	Crazy Love
+Kalahari	Muse	The Resistance
 ;Lala	Muse	The Resistance

@@ -9,7 +9,7 @@ class JunoRecords:
 	static SourceName as string:
 		get: return "Juno Records"
 	static SourceVersion as string:
-		get: return "0.6"
+		get: return "0.7"
 	static SourceCreator as string:
 		get: return "Marc Landis"
 
@@ -20,7 +20,7 @@ class JunoRecords:
 		query as string = artist + " " + album
 		query = EncodeUrl(query)
 		
-		searchResults = GetPage("http://www.juno.co.uk/search/?as=1&q=${query}&s_search_precision=any&s_search_type=all&s_search_music=1&s_music_product_type=all&s_media_type=all-media&s_merchandise_id=3&s_genre_id=0000&s_released=&s_start_date=&s_end_date=")
+		searchResults = GetPage("http://www.juno.co.uk/search/?as=1&q=${query}&s_search_precision=any&s_search_type=all&s_search_music=1&s_show_out_of_stock=1&s_music_product_type=all&s_media_type=all-media&s_genre_id=0000&s_released=&s_start_date=&s_end_date=")
 		
 		//Get obids
 		resultsRegex = Regex("<a class=\"productimage\" href=\"/products/(?<ID>[^?]+/)\\?", RegexOptions.Singleline)
