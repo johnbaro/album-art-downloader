@@ -20,9 +20,7 @@ namespace AlbumArtDownloader.Updates
 		{
 #if DEBUG
 			Console.WriteLine("Skipping Update.xml generation in Debug mode");
-			return 0;
-#endif
-
+#else
 			Console.WriteLine("Album Art Downloader XUI Updates.xml generator");
 			Console.WriteLine("(this is an internal development tool)");
 			Console.WriteLine();
@@ -49,7 +47,7 @@ namespace AlbumArtDownloader.Updates
 				new XProcessingInstruction("xml-stylesheet", "type=\"text/xsl\" href=\"Updates.xsl\""),
 				updates).Save(outFile);
 			Console.WriteLine("done.");
-
+#endif
 			return 0;
 		}
 

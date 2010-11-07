@@ -7,17 +7,32 @@ class Kalahari(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "Kalahari"
 	Version as string:
-		get: return "0.1"
+		get: return "0.2"
 	Author as string:
 		get: return "Alex Vallat"
 	def Search(artist as string, album as string, results as IScriptResults):
 		artist = StripCharacters("&.'\";:?!", artist)
 		album = StripCharacters("&.'\";:?!", album)
 
-		//Retrieve the search results page
-		searchResultsHtml as string = GetPage("http://www.kalahari.net/page_templates/searchresults.aspx?qs=" + Base64("0|FreeText_Shop_English|${artist} ${album}||19738|0|1|25|||||||||") + "&displayShop=music")
-		
-		matches = Regex("<a\\s[^>]*?href=\"(?<info>[^\"]+)\"[^>]+?title=\"(?<title>[^\"]+)\"[^>]*>\\s*<img\\s[^>]*?src=\"http://images.kalahari.net/ann/all/th/(?<image>[^\"]+)\"", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResultsHtml)
+		//Retrieve the search results json
+		content = "{'queryString':'" + Base64("0|FreeText_Shop_English|${artist} ${album}||19738|0|1|25|||||||||") + "', 'commandKey':'undefined','commandValue':'undefined','shopperId':'undefined'}";
+		request = System.Net.HttpWebRequest.Create("http://www.kalahari.net/common/searchservice.asmx/ExecuteSearch");
+		request.Method = "POST";
+		request.ContentType = "application/json; charset=UTF-8";
+		bytes = System.Text.Encoding.UTF8.GetBytes(content);
+		request.ContentLength = bytes.Length;
+		stream = request.GetRequestStream();
+		stream.Write(bytes, 0, bytes.Length);
+		stream.Close();
+		streamresponse = request.GetResponse().GetResponseStream();
+		searchResults = System.IO.StreamReader(streamresponse).ReadToEnd();
+
+		//Very basic de-jsoning
+		searchResults = Regex.Match(searchResults, "\"ProductHtml\":\"(.*?(?<!\\\\))\"").Groups[1].Value;
+		searchResults = searchResults.Replace("\\u003e", ">").Replace("\\u003c", "<").Replace("\\\"", "\"");
+
+		//Find album info
+		matches = Regex("<a\\s[^>]*?href=\"(?<info>[^\"]+)\"[^>]+?title=\"(?<title>[^\"]+)\"[^>]*>\\s*<img\\s[^>]*?src=\"http://images.kalahari.net/ann/all/th/(?<image>[^\"]+)\"", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResults)
 		
 		results.EstimatedCount = matches.Count
 		

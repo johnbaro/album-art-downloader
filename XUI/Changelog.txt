@@ -1,3 +1,13 @@
+0.37 Added scripts for Take2 and Kalahari, South African sites.
+     Fixed Kalahari, Archambault, ArkivMusic, Amazon, Discogs and Juno scripts,
+	  including performance issues with Discogs and Amazon
+     Added /minimized parameter to specify that the window should open initially minimized
+     Added /new parameter to prevent reuse of an existing search window
+     Added configuration file option (UseSystemCodepageForID3Tags) to attempt compatibility with 
+      tags that have been incorrectly encoded using non-unicode, non-latin1 encodings. False by
+      default.
+     Added /config parameter, for easy access to the user settings configuration file.
+
 0.36 Added script for VGMdb, a Video Game Music site
      Fixed Discogs, Juno, Metal Library and Encyclopaedia Metallum scripts
      Added /fetchAll parameter to command line version (aad.exe)

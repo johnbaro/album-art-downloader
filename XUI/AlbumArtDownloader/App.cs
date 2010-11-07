@@ -119,19 +119,40 @@ namespace AlbumArtDownloader
 #if ERROR_REPORTING
 			catch (Exception e)
 			{
+				StreamWriter errorLog = null;
+
 				Assembly entryAssembly = Assembly.GetEntryAssembly();
 				string filename = Path.Combine(Path.GetDirectoryName(entryAssembly.Location), "errorlog.txt");
-				using (StreamWriter errorLog = File.CreateText(filename))
+				try
 				{
-					errorLog.WriteLine("Album Art Downloader has encountered a fatal error, and has had to close.");
-					errorLog.WriteLine("If you wish to report this error, please include this information, which");
-					errorLog.WriteLine("has been written to the file: " + filename);
-					errorLog.WriteLine();
-					errorLog.WriteLine("App version: {0}, running on {1} ({2} bit)", entryAssembly.GetName().Version, Environment.OSVersion, IntPtr.Size == 8 ? "64" : "32");
-					errorLog.WriteLine();
-					errorLog.WriteLine(e);
+					errorLog = File.CreateText(filename);
 				}
-				System.Diagnostics.Process.Start(filename);
+				catch(Exception)
+				{
+					try
+					{
+						filename = Path.Combine(Path.GetTempPath(), "AAD_errorlog.txt");
+						errorLog = File.CreateText(filename);
+					}
+					catch (Exception logError)
+					{
+						MessageBox.Show("Album Art Downloader has encountered a fatal error, and has had to close.\n\nAdditionally, an error occured when trying to write an error log file: " + filename + "\n\n" + logError.Message);
+					}
+				}
+				if (errorLog != null)
+				{
+					using (errorLog)
+					{
+						errorLog.WriteLine("Album Art Downloader has encountered a fatal error, and has had to close.");
+						errorLog.WriteLine("If you wish to report this error, please include this information, which");
+						errorLog.WriteLine("has been written to the file: " + filename);
+						errorLog.WriteLine();
+						errorLog.WriteLine("App version: {0}, running on {1} ({2} bit)", entryAssembly.GetName().Version, Environment.OSVersion, IntPtr.Size == 8 ? "64" : "32");
+						errorLog.WriteLine();
+						errorLog.WriteLine(e);
+					}
+					System.Diagnostics.Process.Start(filename);
+				}
 				Environment.Exit(-1); //Ensure exit
 			}
 #endif
@@ -211,8 +232,11 @@ namespace AlbumArtDownloader
 			}
 
 			bool? autoClose = null;
-			bool showSearchWindow = false, showFileBrowser = false, showFoobarBrowser = false;
+			bool showSearchWindow = false, showFileBrowser = false, showFoobarBrowser = false, showConfigFile = false;
 			bool startFoobarBrowserSearch = false;
+			bool showMinimized = false;
+			bool forceNewWindow = false;
+
 			string artist = null, album = null, path = null, localImagesPath = null, fileBrowser = null, sortField = null;
 			ListSortDirection sortDirection = ListSortDirection.Ascending;
 			Grouping? grouping = null;
@@ -464,6 +488,15 @@ namespace AlbumArtDownloader
 						case "separateinstance":
 							//This will already have been handled earlier, in Main()
 							break;
+						case "config":
+							showConfigFile = true;
+							break;
+						case "minimized":
+							showMinimized = true;
+							break;
+						case "new":
+							forceNewWindow = true;
+							break;
 						case "minaspect":
 						case "ma":
 						case "orientation":
@@ -531,13 +564,24 @@ namespace AlbumArtDownloader
 				AlbumArtDownloader.Properties.Settings.Default.AllowedCoverTypes = coverType.Value;
 			}
 
-			if (!showFileBrowser && !showFoobarBrowser && !showSearchWindow) //If no windows will be shown, show the search window
+			//If the setting for using system codepage for id3 tags is set, instruct TagLib to do so.
+			if (AlbumArtDownloader.Properties.Settings.Default.UseSystemCodepageForID3Tags)
+			{
+				TagLib.ByteVector.UseBrokenLatin1Behavior = true;
+			}
+
+			if (!showFileBrowser && !showFoobarBrowser && !showSearchWindow && !showConfigFile) //If no windows will be shown, show the search window
 				showSearchWindow = true;
 
 			if (showFileBrowser)
 			{
 				FileBrowser browserWindow = new FileBrowser();
+				if(showMinimized)
+				{
+					browserWindow.WindowState = WindowState.Minimized;
+				}
 				browserWindow.Show();
+
 				if (!String.IsNullOrEmpty(fileBrowser))
 				{
 					browserWindow.Search(fileBrowser,
@@ -551,7 +595,12 @@ namespace AlbumArtDownloader
 			if (showFoobarBrowser)
 			{
 				FoobarBrowser browserWindow = new FoobarBrowser();
+				if (showMinimized)
+				{
+					browserWindow.WindowState = WindowState.Minimized;
+				}
 				browserWindow.Show();
+
 				if (startFoobarBrowserSearch)
 				{
 					browserWindow.Search(AlbumArtDownloader.Properties.Settings.Default.FileBrowseImagePath); //TODO: Should foobar browser have a separate path setting?
@@ -562,6 +611,7 @@ namespace AlbumArtDownloader
 			{
 				ArtSearchWindow searchWindow = null;
 				if ( (artist != null || album != null) && //If doing a new search
+					 !forceNewWindow && //And not forcing a new window
 					 !AlbumArtDownloader.Properties.Settings.Default.OpenResultsInNewWindow && //And the option is to open results in the same window
 					 Windows.Count == 1) //And only one window is open
 				{
@@ -571,6 +621,11 @@ namespace AlbumArtDownloader
 				if (searchWindow == null)
 				{
 					searchWindow = new ArtSearchWindow();
+					if (showMinimized)
+					{
+						searchWindow.WindowState = WindowState.Minimized;
+					}
+
 					SearchQueue.EnqueueSearchWindow(searchWindow, false); //Don't load from settings on show, otherwise they'll override the settings specified on the command line
 				}
 				else
@@ -604,6 +659,18 @@ namespace AlbumArtDownloader
 				{
 					//Showing a new search window without performing a search, so force show it.
 					SearchQueue.ForceSearchWindow(searchWindow);
+				}
+			}
+
+			if (showConfigFile)
+			{
+				AlbumArtDownloader.Properties.Settings.Default.Save();
+				string configName = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.PerUserRoamingAndLocal).FilePath;
+				System.Diagnostics.Process.Start("notepad.exe", configName);
+
+				if (!showFileBrowser && !showFoobarBrowser && !showSearchWindow) //If no other windows will be shown, exit now
+				{
+					return false;
 				}
 			}
 

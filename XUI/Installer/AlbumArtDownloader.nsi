@@ -1,5 +1,5 @@
 !define PRODUCT_NAME "Album Art Downloader XUI"
-!define PRODUCT_VERSION "0.36"
+!define PRODUCT_VERSION "0.37"
 !define PRODUCT_WEB_SITE "http://sourceforge.net/projects/album-art"
 !define PRODUCT_SUPPORT "http://www.hydrogenaudio.org/forums/index.php?showtopic=57392"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\AlbumArt.exe"
@@ -194,6 +194,12 @@ SectionGroup "Image Download Scripts"
 		SectionEnd
 		Section "HMV Canada"
 		  File "..\Scripts\Scripts\hmv-canada.boo"
+		SectionEnd
+		Section "Kalahari (South Africa)"
+		  File "..\Scripts\Scripts\kalahari.boo"
+		SectionEnd
+		Section "Take2 (South Africa)"
+		  File "..\Scripts\Scripts\take2.boo"
 		SectionEnd
 		#iTunes script currently blocked by apple, so don't include it
 		#Section "iTunes Music Shop"

@@ -201,6 +201,21 @@ Options:
               scripts which may be available for
               download.
 
+ /minimized                                   (/minimized)
+              Opens the new window minimized.
+              Does not affect already opened
+              windows.
+
+ /new                                         (/new)
+              Ensures that a new window is 
+              opened for the search, rather
+              than reusing an existing window.
+
+ /config                                      (/config)
+              Opens the user settings xml file
+              in notepad, for editing. For
+              advanced use only.
+
  /separateInstance                            (/separateInstance)
               Starts a new instance as a new
               process, which will neither re-use

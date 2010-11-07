@@ -8,7 +8,7 @@ abstract class Amazon(AlbumArtDownloader.Scripts.IScript):
 	virtual Name as string:
 		get: return "Amazon (.${Suffix})"
 	Version as string:
-		get: return "0.4s"
+		get: return "0.5s"
 	Author as string:
 		get: return "Alex Vallat"
 	abstract protected Suffix as string:
@@ -27,14 +27,8 @@ abstract class Amazon(AlbumArtDownloader.Scripts.IScript):
 		url = GetUrl(artist, album)
 		resultsPage = GetPage(GetPageStream(url, null, true), PageEncoding)
 		
-		resultsRegex = Regex("<div\\s[^>]*class\\s*=\\s*\"productImage\"[^>]*>(?>.*?\\ssrc\\s*=\\s*\")(?<image>http://ecx.*?\\._)(?<thumb>(?:[^_]+_){2})(?<ext>\\.[^\"]+)\".*?<div\\s[^>]*class\\s*=\\s*\"productTitle\"[^>]*>\\s*<a\\s[^>]*href\\s*=\\s*\"(?<url>[^\"]+)[^>]+>\\s*(?<title>.*?)</a>(?:\\s*<span\\s[^>]*class=\"ptBrand\"[^>]*>(?:[^<]*<a\\s[^>]*>)?\\s*(?:by |von |de )?(?<artist>[^<]+))?", RegexOptions.Singleline | RegexOptions.IgnoreCase)
+		resultsRegex = Regex("<div\\s[^>]*class\\s*=\\s*\"image\"[^>]*>(?>.*?\\ssrc\\s*=\\s*\")(?<image>http://ecx.*?\\._)(?<thumb>(?:[^_]+_))(?<ext>\\.[^\"]+)\".*?<div\\s[^>]*class\\s*=\\s*\"title\"[^>]*>\\s*<a\\s[^>]*href\\s*=\\s*\"(?<url>[^\"]+)[^>]+>\\s*(?<title>.*?)</a>(?:\\s*<span\\s[^>]*class=\"ptBrand\"[^>]*>(?:[^<]*<a\\s[^>]*>)?\\s*(?:by |von |de )?(?<artist>[^<]+))?", RegexOptions.Singleline | RegexOptions.IgnoreCase)
 		resultsMatches = resultsRegex.Matches(resultsPage)
-		
-		if resultsMatches.Count == 0:
-			//Try for alternative page format
-			resultsRegex = Regex("<div\\s[^>]*class\\s*=\\s*\"productTitle\"[^>]*>\\s*<a\\s[^>]*href\\s*=\\s*\"(?<url>[^\"]+)[^>]+>(?>.*?\\ssrc\\s*=\\s*\")(?<image>http://ecx.*?\\._)(?<thumb>(?:[^_]+_){2})(?<ext>\\.[^\"]+)\".*?>(?<title>[^<]+)</a>(?:[^<]+ - \\S+ )(?<artist>[^<]+)</div>", RegexOptions.Singleline | RegexOptions.IgnoreCase)
-			resultsMatches = resultsRegex.Matches(resultsPage)
-		
 		
 		results.EstimatedCount = resultsMatches.Count
 		

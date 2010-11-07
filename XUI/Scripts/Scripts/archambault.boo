@@ -6,7 +6,7 @@ class Archambault(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "Archambault"
 	Version as string:
-		get: return "0.3"
+		get: return "0.4"
 	Author as string:
 		get: return "Sebastien Leclerc"
 
@@ -14,9 +14,13 @@ class Archambault(AlbumArtDownloader.Scripts.IScript):
 		artist = EncodeUrlIsoLatin1(StripCharacters("&.'\";:?!", artist))
 		album = EncodeUrlIsoLatin1(StripCharacters("&.'\";:?!", album))
 
-		resultsPage = GetPage("http://www.archambault.ca/qmi/search/ExtendedSearchResults.jsp?erpId=ACH&searchMode=advanced&searchType=MUSIC&searchArtist=${artist}&searchAlbum=${album}&searchFormat=DC")
+		//Archambault doesn't like terms starting with "the"
+		artist = Regex.Replace(artist, "^the", "", RegexOptions.IgnoreCase)
+		album = Regex.Replace(album, "^the", "", RegexOptions.IgnoreCase)
+
+		resultsPage = GetPage("http://www.archambault.ca/qmi/navigation/search/ExtendedSearchResults.jsp?erpId=ACH&searchMode=advanced&searchType=MUSIC&searchArtist=${artist}&searchAlbum=${album}&searchFormat=DC")
 		
-		resultsRegex = Regex("div\\s[^>]*class=\"browseListItem\"[^>]*>.*?\\ssrc\\s*=\\s*\"(?<image>http://storage[^=]*=?)(?<picsize>[1-9]*x[^&]+)(?<imageparm>[^\"]*?)\".*?<div\\s[^>]*class\\s*=\\s*\"description[^=]*<a\\s*href\\s*=\\s*\"(?<url>[^\"]+)[^>]*title=\"(?<title>[^\"]+)\"", RegexOptions.Singleline | RegexOptions.IgnoreCase)
+		resultsRegex = Regex("<a href=\\\"(?<url>[^\\\"]+)[^>]*title=\\\"(?<title>[^\\\"]+)\\\"(?:.(?!</a>))*?<img class=\"preview\" [^>]+ src=\"(?<image>http://storage[^=]*=?)(?<picsize>[1-9]*x[^&]+)(?<imageparm>[^\"]*?)\"", RegexOptions.Singleline | RegexOptions.IgnoreCase)
 		resultsMatches = resultsRegex.Matches(resultsPage)
 	
 		results.EstimatedCount = resultsMatches.Count;
