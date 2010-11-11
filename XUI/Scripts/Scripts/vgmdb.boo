@@ -18,7 +18,7 @@ class Vgmdb(AlbumArtDownloader.Scripts.IScript):
 	Author as string:
 		get: return "Alex Vallat"
 	Version as string:
-		get: return "0.5"
+		get: return "0.6"
 	
 	def Search(artist as string, album as string, results as IScriptResults):
 		if(artist.Equals("Various Artists", StringComparison.OrdinalIgnoreCase)):
@@ -49,17 +49,17 @@ class Vgmdb(AlbumArtDownloader.Scripts.IScript):
 			albumPage = GetPage(albumUrl, mCookies)
 			
 			//Try to get full size images (will only work if logged in)
-			imagesRegex = Regex("href=\"\\.\\./db/covers-full\\.php\\?id=(?<fullId>\\d+)\".+?'\\.\\./db/assets/covers-thumb/(?<img>[^']+)'.+?<h4 class=\"label\"[^>]+>(?<type>[^<]+)<", RegexOptions.IgnoreCase | RegexOptions.Singleline)
+			imagesRegex = Regex("href=\"/db/covers-full\\.php\\?id=(?<fullId>\\d+)\".+?'/db/assets/covers-thumb/(?<img>[^']+)'.+?<h4 class=\"label\"[^>]+>(?<type>[^<]+)<", RegexOptions.IgnoreCase | RegexOptions.Singleline)
 			imageMatches = imagesRegex.Matches(albumPage)
 			
 			if(imageMatches.Count == 0):
 				//Get all the images for the album
-				imagesRegex = Regex("\"\\.\\./db/assets/covers-medium/(?<img>[^\"]+)\".+?<h4 class=\"label\"[^>]+>(?<type>[^<]+)<(?<fullId>)", RegexOptions.IgnoreCase | RegexOptions.Singleline)
+				imagesRegex = Regex("\"/db/assets/covers-medium/(?<img>[^\"]+)\".+?<h4 class=\"label\"[^>]+>(?<type>[^<]+)<(?<fullId>)", RegexOptions.IgnoreCase | RegexOptions.Singleline)
 				imageMatches = imagesRegex.Matches(albumPage)
 			
 			if(imageMatches.Count == 0):
 				//Single Image Mode
-				imagesRegex = Regex("'\\.\\./db/assets/covers-medium/(?<img>[^']+)'(?<type>)(?<fullId>)", RegexOptions.IgnoreCase | RegexOptions.Singleline)
+				imagesRegex = Regex("'/db/assets/covers-medium/(?<img>[^']+)'(?<type>)(?<fullId>)", RegexOptions.IgnoreCase | RegexOptions.Singleline)
 				imageMatches = imagesRegex.Matches(albumPage)
 			
 			for imageMatch as Match in imageMatches:
@@ -76,11 +76,13 @@ class Vgmdb(AlbumArtDownloader.Scripts.IScript):
 				coverTypeString = System.Web.HttpUtility.HtmlDecode(imageMatch.Groups["type"].Value)
 				coverType = GetCoverType(coverTypeString)
 				if(coverType == CoverType.Unknown and not String.IsNullOrEmpty(coverTypeString)):
-					title = String.Concat(title, " - ", coverTypeString)
+					typedTitle = String.Concat(title, " - ", coverTypeString)
+				else:
+					typedTitle = title
 			
 				results.Add(
 					"http://vgmdb.net/db/assets/covers-thumb/" + img, #thumbnail
-					title, #name
+					typedTitle, #name
 					albumUrl, #infoUri
 					-1, #fullSizeImageWidth
 					-1, #fullSizeImageHeight

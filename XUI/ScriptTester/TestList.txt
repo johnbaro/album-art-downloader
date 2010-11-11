@@ -34,4 +34,6 @@ Archambault	Lady Gaga	The Fame Monster
 HMV Canada	<ignored>	Crazy Love
 Kalahari	Muse	The Resistance
 Take2	Muse	The Resistance
+VGMdb	Morrigan	Caldes
+VGMdb		Xenoblade Original Soundtrack
 ;Lala	Muse	The Resistance
