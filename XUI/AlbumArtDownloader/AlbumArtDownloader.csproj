@@ -62,6 +62,11 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Third Party Assemblies\Boo.Lang.Parser.dll</HintPath>
     </Reference>
+    <Reference Include="Interop.Foobar2000, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>..\Third Party Assemblies\Interop.Foobar2000.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationFramework.Classic">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
     </Reference>
@@ -96,16 +101,6 @@
       <Project>{9AA60D1F-2771-4C45-893A-BF3C685C9985}</Project>
       <Name>Scripts</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <COMReference Include="Foobar2000">
-      <Guid>{CB8F14D8-736E-4BB7-ADCF-BE26C39B576B}</Guid>
-      <VersionMajor>1</VersionMajor>
-      <VersionMinor>0</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>tlbimp</WrapperTool>
-      <Isolated>False</Isolated>
-    </COMReference>
   </ItemGroup>
   <ItemGroup>
     <AppDesigner Include="Properties\" />
