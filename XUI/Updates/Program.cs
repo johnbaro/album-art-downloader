@@ -29,7 +29,8 @@ namespace AlbumArtDownloader.Updates
 
 			//Get main app version
 			Version appVersion = typeof(AlbumArtDownloader.App).Assembly.GetName().Version;
-			string appName = String.Format("Album Art Downloader XUI v{0}.{1}", appVersion.Major, appVersion.Minor);
+			string appName = String.Format("Album Art Downloader XUI v{0}.{1}" + (appVersion.Build > 0 ? ".{2}" : ""), appVersion.Major, appVersion.Minor, appVersion.Build);
+
 			Console.WriteLine(appName);
 
 			updates.Add(new XElement("Application", 

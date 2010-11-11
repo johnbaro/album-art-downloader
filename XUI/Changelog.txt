@@ -1,3 +1,6 @@
+0.37.1
+     Fixed bug introduced in 0.37 which stopped the Foobar browser working under x64.
+
 0.37 Added scripts for Take2 and Kalahari, South African sites.
      Fixed Kalahari, Archambault, ArkivMusic, Amazon, Discogs and Juno scripts,
 	  including performance issues with Discogs and Amazon
