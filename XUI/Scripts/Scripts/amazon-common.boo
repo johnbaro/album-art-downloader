@@ -8,7 +8,7 @@ abstract class Amazon(AlbumArtDownloader.Scripts.IScript):
 	virtual Name as string:
 		get: return "Amazon (.${Suffix})"
 	Version as string:
-		get: return "0.5s"
+		get: return "0.6s"
 	Author as string:
 		get: return "Alex Vallat"
 	abstract protected Suffix as string:
@@ -16,9 +16,9 @@ abstract class Amazon(AlbumArtDownloader.Scripts.IScript):
 	virtual protected SearchIndex as string: //Deprectated, ignored.
 		get: return "" 
 	virtual protected def GetUrl(artist as string, album as string) as string:
-		return "http://www.amazon.${Suffix}/gp/search/ref=sr_adv_m_pop/?search-alias=popular&field-artist=${EncodeUrl(artist)}&field-title=${EncodeUrl(album)}&sort=relevancerank"
+		return "http://www.amazon.${Suffix}/gp/search/ref=sr_adv_m_pop/?search-alias=popular&field-artist=${EncodeUrlIsoLatin1(artist)}&field-title=${EncodeUrlIsoLatin1(album)}&sort=relevancerank"
 	virtual protected PageEncoding as Encoding:
-		get: return Encoding.UTF8
+		get: return Encoding.GetEncoding("iso-8859-1")
 	
 	def Search(artist as string, album as string, results as IScriptResults):
 		artist = StripCharacters("&.'\";:?!", artist)

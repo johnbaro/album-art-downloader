@@ -3,22 +3,22 @@
 <Updates BaseURI="http://album-art.sourceforge.net/scripts/">
   <Application Version="0.37.1.0" Name="Album Art Downloader XUI v0.37.1" URI="https://sourceforge.net/project/platformdownload.php?group_id=187008" />
   <Script Name="AllCdCover" URI="allcdcover.boo" Version="0.3" />
-  <Script Name="Amazon (.ca)" URI="amazon-ca.boo" Version="0.5s">
+  <Script Name="Amazon (.ca)" URI="amazon-ca.boo" Version="0.6s">
     <Dependency>amazon-common.boo</Dependency>
   </Script>
-  <Script Name="Amazon (.co.uk)" URI="amazon-co-uk.boo" Version="0.5s">
+  <Script Name="Amazon (.co.uk)" URI="amazon-co-uk.boo" Version="0.6s">
     <Dependency>amazon-common.boo</Dependency>
   </Script>
-  <Script Name="Amazon (.com)" URI="amazon-com.boo" Version="0.5s">
+  <Script Name="Amazon (.com)" URI="amazon-com.boo" Version="0.6s">
     <Dependency>amazon-common.boo</Dependency>
   </Script>
-  <Script Name="Amazon (.de)" URI="amazon-de.boo" Version="0.5s">
+  <Script Name="Amazon (.de)" URI="amazon-de.boo" Version="0.6s">
     <Dependency>amazon-common.boo</Dependency>
   </Script>
-  <Script Name="Amazon (.fr)" URI="amazon-fr.boo" Version="0.5s">
+  <Script Name="Amazon (.fr)" URI="amazon-fr.boo" Version="0.6s">
     <Dependency>amazon-common.boo</Dependency>
   </Script>
-  <Script Name="Amazon (.jp)" URI="amazon-jp.boo" Version="0.5s">
+  <Script Name="Amazon (.jp)" URI="amazon-jp.boo" Version="0.6s">
     <Dependency>amazon-common.boo</Dependency>
   </Script>
   <Script Name="Archambault" URI="archambault.boo" Version="0.4" />
