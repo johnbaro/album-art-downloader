@@ -11,7 +11,7 @@ class darktown(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "Darktown"
 	Version as string:
-		get: return "0.4"
+		get: return "0.5"
 	Author as string:
 		get: return "daju"
 	
@@ -22,7 +22,7 @@ class darktown(AlbumArtDownloader.Scripts.IScript):
 		toSearchFor = "${artist} ${album}"
 		toSearchFor = toSearchFor.Trim() #delete unnessary whitespaces
 		toSearchFor = EncodeUrlIsoLatin1(toSearchFor)# iso-latin-1 encoding is nessecary for searching  for "Die Ärzte"
-		myQuery = "http://www.darktown.to/search.php?action=search&what=${toSearchFor}&category=audio"
+		myQuery = "http://www.darktown.ws/search.php?action=search&what=${toSearchFor}&category=audio"
 		firstResultPage  = GetPageIsoLatin1(myQuery, true)
 		
 		resultRegex = Regex("'/coverdownload.php[^']*'", RegexOptions.Multiline)
@@ -33,12 +33,12 @@ class darktown(AlbumArtDownloader.Scripts.IScript):
 			nextQuery = "http://www.darktown.to${currentRes}"
 			secondResultPage  = GetPageIsoLatin1(nextQuery, true)
 			
-			imgRegex = Regex("\"http://img.darktown.to/getcover.php[^\"]*\"", RegexOptions.Multiline)
+			imgRegex = Regex("\"http://img\\.darktown\\.[^/]+/getcover.php[^\"]+\"", RegexOptions.Multiline)
 			imgMatches = imgRegex.Matches(secondResultPage)
 			if (imgMatches.Count==1):
 				imgUrl = imgMatches[0].ToString().Replace('"',' ').Trim()
 						
-				thumbRegex = Regex("\"http://img.darktown.to/thumbnail.php[^\"]*\"", RegexOptions.Multiline)
+				thumbRegex = Regex("\"http://img\\.darktown\\.[^/]+/thumbnail\\.php[^\"]+\"", RegexOptions.Multiline)
 				thumbMatches = thumbRegex.Matches(secondResultPage)
 				if (thumbMatches.Count==1):
 					thumbUrl = 	thumbMatches[0].ToString().Replace('"',' ').Trim()

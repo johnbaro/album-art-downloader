@@ -234,7 +234,11 @@ namespace AlbumArtDownloader
 				BooCompiler compiler = new BooCompiler();
 				compiler.Parameters.Ducky = true; //Required to allow late-binding to "coverart" parameter
 				compiler.Parameters.OutputType = CompilerOutputType.Library;
+#if DEBUG
+				compiler.Parameters.Debug = true;
+#else
 				compiler.Parameters.Debug = false;
+#endif
 				compiler.Parameters.Pipeline = new CompileToFile();
 				compiler.Parameters.OutputAssembly = outputFile.FullName;
 				foreach (string reference in references)

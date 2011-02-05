@@ -94,20 +94,41 @@ namespace AlbumArtDownloader
 		private void ErrorReport(object sender, RoutedEventArgs e)
 		{
 			//Create an error log and show in notepad
+			StreamWriter errorLog = null;
+
 			Assembly entryAssembly = Assembly.GetEntryAssembly();
 			string filename = Path.Combine(Path.GetDirectoryName(entryAssembly.Location), "errorlog.txt");
-			using (StreamWriter errorLog = File.CreateText(filename))
+			try
 			{
-				errorLog.WriteLine("Album Art Downloader encountered an error when attempting to read its");
-				errorLog.WriteLine("configuration settings, and could not start.");
-				errorLog.WriteLine("If you wish to report this error, please include this information, which");
-				errorLog.WriteLine("has been written to the file: " + filename);
-				errorLog.WriteLine();
-				errorLog.WriteLine("App version: {0}, running on {1}", entryAssembly.GetName().Version, Environment.OSVersion);
-				errorLog.WriteLine();
-				errorLog.WriteLine(mException);
+				errorLog = File.CreateText(filename);
 			}
-			System.Diagnostics.Process.Start(filename);
+			catch(Exception)
+			{
+				try
+				{
+					filename = Path.Combine(Path.GetTempPath(), "AAD_errorlog.txt");
+					errorLog = File.CreateText(filename);
+				}
+				catch (Exception logError)
+				{
+					MessageBox.Show("Album Art Downloader has encountered a fatal error, and has had to close.\n\nAdditionally, an error occured when trying to write an error log file: " + filename + "\n\n" + logError.Message);
+				}
+			}
+			if (errorLog != null)
+			{
+				using (errorLog)
+				{
+					errorLog.WriteLine("Album Art Downloader encountered an error when attempting to read its");
+					errorLog.WriteLine("configuration settings, and could not start.");
+					errorLog.WriteLine("If you wish to report this error, please include this information, which");
+					errorLog.WriteLine("has been written to the file: " + filename);
+					errorLog.WriteLine();
+					errorLog.WriteLine("App version: {0}, running on {1} ({2} bit)", entryAssembly.GetName().Version, Environment.OSVersion, IntPtr.Size == 8 ? "64" : "32");
+					errorLog.WriteLine();
+					errorLog.WriteLine(mException);
+				}
+				System.Diagnostics.Process.Start(filename);
+			}
 		}
 	}
 }

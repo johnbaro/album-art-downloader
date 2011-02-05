@@ -72,6 +72,9 @@ namespace AlbumArtDownloader.Updates
 				scripts.Remove("util.boo");
 				scripts.Remove("amazon-common.boo");
 
+				//HACK: Remove specific files that shouldn't be included
+				scripts.Remove("coverlandia.boo");
+
 				foreach (string scriptFile in scripts.Values)
 				{
 					try

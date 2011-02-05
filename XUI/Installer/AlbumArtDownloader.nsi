@@ -146,6 +146,9 @@ SectionGroup "Image Download Scripts"
 		Section "Google"
 		  File "..\Scripts\Scripts\google.boo"
 		SectionEnd
+		Section "7digital"
+		  File "..\Scripts\Scripts\7digital.boo"
+		SectionEnd
 		Section "Coveralia"
 		  File "..\Scripts\Scripts\coveralia.boo"
 		SectionEnd
