@@ -528,11 +528,15 @@ namespace AlbumArtDownloader
 							mAlbums.Insert(mAlbums.IndexOf(folder[0]), variousArtistsAlbum);
 						}
 						
-						//Remove individual albums
+						//Remove individual albums, but copy art from at least one of them (if present)
 						foreach (Album album in folder)
 						{
 							if(album.Artist != sVariousArtistsName) //If, by chance, one of the albums was already called "Various Artists", then it will have merged with the newly added one.
 							{
+								if (variousArtistsAlbum.ArtFileStatus != ArtFileStatus.Present && album.ArtFile != null)
+								{
+									variousArtistsAlbum.SetArtFile(album.ArtFile);
+								}
 								mAlbums.Remove(album);
 							}
 						}
