@@ -13,7 +13,9 @@ namespace AlbumArtDownloader
 		public static class Commands
 		{
 			public static RoutedUICommand NewFileBrowser = new RoutedUICommand("New File Browser...", "NewFileBrowser", typeof(Commands), FileInputGestures());
-			private static InputGestureCollection FileInputGestures()
+            public static RoutedUICommand NewFileBrowserDetail = new RoutedUICommand("New File Browser Detail...", "NewFileBrowserDetail", typeof(Commands), FileInputGestures());
+			
+            private static InputGestureCollection FileInputGestures()
 			{
 				InputGestureCollection gestures = new InputGestureCollection();
 				gestures.Add(new KeyGesture(Key.B, ModifierKeys.Control));
@@ -31,7 +33,8 @@ namespace AlbumArtDownloader
 		static Menu()
 		{
 			CommandManager.RegisterClassCommandBinding(typeof(Window), new CommandBinding(ApplicationCommands.New, new ExecutedRoutedEventHandler(NewSearchWindowExec)));
-			CommandManager.RegisterClassCommandBinding(typeof(Window), new CommandBinding(Commands.NewFileBrowser, new ExecutedRoutedEventHandler(NewFileBrowserExec)));
+            CommandManager.RegisterClassCommandBinding(typeof(Window), new CommandBinding(Commands.NewFileBrowser, new ExecutedRoutedEventHandler(NewFileBrowserExec)));
+            CommandManager.RegisterClassCommandBinding(typeof(Window), new CommandBinding(Commands.NewFileBrowserDetail, new ExecutedRoutedEventHandler(NewFileBrowserDetailExec)));
 			CommandManager.RegisterClassCommandBinding(typeof(Window), new CommandBinding(Commands.NewFoobarBrowser, new ExecutedRoutedEventHandler(NewFoobarBrowserExec)));
 			CommandManager.RegisterClassCommandBinding(typeof(Window), new CommandBinding(Commands.ShowQueueManager, new ExecutedRoutedEventHandler(ShowQueueManagerExec)));
 			CommandManager.RegisterClassCommandBinding(typeof(Window), new CommandBinding(ApplicationCommands.Close, new ExecutedRoutedEventHandler(CloseExec)));
@@ -110,6 +113,10 @@ namespace AlbumArtDownloader
 		{
 			Common.NewFileBrowser(sender as IAppWindow);
 		}
+        private static void NewFileBrowserDetailExec(object sender, ExecutedRoutedEventArgs e)
+        {
+            Common.NewFileBrowserDetail(sender as IAppWindow);
+        }
 		private static void NewFoobarBrowserExec(object sender, ExecutedRoutedEventArgs e)
 		{
 			Common.NewFoobarBrowser(sender as IAppWindow);

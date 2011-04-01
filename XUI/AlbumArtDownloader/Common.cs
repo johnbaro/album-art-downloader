@@ -44,14 +44,23 @@ namespace AlbumArtDownloader
 			return newWindow;
 		}
 
-		public static FileBrowser NewFileBrowser()
-		{
-			return NewFileBrowser(null);
-		}
-		public static FileBrowser NewFileBrowser(IAppWindow existingWindow)
-		{
-			return (FileBrowser)ShowNewWindow(new FileBrowser(), existingWindow);
-		}
+        public static FileBrowser NewFileBrowser()
+        {
+            return NewFileBrowser(null);
+        }
+        public static FileBrowser NewFileBrowser(IAppWindow existingWindow)
+        {
+            return (FileBrowser)ShowNewWindow(new FileBrowser(), existingWindow);
+        }
+
+        public static FileBrowserDetail NewFileBrowserDetail()
+        {
+            return NewFileBrowserDetail(null);
+        }
+        public static FileBrowserDetail NewFileBrowserDetail(IAppWindow existingWindow)
+        {
+            return (FileBrowserDetail)ShowNewWindow(new FileBrowserDetail(), existingWindow);
+        }
 
 		public static FoobarBrowser NewFoobarBrowser()
 		{
