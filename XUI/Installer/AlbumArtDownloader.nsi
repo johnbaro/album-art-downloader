@@ -192,6 +192,9 @@ SectionGroup "Image Download Scripts"
 		Section "LastFM"
 		  File "..\Scripts\Scripts\lastfm-cover.boo"
 		SectionEnd
+		Section "Chartstats"
+		  File "..\Scripts\Scripts\chartstats.boo"
+		SectionEnd
 		Section "Archambault"
 		  File "..\Scripts\Scripts\archambault.boo"
 		SectionEnd
