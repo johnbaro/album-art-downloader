@@ -27,6 +27,7 @@
   <Script Name="Buy.com" URI="buy-com.boo" Version="0.5" />
   <Script Name="CD Baby" URI="cdbaby.boo" Version="0.2" />
   <Script Name="CD Universe" URI="cduniverse.boo" Version="0.4" />
+  <Script Name="Chartstats" URI="chartstats.boo" Version="0.1" />
   <Script Name="Cover-Paradies" URI="cover-paradies.boo" Version="0.13" />
   <Script Name="Coveralia" URI="coveralia.boo" Version="0.11" />
   <Script Name="CoverIsland" URI="coverisland.boo" Version="0.7" />
