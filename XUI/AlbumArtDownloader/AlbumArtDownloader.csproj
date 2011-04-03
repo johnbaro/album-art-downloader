@@ -104,9 +104,6 @@
   </ItemGroup>
   <ItemGroup>
     <AppDesigner Include="Properties\" />
-    <Compile Include="FileBrowserDetail.xaml.cs">
-      <DependentUpon>FileBrowserDetail.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -143,10 +140,6 @@
       <SubType>Code</SubType>
       <DependentUpon>CommandArgsHelp.xaml</DependentUpon>
     </Compile>
-    <Page Include="FileBrowserDetail.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Menu.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -181,10 +174,6 @@
       <SubType>Code</SubType>
       <DependentUpon>Splashscreen.xaml</DependentUpon>
     </Compile>
-    <Compile Include="TreeViewViewModel\DiscViewModel.cs" />
-    <Compile Include="TreeViewViewModel\TrackInfoViewModel.cs" />
-    <Compile Include="TreeViewViewModel\TrackViewModel.cs" />
-    <Compile Include="TreeViewViewModel\TreeViewItemViewModel.cs" />
     <Compile Include="WindowSettings.cs" />
     <Compile Include="BitmapHelpers.cs" />
     <Compile Include="IAppWindow.cs" />
@@ -500,13 +489,6 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="minus.ico" />
-    <Resource Include="plus.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="plus.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

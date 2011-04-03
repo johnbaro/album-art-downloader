@@ -16,7 +16,6 @@
 				<MenuItem Header="_New">
 					<MenuItem Header="_Search Window..." Command="New"/>
                     <MenuItem Header="_File Browser..." Command="{x:Static local:Menu+Commands.NewFileBrowser}"/>
-                    <MenuItem Header="File Browser _Detail..." Command="{x:Static local:Menu+Commands.NewFileBrowserDetail}"/>
                     <MenuItem Header="F_oobar Browser..." Command="{x:Static local:Menu+Commands.NewFoobarBrowser}"/>
 				</MenuItem>
 				<MenuItem Command="ApplicationCommands.Close"/>
