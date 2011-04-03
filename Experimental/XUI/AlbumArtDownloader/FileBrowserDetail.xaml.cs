@@ -25,6 +25,10 @@ namespace AlbumArtDownloader
         public FileBrowserDetail()
         {
             InitializeComponent();
+            
+            mBrowse.Click += new RoutedEventHandler(OnBrowseForFilePath);
+
+            CommandBindings.Add(new CommandBinding(ApplicationCommands.Find, new ExecutedRoutedEventHandler(FindExec)));
         }
 
         #region Properties
@@ -36,6 +40,23 @@ namespace AlbumArtDownloader
             }
         }
         #endregion
+
+        /// <summary>
+        /// Show standard file browser dialog.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void OnBrowseForFilePath(object sender, RoutedEventArgs e)
+        {
+            Microsoft.Win32.FileDialog filePathBrowser = (Microsoft.Win32.FileDialog)Resources["mFilePathBrowser"];
+            filePathBrowser.InitialDirectory = mFilePathBox.Text;
+            filePathBrowser.FileName = "";
+            if (filePathBrowser.ShowDialog(this).GetValueOrDefault())
+            {
+                mFilePathBox.Text = System.IO.Path.GetDirectoryName(filePathBrowser.FileName);
+            }
+        }
+
         public void SaveSettings()
         {
             
@@ -58,37 +79,47 @@ namespace AlbumArtDownloader
         }
         #endregion
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Find media files in current directory and show them 
+        /// in treeview component in album - track - track info structure.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void FindExec(object sender, ExecutedRoutedEventArgs e)
         {
             String[] files = new String[0];
 
             try
             {
-                files = Directory.GetFiles(TextBoxDirectory.Text);
+                files = Directory.GetFiles(mFilePathBox.Text);
             }
             catch (Exception exception)
             {
-
+                Console.Error.WriteLine(exception.Message);
             }
 
             // has map od disc and its tracks
             Dictionary<String, List<TagLib.File>> discs = new Dictionary<String, List<TagLib.File>>();
 
+            // go through all files in given directory
             foreach (String item in files) 
             {
                 String extension = Path.GetExtension(item);
 
+                // work only with mp3 files
+                // TODO: refactor using constants
                 if (extension.Equals(".mp3"))
                 {
                     TagLib.File tagFile = TagLib.File.Create(item);
 
-                    string disc = tagFile.Tag.Disc.ToString();
+                    string disc = tagFile.Tag.Album;
                     List<TagLib.File> values;
 
                     // check if there is entry for given key
                     bool contains = discs.ContainsKey(disc);
 
                     // there is no entry for current key - create one
+                    // and insert empty list of files
                     if (!contains)
                     {
                         values = new List<TagLib.File>();
@@ -104,25 +135,28 @@ namespace AlbumArtDownloader
                 }
             }
 
+            // prepare dataprovider for the treeview component
             List<DiscViewModel> discList = new List<DiscViewModel>();
 
+            // go through hashmap of albums and add them all into 
+            // treeview item model with all its children
             foreach (KeyValuePair<string, List<TagLib.File>> pair in discs)
             {
                 TagLib.File[] tagLibFiles = pair.Value.ToArray();
-
-                uint discNumber = pair.Value[0].Tag.Disc;
-
-                String discName = "CD ";
-
-                discName += discNumber > 0 ? discNumber.ToString() : "1";
-
+                String discName = pair.Value[0].Tag.Album;
                 DiscViewModel disc = new DiscViewModel(discName, tagLibFiles);
-
                 discList.Add(disc);
             }
 
+            // connect discList view model to the treeview component
             base.DataContext = discList.ToArray();
 
+        }
+
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            
         }
 
     }

@@ -49,134 +49,138 @@
     <Grid Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <local:Menu Margin="-5,-6,-5,5"/>
-          
-        <DockPanel>
-            <Border DockPanel.Dock="Top" HorizontalAlignment="Left" Height="30">
+        <local:Menu Margin="-5,-6,-5,5" />
+
+        <Grid Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="40" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            
+            <Label Target="{Binding ElementName=mFilePathBox}" Padding="0,0,0,4">_Search for audio files in:</Label>
+            <TextBox Grid.Row="1" Grid.Column="0" x:Name="mFilePathBox" Text="{Binding Source={StaticResource mSettings}, Path=Default.FileBrowseRoot, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,5" />
+            <Button Grid.Row="1" Grid.Column="1" x:Name="mBrowse" Content="..." Padding="0,-2,0,-2" Margin="0,0,0,5" MinWidth="{x:Static SystemParameters.VerticalScrollBarWidth}"/>
+            <Button Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" x:Name="mSearch" Padding="5,-5,5,-5" Margin="5,5,5,5" Command="ApplicationCommands.Find" IsDefault="True" MinWidth="116">
                 <StackPanel Orientation="Horizontal">
-                    <TextBox Name="TextBoxDirectory" Text="I:\Media\Music\AC DC\1975 - T.N.T" Height="22" Width="300" />
-                    <Button Width="100" Height="22" Click="Button_Click">Refresh</Button>
+                    <Image Source="search.ico" Margin="0,4,0,0"/>
+                    <Label>_Search</Label>
                 </StackPanel>
-            </Border>
-            <Border DockPanel.Dock="Left">
-                <Grid>
-                    <TreeView Name="TreeViewFiles" ItemsSource="{Binding}">
-                        <TreeView.ItemContainerStyle>
-                            <Style x:Name="styleTreeView" x:Uid="styleTreeView" TargetType="{x:Type TreeViewItem}">
-                                <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
-                                <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
-                                <Setter Property="FontWeight" Value="Normal" />
-                                <Setter Property="HorizontalAlignment" Value="Stretch" />
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="{x:Type TreeViewItem}">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition MinWidth="19" Width="Auto"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="Auto"/>
-                                                    <RowDefinition/>
-                                                </Grid.RowDefinitions>
-                                                <ToggleButton x:Name="Expander" Grid.Column="0" Style="{StaticResource styleTreeViewExpandCollapse}" IsChecked="{Binding Path=IsExpanded,RelativeSource={RelativeSource TemplatedParent}}" ClickMode="Press" Width="32" Height="32" />
-                                                <ContentPresenter x:Name="PART_Header" Grid.Column="1" ContentSource="Header" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"/>
-                                                <ItemsPresenter x:Name="ItemsHost" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2"/>
-                                            </Grid>
-                                            <ControlTemplate.Triggers>
-                                                <Trigger Property="IsExpanded" Value="false">
-                                                    <Setter TargetName="ItemsHost" Property="Visibility" Value="Collapsed"/>
-                                                </Trigger>
-                                                <Trigger Property="HasItems" Value="false">
-                                                    <Setter TargetName="Expander" Property="Visibility" Value="Hidden"/>
-                                                </Trigger>
-                                                <MultiTrigger>
-                                                    <MultiTrigger.Conditions>
-                                                        <Condition Property="HasHeader" Value="false"/>
-                                                        <Condition Property="Width" Value="Auto"/>
-                                                    </MultiTrigger.Conditions>
-                                                    <Setter TargetName="PART_Header" Property="MinWidth" Value="75"/>
-                                                </MultiTrigger>
-                                                <MultiTrigger>
-                                                    <MultiTrigger.Conditions>
-                                                        <Condition Property="HasHeader" Value="false"/>
-                                                        <Condition Property="Height" Value="Auto"/>
-                                                    </MultiTrigger.Conditions>
-                                                    <Setter TargetName="PART_Header" Property="MinHeight" Value="19"/>
-                                                </MultiTrigger>
-                                            </ControlTemplate.Triggers>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                                <Style.Triggers>
-                                    <Trigger Property="IsSelected" Value="True">
-                                        <Setter Property="FontWeight" Value="Bold" />
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </TreeView.ItemContainerStyle>
-                        <TreeView.Resources>
-                            <HierarchicalDataTemplate DataType="{x:Type treeViewModel:DiscViewModel}" ItemsSource="{Binding Children}">
-                                <StackPanel Orientation="Horizontal" Height="25" VerticalAlignment="Center">
-                                    <TextBlock Text="{Binding DiscName}" Height="22" />
+            </Button>
+            <TreeView Grid.Row="2" Grid.ColumnSpan="3" Name="TreeViewFiles" ItemsSource="{Binding}" Margin="0,0,0,0">
+                <TreeView.ItemContainerStyle>
+                    <Style x:Name="styleTreeView" x:Uid="styleTreeView" TargetType="{x:Type TreeViewItem}">
+                        <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                        <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                        <Setter Property="FontWeight" Value="Normal" />
+                        <Setter Property="HorizontalAlignment" Value="Stretch" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type TreeViewItem}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition MinWidth="19" Width="Auto" />
+                                            <ColumnDefinition Width="Auto" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition />
+                                        </Grid.RowDefinitions>
+                                        <ToggleButton x:Name="Expander" Grid.Column="0" Style="{StaticResource styleTreeViewExpandCollapse}" IsChecked="{Binding Path=IsExpanded,RelativeSource={RelativeSource TemplatedParent}}" ClickMode="Press" Width="32" Height="32" />
+                                        <ContentPresenter x:Name="PART_Header" Grid.Column="1" ContentSource="Header" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" />
+                                        <ItemsPresenter x:Name="ItemsHost" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" />
+                                    </Grid>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsExpanded" Value="false">
+                                            <Setter TargetName="ItemsHost" Property="Visibility" Value="Collapsed" />
+                                        </Trigger>
+                                        <Trigger Property="HasItems" Value="false">
+                                            <Setter TargetName="Expander" Property="Visibility" Value="Hidden" />
+                                        </Trigger>
+                                        <MultiTrigger>
+                                            <MultiTrigger.Conditions>
+                                                <Condition Property="HasHeader" Value="false" />
+                                                <Condition Property="Width" Value="Auto" />
+                                            </MultiTrigger.Conditions>
+                                            <Setter TargetName="PART_Header" Property="MinWidth" Value="75" />
+                                        </MultiTrigger>
+                                        <MultiTrigger>
+                                            <MultiTrigger.Conditions>
+                                                <Condition Property="HasHeader" Value="false" />
+                                                <Condition Property="Height" Value="Auto" />
+                                            </MultiTrigger.Conditions>
+                                            <Setter TargetName="PART_Header" Property="MinHeight" Value="19" />
+                                        </MultiTrigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="FontWeight" Value="Bold" />
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </TreeView.ItemContainerStyle>
+                <TreeView.Resources>
+                    <HierarchicalDataTemplate DataType="{x:Type treeViewModel:DiscViewModel}" ItemsSource="{Binding Children}">
+                        <StackPanel Orientation="Horizontal" Height="25" VerticalAlignment="Center">
+                            <TextBlock Text="{Binding DiscName}" Height="22" />
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+                    <HierarchicalDataTemplate DataType="{x:Type treeViewModel:TrackViewModel}" ItemsSource="{Binding Children}">
+                        <StackPanel Orientation="Horizontal" Height="25">
+                            <TextBlock Text="{Binding TrackName}" Width="362" Height="22" />
+                            <StackPanel Width="120">
+                                <TextBlock Text="{Binding Artist}" HorizontalAlignment="Center" MaxHeight="120" />
+                            </StackPanel>
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+                    <HierarchicalDataTemplate DataType="{x:Type treeViewModel:TrackInfoViewModel}">
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel Orientation="Vertical">
+                                <StackPanel Orientation="Horizontal" Visibility="{Binding TrackNameVisible}" Height="{Binding TrackNameHeight}">
+                                    <TextBlock Text="File name:" Width="80" Height="22" />
+                                    <TextBox Text="{Binding TrackName}" Width="250" />
                                 </StackPanel>
-                            </HierarchicalDataTemplate>
-
-                            <HierarchicalDataTemplate DataType="{x:Type treeViewModel:TrackViewModel}" ItemsSource="{Binding Children}">
-                                <StackPanel Orientation="Horizontal" Height="25">
-                                    <TextBlock Text="{Binding TrackName}" Width="362" Height="22"  />
-                                    <StackPanel Width="120">
-                                        <TextBlock Text="{Binding Artist}" HorizontalAlignment="Center" MaxHeight="120" />
-                                    </StackPanel>
+                                <StackPanel Orientation="Horizontal" Visibility="{Binding GenreVisible}" Height="{Binding GenreHeight}">
+                                    <TextBlock Text="Genre:" Width="80" Height="22" />
+                                    <TextBox Text="{Binding Genre}" Width="250" />
                                 </StackPanel>
-                            </HierarchicalDataTemplate>
-
-                            <HierarchicalDataTemplate DataType="{x:Type treeViewModel:TrackInfoViewModel}">
-                                <StackPanel Orientation="Horizontal">
-                                    <StackPanel Orientation="Vertical">
-                                        <StackPanel Orientation="Horizontal"  Visibility="{Binding TrackNameVisible}" Height="{Binding TrackNameHeight}">
-                                            <TextBlock Text="File name:" Width="80" Height="22" />
-                                            <TextBox Text="{Binding TrackName}" Width="250" />
-                                        </StackPanel>
-                                        <StackPanel Orientation="Horizontal" Visibility="{Binding GenreVisible}" Height="{Binding GenreHeight}">
-                                            <TextBlock Text="Genre:" Width="80" Height="22" />
-                                            <TextBox Text="{Binding Genre}" Width="250" />
-                                        </StackPanel>
-                                        <StackPanel Orientation="Horizontal" Visibility="{Binding YearVisible}" Height="{Binding YearHeight}">
-                                            <TextBlock Text="Year:" Width="80" Height="22"/>
-                                            <TextBox Text="{Binding Year}" Width="250" />
-                                        </StackPanel>
-                                        <StackPanel Orientation="Horizontal" Visibility="{Binding ComposerVisible}" Height="{Binding ComposerHeight}">
-                                            <TextBlock Text="Composer:" Width="80" Height="22"/>
-                                            <TextBlock Text="{Binding Composer}" Width="250" />
-                                        </StackPanel>
-                                        <StackPanel Orientation="Horizontal" Visibility="{Binding PerformerVisible}" Height="{Binding PerformerHeight}">
-                                            <TextBlock Text="Performer:" Width="80" Height="22"/>
-                                            <TextBlock Text="{Binding Performer}" Width="250" />
-                                        </StackPanel>
-                                        <StackPanel Orientation="Horizontal" Visibility="{Binding CommentVisible}" Height="{Binding CommentHeight}">
-                                            <TextBlock Text="Comment:" Width="80" Height="22"/>
-                                            <TextBox Text="{Binding Comment}" Width="250" />
-                                        </StackPanel>
-                                    </StackPanel>
-                                    <StackPanel Width="120" HorizontalAlignment="Center">
-                                        <Image Source="{Binding BitmapPicture}" Width="100" Height="100" Margin="10" />
-                                    </StackPanel>
-                                    
+                                <StackPanel Orientation="Horizontal" Visibility="{Binding YearVisible}" Height="{Binding YearHeight}">
+                                    <TextBlock Text="Year:" Width="80" Height="22" />
+                                    <TextBox Text="{Binding Year}" Width="250" />
                                 </StackPanel>
-                            </HierarchicalDataTemplate>
-                        </TreeView.Resources>
-                    </TreeView>
-                </Grid>
-            </Border>
-        </DockPanel>
+                                <StackPanel Orientation="Horizontal" Visibility="{Binding ComposerVisible}" Height="{Binding ComposerHeight}">
+                                    <TextBlock Text="Composer:" Width="80" Height="22" />
+                                    <TextBlock Text="{Binding Composer}" Width="250" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Visibility="{Binding PerformerVisible}" Height="{Binding PerformerHeight}">
+                                    <TextBlock Text="Performer:" Width="80" Height="22" />
+                                    <TextBlock Text="{Binding Performer}" Width="250" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal" Visibility="{Binding CommentVisible}" Height="{Binding CommentHeight}">
+                                    <TextBlock Text="Comment:" Width="80" Height="22" />
+                                    <TextBox Text="{Binding Comment}" Width="250" />
+                                </StackPanel>
+                            </StackPanel>
+                            <StackPanel Width="120" HorizontalAlignment="Center">
+                                <Image Source="{Binding BitmapPicture}" Width="100" Height="100" Margin="10" />
+                            </StackPanel>
+                            <Button Content="Save" CommandParameter="{Binding ElementName=TrackInfo, Path=TrackInfo}" />
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+                </TreeView.Resources>
+            </TreeView>
+        </Grid>
     </Grid>
 </Window>

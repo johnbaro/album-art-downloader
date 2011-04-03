@@ -42,7 +42,6 @@ namespace AlbumArtDownloader.TreeViewViewModel
             set 
             { 
                 _trackInfo.Tag.Album = value;
-                _trackInfo.Save();
             }
         }
 
@@ -71,7 +70,6 @@ namespace AlbumArtDownloader.TreeViewViewModel
             set 
             { 
                 _trackInfo.Tag.Title = value;
-                _trackInfo.Save();
             }
         }
 
@@ -84,8 +82,6 @@ namespace AlbumArtDownloader.TreeViewViewModel
 
                 if (genres.IndexOf(value) == -1)
                     genres.Add(value);
-
-                _trackInfo.Save();
             }
         }
 
@@ -95,7 +91,6 @@ namespace AlbumArtDownloader.TreeViewViewModel
             set 
             { 
                 _trackInfo.Tag.Year = value;
-                _trackInfo.Save();
             }
         }
 
@@ -108,8 +103,6 @@ namespace AlbumArtDownloader.TreeViewViewModel
 
                 if (composers.IndexOf(value) == -1)
                     composers.Add(value);
-
-                _trackInfo.Save();
             }
         }
 
@@ -122,8 +115,6 @@ namespace AlbumArtDownloader.TreeViewViewModel
 
                 if (performers.IndexOf(value) == -1)
                     performers.Add(value);
-
-                _trackInfo.Save();
             }
         }
 
@@ -133,7 +124,6 @@ namespace AlbumArtDownloader.TreeViewViewModel
             set 
             { 
                 _trackInfo.Tag.Comment = value;
-                _trackInfo.Save();
             }
         }
 
@@ -295,8 +285,15 @@ namespace AlbumArtDownloader.TreeViewViewModel
 
             return result;
         }
-
         #endregion Properties
 
+        #region Methods
+
+        public void Save()
+        {
+            _trackInfo.Save();
+        }
+
+        #endregion
     }
 }
