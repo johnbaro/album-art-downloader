@@ -7,9 +7,9 @@ class BuyDotCom(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "Buy.com"
 	Version as string:
-		get: return "0.5"
+		get: return "0.6"
 	Author as string:
-		get: return "alsaan"
+		get: return "alsaan, DRata"
 
 	def Search(artist as string, album as string, results as IScriptResults):
 		artist = StripCharacters("&.'\";:?!", artist)
@@ -25,13 +25,18 @@ class BuyDotCom(AlbumArtDownloader.Scripts.IScript):
 		if(searchResultsHtml.IndexOf("did not return an exact match") > -1):
 			return
 
+		//Remove "Results ... in All Categories"
+		allCategories = searchResultsHtml.IndexOf("> in all categories <")
+		if(allCategories > -1):
+			searchResultsHtml = searchResultsHtml.Substring(0, allCategories)
+
 		//Remove "Similar Products in General"
-		similar = searchResultsHtml.IndexOf(">Similar Products in general<")
+		similar = searchResultsHtml.IndexOf(">Similar Products in <span class=\"searchHeaderTerm\">general<")
 		if(similar > -1):
 			searchResultsHtml = searchResultsHtml.Substring(0, similar)
 		
 		//Extract all the thumbnails and the links to product pages
-		itemsRegex = Regex("<tr><td valign=\"top\" class=\"(list|listTop)\"><a href=\"(?<productPageUrl>[^\"]*/(?<sku>[^\"]*)\\.html)\"[^>]*><img[^>]*title=\"(?<title>[^\"]*)\"[^>]*src=\"(?<thumbnailUrl>[^\"]*)\"[^>]")
+		itemsRegex = Regex("<tr><td valign=\"top\" class=\"searchList\"[^>]*><a href=\"(?<productPageUrl>[^\"]*/(?<sku>[^\"]*)\\.html)\"[^>]*><img[^>]*src=\"(?<thumbnailUrl>[^\"]*)\"[^>]*title=\"(?<title>[^\"]*)\"[^>]")
 		itemsMatches = itemsRegex.Matches(searchResultsHtml)
 		
 		//Set the estimated number of covers available (approx. 1 cover per product page)

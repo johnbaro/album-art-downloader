@@ -23,8 +23,8 @@
     <Dependency>amazon-common.boo</Dependency>
   </Script>
   <Script Name="Archambault" URI="archambault.boo" Version="0.4" />
-  <Script Name="ArkivMusik" URI="arkivmusic.boo" Version="0.5" />
-  <Script Name="Buy.com" URI="buy-com.boo" Version="0.5" />
+  <Script Name="ArkivMusik" URI="arkivmusic.boo" Version="0.6" />
+  <Script Name="Buy.com" URI="buy-com.boo" Version="0.6" />
   <Script Name="CD Baby" URI="cdbaby.boo" Version="0.2" />
   <Script Name="CD Universe" URI="cduniverse.boo" Version="0.4" />
   <Script Name="Chartstats" URI="chartstats.boo" Version="0.1" />
