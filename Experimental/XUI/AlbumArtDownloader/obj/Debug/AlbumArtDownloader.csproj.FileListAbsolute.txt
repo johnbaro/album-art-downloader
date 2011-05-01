@@ -254,3 +254,5 @@ D:\School - different repos\album-art\Experimental\XUI\AlbumArtDownloader\obj\De
 D:\School - different repos\album-art\Experimental\XUI\AlbumArtDownloader\obj\Debug\Controls\Xaml\OverflowTextBlock.generic.baml
 D:\School - different repos\album-art\Experimental\XUI\AlbumArtDownloader\obj\Debug\Controls\Xaml\SourcePanel.generic.baml
 D:\School - different repos\album-art\Experimental\XUI\AlbumArtDownloader\obj\Debug\UpdatesViewer.baml
+D:\School - different repos\album-art\Experimental\XUI\AlbumArtDownloader\obj\Debug\TreeBrowserResults.g.cs
+D:\School - different repos\album-art\Experimental\XUI\AlbumArtDownloader\obj\Debug\TreeBrowserResults.baml

@@ -129,6 +129,11 @@ namespace AlbumArtDownloader.TreeViewViewModel
 
         #region Height & Visibility
 
+        public bool BitmapPictureVisible
+        {
+            get { return IsPropertyFilled(Tags.PICTURE); }
+        }
+
         public bool AlbumVisible
         {
             get { return IsPropertyFilled(Tags.ALBUM); }
@@ -162,6 +167,16 @@ namespace AlbumArtDownloader.TreeViewViewModel
         public bool CommentVisible
         {
             get { return IsPropertyFilled(Tags.COMMENT); }
+        }
+
+        public int BitmapPictureHeight
+        {
+            get { return BitmapPictureVisible ? 100 : 0; }
+        }
+
+        public int BitmapPictureWidth
+        {
+            get { return BitmapPictureVisible  ? 100 : 0; }
         }
 
         public int AlbumHeight
@@ -209,7 +224,8 @@ namespace AlbumArtDownloader.TreeViewViewModel
             YEAR,
             COMPOSER,
             PERFORMER,
-            COMMENT
+            COMMENT,
+            PICTURE
         }
         
         /// <summary>
@@ -249,6 +265,26 @@ namespace AlbumArtDownloader.TreeViewViewModel
                     break;
                 case Tags.COMMENT:
                     result = _trackInfo.Tag.Comment != string.Empty;
+                    break;
+                case Tags.PICTURE:
+                    IPicture frontCover = null;
+
+                    // go through all pictures and if find one front cover break searching
+                    foreach (IPicture picture in _trackInfo.Tag.Pictures)
+                    {
+                        if (picture.Type == PictureType.FrontCover)
+                        {
+                            frontCover = picture;
+                            break;
+                        }
+                    }
+
+                    if (frontCover == null && _trackInfo.Tag.Pictures.Length > 0)
+                    {
+                        frontCover = _trackInfo.Tag.Pictures[0];
+                    }
+
+                    result = frontCover != null;
                     break;
             }
 

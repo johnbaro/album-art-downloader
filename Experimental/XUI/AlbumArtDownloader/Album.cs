@@ -2,6 +2,8 @@
 using System.ComponentModel;
 using System.IO;
 using System.Windows.Media.Imaging;
+using System.Windows.Documents;
+using System.Collections.Generic;
 
 namespace AlbumArtDownloader
 {
@@ -12,7 +14,8 @@ namespace AlbumArtDownloader
 	{
 		public Album(string basePath, string artistName, string albumName)
 		{
-			mBasePath = basePath;
+            Tracks = new List<TagLib.File>();
+            mBasePath = basePath;
 			mName = albumName;
 			mArtist = artistName;
 			mArtFile = null;
@@ -138,6 +141,24 @@ namespace AlbumArtDownloader
 				}
 			}
 		}
+
+        // holds all tracks found during file search
+        private List<TagLib.File> mTracks;
+        public List<TagLib.File> Tracks
+        {
+            get { return mTracks; }
+            set
+            {
+                mTracks = value;
+            }
+        }
+
+        // add new track into album and notify about this event
+        public void AddTrack(TagLib.File track)
+        {
+            Tracks.Add(track);
+            NotifyPropertyChanged("Tracks");
+        }
 
 		/// <summary>
 		/// Sets all properties related to an album having a file present:

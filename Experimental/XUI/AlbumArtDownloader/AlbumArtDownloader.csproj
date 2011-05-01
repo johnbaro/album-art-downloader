@@ -181,6 +181,9 @@
       <SubType>Code</SubType>
       <DependentUpon>Splashscreen.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TreeBrowserResults.xaml.cs">
+      <DependentUpon>TreeBrowserResults.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TreeViewViewModel\DiscViewModel.cs" />
     <Compile Include="TreeViewViewModel\TrackInfoViewModel.cs" />
     <Compile Include="TreeViewViewModel\TrackViewModel.cs" />
@@ -401,6 +404,10 @@
     <Page Include="Controls\Xaml\StatusBar.generic.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="TreeBrowserResults.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UpdatesViewer.xaml">
       <SubType>Designer</SubType>

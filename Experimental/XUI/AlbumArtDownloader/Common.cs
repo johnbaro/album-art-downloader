@@ -50,8 +50,12 @@ namespace AlbumArtDownloader
 		}
 		public static FileBrowser NewFileBrowser(IAppWindow existingWindow)
 		{
-			return (FileBrowser)ShowNewWindow(new FileBrowser(), existingWindow);
+            return (FileBrowser)ShowNewWindow(new FileBrowser(), existingWindow);
 		}
+        public static FileBrowserDetail NewFileBrowserDetail()
+        {
+            return NewFileBrowserDetail(null);
+        }
         public static FileBrowserDetail NewFileBrowserDetail(IAppWindow existingWindow)
 		{
 			return (FileBrowserDetail)ShowNewWindow(new FileBrowserDetail(), existingWindow);
@@ -466,6 +470,8 @@ namespace AlbumArtDownloader
 
 	public static class CommonCommands
 	{
+        /// <summary> Saves ID3 tags in file info passed as the parameter to the command </summary>
+        public static RoutedUICommand Save = new RoutedUICommand("Save", "Save", typeof(CommonCommands));
 		/// <summary>Displays the file passed in as the parameter to the command in Windows Explorer</summary>
 		public static RoutedUICommand ShowInExplorer = new RoutedUICommand("Show in Explorer", "ShowInExplorer", typeof(CommonCommands));
 		/// <summary>Displays the file in the preview window</summary>
