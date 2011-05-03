@@ -70,20 +70,20 @@ namespace AlbumArtDownloader
                 return "File Browser Detail";
             }
         }
-        public static readonly DependencyPropertyKey StatePropertyKey = DependencyProperty.RegisterReadOnly("State", typeof(BrowserState), typeof(FileBrowser), new FrameworkPropertyMetadata(BrowserState.Ready));
+        public static readonly DependencyPropertyKey StatePropertyKey = DependencyProperty.RegisterReadOnly("State", typeof(BrowserState), typeof(FileBrowserDetail), new FrameworkPropertyMetadata(BrowserState.Ready));
         public BrowserState State
         {
             get { return (BrowserState)GetValue(StatePropertyKey.DependencyProperty); }
             private set { SetValue(StatePropertyKey, value); }
         }
 
-        public static readonly DependencyPropertyKey ProgressTextPropertyKey = DependencyProperty.RegisterReadOnly("ProgressText", typeof(string), typeof(FileBrowser), new FrameworkPropertyMetadata(String.Empty));
+        public static readonly DependencyPropertyKey ProgressTextPropertyKey = DependencyProperty.RegisterReadOnly("ProgressText", typeof(string), typeof(FileBrowserDetail), new FrameworkPropertyMetadata(String.Empty));
         public string ProgressText
         {
             get { return (string)GetValue(ProgressTextPropertyKey.DependencyProperty); }
             private set { SetValue(ProgressTextPropertyKey, value); }
         }
-        public static readonly DependencyPropertyKey ErrorTextPropertyKey = DependencyProperty.RegisterReadOnly("ErrorText", typeof(string), typeof(FileBrowser), new FrameworkPropertyMetadata(String.Empty));
+        public static readonly DependencyPropertyKey ErrorTextPropertyKey = DependencyProperty.RegisterReadOnly("ErrorText", typeof(string), typeof(FileBrowserDetail), new FrameworkPropertyMetadata(String.Empty));
         public string ErrorText
         {
             get { return (string)GetValue(ErrorTextPropertyKey.DependencyProperty); }
