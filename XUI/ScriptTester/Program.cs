@@ -135,11 +135,6 @@ namespace ScriptTester
                 FoundResult();
             }
 
-            public void AddThumb(System.Drawing.Image thumbnailImage, string name, int fullSizeImageWidth, int fullSizeImageHeight, object fullSizeImageCallback)
-            {
-                FoundResult();
-            }
-
             public void Add(object thumbnail, string name, object fullSizeImageCallback, CoverType coverType)
             {
                 FoundResult();

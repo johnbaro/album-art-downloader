@@ -1,5 +1,4 @@
 using System;
-using System.Drawing;
 using System.Threading;
 using AlbumArtDownloader.Scripts;
 
@@ -50,7 +49,7 @@ namespace AlbumArtDownloader
 
 		}
 
-		internal override Bitmap RetrieveFullSizeImage(object fullSizeCallbackParameter)
+		internal override byte[] RetrieveFullSizeImageData(object fullSizeCallbackParameter)
 		{
 			object fullSizeImage = null;
 			try
@@ -61,7 +60,8 @@ namespace AlbumArtDownloader
 			{
 				System.Diagnostics.Debug.Fail(String.Format("Script {0} threw an exception while retreiving full sized image: {1}", mScript.Name, e.Message));
 			}
-			return BitmapHelpers.GetBitmap(fullSizeImage);
+
+			return BitmapHelpers.GetBitmapData(fullSizeImage);
 		}
 	}
 }

@@ -64,21 +64,24 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Third Party Assemblies\Boo.Lang.Parser.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml.Linq">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
-    <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\AlbumArtDownloader\Arguments.cs">
       <Link>Arguments.cs</Link>
+    </Compile>
+    <Compile Include="..\AlbumArtDownloader\BitmapHelpers.cs">
+      <Link>BitmapHelpers.cs</Link>
     </Compile>
     <Compile Include="AllowedCoverType.cs" />
     <Compile Include="Orientation.cs" />

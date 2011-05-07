@@ -1,8 +1,6 @@
 using AlbumArtDownloader.Scripts;
 using System;
 using System.ComponentModel;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -16,17 +14,17 @@ using System.Text.RegularExpressions;
 
 namespace AlbumArtDownloader
 {
-	public class AlbumArt : DependencyObject, INotifyPropertyChanged, IDisposable
+	public class AlbumArt : DependencyObject, INotifyPropertyChanged
 	{
 		private Source mSource;
 		private object mFullSizeCallbackParameter;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
 
-		public AlbumArt(Source source, Bitmap thumbnail, string name, string infoUri, double width, double height, object fullSizeCallbackParameter, CoverType coverType)
+		public AlbumArt(Source source, byte[] thumbnailData, string name, string infoUri, int width, int height, object fullSizeCallbackParameter, CoverType coverType)
 		{
 			mSource = source;
-			BitmapImage = thumbnail;
+			BitmapData = thumbnailData;
 			ResultName = name;
 			InfoUri = infoUri;
 			SetImageDimensions(width, height);
@@ -34,30 +32,30 @@ namespace AlbumArtDownloader
 			CoverType = coverType;
 		}
 		
-		[System.Obsolete("set coverType")]
-		public AlbumArt(Source source, Bitmap thumbnail, string name, string infoUri, double width, double height, object fullSizeCallbackParameter)
-			:this(source, thumbnail, name, infoUri, width, height, fullSizeCallbackParameter, CoverType.Unknown)
-		{}
-
 		/// <summary>
 		/// Constructs an AlbumArt with an already known full-size image
 		/// </summary>
-		public AlbumArt(Source source, string name, string infoUri, Bitmap fullSizeImage, CoverType coverType)
+        public AlbumArt(Source source, string name, string infoUri, int width, int height, byte[] fullSizeImageData, CoverType coverType)
 		{
 			mSource = source;
 			ResultName = name;
 			InfoUri = infoUri;
 			CoverType = coverType;
 
-			BitmapImage = fullSizeImage;
+			BitmapData = fullSizeImageData;
+
+            if (width == -1 && height == -1)
+            {
+                //Have to decode the image data to get width and height
+                SetImageDimensions(Image.PixelWidth, Image.PixelHeight);
+            }
+            else
+            {
+                //Believe the dimensions specified
+                SetImageDimensions(width, height);
+            }
+
 			mIsFullSize = true;
-			SetImageDimensions(fullSizeImage.Width, fullSizeImage.Height);
-		}
-		
-		public void Dispose()
-		{
-			BitmapImage = null; //This will dispose of the bitmap
-			//No need for finaliser patten, as the Bitmap should finalise itself.
 		}
 
 		#region Dependency Properties
@@ -96,7 +94,7 @@ namespace AlbumArtDownloader
 									.Replace("%name%", Common.MakeSafeForPath(albumArt.ResultName))
 									.Replace("%source%", Common.MakeSafeForPath(albumArt.SourceName))
 									.Replace("%size%", String.Format("{0} x {1}", albumArt.ImageWidth, albumArt.ImageHeight))
-									.Replace("%extension%", albumArt.ImageCodecInfo.FilenameExtension.Split(';')[0].Substring(2).ToLower()) //Use the first filename extension of the codec, with *. removed from it, in lower case
+                                    .Replace("%extension%", albumArt.ImageFileExtensions.FirstOrDefault())
 									.Replace("%preset%", Common.MakeSafeForPath(albumArt.Preset))
 									.Replace("%type%", Common.MakeSafeForPath(albumArt.CoverType.ToString()));
 
@@ -134,87 +132,84 @@ namespace AlbumArtDownloader
 
 		#endregion
 		#region Properties
-		/// <summary>The Album Art, as a bitmap. Backs the <see cref="Image"/> accessor</summary>
-		private Bitmap mBitmapImage;
-		private Bitmap BitmapImage
+		private byte[] mBitmapData;
+        /// <summary>The Album Art, as original source data. Backs the <see cref="BitmapImage"/></summary>
+        private byte[] BitmapData
 		{
 			get
 			{
-				return mBitmapImage;
+				return mBitmapData;
 			}
-			set
-			{
-				if (value != mBitmapImage)
-				{
-					if(mBitmapImage != null)
-						mBitmapImage.Dispose(); //Dispose of the old bitmap first
+            set
+            {
+                if (mBitmapData != value)
+                {
+                    mBitmapData = value;
 
-					mBitmapImage = value;
+                    //Reset the cached image decoder (it will be recreated from the new bitmap data), and notify of the change.
+                    mCachedImageDecoder = null;
 
-					//Reset the cached image source and codec info (they will be recreated from the new bitmap), and notify of the change.
-					mCachedImageSource = null;
-					mCachedImageCodecInfo = null;
-
-					NotifyPropertyChanged("Image");
-					NotifyPropertyChanged("ImageCodecInfo");
-				}
-			}
+                    NotifyPropertyChanged("Image");
+                    NotifyPropertyChanged("ImageCodecInfo");
+                }
+            }
 		}
 
 		/// <summary>
 		/// Returns the contents of the <see cref="Image"/> as a stream
 		/// </summary>
 		/// <returns></returns>
-		internal Stream GetImageData()
+		internal Stream GetBitmapDataStream()
 		{
-			//Data is only available from BitmapImage
-			var stream = new MemoryStream();
-			BitmapImage.Save(stream, BitmapImage.RawFormat);
-			return stream;
+            if (BitmapData == null)
+            {
+                return null;
+            }
+			return new MemoryStream(BitmapData);
 		}
 
-		private ImageSource mCachedImageSource;
-		public ImageSource Image
+        private BitmapDecoder mCachedImageDecoder;
+        private BitmapDecoder ImageDecoder
+        {
+            get
+            {
+                if (mCachedImageDecoder == null && BitmapData != null)
+				{
+					//Create the image source from the bitmap data
+                    mCachedImageDecoder = BitmapDecoder.Create(GetBitmapDataStream(), BitmapCreateOptions.None, BitmapCacheOption.None); // Don't cache, as the data is already coming straight from memory.
+                }
+                return mCachedImageDecoder;
+            }
+        }
+
+		public BitmapSource Image
 		{
 			get 
 			{
-				if (mCachedImageSource == null)
-				{
-					//Create the image source from the bitmap image
-					mCachedImageSource = BitmapHelpers.ConvertBitmapToBitmapSource(BitmapImage);
-				}
-				return mCachedImageSource; 
+                if (BitmapData == null)
+                {
+                    return null;
+                }
+                return ImageDecoder.Frames[0];
 			}
 		}
 
-		private ImageCodecInfo mCachedImageCodecInfo;
-		public ImageCodecInfo ImageCodecInfo
+		public IEnumerable<String> ImageFileExtensions
 		{
 			get
 			{
-				if (mCachedImageCodecInfo == null)
-				{
-					if (BitmapImage != null)
-					{
-						//Find the codec					
-						Guid bitmapFormatGuid = BitmapImage.RawFormat.Guid;
-						mCachedImageCodecInfo = ImageCodecInfo.GetImageEncoders().First(codec => codec.FormatID == bitmapFormatGuid);
-					}
-				}
-				if (mCachedImageCodecInfo == null)
-				{
-					//Could not find the codec. Leave the cached codec info as null, to attempt to recalculate
-					Guid bmpFormatGuid = System.Drawing.Imaging.ImageFormat.Bmp.Guid;
-					return ImageCodecInfo.GetImageEncoders().First(codec => codec.FormatID == bmpFormatGuid);
-				}
-				return mCachedImageCodecInfo;
+                if (BitmapData == null)
+                {
+                    return new string[0];
+                }
+                return from s in ImageDecoder.CodecInfo.FileExtensions.Split(',') select s.Substring(1);
 			}
 		}
 
 		public event EventHandler ImageSizeChanged;
 
-		private double mImageWidth;
-		public double ImageWidth
+		private int mImageWidth;
+		public int ImageWidth
 		{
 			get { return mImageWidth; }
 			private set
@@ -235,8 +230,8 @@ namespace AlbumArtDownloader
 			}
 		}
 
-		private double mImageHeight;
-		public double ImageHeight
+		private int mImageHeight;
+		public int ImageHeight
 		{
 			get { return mImageHeight; }
 			private set
@@ -273,7 +268,7 @@ namespace AlbumArtDownloader
 		/// </summary>
 		/// <param name="width"></param>
 		/// <param name="height"></param>
-		public void SetImageDimensions(double width, double height)
+		public void SetImageDimensions(int width, int height)
 		{
 			bool changed = false;
 			if (mImageWidth != width)
@@ -516,10 +511,10 @@ namespace AlbumArtDownloader
 
 		private void RetrieveFullSizeImageWorker(object state)
 		{
-			Bitmap fullSizeImage = mSource.RetrieveFullSizeImage(mFullSizeCallbackParameter);
-			if (fullSizeImage != null) //If it is null, just use the thumbnail image
+			var fullSizeImageData = mSource.RetrieveFullSizeImageData(mFullSizeCallbackParameter);
+			if (fullSizeImageData != null) //If it is null, just use the thumbnail image
 			{
-				BitmapImage = fullSizeImage;
+                BitmapData = fullSizeImageData;
 			}
 
 			List<WaitCallback> callbacks;
@@ -544,7 +539,7 @@ namespace AlbumArtDownloader
 			{
 				if (Image != null) //Image should *never* be null, but this might be what's causing reported crashes at this location.
 				{
-					SetImageDimensions(Math.Round(Image.Width), Math.Round(Image.Height));
+					SetImageDimensions(Image.PixelWidth, Image.PixelHeight);
 				}
 				else
 				{
@@ -621,10 +616,10 @@ namespace AlbumArtDownloader
 		{
 			SaveFileDialog saveFileDialog = new SaveFileDialog();
 			saveFileDialog.FileName = FilePath;
-			saveFileDialog.DefaultExt = ImageCodecInfo.FilenameExtension.Split(';')[0].Substring(2).ToLower(); //Default to the first extension
+			saveFileDialog.DefaultExt = ImageFileExtensions.FirstOrDefault(); //Default to the first extension
 			saveFileDialog.AddExtension = true;
 			saveFileDialog.OverwritePrompt = false; //That will be handled by Save();
-			saveFileDialog.Filter = String.Format("Image Files ({0})|{0}|All Files|*.*", ImageCodecInfo.FilenameExtension.ToLower());
+            saveFileDialog.Filter = String.Format("Image Files ({0})|{0}|All Files|*.*", String.Join(";", (from ext in ImageFileExtensions select "*." + ext).ToArray()));
 			saveFileDialog.ValidateNames = false;
 
 			if (saveFileDialog.ShowDialog().GetValueOrDefault(false))
@@ -648,7 +643,7 @@ namespace AlbumArtDownloader
 
 			try
 			{
-				this.BitmapImage.Save(FilePath);
+                File.WriteAllBytes(FilePath, BitmapData);
 			}
 			catch (Exception e)
 			{

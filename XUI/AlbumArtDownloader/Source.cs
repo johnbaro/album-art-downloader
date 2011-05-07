@@ -1,7 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Drawing;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,7 +15,7 @@ namespace AlbumArtDownloader
 		public event PropertyChangedEventHandler PropertyChanged;
 		public event EventHandler SearchCompleted;
 
-		private ObservableCollectionOfDisposables<AlbumArt> mResults;
+		private ObservableCollection<AlbumArt> mResults;
 		private SourceSettings mSettings;
 		private Control mCustomSettingsUI; 
 
@@ -24,7 +23,7 @@ namespace AlbumArtDownloader
 
 		public Source()
 		{
-			mResults = new ObservableCollectionOfDisposables<AlbumArt>();
+			mResults = new ObservableCollection<AlbumArt>();
 
 			mCustomSettingsUI = CreateCustomSettingsUI();
 			if(mCustomSettingsUI != null)
@@ -128,7 +127,7 @@ namespace AlbumArtDownloader
 		/// </summary>
 		protected abstract void SearchInternal(string artist, string album, IScriptResults results);
 
-		internal abstract Bitmap RetrieveFullSizeImage(object fullSizeCallbackParameter);
+		internal abstract byte[] RetrieveFullSizeImageData(object fullSizeCallbackParameter);
 		#endregion
 
 		#region Basic properties
@@ -467,10 +466,6 @@ namespace AlbumArtDownloader
 			{
 				Add(thumbnailStream, name, fullSizeImageWidth, fullSizeImageHeight, fullSizeImageCallback);
 			}
-			public void AddThumb(System.Drawing.Image thumbnailImage, string name, int fullSizeImageWidth, int fullSizeImageHeight, object fullSizeImageCallback)
-			{
-				Add(thumbnailImage, name, fullSizeImageWidth, fullSizeImageHeight, fullSizeImageCallback);
-			}
 			#endregion
 
 			public int EstimatedCount
@@ -516,39 +511,41 @@ namespace AlbumArtDownloader
 
 				if (mSource.FullSizeOnly || fullSizeImageCallback == null)
 				{
-					Bitmap fullSize = null;
+					byte[] fullSizeData = null;
 					if (fullSizeImageCallback != null) //If fullSizeImageCallback == null, then no full size image supplied, so the thumbnail is the full size image
 					{
 						//Try to get the full size image without getting the thumbnail
-						fullSize = mSource.RetrieveFullSizeImage(fullSizeImageCallback);
+                        fullSizeData = mSource.RetrieveFullSizeImageData(fullSizeImageCallback);
 					}
-					if (fullSize == null)
+                    if (fullSizeData == null)
 					{
 						//Fall back on using the thumbnail as the full size
-						fullSize = BitmapHelpers.GetBitmap(thumbnail);
+                        fullSizeData = BitmapHelpers.GetBitmapData(thumbnail);
 					}
-					if (fullSize != null)
+					if (fullSizeData != null)
 					{
 						mDispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
 						{
 							mSource.Results.Add(new AlbumArt(mSource,
 								name,
 								infoUri,
-								fullSize,
+                                fullSizeImageWidth,
+                                fullSizeImageHeight,
+								fullSizeData,
 								coverType));
 						}));
 					}
 				}
 				else
 				{
-					Bitmap thumbnailBitmap = BitmapHelpers.GetBitmap(thumbnail);
+					byte[] thumbnailBitmapData = BitmapHelpers.GetBitmapData(thumbnail);
 
-					if (thumbnailBitmap != null)
+                    if (thumbnailBitmapData != null)
 					{
 						mDispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
 						{
 							mSource.Results.Add(new AlbumArt(mSource,
-								thumbnailBitmap,
+                                thumbnailBitmapData,
 								name,
 								infoUri,
 								fullSizeImageWidth,

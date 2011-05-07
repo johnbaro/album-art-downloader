@@ -618,11 +618,6 @@ namespace AlbumArtDownloader
 			foreach (Source source in mSources)
 			{
 				source.TerminateSearch();
-				//Dispose of the art in results (images need disposal)
-				foreach (IDisposable result in source.Results)
-				{
-					result.Dispose();
-				}
 			}
 
 			System.Diagnostics.Trace.TraceInformation("Finished thread tear-down for " + winName);

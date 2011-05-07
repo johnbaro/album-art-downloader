@@ -29,7 +29,7 @@ namespace AlbumArtDownloader.Controls
 				mWaitForImage.WaitOne(); //Wait for the full size image to download
 				if (mImageData == null) //Something else might have already populated image data while waiting
 				{
-					mImageData = mAlbumArt.GetImageData();
+					mImageData = mAlbumArt.GetBitmapDataStream();
 				}
 				mWaitForImage.Set(); //If there are any other waiting threads, signal them to continue too.
 			}
@@ -120,6 +120,20 @@ namespace AlbumArtDownloader.Controls
 
 			mImageData.Write(buffer, offset, count);
 		}
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                if (mImageData != null)
+                {
+                    mImageData.Dispose();
+                    mImageData = null;
+                }
+            }
+
+            base.Dispose(disposing);
+        }
 		#endregion
 	}
 }

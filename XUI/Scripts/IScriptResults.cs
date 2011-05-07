@@ -1,5 +1,4 @@
 using System;
-using System.Drawing;
 using System.IO;
 
 namespace AlbumArtDownloader.Scripts
@@ -16,10 +15,6 @@ namespace AlbumArtDownloader.Scripts
 		
 		[Obsolete("AddThumb has been renamed to Add")]
 		void AddThumb(Stream thumbnailStream,
-						string name, int fullSizeImageWidth, int fullSizeImageHeight, object fullSizeImageCallback);
-		
-		[Obsolete("AddThumb has been renamed to Add")]
-		void AddThumb(Image thumbnailImage,
 						string name, int fullSizeImageWidth, int fullSizeImageHeight, object fullSizeImageCallback);
 		#endregion
 

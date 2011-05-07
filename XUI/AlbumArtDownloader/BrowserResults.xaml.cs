@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -601,9 +600,25 @@ namespace AlbumArtDownloader
 		}
 
 		/// <summary>A regex part that will match any of the valid extensions for image encoders</summary>
-		private static string sImageEncoderExtensions = "(?:" + String.Join("|", (from encoder in ImageCodecInfo.GetImageEncoders() select encoder.FilenameExtension.Replace("*.", "") //Remove *.
-																																									.Replace(';', '|')) //Use | instead of ; as a separator
-																																									.ToArray()) + ")";
+        private static string sImageEncoderExtensions = "(?:" + String.Join("|", (from codecInfo in GetSupportedCodecs()
+                                                                                    from extension in codecInfo.FileExtensions.Split(',')
+                                                                                      select extension.Substring(1)).ToArray()) + ")";
+
+        public static IEnumerable<BitmapCodecInfo> GetSupportedCodecs()
+        {
+            foreach (Type type in typeof(BitmapEncoder).Assembly.GetTypes())
+            {
+                if (type.IsSubclassOf(typeof(BitmapEncoder)) && !type.IsAbstract && type.IsPublic)
+                {
+                    if (type.GetConstructor(Type.EmptyTypes) != null)
+                    {
+                        BitmapEncoder encoder = (BitmapEncoder)Activator.CreateInstance(type);
+                        yield return encoder.CodecInfo;
+                    }
+                }
+            }
+        }
+
 		/// <summary>A regex part that will match any of the valid values for cover type</summary>
 		private static string sCoverTypes = "(?:" + String.Join("|", Enum.GetNames(typeof(AlbumArtDownloader.Scripts.CoverType))) + ")";
 		

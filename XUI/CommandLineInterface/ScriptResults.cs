@@ -30,10 +30,6 @@ namespace AlbumArtDownloader
 		{
 			Add(thumbnailStream, name, fullSizeImageWidth, fullSizeImageHeight, fullSizeImageCallback);
 		}
-		public void AddThumb(System.Drawing.Image thumbnailImage, string name, int fullSizeImageWidth, int fullSizeImageHeight, object fullSizeImageCallback)
-		{
-			Add(thumbnailImage, name, fullSizeImageWidth, fullSizeImageHeight, fullSizeImageCallback);
-		}
 		#endregion
 
 		public int EstimatedCount { get; set;}

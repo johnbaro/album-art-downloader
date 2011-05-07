@@ -14,8 +14,8 @@ namespace AlbumArtDownloader.Controls
         {
 			public FileDescriptorFlags dwFlags;
             public Guid clsid;
-			public System.Drawing.Size sizel;
-			public System.Drawing.Point pointl;
+			public SIZEL sizel;
+			public POINTL pointl;
             public UInt32 dwFileAttributes;
             public System.Runtime.InteropServices.ComTypes.FILETIME ftCreationTime;
             public System.Runtime.InteropServices.ComTypes.FILETIME ftLastAccessTime;
@@ -24,6 +24,20 @@ namespace AlbumArtDownloader.Controls
             public UInt32 nFileSizeLow;
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 260)]
             public String cFileName;
+        }
+
+        [Serializable, StructLayout(LayoutKind.Sequential)]
+        public struct SIZEL
+        {
+            public int cx;
+            public int cy;
+        }
+
+        [Serializable, StructLayout(LayoutKind.Sequential)]
+        public struct POINTL
+        {
+            public int x;
+            public int y;
         }
 
 		private enum FileDescriptorFlags

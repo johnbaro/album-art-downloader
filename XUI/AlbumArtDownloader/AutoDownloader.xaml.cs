@@ -24,7 +24,7 @@ namespace AlbumArtDownloader
 		}
 
 		private Sources mAllSources = new Sources();
-		private ObservableCollectionOfDisposables<AlbumArt> mResults = new ObservableCollectionOfDisposables<AlbumArt>();
+		private ObservableCollection<AlbumArt> mResults = new ObservableCollection<AlbumArt>();
 		private Dictionary<Album, AlbumArt> mResultsLookup = new Dictionary<Album, AlbumArt>();
 		private Dictionary<AlbumArt, Album> mReverseLookup = new Dictionary<AlbumArt, Album>();
 		private List<Album> mAlbumsMissingResults = new List<Album>();
@@ -332,14 +332,6 @@ namespace AlbumArtDownloader
 						//Was a valid result found in this source?
 						if (mSearchResult != null)
 						{
-							var observableCollectionOfDisposables = source.Results as ObservableCollectionOfDisposables<AlbumArt>;
-							if (observableCollectionOfDisposables != null)
-							{
-								//Detach the result from the collection so that it isn't disposed of when the source is re-used.
-								observableCollectionOfDisposables.Detach(mSearchResult);
-								//Responsibility for disposing of mSearchResult is now taken here, and will be passed on to mResults when it is added to that collection.
-							}
-							
 							//No need to search other sources.
 							break;
 						}

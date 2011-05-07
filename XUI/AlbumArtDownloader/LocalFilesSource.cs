@@ -2,25 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Configuration;
-using System.Drawing;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.ComponentModel;
+using System.Windows.Media.Imaging;
 
 namespace AlbumArtDownloader
 {
 	internal class LocalFilesSource : Source
 	{
-		[DllImport("gdiplus.dll", CharSet = CharSet.Unicode, ExactSpelling = true)]
-		internal static extern int GdipCreateBitmapFromFile(string filename, out IntPtr bitmap);
-		[DllImport("gdiplus.dll", ExactSpelling = true)]
-		private static extern int GdipDisposeImage(HandleRef image);
-
 		public LocalFilesSource()
 		{
-			//Ensure GDI+ is initialised
-			Pen pen = Pens.Black;
 		}
 
 		public override string Name
@@ -142,21 +135,14 @@ namespace AlbumArtDownloader
 							//Each filename is potentially an image, so try to load it
 							try
 							{
-								IntPtr hBitmap;
-								int status = GdipCreateBitmapFromFile(filename, out hBitmap);
-								GdipDisposeImage(new HandleRef(this, hBitmap));
-								if (status == 0)
-								{
-									//Successfully opened as image
+                                using(var filestream = File.OpenRead(filename))
+                                {
+                                    var decoder = BitmapDecoder.Create(filestream, BitmapCreateOptions.DelayCreation, BitmapCacheOption.None); //Don't cache, only want the width and height, and delay creation as no need to actually read the data.
+                                    var frame = decoder.Frames[0];
+                                    int width = frame.PixelWidth;
+                                    int height = frame.PixelHeight;
 
-									//Create an in-memory copy so that the bitmap file isn't in use, and can be replaced
-									byte[] fileBytes = File.ReadAllBytes(filename); //Read the file, closing it after use
-									Bitmap bitmap = new Bitmap(new MemoryStream(fileBytes)); //NOTE: Do not dispose of MemoryStream, or it will cause later saving of the bitmap to throw a generic GDI+ error (annoyingly)
-									results.Add(bitmap, Path.GetFileName(filename), filename, bitmap.Width, bitmap.Height, null);
-								}
-								else
-								{
-									System.Diagnostics.Trace.WriteLine("Skipping non-bitmap file in local file search: " + filename);
+									results.Add(File.OpenRead(filename), Path.GetFileName(filename), filename, width, height, null);
 								}
 							}
 							catch (Exception e)
@@ -174,14 +160,12 @@ namespace AlbumArtDownloader
 
 		private static void AddEmbeddedPictureToResults(AlbumArtDownloader.Scripts.IScriptResults results, TagLib.IPicture[] embeddedPictures, int embeddedIndex, string filename)
 		{
-			//Create an in-memory copy so that the bitmap file isn't in use, and can be replaced
-			Bitmap bitmap = new Bitmap(new MemoryStream(embeddedPictures[embeddedIndex].Data.Data)); //NOTE: Do not dispose of MemoryStream, or it will cause later saving of the bitmap to throw a generic GDI+ error (annoyingly)
-			results.Add(bitmap, EmbeddedArtHelpers.GetEmbeddedFilePath(Path.GetFileName(filename), embeddedIndex), filename, bitmap.Width, bitmap.Height, null);
+            results.Add(new MemoryStream(embeddedPictures[embeddedIndex].Data.Data), EmbeddedArtHelpers.GetEmbeddedFilePath(Path.GetFileName(filename), embeddedIndex), filename, -1, -1, null);
 		}
 
-		internal override Bitmap RetrieveFullSizeImage(object fullSizeCallbackParameter)
+		internal override byte[] RetrieveFullSizeImageData(object fullSizeCallbackParameter)
 		{
-			return (Bitmap)fullSizeCallbackParameter;
+			return null;
 		}
 
 		private string mSearchPathPattern;

@@ -1,3 +1,9 @@
+0.38.0
+	 Removed dependency on GDI+ (all image handling is now done using WPF/WIC)
+	 Fixed bug in File Browser with Various Artists and embedded images
+	 Added Chartstats and 7digital scripts
+	 Fixes to various scripts that needed updating
+
 0.37.1
      Fixed bug introduced in 0.37 which stopped the Foobar browser working under x64.
 
