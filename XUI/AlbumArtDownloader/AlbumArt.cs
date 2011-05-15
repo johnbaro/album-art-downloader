@@ -35,7 +35,7 @@ namespace AlbumArtDownloader
 		/// <summary>
 		/// Constructs an AlbumArt with an already known full-size image
 		/// </summary>
-        public AlbumArt(Source source, string name, string infoUri, int width, int height, byte[] fullSizeImageData, CoverType coverType)
+		public AlbumArt(Source source, string name, string infoUri, int width, int height, byte[] fullSizeImageData, CoverType coverType)
 		{
 			mSource = source;
 			ResultName = name;
@@ -44,16 +44,16 @@ namespace AlbumArtDownloader
 
 			BitmapData = fullSizeImageData;
 
-            if (width == -1 && height == -1)
-            {
-                //Have to decode the image data to get width and height
-                SetImageDimensions(Image.PixelWidth, Image.PixelHeight);
-            }
-            else
-            {
-                //Believe the dimensions specified
-                SetImageDimensions(width, height);
-            }
+			if (width == -1 && height == -1)
+			{
+				//Have to decode the image data to get width and height
+				SetImageDimensions(Image.PixelWidth, Image.PixelHeight);
+			}
+			else
+			{
+				//Believe the dimensions specified
+				SetImageDimensions(width, height);
+			}
 
 			mIsFullSize = true;
 		}
@@ -133,26 +133,26 @@ namespace AlbumArtDownloader
 		#endregion
 		#region Properties
 		private byte[] mBitmapData;
-        /// <summary>The Album Art, as original source data. Backs the <see cref="BitmapImage"/></summary>
-        private byte[] BitmapData
+		/// <summary>The Album Art, as original source data. Backs the <see cref="BitmapImage"/></summary>
+		private byte[] BitmapData
 		{
 			get
 			{
 				return mBitmapData;
 			}
-            set
-            {
-                if (mBitmapData != value)
-                {
-                    mBitmapData = value;
+			set
+			{
+				if (mBitmapData != value)
+				{
+					mBitmapData = value;
 
-                    //Reset the cached image decoder (it will be recreated from the new bitmap data), and notify of the change.
-                    mCachedImageDecoder = null;
+					//Reset the cached image decoder (it will be recreated from the new bitmap data), and notify of the change.
+					mCachedImageDecoder = null;
 
-                    NotifyPropertyChanged("Image");
-                    NotifyPropertyChanged("ImageCodecInfo");
-                }
-            }
+					NotifyPropertyChanged("Image");
+					NotifyPropertyChanged("ImageCodecInfo");
+				}
+			}
 		}
 
 		/// <summary>
@@ -161,36 +161,50 @@ namespace AlbumArtDownloader
 		/// <returns></returns>
 		internal Stream GetBitmapDataStream()
 		{
-            if (BitmapData == null)
-            {
-                return null;
-            }
+			if (BitmapData == null)
+			{
+				return null;
+			}
 			return new MemoryStream(BitmapData);
 		}
 
-        private BitmapDecoder mCachedImageDecoder;
-        private BitmapDecoder ImageDecoder
-        {
-            get
-            {
-                if (mCachedImageDecoder == null && BitmapData != null)
+		private BitmapDecoder mCachedImageDecoder;
+		private BitmapDecoder ImageDecoder
+		{
+			get
+			{
+				if (mCachedImageDecoder == null && BitmapData != null)
 				{
+					Dispatcher.VerifyAccess();
 					//Create the image source from the bitmap data
-                    mCachedImageDecoder = BitmapDecoder.Create(GetBitmapDataStream(), BitmapCreateOptions.None, BitmapCacheOption.None); // Don't cache, as the data is already coming straight from memory.
-                }
-                return mCachedImageDecoder;
-            }
-        }
+					mCachedImageDecoder = CreateImageDecoderForBitmapData(GetBitmapDataStream());
+				}
+				return mCachedImageDecoder;
+			}
+		}
+
+		private BitmapDecoder CreateImageDecoderForBitmapData(Stream bitmapDataStream)
+		{
+			try
+			{
+				 return BitmapDecoder.Create(bitmapDataStream, BitmapCreateOptions.None, BitmapCacheOption.None); // Don't cache, as the data is already coming straight from memory.
+			}
+			catch (NotSupportedException)
+			{
+				System.Diagnostics.Trace.WriteLine(String.Format("Could not construct bitmap from data for: \"{0}\" from \"{1}\"", ResultName, SourceName));
+			}
+			return null;
+		}
 
 		public BitmapSource Image
 		{
 			get 
 			{
-                if (BitmapData == null)
-                {
-                    return null;
-                }
-                return ImageDecoder.Frames[0];
+				if (BitmapData == null || ImageDecoder == null)
+				{
+					return null;
+				}
+				return ImageDecoder.Frames[0];
 			}
 		}
 
@@ -198,11 +212,11 @@ namespace AlbumArtDownloader
 		{
 			get
 			{
-                if (BitmapData == null)
-                {
-                    return new string[0];
-                }
-                return from s in ImageDecoder.CodecInfo.FileExtensions.Split(',') select s.Substring(1);
+				if (BitmapData == null || ImageDecoder == null)
+				{
+					return new string[0];
+				}
+				return from s in ImageDecoder.CodecInfo.FileExtensions.Split(',') select s.Substring(1);
 			}
 		}
 
@@ -514,7 +528,13 @@ namespace AlbumArtDownloader
 			var fullSizeImageData = mSource.RetrieveFullSizeImageData(mFullSizeCallbackParameter);
 			if (fullSizeImageData != null) //If it is null, just use the thumbnail image
 			{
-                BitmapData = fullSizeImageData;
+				//Attempt to create an image decoder for this data. If it fails, then this is not image data so fall back on thumbnail image
+				//If it succeeds, the image decoder must be discarded anyway, as it's not been created on the dispatcher thread.
+				if (CreateImageDecoderForBitmapData(new MemoryStream(fullSizeImageData)) != null)
+				{
+					//This is valid image data, so assign it
+					BitmapData = fullSizeImageData;
+				}
 			}
 
 			List<WaitCallback> callbacks;
@@ -643,7 +663,7 @@ namespace AlbumArtDownloader
 
 			try
 			{
-                File.WriteAllBytes(FilePath, BitmapData);
+				File.WriteAllBytes(FilePath, BitmapData);
 			}
 			catch (Exception e)
 			{

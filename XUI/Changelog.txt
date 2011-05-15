@@ -1,3 +1,6 @@
+0.38.1
+	 Fixed bug dealing with invalid image data
+
 0.38.0
 	 Removed dependency on GDI+ (all image handling is now done using WPF/WIC)
 	 Fixed bug in File Browser with Various Artists and embedded images
