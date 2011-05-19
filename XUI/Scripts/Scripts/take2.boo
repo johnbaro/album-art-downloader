@@ -7,7 +7,7 @@ class Take2(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "Take2"
 	Version as string:
-		get: return "0.1"
+		get: return "0.2"
 	Author as string:
 		get: return "Alex Vallat"
 	def Search(artist as string, album as string, results as IScriptResults):
@@ -15,7 +15,7 @@ class Take2(AlbumArtDownloader.Scripts.IScript):
 		album = StripCharacters("&.'\";:?!", album)
 
 		//Retrieve the search results page
-		searchResultsHtml as string = GetPage("http://www.take2.co.za/search.php?post=1&advanced=1&method=word&stype=5&pagesize=100&search=" + EncodeUrl(artist + " " + album))
+		searchResultsHtml as string = GetPage("http://www.take2.co.za/search?type=5&qsearch=" + EncodeUrl(artist + " " + album))
 		
 		matches = Regex("<img src=\"http://images.take2.co.za/covers/small/(?<image>[^\"]+)\"[^>]+?class=\"cover.+?<a href=\"(?<info>[^\"]+)\" class=\"itemtitle\">\\s*(?<title>[^<]+)</a>", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResultsHtml)
 		
