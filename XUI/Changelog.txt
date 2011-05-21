@@ -1,3 +1,7 @@
+0.38.2
+	 Now saves jpeg images as ".jpg" again, rather than ".jpeg" (as introduced by 0.38)
+	 Improved behaviour with auto-download of new scripts enabled, when both new and updated scripts are available
+
 0.38.1
 	 Fixed bug dealing with invalid image data
 

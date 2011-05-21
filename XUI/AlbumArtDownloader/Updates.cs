@@ -116,6 +116,10 @@ namespace AlbumArtDownloader
 				}
 
 				Properties.Settings.Default.NewScriptsAvailable = updates.mAvailableScripts.Count > 0;
+				parameters.Dispatcher.Invoke(DispatcherPriority.Normal, new ThreadStart(delegate
+				{
+					System.Windows.Input.CommandManager.InvalidateRequerySuggested();
+				}));
 
 				if (parameters.ShowUI == PerformUpdateCheckParameters.UI.NewScripts)
 				{
@@ -142,8 +146,7 @@ namespace AlbumArtDownloader
 						foreach (var script in updates.mAvailableScripts)
 						{
 							script.Download();
-							sRestartPending = true;
-
+							
 							parameters.Dispatcher.BeginInvoke(DispatcherPriority.DataBind, new ThreadStart(delegate
 							{
 								AutoDownloadedScripts.Add(script);

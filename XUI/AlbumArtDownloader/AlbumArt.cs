@@ -44,7 +44,7 @@ namespace AlbumArtDownloader
 
 			BitmapData = fullSizeImageData;
 
-			if (width == -1 && height == -1)
+			if (width == -1 && height == -1 && Image != null)
 			{
 				//Have to decode the image data to get width and height
 				SetImageDimensions(Image.PixelWidth, Image.PixelHeight);
@@ -94,7 +94,7 @@ namespace AlbumArtDownloader
 									.Replace("%name%", Common.MakeSafeForPath(albumArt.ResultName))
 									.Replace("%source%", Common.MakeSafeForPath(albumArt.SourceName))
 									.Replace("%size%", String.Format("{0} x {1}", albumArt.ImageWidth, albumArt.ImageHeight))
-                                    .Replace("%extension%", albumArt.ImageFileExtensions.FirstOrDefault())
+                                    .Replace("%extension%", albumArt.ImageFileDefaultExtension)
 									.Replace("%preset%", Common.MakeSafeForPath(albumArt.Preset))
 									.Replace("%type%", Common.MakeSafeForPath(albumArt.CoverType.ToString()));
 
@@ -217,6 +217,22 @@ namespace AlbumArtDownloader
 					return new string[0];
 				}
 				return from s in ImageDecoder.CodecInfo.FileExtensions.Split(',') select s.Substring(1);
+			}
+		}
+
+		public string ImageFileDefaultExtension
+		{
+			get
+			{
+				// Default to the first available extension for the image
+				var extension = ImageFileExtensions.FirstOrDefault();
+
+				//Hack for consistency with previous versions - use .jpg by default for jpeg files, not .jpeg
+				if ("jpeg".Equals(extension, StringComparison.OrdinalIgnoreCase))
+				{
+					return "jpg";
+				}
+				return extension;
 			}
 		}
 
@@ -636,7 +652,7 @@ namespace AlbumArtDownloader
 		{
 			SaveFileDialog saveFileDialog = new SaveFileDialog();
 			saveFileDialog.FileName = FilePath;
-			saveFileDialog.DefaultExt = ImageFileExtensions.FirstOrDefault(); //Default to the first extension
+			saveFileDialog.DefaultExt = ImageFileDefaultExtension;
 			saveFileDialog.AddExtension = true;
 			saveFileDialog.OverwritePrompt = false; //That will be handled by Save();
             saveFileDialog.Filter = String.Format("Image Files ({0})|{0}|All Files|*.*", String.Join(";", (from ext in ImageFileExtensions select "*." + ext).ToArray()));

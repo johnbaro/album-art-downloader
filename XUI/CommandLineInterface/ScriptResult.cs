@@ -62,6 +62,12 @@ namespace AlbumArtDownloader
                     mHeight = frame.PixelHeight;
 
                     mExtension = decoder.CodecInfo.FileExtensions.Split(',')[0].Substring(1);
+
+					//Hack for consistency with previous versions - use .jpg by default for jpeg files, not .jpeg
+					if ("jpeg".Equals(mExtension, StringComparison.OrdinalIgnoreCase))
+					{
+						mExtension = "jpg";
+					}
                 }
 
 				mImageDownloaded = true;
