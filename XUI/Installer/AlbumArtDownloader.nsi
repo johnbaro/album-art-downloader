@@ -142,6 +142,10 @@ SectionGroup "Image Download Scripts"
 			  File "..\Scripts\Scripts\amazon-common.boo"
 			  File "..\Scripts\Scripts\amazon-jp.boo"
 			SectionEnd
+			Section /o "Amazon (IT)"
+			  File "..\Scripts\Scripts\amazon-common.boo"
+			  File "..\Scripts\Scripts\amazon-it.boo"
+			SectionEnd
 		SectionGroupEnd
 		Section "Google"
 		  File "..\Scripts\Scripts\google.boo"
