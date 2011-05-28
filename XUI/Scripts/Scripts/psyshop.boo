@@ -11,26 +11,26 @@ class Psyshop:
 	static SourceCreator as string:
 		get: return "Alex Vallat"
 	static SourceVersion as string:
-		get: return "0.3"
+		get: return "0.4"
 	static def GetThumbs(coverart,artist,album):
 		artist = StripCharacters("&.'\";:?!", artist)
 		album = StripCharacters("&.'\";:?!", album)
 
 		query as string = artist + " " + album
 		
-		resultsPage = Post("http://217.160.136.176/cgi-bin/search.cgi", String.Format("boolean=AND&case=INSENSITIVE&cd=TRUE&terms={0}", EncodeUrl(query)))
+		resultsPage = Post("http://www.psyshop.com/cgi-bin/search.cgi", String.Format("boolean=AND&case=INSENSITIVE&cd=TRUE&terms={0}", EncodeUrl(query)))
 		
 		//Get results
-		resultsRegex = Regex("<A HREF=\"http://www.psyshop.com/shop/CDs/[^/]+/(?<id>[^\\.]+).html\"><DIV CLASS=\"n\">(?<title>[^<]+)</DIV>", RegexOptions.Multiline | RegexOptions.IgnoreCase)
+		resultsRegex = Regex("<A HREF=\"(?<url>http://www.psyshop.com/shop/CDs/[^/]+/(?<id>[^\\.]+).html)\"><DIV CLASS=\"n\">(?<title>[^<]+)</DIV>", RegexOptions.Multiline | RegexOptions.IgnoreCase)
 		resultMatches = resultsRegex.Matches(resultsPage)
 		coverart.SetCountEstimate(resultMatches.Count)
 		
 		for resultMatch as Match in resultMatches:
 			id = resultMatch.Groups["id"].Value
 			coverType = CoverType.Front #Assume that the image is always the front cover
-			albumUrl = "http://www.psyshop.com/shop/CDs/${id}.html"
+			albumUrl = resultMatch.Groups["url"].Value
 			coverart.Add(
-					"http://217.160.164.51/pic/${id}_s.jpg", #thumbnail
+					"http://87.106.17.252/pic/${id}_s.jpg", #thumbnail
 					resultMatch.Groups["title"].Value, #name
 					albumUrl, #infoUri
 					512, #fullSizeImageWidth

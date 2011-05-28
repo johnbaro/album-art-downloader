@@ -11,7 +11,7 @@ class RevHQ:
 	static SourceCreator as string:
 		get: return "Alex Vallat"
 	static SourceVersion as string:
-		get: return "0.4"
+		get: return "0.5"
 	static def GetThumbs(coverart,artist,album):
 		artist = StripCharacters("&.'\";:?!", artist)
 		album = StripCharacters("&.'\";:?!", album)
@@ -19,7 +19,7 @@ class RevHQ:
 		if(String.IsNullOrEmpty(album)):
 			return //Can't search without the album title to search for
 		
-		resultsPage = GetPage(String.Format("http://revhq.com/store.revhq?Page=search&Keywords={0}&Category=Title", EncodeUrl(album)))
+		resultsPage = Post("http://revhq.com/store.revhq", "Page=search&Keywords=${EncodeUrl(album)}&Category=Title")
 		
 		//Get results
 		resultRegex = Regex("<B>(?<artist>[^<]+)</B>\\: <A HREF=\"/store\\.revhq\\?Page=search&Id=(?<id>[^\"]+)\">", RegexOptions.Singleline)
@@ -71,3 +71,15 @@ class RevHQ:
 
 	static def GetResult(param):
 		return param
+
+	static def Post(url as String, content as String):
+		request = System.Net.HttpWebRequest.Create(url)
+		request.Method="POST"
+		request.ContentType = "application/x-www-form-urlencoded"
+		bytes = System.Text.UTF8Encoding().GetBytes(content)
+		request.ContentLength = bytes.Length
+		stream = request.GetRequestStream()
+		stream.Write(bytes,0,bytes.Length)
+		stream.Close()
+		streamresponse = request.GetResponse().GetResponseStream()
+		return System.IO.StreamReader(streamresponse).ReadToEnd()

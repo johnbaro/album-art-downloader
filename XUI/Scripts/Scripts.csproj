@@ -68,6 +68,9 @@
     <None Include="Scripts\7digital.boo">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="Scripts\Archived\coverisland.boo" />
+    <None Include="Scripts\Archived\freecovers-api.boo" />
+    <None Include="Scripts\Archived\maniadb.boo" />
     <None Include="Scripts\chartstats.boo">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -78,9 +81,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Scripts\darktown.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\freecovers-api.boo">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Scripts\amazon-common.boo">
@@ -100,9 +100,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Scripts\coveralia.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\coverisland.boo">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Scripts\discogs.boo">
@@ -155,9 +152,7 @@
     <None Include="Scripts\cdbaby.boo">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Scripts\Archived\lala.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="Scripts\Archived\lala.boo" />
     <None Include="Scripts\take2.boo">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -170,9 +165,7 @@
     <None Include="Scripts\hmv-canada.boo">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="Scripts\Archived\musicmight.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="Scripts\Archived\musicmight.boo" />
     <None Include="Scripts\yesasia.boo">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -189,9 +182,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Scripts\lastfm-cover.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\maniadb.boo">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Scripts\metal-archives.boo">

@@ -7,7 +7,7 @@ class EncyclopaediaMetallum(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "Encyclopaedia Metallum"
 	Version as string:
-		get: return "0.5"
+		get: return "0.6"
 	Author as string:
 		get: return "Alex Vallat"
 	def Search(artist as string, album as string, results as IScriptResults):
@@ -15,14 +15,14 @@ class EncyclopaediaMetallum(AlbumArtDownloader.Scripts.IScript):
 		album = StripCharacters("&.'\";:?!", album)
 
 		//Retrieve the search results page
-		searchResultsHtml as string = GetPage("http://www.metal-archives.com/advanced.php?band_name=${EncodeUrl(artist)}&release_name=${EncodeUrl(album)}")
+		searchResultsJson as string = GetPage("http://www.metal-archives.com/search/ajax-advanced/searching/albums/?bandName=${EncodeUrl(artist)}&releaseTitle=${EncodeUrl(album)}&sEcho=1&iDisplayStart=0&iDisplayLength=100")
 		
-		matches = Regex("href=\"release\\.php\\?id=(?<id>(?<idPart>\\d)+)[^\"]*\">(?<name>.*?)</a>", RegexOptions.IgnoreCase).Matches(searchResultsHtml)
+		matches = Regex("/bands/[^>]+>(?<artist>[^<]+)</a>.+?/albums/[^/]+/[^/]+/(?<id>(?<idPart>\\d)+)\\\\\">(?<album>[^<]+)<", RegexOptions.IgnoreCase | RegexOptions.Singleline).Matches(searchResultsJson)
 		
 		results.EstimatedCount = matches.Count
 		
 		for match as Match in matches:
-			name = match.Groups["name"].Value.Replace("<strong>","").Replace("</strong>", "")
+			name = match.Groups["artist"].Value + " - " + match.Groups["album"].Value
 			
 			url = "http://www.metal-archives.com/images/"
 			

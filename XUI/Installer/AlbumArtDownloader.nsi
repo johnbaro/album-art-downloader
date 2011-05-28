@@ -165,14 +165,16 @@ SectionGroup "Image Download Scripts"
 		Section "Discogs"
 		  File "..\Scripts\Scripts\discogs.boo"
 		SectionEnd
-		Section "CoverIsland"
-		  File "..\Scripts\Scripts\coverisland.boo"
-		SectionEnd
-		Section "FreeCovers"
-		  #Remove old freecovers script
-		  Delete "$INSTDIR\Scripts\freecovers.boo"
-		  File "..\Scripts\Scripts\freecovers-api.boo"
-		SectionEnd
+		#Coverisland currently inoperational due to site apparently not actually showing any cover images any more
+		#Section "CoverIsland"
+		#  File "..\Scripts\Scripts\coverisland.boo"
+		#SectionEnd
+		#Freecovers currently inoperational due to site taking down API (temporarily? It's been over a year)
+		#Section "FreeCovers"
+		#  #Remove old freecovers script
+		#  Delete "$INSTDIR\Scripts\freecovers.boo"
+		#  File "..\Scripts\Scripts\freecovers-api.boo"
+		#SectionEnd
 		#Rate Your Music script currently inoperational due to defensive site changes
 		#Section "Rate Your Music"
 		#  File "..\Scripts\Scripts\rateyourmusic.boo"
@@ -202,15 +204,6 @@ SectionGroup "Image Download Scripts"
 		Section "Archambault"
 		  File "..\Scripts\Scripts\archambault.boo"
 		SectionEnd
-		Section "HMV Canada"
-		  File "..\Scripts\Scripts\hmv-canada.boo"
-		SectionEnd
-		Section "Kalahari (South Africa)"
-		  File "..\Scripts\Scripts\kalahari.boo"
-		SectionEnd
-		Section "Take2 (South Africa)"
-		  File "..\Scripts\Scripts\take2.boo"
-		SectionEnd
 		#iTunes script currently blocked by apple, so don't include it
 		#Section "iTunes Music Shop"
 		#  File "..\Scripts\Scripts\iTunes.boo"
@@ -218,62 +211,84 @@ SectionGroup "Image Download Scripts"
 	SectionGroupEnd
 	
 	SectionGroup "Dance, Trance"
-		Section "Juno Records"
+		Section /o "Juno Records"
 		  File "..\Scripts\Scripts\juno-records.boo"
 		SectionEnd
-		Section "PsyShop"
+		Section /o "PsyShop"
 		  File "..\Scripts\Scripts\psyshop.boo"
 		SectionEnd
 	SectionGroupEnd
 	
 	SectionGroup "Punk, Metal, Rock"
-		Section "Encyclopaedia Metallum"
+		Section /o "Encyclopaedia Metallum"
 		  File "..\Scripts\Scripts\metal-archives.boo"
 		SectionEnd
-		Section "Metal Library"
+		Section /o "Metal Library"
 		  File "..\Scripts\Scripts\metallibrary.boo"
 		SectionEnd
-		Section "RevHQ"
-		  File "..\Scripts\Scripts\revhq.boo"
-		SectionEnd
-		#Section "MusicMight"
+		#Section /o "MusicMight"
 		#  File "..\Scripts\Scripts\musicmight.boo"
 		#SectionEnd
 	SectionGroupEnd
 	
 	SectionGroup "Independent"
-		Section "CDBaby"
+		Section /o "CDBaby"
 		  File "..\Scripts\Scripts\cdbaby.boo"
 		SectionEnd
-	SectionGroupEnd
-
-	SectionGroup "Eastern"
-		Section "Yes24"
-		  File "..\Scripts\Scripts\yes24.boo"
-		SectionEnd
-		Section "YesAsia"
-		  File "..\Scripts\Scripts\yesasia.boo"
-		SectionEnd
-		Section "maniadb"
-		  File "..\Scripts\Scripts\maniadb.boo"
+		Section /o "RevHQ"
+		  File "..\Scripts\Scripts\revhq.boo"
 		SectionEnd
 	SectionGroupEnd
 
 	SectionGroup "Classical"
-		Section "ArkivMusic"
+		Section /o "ArkivMusic"
 		  File "..\Scripts\Scripts\arkivmusic.boo"
 		SectionEnd
 	SectionGroupEnd
 	
 	SectionGroup "Video Game Music"
-		Section "VGMdb"
+		Section /o "VGMdb"
 		  File "..\Scripts\Scripts\vgmdb.boo"
+		SectionEnd
+	SectionGroupEnd
+
+	SectionGroup "Eastern"
+		Section /o "HMV Canada"
+		  File "..\Scripts\Scripts\hmv-canada.boo"
+		SectionEnd
+	SectionGroupEnd
+
+	SectionGroup "Eastern"
+		Section /o "Yes24"
+		  File "..\Scripts\Scripts\yes24.boo"
+		SectionEnd
+		Section /o "YesAsia"
+		  File "..\Scripts\Scripts\yesasia.boo"
+		SectionEnd
+		# Site appears to be down
+		#Section "maniadb"
+		#  File "..\Scripts\Scripts\maniadb.boo"
+		#SectionEnd
+	SectionGroupEnd
+
+	SectionGroup "South African"
+		Section /o "Kalahari"
+		  File "..\Scripts\Scripts\kalahari.boo"
+		SectionEnd
+		Section /o "Take2"
+		  File "..\Scripts\Scripts\take2.boo"
 		SectionEnd
 	SectionGroupEnd
 	
 	SectionGroup "Artist Images"
-		Section "LastFM Artist"
+		Section /o "LastFM Artist"
 			File "..\Scripts\Scripts\lastfm-artist.boo"
+		SectionEnd
+	SectionGroupEnd
+
+	SectionGroup "Fan-made covers"
+		Section /o "Coverlandia"
+			File "..\Scripts\Scripts\coverlandia.boo"
 		SectionEnd
 	SectionGroupEnd
 SectionGroupEnd

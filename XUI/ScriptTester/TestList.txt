@@ -14,16 +14,16 @@ CD Baby	Girlyman	Everything's Easy
 CD Universe	Muse	The Resistance
 Cover-Paradies	Muse	The Resistance
 Coveralia	Muse	The Resistance
-CoverIsland	Muse	The Resistance
+;CoverIsland	Muse	The Resistance
 Darktown	Blink 182	Enema of The State
 Discogs	Muse	The Resistance
-Freecovers API	Muse	The Resistance
+;Freecovers API	Muse	The Resistance
 GoogleImage	Muse	The Resistance
 hitparade.ch	Muse	The Resistance
 Juno Records	Muse	The Resistance
 LastFM Artist	Muse	The Resistance
 LastFM Cover	Muse	The Resistance
-maniadb	Muse	The Resistance
+;maniadb	Muse	The Resistance
 Encyclopaedia Metallum	Onslaught	Power From Hell
 Metal Library	Onslaught	Power From Hell
 ;MusicMight	Onslaught	Power From Hell
