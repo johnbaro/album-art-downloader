@@ -1,3 +1,6 @@
+0.38.3
+	 Fixed bug introduced with 0.38 where the preview for some results would show as a thin column
+
 0.38.2
 	 Now saves jpeg images as ".jpg" again, rather than ".jpeg" (as introduced by 0.38)
 	 Improved behaviour with auto-download of new scripts enabled, when both new and updated scripts are available

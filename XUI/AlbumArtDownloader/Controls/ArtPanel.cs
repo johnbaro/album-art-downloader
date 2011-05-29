@@ -495,7 +495,7 @@ namespace AlbumArtDownloader.Controls
 			double imageAspectRatio = 1; //If no album art yet, then assume it will be square.
 			if (AlbumArt != null)
 			{
-				imageAspectRatio = AlbumArt.ImageWidth / AlbumArt.ImageHeight;
+				imageAspectRatio = (double)AlbumArt.ImageWidth / (double)AlbumArt.ImageHeight;
 			}
 			
 			//Popup may not take up more than 75% screen area (matches WPF Popup restriction)
