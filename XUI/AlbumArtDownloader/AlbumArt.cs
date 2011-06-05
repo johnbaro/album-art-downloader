@@ -608,7 +608,8 @@ namespace AlbumArtDownloader
 		/// </summary>
 		internal void Save()
 		{
-			if (String.IsNullOrEmpty(FilePath))
+			var filePath = FilePath;
+			if (String.IsNullOrEmpty(filePath))
 			{
 				SaveAs();
 				return;
@@ -617,31 +618,32 @@ namespace AlbumArtDownloader
 			try
 			{
 				//Check if FilePath already exists
-				if (File.Exists(FilePath))
+				if (File.Exists(filePath))
 				{
 					//Confirm overwrite
-					if (MessageBox.Show(String.Format("'{0}' already exists.\nDo you want to replace it?", Path.GetFullPath(FilePath)), "Album Art Downloader", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+					if (MessageBox.Show(String.Format("'{0}' already exists.\nDo you want to replace it?", Path.GetFullPath(filePath)), "Album Art Downloader", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
 					{
 						SaveAs();
 						return;
 					}
 				}
 
-				DirectoryInfo folder = new DirectoryInfo(Path.GetDirectoryName(FilePath));
+				DirectoryInfo folder = new DirectoryInfo(Path.GetDirectoryName(filePath));
 				if (!folder.Exists)
 					folder.Create();
-				
-				File.Create(FilePath, 1, FileOptions.DeleteOnClose).Close();
+
+				File.Create(filePath, 1, FileOptions.DeleteOnClose).Close();
 			}
 			catch (Exception e)
 			{
-				MessageBox.Show(String.Format("Could not save image '{0}':\n\n{1}", FilePath, e.Message), "Album Art Downloader", MessageBoxButton.OK, MessageBoxImage.Error);
+				MessageBox.Show(String.Format("Could not save image '{0}':\n\n{1}", filePath, e.Message), "Album Art Downloader", MessageBoxButton.OK, MessageBoxImage.Error);
 				return;
 			}
 
 			IsSaving = true;
 			
-			RetrieveFullSizeImage(new WaitCallback(SaveInternal));
+			//Pass the current filepath as a variable so that if the FilePath property changes, it will still be this filepath that's saved to, not the new one.
+			RetrieveFullSizeImage(new WaitCallback(delegate { SaveInternal(filePath); }));
 		}
 
 		/// <summary>
@@ -673,17 +675,17 @@ namespace AlbumArtDownloader
 		}
 
 		//Performs the actual save operation, as a result of the full size image retreival completing
-		private void SaveInternal(object sender)
+		private void SaveInternal(string filePath)
 		{
 			System.Diagnostics.Debug.Assert(mIsFullSize, "Full size image was not retrieved");
-
+			
 			try
 			{
-				File.WriteAllBytes(FilePath, BitmapData);
+				File.WriteAllBytes(filePath, BitmapData);
 			}
 			catch (Exception e)
 			{
-				MessageBox.Show(String.Format("Unexpected faliure saving image to: \"{0}\"\n\n{1}", FilePath, e.Message), "Album Art Downloader", MessageBoxButton.OK, MessageBoxImage.Error);
+				MessageBox.Show(String.Format("Unexpected faliure saving image to: \"{0}\"\n\n{1}", filePath, e.Message), "Album Art Downloader", MessageBoxButton.OK, MessageBoxImage.Error);
 			}
 			IsSaving = false;
 			IsSaved = true;
