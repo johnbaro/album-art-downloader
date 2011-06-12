@@ -345,6 +345,11 @@ namespace AlbumArtDownloader
 						Dispatcher.Invoke(DispatcherPriority.DataBind, new ThreadStart(delegate
 						{
 							mSearchResult.DefaultFilePathPattern = album.ArtFile;
+							if (Properties.Settings.Default.Presets.Length > 0)
+							{
+								mSearchResult.Preset = Properties.Settings.Default.Presets[0].Value;
+							}
+
 							//If the file already exists, overwrite it
 							if (System.IO.File.Exists(mSearchResult.FilePath))
 							{
@@ -357,7 +362,7 @@ namespace AlbumArtDownloader
 									System.Diagnostics.Trace.TraceError("Could not delete file \"{0}\": {1}", mSearchResult.FilePath, ex.Message);
 								}
 							}
-							mSearchResult.Save();
+							mSearchResult.Save(this);
 
 							mResults.Add(mSearchResult);
 
@@ -547,7 +552,7 @@ namespace AlbumArtDownloader
 			AlbumArt albumArt = mResultsList.GetSourceAlbumArt(e);
 			if (albumArt != null)
 			{
-				albumArt.Save();
+				albumArt.Save(this);
 			}
 		}
 		#endregion

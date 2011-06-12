@@ -94,23 +94,11 @@ namespace AlbumArtDownloader
 			AlbumArt albumArt = (AlbumArt)AlbumArt;
 			if (albumArt != null)
 			{
-				string preset = e.Parameter as String;
-				if (preset != null)
-				{
-					albumArt.Preset = preset;
-				}
-				else if (Properties.Settings.Default.Presets.Length > 0)
-				{
-					albumArt.Preset = Properties.Settings.Default.Presets[0].Value;
-				}
-				else
-				{
-					albumArt.Preset = null;
-				}
+				albumArt.Preset = e.Parameter as String;
 
 				albumArt.PropertyChanged += AutoCloseOnSave;
 
-				albumArt.Save();
+				albumArt.Save(this);
 			}
 		}
 		private void SaveAsExec(object sender, ExecutedRoutedEventArgs e)
@@ -119,7 +107,7 @@ namespace AlbumArtDownloader
 			if (albumArt != null)
 			{
 				albumArt.PropertyChanged += AutoCloseOnSave; //No auto-close for SaveAs operation.
-				albumArt.SaveAs();
+				albumArt.SaveAs(this);
 			}
 		}
 		private void AutoCloseOnSave(object sender, PropertyChangedEventArgs e)

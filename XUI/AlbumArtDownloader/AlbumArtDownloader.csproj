@@ -41,6 +41,7 @@
     <OutputPath>.\bin\Debug\</OutputPath>
     <DefineConstants>TRACE;DEBUG;_EPHEMERAL_SETTINGS _ERROR_REPORTING</DefineConstants>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>false</DebugSymbols>
@@ -48,6 +49,9 @@
     <OutputPath>.\bin\Release\</OutputPath>
     <DefineConstants>TRACE;ERROR_REPORTING</DefineConstants>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DefineConstants>TRACE;DEBUG;_EPHEMERAL_SETTINGS _ERROR_REPORTING</DefineConstants>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Boo.Lang, Version=2.0.0.0, Culture=neutral, PublicKeyToken=32c39770e9a21a67, processorArchitecture=MSIL">
@@ -99,6 +103,9 @@
   </ItemGroup>
   <ItemGroup>
     <AppDesigner Include="Properties\" />
+    <Compile Include="OverwriteExistingWarning.xaml.cs">
+      <DependentUpon>OverwriteExistingWarning.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
@@ -135,6 +142,10 @@
       <SubType>Code</SubType>
       <DependentUpon>CommandArgsHelp.xaml</DependentUpon>
     </Compile>
+    <Page Include="OverwriteExistingWarning.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Menu.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

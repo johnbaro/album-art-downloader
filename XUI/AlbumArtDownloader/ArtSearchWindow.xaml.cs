@@ -500,7 +500,7 @@ namespace AlbumArtDownloader
 				case NotifyCollectionChangedAction.Replace:
 					foreach (AlbumArt art in e.NewItems)
 					{
-						BindAlbumArtDefaultFilePath(art);
+						BindAlbumArtProperties(art);
 						AddResultToAutoDownloadFullSizeImage(art);
 					}
 					break;
@@ -509,16 +509,26 @@ namespace AlbumArtDownloader
 					break;
 			}
 		}
-		
-		private void BindAlbumArtDefaultFilePath(AlbumArt art)
+
+		private void BindAlbumArtProperties(AlbumArt art)
 		{
-			Binding defaultPathBinding = new Binding();
-			defaultPathBinding.Source = mDefaultSaveFolder;
-			defaultPathBinding.Path = new PropertyPath(ArtPathPatternBox.PathPatternProperty);
-			defaultPathBinding.Mode = BindingMode.OneWay;
-			defaultPathBinding.Converter = new AlbumArtDefaultFilePathPatternSubstitution();
-			defaultPathBinding.ConverterParameter = new string[] { Artist, Album };
+			var defaultPathBinding = new Binding
+			{
+				Source = mDefaultSaveFolder,
+				Path = new PropertyPath(ArtPathPatternBox.PathPatternProperty),
+				Mode = BindingMode.OneWay,
+				Converter = new AlbumArtDefaultFilePathPatternSubstitution(),
+				ConverterParameter = new string[] { Artist, Album }
+			};
 			BindingOperations.SetBinding(art, AlbumArt.DefaultFilePathPatternProperty, defaultPathBinding);
+
+			var defaultPresetBinding = new Binding
+			{
+				Source = this,
+				Path = new PropertyPath(DefaultPresetValueProperty),
+				Mode = BindingMode.OneWay
+			};
+			BindingOperations.SetBinding(art, AlbumArt.DefaultPresetValueProperty, defaultPresetBinding);
 		}
 
 		private class AlbumArtDefaultFilePathPatternSubstitution : IValueConverter
@@ -880,21 +890,9 @@ namespace AlbumArtDownloader
 					albumArt.PropertyChanged += AutoCloseOnSave;
 				}
 
-				string preset = e.Parameter as String;
-				if (preset != null)
-				{
-					albumArt.Preset = preset;
-				}
-				else if (Properties.Settings.Default.Presets.Length > 0)
-				{
-					albumArt.Preset = Properties.Settings.Default.Presets[0].Value;
-				}
-				else
-				{
-					albumArt.Preset = null;
-				}
-
-				albumArt.Save();
+				albumArt.Preset = e.Parameter as String;
+				
+				albumArt.Save(this);
 			}
 		}
 
@@ -905,7 +903,7 @@ namespace AlbumArtDownloader
 			{
 				albumArt.PropertyChanged -= AutoCloseOnSave; //No auto-close for SaveAs operation.
 
-				albumArt.SaveAs();
+				albumArt.SaveAs(this);
 			}
 		}
 
@@ -1032,8 +1030,33 @@ namespace AlbumArtDownloader
 			{
 				Properties.Settings.Default.Presets = editPresets.Presets.ToArray();
 				UpdatePresetsMenu();
+				UpdateDefaultPresetValue();
 			}
 		}
+
+		private void UpdateDefaultPresetValue()
+		{
+			if (Properties.Settings.Default.Presets.Length > 0)
+			{
+				DefaultPresetValue = Properties.Settings.Default.Presets[0].Value;
+			}
+			else
+			{
+				DefaultPresetValue = String.Empty;
+			}
+		}
+		
+		#region DefaultPresetValue
+		private static readonly DependencyPropertyKey DefaultPresetValuePropertyKey = DependencyProperty.RegisterReadOnly("DefaultPresetValue", typeof(string), typeof(ArtSearchWindow), new FrameworkPropertyMetadata(String.Empty));
+		public static readonly DependencyProperty DefaultPresetValueProperty = DefaultPresetValuePropertyKey.DependencyProperty;
+
+		public string DefaultPresetValue
+		{
+			get { return (string)GetValue(DefaultPresetValueProperty); }
+			private set { SetValue(DefaultPresetValuePropertyKey, value); }
+		}
+		#endregion
+
 		#endregion
 
 		#region Updates
@@ -1065,6 +1088,7 @@ namespace AlbumArtDownloader
 			}
 
 			UpdatePresetsMenu();
+			UpdateDefaultPresetValue();
 
 			System.Diagnostics.Trace.WriteLine("done.");
 		}

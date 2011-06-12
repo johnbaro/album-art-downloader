@@ -130,6 +130,22 @@ namespace AlbumArtDownloader
 				RegexOptions.IgnoreCase);
 		}
 
+
+		#region DefaultPresetValue
+		public static readonly DependencyProperty DefaultPresetValueProperty = DependencyProperty.Register("DefaultPresetValue", typeof(string), typeof(AlbumArt), new FrameworkPropertyMetadata(String.Empty, new PropertyChangedCallback(OnDefaultPresetValueChanged)));
+
+		public string DefaultPresetValue
+		{
+			get { return (string)GetValue(DefaultPresetValueProperty); }
+			set { SetValue(DefaultPresetValueProperty, value); }
+		}
+		private static void OnDefaultPresetValueChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+		{
+			sender.CoerceValue(FilePathProperty);
+		}
+		#endregion
+		
+
 		#endregion
 		#region Properties
 		private byte[] mBitmapData;
@@ -361,7 +377,14 @@ namespace AlbumArtDownloader
 		private string mPreset;
 		public string Preset
 		{
-			get { return mPreset; }
+			get 
+			{
+				if (mPreset == null)
+				{
+					return DefaultPresetValue;
+				}
+				return mPreset; 
+			}
 			internal set
 			{
 				if (mPreset != value)
@@ -606,12 +629,12 @@ namespace AlbumArtDownloader
 		/// Begins an asynchronous Save operation, including downloading the full size image.
 		/// The operation is synchronous until download begins, then asynch.
 		/// </summary>
-		internal void Save()
+		internal void Save(Window dialogOwner)
 		{
 			var filePath = FilePath;
 			if (String.IsNullOrEmpty(filePath))
 			{
-				SaveAs();
+				SaveAs(dialogOwner);
 				return;
 			}
 			//Check that it is possible to save to FilePath
@@ -621,10 +644,16 @@ namespace AlbumArtDownloader
 				if (File.Exists(filePath))
 				{
 					//Confirm overwrite
-					if (MessageBox.Show(String.Format("'{0}' already exists.\nDo you want to replace it?", Path.GetFullPath(filePath)), "Album Art Downloader", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.No)
+					filePath = OverwriteExistingWarning.Show(filePath, CreateSaveAsDialog(), dialogOwner);
+					if (filePath == null) //Cancelled
 					{
-						SaveAs();
 						return;
+					}
+
+					if (filePath != FilePath)
+					{
+						// Update the file path to indicate where it was actually saved
+						FilePath = filePath;
 					}
 				}
 
@@ -636,7 +665,7 @@ namespace AlbumArtDownloader
 			}
 			catch (Exception e)
 			{
-				MessageBox.Show(String.Format("Could not save image '{0}':\n\n{1}", filePath, e.Message), "Album Art Downloader", MessageBoxButton.OK, MessageBoxImage.Error);
+				MessageBox.Show(dialogOwner, String.Format("Could not save image '{0}':\n\n{1}", filePath, e.Message), "Album Art Downloader", MessageBoxButton.OK, MessageBoxImage.Error);
 				return;
 			}
 
@@ -650,17 +679,11 @@ namespace AlbumArtDownloader
 		/// Begins an asynchronous Save As operation, including downloading the full size image.
 		/// The operation is synchronous until download begins (including the dialog), then asynch.
 		/// </summary>
-		internal void SaveAs()
+		internal void SaveAs(Window dialogOwner)
 		{
-			SaveFileDialog saveFileDialog = new SaveFileDialog();
-			saveFileDialog.FileName = FilePath;
-			saveFileDialog.DefaultExt = ImageFileDefaultExtension;
-			saveFileDialog.AddExtension = true;
-			saveFileDialog.OverwritePrompt = false; //That will be handled by Save();
-            saveFileDialog.Filter = String.Format("Image Files ({0})|{0}|All Files|*.*", String.Join(";", (from ext in ImageFileExtensions select "*." + ext).ToArray()));
-			saveFileDialog.ValidateNames = false;
+			SaveFileDialog saveFileDialog = CreateSaveAsDialog();
 
-			if (saveFileDialog.ShowDialog().GetValueOrDefault(false))
+			if (saveFileDialog.ShowDialog(dialogOwner).GetValueOrDefault(false))
 			{
 				//HACK: DefaultExt doesn't actually seem to work, so force it by adding the default extension if none was provided
 				string filename = saveFileDialog.FileName;
@@ -670,8 +693,20 @@ namespace AlbumArtDownloader
 				}
 				FilePath = filename;
 
-				Save();
+				Save(dialogOwner);
 			}
+		}
+
+		private SaveFileDialog CreateSaveAsDialog()
+		{
+			SaveFileDialog saveFileDialog = new SaveFileDialog();
+			saveFileDialog.FileName = FilePath;
+			saveFileDialog.DefaultExt = ImageFileDefaultExtension;
+			saveFileDialog.AddExtension = true;
+			saveFileDialog.OverwritePrompt = false; //That will be handled by Save();
+			saveFileDialog.Filter = String.Format("Image Files ({0})|{0}|All Files|*.*", String.Join(";", (from ext in ImageFileExtensions select "*." + ext).ToArray()));
+			saveFileDialog.ValidateNames = false;
+			return saveFileDialog;
 		}
 
 		//Performs the actual save operation, as a result of the full size image retreival completing

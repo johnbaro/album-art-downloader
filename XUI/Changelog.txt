@@ -1,6 +1,8 @@
 0.39
 	 Fixed bug where, if a search window was reused for a new search while a full-sized image was being
 	  downloaded for saving, that image would be saved with the filename for the new search, not the old one.
+	 Fixed bug with non-blank default preset values
+	 Improved dialog for confirming whether to overwrite an existing file or not when saving artwork6
 
 0.38.3
 	 Fixed bug introduced with 0.38 where the preview for some results would show as a thin column
