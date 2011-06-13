@@ -1,3 +1,7 @@
+0.39.1
+	 Fixed undesirable overwriting behaviour when attempting to save multiple results to the same file before
+	  the first has finished saving.
+
 0.39
 	 Fixed bug where, if a search window was reused for a new search while a full-sized image was being
 	  downloaded for saving, that image would be saved with the filename for the new search, not the old one.

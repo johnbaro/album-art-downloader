@@ -661,7 +661,8 @@ namespace AlbumArtDownloader
 				if (!folder.Exists)
 					folder.Create();
 
-				File.Create(filePath, 1, FileOptions.DeleteOnClose).Close();
+				//Create a dummy file so that other save operations will notice if they would overwrite them
+				File.Create(filePath, 1).Close();
 			}
 			catch (Exception e)
 			{

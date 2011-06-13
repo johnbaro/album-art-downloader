@@ -132,7 +132,7 @@ namespace TestScript
 
 		public object RetrieveFullSizeImage(object fullSizeCallbackParameter)
 		{
-			System.Threading.Thread.Sleep(1000);
+			System.Threading.Thread.Sleep(3000);
 			return fullSizeCallbackParameter;
 		}
 
