@@ -13,12 +13,12 @@ class CoverParadies:
 	static SourceCreator as string:
 		get: return "Alex Vallat"
 	static SourceVersion as string:
-		get: return "0.13"
+		get: return "0.14"
 	static def GetThumbs(coverart,artist,album):
 		artist = StripCharacters("&.'\";:?!", artist)
 		album = StripCharacters("&.'\";:?!", album)
 
-		query as string = artist + " " + album
+		query as string = "\"" + artist + " - " + album + "\""
 		
 		searchResults = GetPage(String.Format("http://www.cover-paradies.to/?Module=ExtendedSearch&StartSearch=true&PagePos=0&SearchString={0}&StringMode=Wild&DisplayStyle=Text&HideDetails=Yes&PageLimit=1000&SektionID-2=Yes", EncodeUrl(query)))
 		

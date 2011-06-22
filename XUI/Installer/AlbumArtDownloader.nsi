@@ -245,6 +245,12 @@ SectionGroup "Image Download Scripts"
 		  File "..\Scripts\Scripts\arkivmusic.boo"
 		SectionEnd
 	SectionGroupEnd
+
+	SectionGroup "Reggae"
+		Section /o "EB Reggae"
+		  File "..\Scripts\Scripts\ebreggae.boo"
+		SectionEnd
+	SectionGroupEnd
 	
 	SectionGroup "Video Game Music"
 		Section /o "VGMdb"
