@@ -7,7 +7,7 @@ class Chartstats(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "Chartstats"
 	Version as string:
-		get: return "0.1"
+		get: return "0.2"
 	Author as string:
 		get: return "Alex Vallat"
 	def Search(artist as string, album as string, results as IScriptResults):
@@ -24,9 +24,14 @@ class Chartstats(AlbumArtDownloader.Scripts.IScript):
 		for match as Match in matches:
 			title = match.Groups["title"].Value
 			id = match.Groups["id"].Value
+			thumbnailUrl = "http://www.chartstats.com/image/r${id}_100.jpg"
 
-			results.Add("http://www.chartstats.com/image/r${id}_100.jpg", title, "http://www.chartstats.com/release.php?release=${id}", -1, -1, id, CoverType.Front);
+			request as System.Net.HttpWebRequest = System.Net.HttpWebRequest.Create(thumbnailUrl)
+			response = request.GetResponse()
+			if response.ContentType.StartsWith("image/"):
+				results.Add(thumbnailUrl, title, "http://www.chartstats.com/release.php?release=${id}", -1, -1, id, CoverType.Front)
 			
+			response.Close();
 
 	def RetrieveFullSizeImage(id):
 		artHtml as string = GetPage("http://www.chartstats.com/art.php?release=${id}")
