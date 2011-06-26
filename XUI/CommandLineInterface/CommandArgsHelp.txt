@@ -73,16 +73,18 @@ Options:
                Back
                Inside
                CD
+               Booklet
                Unknown
               
               As a shortcut to specifying all (/coverType any)
               types, the special type Any may 
               be used.
               
-              Types may be abbreviated to     (/coverType f,b,u)
-              their first letter.
+              Types may be abbreviated to     (/coverType f,b,i,c,k,u)
+              their first letter, or k for
+			  Booklet
               
-              May be abbreviated to /t        (/t c,u)              
+              May be abbreviated to /t        (/t c,u)         
  
  /orientation Specifies that the image must have    (/orientation landscape)
               a specific orientation. Valid values

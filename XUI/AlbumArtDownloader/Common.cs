@@ -389,6 +389,8 @@ namespace AlbumArtDownloader
 					return AllowedCoverType.Inside;
 				case CoverType.CD:
 					return AllowedCoverType.CD;
+				case CoverType.Booklet:
+					return AllowedCoverType.Booklet;
 			}
 			return AllowedCoverType.Unknown;
 		}

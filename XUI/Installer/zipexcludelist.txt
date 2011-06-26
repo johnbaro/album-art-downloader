@@ -1,3 +1,4 @@
 *\.svn
 *\updatetest.boo
 *\Archived
+*\TestScript.dll

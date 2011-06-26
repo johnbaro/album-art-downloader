@@ -7,7 +7,7 @@ class sevendigital(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "7digital"
 	Version as string:
-		get: return "0.1"
+		get: return "0.2"
 	Author as string:
 		get: return "Alex Vallat"
 	def Search(artist as string, album as string, results as IScriptResults):
@@ -27,21 +27,32 @@ class sevendigital(AlbumArtDownloader.Scripts.IScript):
 			size as int;
 
 			//Detect if 800x800 size is available
-			checkFor800 = System.Net.HttpWebRequest.Create(image + "_800.jpg") as System.Net.HttpWebRequest
-			checkFor800.Method = "HEAD";
-
-			response = checkFor800.GetResponse() as System.Net.HttpWebResponse
-			if response.StatusCode == System.Net.HttpStatusCode.OK:
+			if CheckResponse(image, "800"):
 				fullSize = image + "_800.jpg"
 				size = 800;
+			elif CheckResponse(image, "500"):
+				//fall back on 500x500
+				fullSize = image + "_500.jpg"
+				size = 500;
 			else:
 				//fall back on 350x350 image
 				fullSize = image + "_350.jpg"
 				size = 350;
 
-			response.Close();
-
 			results.Add(image + "_50.jpg", System.Web.HttpUtility.HtmlDecode(match.Groups["title"].Value), "http://7digital.com" + match.Groups["info"].Value, size, size, fullSize, CoverType.Front);
 
 	def RetrieveFullSizeImage(fullSizeCallbackParameter):
 		return fullSizeCallbackParameter;
+
+	def CheckResponse(image, size):
+		checkRequest = System.Net.HttpWebRequest.Create(image + "_" + size + ".jpg") as System.Net.HttpWebRequest
+		checkRequest.Method = "HEAD"
+		try:
+			response = checkRequest.GetResponse() as System.Net.HttpWebResponse
+			return response.StatusCode == System.Net.HttpStatusCode.OK
+		except e as System.Net.WebException:
+			return false;
+		ensure:
+			if response != null:
+				response.Close()
+		

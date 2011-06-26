@@ -18,13 +18,12 @@ class CoverParadies:
 		artist = StripCharacters("&.'\";:?!", artist)
 		album = StripCharacters("&.'\";:?!", album)
 
-		query as string = "\"" + artist + " - " + album + "\""
-		
-		searchResults = GetPage(String.Format("http://www.cover-paradies.to/?Module=ExtendedSearch&StartSearch=true&PagePos=0&SearchString={0}&StringMode=Wild&DisplayStyle=Text&HideDetails=Yes&PageLimit=1000&SektionID-2=Yes", EncodeUrl(query)))
-		
-		//Get results
-		resultsRegex = Regex(";ID=(?<ID>\\d+)\">(?!\\s*<img)", RegexOptions.Singleline)
-		resultMatches = resultsRegex.Matches(searchResults)
+		resultMatches = Search("\"" + artist + " - " + album + "\"")
+
+		if resultMatches.Count == 0:
+			// Try looser search terms
+			resultMatches = Search(artist + " " + album)
+
 		coverart.SetCountEstimate(resultMatches.Count * 3) //Estimate 3 covers per result. Results may vary.
 		
 		for resultMatch as Match in resultMatches:
@@ -50,6 +49,13 @@ class CoverParadies:
 				de = System.Globalization.CultureInfo.GetCultureInfo("de-DE") //Numbers are in DE culture (. for thousands separater, not for decimal point)
 				thousands = System.Globalization.NumberStyles.AllowThousands //Numbers have thousands separators.
 				coverart.Add(GetPageStream(imageMatch.Groups["thumb"].Value, "http://www.cover-paradies.to"), imageTitle, albumPageUri, Int32.Parse(imageMatch.Groups["width"].Value, thousands, de), Int32.Parse(imageMatch.Groups["height"].Value, thousands, de), imageMatch.Groups["fullSizeID"].Value, string2coverType(coverTypeString))		
+
+	static def Search(query):
+		searchResults = GetPage(String.Format("http://www.cover-paradies.to/?Module=ExtendedSearch&StartSearch=true&PagePos=0&SearchString={0}&StringMode=Wild&DisplayStyle=Text&HideDetails=Yes&PageLimit=1000&SektionID-2=Yes", EncodeUrl(query)))
+		
+		//Get results
+		resultsRegex = Regex(";ID=(?<ID>\\d+)\">(?!\\s*<img)", RegexOptions.Singleline)
+		return resultsRegex.Matches(searchResults)
 
 	static def Post(url as String, content as String):
 		request = System.Net.HttpWebRequest.Create(url)
@@ -85,9 +91,8 @@ class CoverParadies:
 		if(string.Compare(typeString,"inlay",true)==0):
 			return CoverType.Inlay;
 		if(string.Compare(typeString,"inside",true)==0):
-			return CoverType.Inlay;
+			return CoverType.Inside;
 		if(string.Compare(typeString,"booklet",true)==0):
-			return CoverType.Unknown; //did not know where to sort it in.
+			return CoverType.Booklet;
 		else:
-			return CoverType.Unknown;
-
+			return CoverType.Unknown;	

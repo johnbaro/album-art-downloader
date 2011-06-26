@@ -217,6 +217,24 @@ namespace AlbumArtDownloader.Controls
 			}
 		}
 
+		private bool mIncludeArtistAndAlbumPlaceholders = true;
+		public bool IncludeArtistAndAlbumPlaceholders 
+		{
+			get
+			{
+				return mIncludeArtistAndAlbumPlaceholders;
+			}
+			set
+			{
+				if (value != mIncludeArtistAndAlbumPlaceholders)
+				{
+					mIncludeArtistAndAlbumPlaceholders = value;
+
+					//TODO: Recreate the placeholder menu?
+				}
+			}
+		}
+
 		public event DependencyPropertyChangedEventHandler PathPatternChanged;
 		public static readonly DependencyProperty PathPatternProperty = DependencyProperty.Register("PathPattern", typeof(string), typeof(ArtPathPatternBox), new FrameworkPropertyMetadata(String.Empty, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, new PropertyChangedCallback(OnPathPatternChanged)));
 		public string PathPattern
@@ -281,12 +299,19 @@ namespace AlbumArtDownloader.Controls
 				PlaceholdersMenu.Add(browse);
 				PlaceholdersMenu.Add(new Separator());
 			}
-			PlaceholdersMenu.Add(CreatePlaceholderMenuItem(new PatternPlaceholder("A_rtist", "The artist searched for", "%artist%")));
-			PlaceholdersMenu.Add(CreatePlaceholderMenuItem(new PatternPlaceholder("A_lbum", "The album searched for", "%album%")));
+
+			if (IncludeArtistAndAlbumPlaceholders)
+			{
+				PlaceholdersMenu.Add(CreatePlaceholderMenuItem(new PatternPlaceholder("A_rtist", "The artist searched for", "%artist%")));
+				PlaceholdersMenu.Add(CreatePlaceholderMenuItem(new PatternPlaceholder("A_lbum", "The album searched for", "%album%")));
+			}
 
 			if (AdditionalPlaceholders.Count > 0)
 			{
-				PlaceholdersMenu.Add(new Separator());
+				if (IncludeArtistAndAlbumPlaceholders)
+				{
+					PlaceholdersMenu.Add(new Separator());
+				}
 
 				foreach (PatternPlaceholder placeholder in AdditionalPlaceholders)
 				{

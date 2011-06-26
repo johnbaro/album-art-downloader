@@ -12,19 +12,26 @@
     Title="Album Art Downloader" Height="Auto" Width="350"
 	SizeToContent="Height" ResizeMode="NoResize" ShowInTaskbar="False" WindowStartupLocation="CenterOwner">
 	<Window.Resources>
-		<properties:Settings x:Key="mSettings"/>
+        <ResourceDictionary>
+		    <properties:Settings x:Key="mSettings"/>
 
-		<controls:StringFormatterConverter x:Key="mStringFormatterConverter"/>
-        <controls:FileNameConverter x:Key="mFileNameConverter"/>
+		    <controls:StringFormatterConverter x:Key="mStringFormatterConverter"/>
+            <controls:FileNameConverter x:Key="mFileNameConverter"/>
+            <controls:FileSizeConverter x:Key="mFileSizeConverter"/>
 			
-		<Style TargetType="Button" x:Key="CommandLink">
-			<Setter Property="Padding" Value="4"/>
-			<Setter Property="Margin" Value="16,8,16,0"/>
-			<Setter Property="HorizontalContentAlignment" Value="Left"/>
-		</Style>
-	</Window.Resources>
+		    <Style TargetType="Button" x:Key="CommandLink">
+			    <Setter Property="Padding" Value="4"/>
+			    <Setter Property="Margin" Value="16,8,16,0"/>
+			    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+		    </Style>
+
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Controls/Xaml/HyperlinkExpander.generic.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
     <StackPanel>
-        <TextBlock TextWrapping="Wrap" Margin="8">
+        <TextBlock TextWrapping="Wrap" Margin="8, 8, 8, 0">
             <Run>There is already a file with the name </Run>
             <Hyperlink Command="{x:Static local:CommonCommands.ShowInExplorer}" CommandParameter="{Binding Filename}" ToolTip="{Binding Filename}" Foreground="DarkBlue">
                 <Hyperlink.ContextMenu>
@@ -36,10 +43,40 @@
 				    </ContextMenu>
 			    </Hyperlink.ContextMenu>
                 <TextBlock Text="{Binding Filename, Converter={StaticResource mFileNameConverter}}"/>
-            </Hyperlink>
-            <Run>. If you want to keep the existing file, a different name or location must be used for the new one.</Run>
+            </Hyperlink><TextBlock FontStyle="Italic">
+                <TextBlock.Style>
+                    <Style TargetType="TextBlock">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding FileSize}" Value="0">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TextBlock.Style>
+                <TextBlock.Text>
+                    <MultiBinding Converter="{StaticResource mStringFormatterConverter}" ConverterParameter="{}({0} x {1}, {2})" Mode="OneWay">
+						<Binding Path="FileWidth" />
+						<Binding Path="FileHeight" />
+                        <Binding Path="FileSize" Converter="{StaticResource mFileSizeConverter}" />
+					</MultiBinding>
+                </TextBlock.Text>
+            </TextBlock><Run>. If you want to keep the existing file, a different name or location must be used for the new one.</Run>
         </TextBlock>
-		<Button Style="{StaticResource CommandLink}" IsDefault="True" Click="Overwrite_Click" x:Name="mDefaultButton">
+        <Expander Style="{StaticResource HyperlinkExpander}" Header="Options..." IsExpanded="False">
+            <StackPanel>
+                <Label Target="{Binding ElementName=mSuggestedFilenamePattern}">Pattern for suggested unique filename:</Label>
+                <controls:ArtPathPatternBox x:Name="mSuggestedFilenamePattern" IncludeArtistAndAlbumPlaceholders="False" PathPatternChanged="mSuggestedFilenamePattern_PathPatternChanged">
+                    <controls:ArtPathPatternBox.AdditionalPlaceholders>
+                        <controls:PatternPlaceholder MenuItemHeader="_Filename" ToolTip="The original filename, without the extension" Placeholder="%filename%"/>
+                        <controls:PatternPlaceholder MenuItemHeader="_Extension" ToolTip="The extension of the original filename" Placeholder="%extension%"/>
+                        <controls:PatternPlaceholder MenuItemHeader="_Number" ToolTip="The smallest number necessary to make a unique filename" Placeholder="%n%"/>
+                        <controls:PatternPlaceholder MenuItemHeader="Number (from _2)" ToolTip="The smallest number, starting from 2, necessary to make a unique filename" Placeholder="%n2%"/>
+                        <controls:PatternPlaceholder MenuItemHeader="Number (with leading _0)" ToolTip="The smallest number necessary to make a unique filename, padded with a leading 0's to make it a constant length" Placeholder="%nn%"/>
+                    </controls:ArtPathPatternBox.AdditionalPlaceholders>
+                </controls:ArtPathPatternBox>
+            </StackPanel>
+        </Expander>
+        <Button Style="{StaticResource CommandLink}" IsDefault="True" Click="Overwrite_Click" x:Name="mDefaultButton">
 			<StackPanel Orientation="Horizontal">
 				<Image Source="Arrow.png" Margin="0,2,0,0" Stretch="None"/>
 				<TextBlock Margin="2" Padding="3">Overwrite the existing file with the new one</TextBlock>

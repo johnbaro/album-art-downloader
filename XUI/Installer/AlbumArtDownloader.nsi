@@ -1,5 +1,5 @@
 !define PRODUCT_NAME "Album Art Downloader XUI"
-!define PRODUCT_VERSION "0.39.1"
+!define PRODUCT_VERSION "0.40"
 !define PRODUCT_WEB_SITE "http://sourceforge.net/projects/album-art"
 !define PRODUCT_SUPPORT "http://www.hydrogenaudio.org/forums/index.php?showtopic=57392"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\AlbumArt.exe"
@@ -159,6 +159,9 @@ SectionGroup "Image Download Scripts"
 		Section "Cover-Paradies"
 		  File "..\Scripts\Scripts\cover-paradies.boo"
 		SectionEnd
+		Section "eMusic"
+		  File "..\Scripts\Scripts\emusic.boo"
+		SectionEnd
 		Section "CD Universe"
 		  File "..\Scripts\Scripts\cduniverse.boo"
 		SectionEnd
@@ -200,6 +203,9 @@ SectionGroup "Image Download Scripts"
 		SectionEnd
 		Section "Chartstats"
 		  File "..\Scripts\Scripts\chartstats.boo"
+		SectionEnd
+		Section "Qobuz"
+		  File "..\Scripts\Scripts\qobuz.boo"
 		SectionEnd
 		Section "Archambault"
 		  File "..\Scripts\Scripts\archambault.boo"
@@ -249,6 +255,12 @@ SectionGroup "Image Download Scripts"
 	SectionGroup "Reggae"
 		Section /o "EB Reggae"
 		  File "..\Scripts\Scripts\ebreggae.boo"
+		SectionEnd
+	SectionGroupEnd
+
+	SectionGroup "DJ"
+		Section /o "GigaCrate"
+		  File "..\Scripts\Scripts\gigacrate.boo"
 		SectionEnd
 	SectionGroupEnd
 	

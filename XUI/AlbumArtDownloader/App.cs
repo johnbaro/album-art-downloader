@@ -384,6 +384,10 @@ namespace AlbumArtDownloader
 								case "a":
 									sortField = "ImageArea";
 									break;
+								case "page":
+								case "p":
+									sortField = "InfoUri";
+									break;
 								default:
 									errorMessage = "Unexpected sort field: " + sortName;
 									break;
@@ -412,6 +416,10 @@ namespace AlbumArtDownloader
 								case "size":
 								case "s":
 									grouping = Grouping.Size;
+									break;
+								case "page":
+								case "p":
+									grouping = Grouping.InfoUri;
 									break;
 								default:
 									errorMessage = "Unexpected grouping: " + parameter.Value;
@@ -466,6 +474,10 @@ namespace AlbumArtDownloader
 									case "unknown":
 									case "u":
 										coverType |= AllowedCoverType.Unknown;
+										break;
+									case "booklet":
+									case "k":
+										coverType |= AllowedCoverType.Booklet;
 										break;
 									case "any":
 									case "a":

@@ -1,3 +1,16 @@
+0.40
+	 Added "Booklet" as one of the standard types. Currently, Cover-Paradies is the only source that uses it.
+	 Added ability to sort and group by the URL associated with results (generally the page the result was found on).
+	 Added the file size and dimensions of the existing file to the Overwrite confirmation dialog.
+	 Added "Options" link to the Overwrite confirmation dialog, to allow customisation of the automatically
+	  suggested filename.
+	 Added button to easily toggle all filters (size and cover type) on and off
+	 When using a preset to save a result, the default path pattern to save to is now always used (rather than
+	  any specific filename already assigned to that result)
+	 Fixed performance/memory issue when running the File Browser over very large collections (during the post-scan
+	  various artists detection stage)
+	 Added EB Reggae, eMusic, Qobuz and GigaCrate scripts.
+
 0.39.1
 	 Fixed undesirable overwriting behaviour when attempting to save multiple results to the same file before
 	  the first has finished saving.
@@ -6,7 +19,7 @@
 	 Fixed bug where, if a search window was reused for a new search while a full-sized image was being
 	  downloaded for saving, that image would be saved with the filename for the new search, not the old one.
 	 Fixed bug with non-blank default preset values
-	 Improved dialog for confirming whether to overwrite an existing file or not when saving artwork6
+	 Improved dialog for confirming whether to overwrite an existing file or not when saving artwork
 
 0.38.3
 	 Fixed bug introduced with 0.38 where the preview for some results would show as a thin column

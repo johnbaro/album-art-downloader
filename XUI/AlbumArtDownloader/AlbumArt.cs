@@ -205,7 +205,7 @@ namespace AlbumArtDownloader
 			{
 				 return BitmapDecoder.Create(bitmapDataStream, BitmapCreateOptions.None, BitmapCacheOption.None); // Don't cache, as the data is already coming straight from memory.
 			}
-			catch (NotSupportedException)
+			catch (Exception)
 			{
 				System.Diagnostics.Trace.WriteLine(String.Format("Could not construct bitmap from data for: \"{0}\" from \"{1}\"", ResultName, SourceName));
 			}

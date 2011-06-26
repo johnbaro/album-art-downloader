@@ -26,5 +26,7 @@ namespace AlbumArtDownloader.Controls
 		Type,
 		/// <summary>Grouped by general size category</summary>
 		Size,
+		/// <summary>Grouped by InfoUri</summary>
+		InfoUri,
 	}
 }

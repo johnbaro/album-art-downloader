@@ -10,13 +10,16 @@ namespace AlbumArtDownloader.Controls
 	[TemplatePart(Name = "PART_SortDirection", Type = typeof(ToggleButton))]
 	public class ArtPanelListSortPicker : Control
 	{
+		// The UI names for these should be of approximately equal width, to avoid unpleasent resizing behaviour
 		private static readonly SortFieldItem[] sSortFields = new SortFieldItem[] { 
 												new SortFieldItem("None", ""), 
 												new SortFieldItem("Name", "ResultName"), 
 												new SortFieldItem("Size", "ImageWidth"), 
 												new SortFieldItem("Area", "ImageArea"), 
 												new SortFieldItem("Source", "SourceName"),
-												new SortFieldItem("Type", "CoverType")};
+												new SortFieldItem("Type", "CoverType"),
+												new SortFieldItem("Page", "InfoUri"),
+		};
 
 		static ArtPanelListSortPicker()
 		{

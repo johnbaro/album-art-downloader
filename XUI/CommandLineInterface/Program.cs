@@ -206,6 +206,10 @@ namespace AlbumArtDownloader
 									case "u":
 										coverType |= AllowedCoverType.Unknown;
 										break;
+									case "booklet":
+									case "k":
+										coverType |= AllowedCoverType.Booklet;
+										break;
 									case "any":
 									case "a":
 										coverType |= AllowedCoverType.Any;
@@ -466,6 +470,8 @@ namespace AlbumArtDownloader
 					return AllowedCoverType.Inside;
 				case CoverType.CD:
 					return AllowedCoverType.CD;
+				case CoverType.Booklet:
+					return AllowedCoverType.Booklet;
 			}
 			return AllowedCoverType.Unknown;
 		}

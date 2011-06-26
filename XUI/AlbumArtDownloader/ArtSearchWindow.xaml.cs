@@ -21,6 +21,7 @@ namespace AlbumArtDownloader
 		{
 			public static RoutedUICommand GetMoreScripts = new RoutedUICommand("GetMoreScripts", "GetMoreScripts", typeof(Commands));
 			public static RoutedUICommand ShowAutoDownloadedScripts = new RoutedUICommand("ShowAutoDownloadedScripts", "ShowAutoDownloadedScripts", typeof(Commands));
+			public static RoutedUICommand SaveAsPreset = new RoutedUICommand("SaveAsPreset", "SaveAsPreset", typeof(Commands));
 		}
 
 		private Sources mSources = new Sources();
@@ -59,6 +60,7 @@ namespace AlbumArtDownloader
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Copy, new ExecutedRoutedEventHandler(CopyExec)));
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Save, new ExecutedRoutedEventHandler(SaveExec)));
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.SaveAs, new ExecutedRoutedEventHandler(SaveAsExec)));
+			CommandBindings.Add(new CommandBinding(Commands.SaveAsPreset, new ExecutedRoutedEventHandler(SaveAsPresetExec)));
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Delete, new ExecutedRoutedEventHandler(DeleteExec)));
 			CommandBindings.Add(new CommandBinding(CommonCommands.Preview, new ExecutedRoutedEventHandler(PreviewExec)));
 			CommandBindings.Add(new CommandBinding(Commands.GetMoreScripts, new ExecutedRoutedEventHandler(GetMoreScriptsExec), new CanExecuteRoutedEventHandler(GetMoreScriptsCanExec)));
@@ -365,10 +367,10 @@ namespace AlbumArtDownloader
 
 			mDefaultSaveFolder.AddPatternToHistory();
 			//Check for no primary sources (means that every source is primary!)
-			bool allPrimary = !mSources.Any(s => s.IsPrimary && s.IsEnabled);
+			bool noSourceIsPrimary = !mSources.Any(s => s.IsPrimary && s.IsEnabled);
 			foreach (Source source in mSources)
 			{
-				if (source.IsEnabled && (allPrimary || source.IsPrimary)) //If the source is primary, or no sources are set to primary, include this source.
+				if (source.IsEnabled && (noSourceIsPrimary || source.IsPrimary)) //If the source is primary, or no sources are set to primary, include this source.
 				{
 					source.Search(mSearchParameters.Artist, mSearchParameters.Album);
 					mSearchParameters.AddSource(source);
@@ -881,7 +883,21 @@ namespace AlbumArtDownloader
 
 		private void SaveExec(object sender, ExecutedRoutedEventArgs e)
 		{
-			AlbumArt albumArt = mResultsViewer.GetSourceAlbumArt(e);
+			SaveExecInternal(mResultsViewer.GetSourceAlbumArt(e));
+		}
+
+		
+
+		private void SaveAsPresetExec(object sender, ExecutedRoutedEventArgs e)
+		{
+			var albumArt = mResultsViewer.GetSourceAlbumArt(e);
+			albumArt.FilePath = null; // When saving as a preset, always use the default path pattern
+			albumArt.Preset = e.Parameter as String;
+			SaveExecInternal(albumArt);
+		}
+
+		private void SaveExecInternal(AlbumArt albumArt)
+		{
 			if (albumArt != null)
 			{
 				if (AutoClose)
@@ -890,8 +906,6 @@ namespace AlbumArtDownloader
 					albumArt.PropertyChanged += AutoCloseOnSave;
 				}
 
-				albumArt.Preset = e.Parameter as String;
-				
 				albumArt.Save(this);
 			}
 		}
@@ -981,7 +995,7 @@ namespace AlbumArtDownloader
 				{
 					Header = preset.Name,
 					InputGestureText = String.Empty,
-					Command = ApplicationCommands.Save,
+					Command = Commands.SaveAsPreset,
 					CommandParameter = preset.Value
 				};
 				if (first)

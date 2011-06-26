@@ -109,7 +109,6 @@
   </Target>
   -->
   <PropertyGroup>
-    <PostBuildEvent>md "$(SolutionDir)AlbumArtDownloader\bin\Debug\Scripts\"
-copy /y "$(TargetPath)" "$(SolutionDir)AlbumArtDownloader\bin\Debug\Scripts\"</PostBuildEvent>
+    <PostBuildEvent>copy /y "$(TargetPath)" "$(SolutionDir)AlbumArtDownloader\bin\Debug\Scripts\"</PostBuildEvent>
   </PropertyGroup>
 </Project>

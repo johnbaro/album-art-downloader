@@ -179,7 +179,7 @@
 					</MultiBinding>
 				</TextBlock.Text>
 			</TextBlock>
-			<Button Grid.Row="1" VerticalAlignment="Top" Style="{StaticResource HyperlinkButton}"
+            <Button Grid.Row="1" VerticalAlignment="Top" Style="{StaticResource HyperlinkButton}" HorizontalAlignment="Left"
 					Command="{x:Static local:BrowserResults+Commands.SelectMissing}" CommandTarget="{Binding ElementName=mResults}" Content="Select all albums with missing artwork"/>
 			<Button Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Padding="10,-4,10,-4"
 					Command="{x:Static local:BrowserResults+Commands.GetArtwork}" CommandTarget="{Binding ElementName=mResults}" Content="Get Artwork for Selection..."/>

@@ -39,7 +39,6 @@ namespace AlbumArtDownloader.Controls
 		}
 		#endregion
 
-
 		#region Value
 		public static readonly DependencyProperty ValueProperty = DependencyProperty.Register("Value", typeof(TEnum), typeof(FlagCheckBox<TEnum>), new FrameworkPropertyMetadata(default(TEnum), FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, UpdateCheckState));
 

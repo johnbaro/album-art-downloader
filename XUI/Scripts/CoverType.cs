@@ -21,9 +21,10 @@ namespace AlbumArtDownloader.Scripts
 		Unknown, 
 		Front, 
 		Back,
-		Inlay, //"Inlay" provided for backwards compatiblity. New term is "Inside"
-		Inside = Inlay,
-		CD
+		Inside,
+		Inlay = Inside,  //"Inlay" provided for backwards compatiblity. New term is "Inside"
+		CD,
+		Booklet
 	}
 
 

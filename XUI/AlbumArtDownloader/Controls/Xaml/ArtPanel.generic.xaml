@@ -382,7 +382,8 @@
 								<ComboBoxItem>Front</ComboBoxItem>
 								<ComboBoxItem>Back</ComboBoxItem>
 								<ComboBoxItem>Inside</ComboBoxItem>
-								<ComboBoxItem>CD</ComboBoxItem>
+                                <ComboBoxItem>CD</ComboBoxItem>
+                                <ComboBoxItem>Booklet</ComboBoxItem>
 							</ComboBox>
 							
 							<TextBlock Tag="SourceName" Grid.Row="3" Style="{StaticResource ValueStyle}" Text="{Binding Path=AlbumArt.SourceName, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"/>

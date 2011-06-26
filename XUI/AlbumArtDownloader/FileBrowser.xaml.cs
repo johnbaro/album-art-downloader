@@ -305,7 +305,7 @@ namespace AlbumArtDownloader
 						if ((root.Attributes & FileAttributes.Directory) != FileAttributes.Directory)
 						{
 							//This isn't a directory, so try reading it as a single media file
-							addedAlbums.Add(ReadMediaFile(new FileInfo(root.FullName), pathPattern));
+							ReadMediaFile(new FileInfo(root.FullName), pathPattern, addedAlbums);
 						}
 						else
 						{
@@ -316,12 +316,12 @@ namespace AlbumArtDownloader
 								if (parameters.FindDirectories)
 								{
 									//Include self
-									addedAlbums.Add(ReadMediaFile(root, pathPattern));
+									ReadMediaFile(root, pathPattern, addedAlbums);
 								}
 
 								foreach (FileSystemInfo file in NetMatters.FileSearcher.GetFileSystemInfos(root, "*", parameters.IncludeSubfolders ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly, parameters.FindDirectories, !parameters.FindDirectories))
 								{
-									addedAlbums.Add(ReadMediaFile(file, pathPattern));
+									ReadMediaFile(file, pathPattern, addedAlbums);
 								}
 							}
 							catch (Exception e)
@@ -332,7 +332,6 @@ namespace AlbumArtDownloader
 						}
 
 						DetectVariousArtistsAlbums(addedAlbums);
-
 					} while (true);
 					//Will break out here when there are no more searches queued
 
@@ -358,10 +357,10 @@ namespace AlbumArtDownloader
 			}
 		}
 
-		/// <summary>Reads the album and artist data from specified media file or folder, and adds it to the <see cref="mAlbums"/> collection.</summary>
+		/// <summary>Reads the album and artist data from specified media file or folder. Adds it to the <see cref="mAlbums"/> collection, and if it does so, also adds it to <paramref name="addedAlbums"/>.</summary>
 		/// <param name="filePathPattern">Use null to use the ID3 tags instead</param>
 		/// <returns>The <see cref="Album"/> that was added to <see cref="mAlbums"/>, or <c>null</c> if none could be read.</returns>
-		private Album ReadMediaFile(FileSystemInfo file, Regex filePathPattern)
+		private void ReadMediaFile(FileSystemInfo file, Regex filePathPattern, IList<Album> addedAlbums)
 		{
 			if (file is DirectoryInfo && filePathPattern == null) //If a DirectoryInfo is used, then the filePathPattern must have ended in \.
 			{
@@ -419,7 +418,7 @@ namespace AlbumArtDownloader
 					System.Diagnostics.Trace.Indent();
 					System.Diagnostics.Trace.WriteLine(e.Message);
 					System.Diagnostics.Trace.Unindent();
-					return null; //If this media file couldn't be read, just go on to the next one.				
+					return; //If this media file couldn't be read, just go on to the next one.				
 				}
 				finally
 				{
@@ -462,85 +461,125 @@ namespace AlbumArtDownloader
 
 				Dispatcher.Invoke(DispatcherPriority.DataBind, new ThreadStart(delegate
 				{
-					mAlbums.Add(album);
+					if (mAlbums.Add(album))
+					{
+						addedAlbums.Add(album);
+					}
 				}));
-
-				return album;
 			}
-
-			return null;
 		}
 
 		/// <summary>
 		/// Checks through a set of albums for those that should be concatenated into a single Various Artists album.
 		/// </summary>
-		/// <param name="addedAlbums"></param>
 		private void DetectVariousArtistsAlbums(IList<Album> albums)
 		{
-			//Get the albums in each folder
-			Dictionary<String, List<Album>> folders = new Dictionary<string, List<Album>>(albums.Count);
-			foreach (Album album in albums)
+			Dispatcher.BeginInvoke(DispatcherPriority.DataBind, new ThreadStart(delegate
 			{
-				if (album != null)
-				{
-					List<Album> folderAlbums;
-					if (!folders.TryGetValue(album.BasePath, out folderAlbums))
-					{
-						folderAlbums = new List<Album>(albums.Count);
-						folders.Add(album.BasePath, folderAlbums);
-					}
+				ProgressText = "Detecting Various Artists albums...";
+			}));
 
-					folderAlbums.Add(album);
+			// First step, find folders with more than one album in them. All indexes of basePathGroup sharing the same value share the same folder. The folder can be found by the base path of the album at the albums[value - 1] (1 based, as 0 means no group)
+			var basePathGroup = new int[albums.Count];
+			int maxGroupSize = 0;
+			int lastGroupStartIndex = 0;
+			for (int i = 0; i < albums.Count; i++)
+			{
+				if (basePathGroup[i] == 0) // If this album has already been noted has having other albums sharing its folder, no need to search again.
+				{
+					int groupSize = 1;
+					// Find other albums that share the same folder
+					for (int j = i; j < albums.Count; j++)
+					{
+						if (albums[j].BasePath == albums[i].BasePath)
+						{
+							// Both these albums have one other album in the same folder, then.
+							if (basePathGroup[i] == 0)
+							{
+								basePathGroup[i] = i + 1;
+								lastGroupStartIndex = i;
+							}
+							basePathGroup[j] = basePathGroup[i];
+							groupSize++;
+						}
+					}
+					maxGroupSize = Math.Max(maxGroupSize, groupSize);
 				}
 			}
 
-			foreach (List<Album> folder in folders.Values)
+			if (maxGroupSize > 1) // Don't bother with the rest if each album is in its own folder - there are no various artists albums in this case.
 			{
-				//If the folder contains all the same album name, but different artists, then it is VA
-				string albumName = folder[0].Name;
-				string artist = folder[0].Artist;
-				string basePath = folder[0].BasePath;
+				var albumsInFolder = new List<Album>(maxGroupSize);
 
-				bool variousArtists = false;
-				foreach (Album album in folder)
+				// Next step, for those albums whose folders have multiple albums in them, check if they have the same album name but different artists
+				for (int i = 0; i <= lastGroupStartIndex; i++) // No need to check past the last group start index, there won't be any more group starts past this point.
 				{
-					if (album.Name != albumName)
+					if (basePathGroup[i] == i + 1) // If this album is the first one in a group of albums in the same folder, process it
 					{
-						//This is not all the same album
-						variousArtists = false;
-						break;
-					}
-					if (!variousArtists && album.Artist != artist)
-					{
-						variousArtists = true;
-					}
-				}
-
-				if (variousArtists)
-				{
-					//This is a various artists album, so replace them with a single Various Artists album
-					Dispatcher.Invoke(DispatcherPriority.DataBind, new ThreadStart(delegate
-					{
-						Album variousArtistsAlbum = new Album(basePath, sVariousArtistsName, albumName);
-						if (!mAlbums.Contains(variousArtistsAlbum)) //If this album already exists, no need to add it again.
-						{
-							//Add replacement VA album
-							mAlbums.Insert(mAlbums.IndexOf(folder[0]), variousArtistsAlbum);
-						}
+						string albumName = albums[i].Name;
+						string artist = albums[i].Artist;
 						
-						//Remove individual albums, but copy art from at least one of them (if present)
-						foreach (Album album in folder)
+						bool variousArtists = false;
+
+						// Multiple albums are in this folder, find them:
+						albumsInFolder.Clear();
+						albumsInFolder.Add(albums[i]);
+						for (int j = i; j < albums.Count; j++)
 						{
-							if(album.Artist != sVariousArtistsName) //If, by chance, one of the albums was already called "Various Artists", then it will have merged with the newly added one.
+							if (basePathGroup[j] == basePathGroup[i])
 							{
-								if (variousArtistsAlbum.ArtFileStatus != ArtFileStatus.Present && album.ArtFile != null)
+								// albums[j] is in the same folder
+								if (albums[j].Name != albumName)
 								{
-									variousArtistsAlbum.SetArtFile(album.ArtFile);
+									//This is not all the same album
+									variousArtists = false;
+									break;
 								}
-								mAlbums.Remove(album);
+								if (!variousArtists && albums[j].Artist != artist)
+								{
+									// Album name matches, artist name differs. This is a various artists album
+									variousArtists = true;
+								}
+
+								albumsInFolder.Add(albums[j]);
 							}
 						}
-					}));
+
+						if (variousArtists)
+						{
+							//This is a various artists album, so replace them with a single Various Artists album
+							Dispatcher.BeginInvoke(DispatcherPriority.DataBind, new ThreadStart(delegate
+							{
+								ProgressText = "Resolving Various Artists album... " + albumName;
+							}));
+
+							Album variousArtistsAlbum = new Album(albums[i].BasePath, sVariousArtistsName, albumName);
+							if (!mAlbums.Contains(variousArtistsAlbum)) //If this album already exists, no need to add it again.
+							{
+								//Add replacement VA album
+								Dispatcher.Invoke(DispatcherPriority.DataBind, new ThreadStart(delegate
+								{
+									mAlbums.Insert(mAlbums.IndexOf(albums[i]), variousArtistsAlbum);
+								}));
+							}
+
+							//Remove individual albums, but copy art from at least one of them (if present)
+							foreach (Album album in albumsInFolder)
+							{
+								if (album.Artist != sVariousArtistsName) //If, by chance, one of the albums was already called "Various Artists", then it will have merged with the newly added one.
+								{
+									if (variousArtistsAlbum.ArtFileStatus != ArtFileStatus.Present && album.ArtFile != null)
+									{
+										variousArtistsAlbum.SetArtFile(album.ArtFile);
+									}
+									Dispatcher.Invoke(DispatcherPriority.Background, new ThreadStart(delegate
+									{
+										mAlbums.Remove(album);
+									}));
+								}
+							}
+						}
+					}
 				}
 			}
 		}

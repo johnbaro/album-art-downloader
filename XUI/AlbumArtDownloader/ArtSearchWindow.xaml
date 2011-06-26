@@ -19,7 +19,8 @@
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="/Controls/Xaml/SimpleList.generic.xaml"/>
-				<ResourceDictionary Source="/Controls/Xaml/HyperlinkButton.generic.xaml"/>
+                <ResourceDictionary Source="/Controls/Xaml/FadeButton.generic.xaml"/>
+                <ResourceDictionary Source="/Controls/Xaml/HyperlinkButton.generic.xaml"/>
 				<ResourceDictionary Source="/Controls/Xaml/HyperlinkExpander.generic.xaml"/>
 				<ResourceDictionary Source="/Controls/Xaml/HyperlinkCombo.generic.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
@@ -121,7 +122,7 @@
 							<controls:PatternPlaceholder MenuItemHeader="_Name" ToolTip="The name of the result found" Placeholder="%name%"/>
 							<controls:PatternPlaceholder MenuItemHeader="_Extension" ToolTip="The file extension of the result found" Placeholder="%extension%"/>
 							<controls:PatternPlaceholder MenuItemHeader="_Type" ToolTip="The type of the result found (front, back, inside, etc.)" Placeholder="%type%"/>
-							<controls:PatternPlaceholder MenuItemHeader="T_ype (Custom Label)" ToolTip="The type of the result found (front, back, inside, etc.), but with custom labels for them" Placeholder="%type(Unknown,Front,Back,Inside,CD)%"/>
+							<controls:PatternPlaceholder MenuItemHeader="T_ype (Custom Label)" ToolTip="The type of the result found (front, back, inside, etc.), but with custom labels for them" Placeholder="%type(Unknown,Front,Back,Inside,CD,Booklet)%"/>
 							<controls:PatternPlaceholder MenuItemHeader="_Source" ToolTip="The source from which the result was found" Placeholder="%source%"/>
 							<controls:PatternPlaceholder MenuItemHeader="Si_ze" ToolTip="The dimensions, in pixels, of the result" Placeholder="%size%"/>
 						</controls:ArtPathPatternBox.AdditionalPlaceholders>
@@ -149,7 +150,8 @@
 						</Grid.Resources>
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto"/>
-							<RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
 						</Grid.RowDefinitions>
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="Auto"/>
@@ -158,10 +160,9 @@
 						</Grid.ColumnDefinitions>
 
 						<CheckBox Grid.Row="0" IsChecked="{Binding Source={StaticResource mSettings}, Path=Default.OpenResultsInNewWindow}">Open search results in new _window</CheckBox>
-						<CheckBox Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="2" Content="Automatically _close after saving"
-							  IsChecked="{Binding ElementName=this, Path=AutoClose}"/>
+                        <CheckBox Grid.Row="1" IsChecked="{Binding ElementName=this, Path=AutoClose}">Automatically _close after saving</CheckBox>
 
-						<GroupBox Header="Automatically download full-size images" Grid.Row="1"
+						<GroupBox Header="Automatically download full-size images" Grid.Row="2"
 							  RadioButton.Checked="OnAutoDownloadFullSizeImagesChanged">
 							<GroupBox.Resources>
 								<Style TargetType="RadioButton">
@@ -187,7 +188,7 @@
 							</StackPanel>
 						</GroupBox>
 
-						<GroupBox Header="Filter by image size" Grid.Row="1" Grid.Column="1" Margin="4,0,0,0">
+						<GroupBox Header="Filter by image size" Grid.Row="0" Grid.Column="1" Grid.RowSpan="3" Margin="4,0,0,0">
 							<GroupBox.Resources>
 								<Style TargetType="RadioButton">
 									<Setter Property="Margin" Value="2"/>
@@ -215,7 +216,7 @@
 							</Grid>
 						</GroupBox>
 
-						<GroupBox Header="Filter by cover types" Grid.Row="1"  Grid.Column="2" Margin="4,0,0,0">
+						<GroupBox Header="Filter by cover types" Grid.Row="0"  Grid.Column="2" Grid.RowSpan="3" Margin="4,0,0,0">
 							<Grid>
 								<Grid.Resources>
 									<Style TargetType="controls:FlagCheckBoxAllowedCoverType">
@@ -227,18 +228,21 @@
 								<Grid.RowDefinitions>
 									<RowDefinition Height="Auto"/>
 									<RowDefinition Height="Auto"/>
-									<RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
 								</Grid.RowDefinitions>
 								<Grid.ColumnDefinitions>
 									<ColumnDefinition Width="Auto"/>
 									<ColumnDefinition Width="Auto"/>
 								</Grid.ColumnDefinitions>
-								<controls:FlagCheckBoxAllowedCoverType Flag="{x:Static local:AllowedCoverType.Front}" Grid.Row="0" Grid.Column="0"/>
-								<controls:FlagCheckBoxAllowedCoverType Flag="{x:Static local:AllowedCoverType.Inside}" Grid.Row="1" Grid.Column="0"/>
-								<controls:FlagCheckBoxAllowedCoverType Flag="{x:Static local:AllowedCoverType.Unknown}" Grid.Row="2" Grid.Column="0"/>
-								<controls:FlagCheckBoxAllowedCoverType Flag="{x:Static local:AllowedCoverType.Back}" Grid.Row="0" Grid.Column="1"/>
-								<controls:FlagCheckBoxAllowedCoverType Flag="{x:Static local:AllowedCoverType.CD}" Grid.Row="1" Grid.Column="1"/>
-								<controls:FlagCheckBoxAllowedCoverType Flag="{x:Static local:AllowedCoverType.Any}" Content="Select All" FontStyle="Italic" Grid.Row="2" Grid.Column="1"/>
+                                <controls:FlagCheckBoxAllowedCoverType Flag="{x:Static local:AllowedCoverType.Any}" Content="Select All" FontStyle="Italic" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"/>
+
+                                <controls:FlagCheckBoxAllowedCoverType Flag="{x:Static local:AllowedCoverType.Front}" Grid.Row="1" Grid.Column="0"/>
+								<controls:FlagCheckBoxAllowedCoverType Flag="{x:Static local:AllowedCoverType.Inside}" Grid.Row="2" Grid.Column="0"/>
+								<controls:FlagCheckBoxAllowedCoverType Flag="{x:Static local:AllowedCoverType.Booklet}" Grid.Row="3" Grid.Column="0"/>
+								<controls:FlagCheckBoxAllowedCoverType Flag="{x:Static local:AllowedCoverType.Back}" Grid.Row="1" Grid.Column="1"/>
+                                <controls:FlagCheckBoxAllowedCoverType Flag="{x:Static local:AllowedCoverType.CD}" Grid.Row="2" Grid.Column="1"/>
+                                <controls:FlagCheckBoxAllowedCoverType Flag="{x:Static local:AllowedCoverType.Unknown}" Grid.Row="3" Grid.Column="1"/>
 							</Grid>
 						</GroupBox>
 					</Grid>
@@ -257,16 +261,35 @@
 					</Style.Triggers>
 				</Style>
 			</StackPanel.Style>
-			
-			<TextBlock Margin="2" Padding="5,1,0,1" VerticalAlignment="Bottom">Group by:</TextBlock>
+
+            <ToggleButton x:Name="mDisableFilters" Style="{StaticResource FadeButton}" VerticalAlignment="Bottom" Margin="2" IsChecked="{Binding Source={StaticResource mSettings}, Path=Default.DisableFilters}">
+                <Image Stretch="None">
+                    <Image.Style>
+                        <Style TargetType="Image">
+                            <Setter Property="Source" Value="FiltersEnabled.png" />
+                            <Setter Property="ToolTip" Value="Filters are enabled, click to disable." />
+
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ElementName=mDisableFilters, Path=IsChecked}" Value="True">
+                                    <Setter Property="Source" Value="FiltersDisabled.png" />
+                                    <Setter Property="ToolTip" Value="Filters are disabled, click to enable." />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Image.Style>
+                </Image>
+            </ToggleButton>
+            <TextBlock Margin="2" Padding="5,1,0,1" VerticalAlignment="Bottom">Group by:</TextBlock>
 			<ComboBox x:Name="mGroupingPicker" Style="{StaticResource HyperlinkCombo}" Padding="3" IsEditable="False" HorizontalContentAlignment="Right"
 					  SelectedIndex="{Binding Source={StaticResource mSettings}, Path=Default.ResultsGrouping, Converter={StaticResource mEnumIndexConverter}}">
-				<!-- Must match AlbumArtDownloader.Controls.Grouping enum -->
+				<!-- Must match AlbumArtDownloader.Controls.Grouping enum 
+                     The UI names for these should be of approximately equal width, to avoid unpleasent resizing behaviour-->
 				<ComboBoxItem>None</ComboBoxItem>
 				<ComboBoxItem>Local</ComboBoxItem>
 				<ComboBoxItem>Source</ComboBoxItem>
 				<ComboBoxItem>Type</ComboBoxItem>
-				<ComboBoxItem>Size</ComboBoxItem>
+                <ComboBoxItem>Size</ComboBoxItem>
+                <ComboBoxItem>Page</ComboBoxItem>
 			</ComboBox>
 
 			<controls:ArtPanelListSortPicker x:Name="mSortPicker" HorizontalAlignment="Right" VerticalAlignment="Bottom"
@@ -287,6 +310,7 @@
 								UseMaximumImageSize="{Binding Default.UseMaximumImageSize, Mode=OneWay}"
 								MaximumImageSize="{Binding Default.MaximumImageSize, Mode=OneWay}"
 								AllowedCoverTypes="{Binding Default.AllowedCoverTypes, Mode=OneWay}"
+                                DisableFilters="{Binding Default.DisableFilters, Mode=OneWay}"
 								InformationLocation="{Binding Default.InformationLocation}"
 								PresetsContextMenu="{Binding ElementName=this, Path=PresetsContextMenu, Mode=OneWay}"
 							   />
@@ -320,7 +344,7 @@
 				<ColumnDefinition Width="Auto"/>
 			</Grid.ColumnDefinitions>
 			<Label Padding="0" Grid.ColumnSpan="2" Target="{Binding ElementName=mSourcesViewer}">S_ources:</Label>
-			<CheckBox x:Name="mSelectAll" Margin="4,0,0,3" Grid.Row="1">Select _All</CheckBox>
+			<CheckBox x:Name="mSelectAll" Margin="4,0,0,3" Grid.Row="1" HorizontalAlignment="Left">Select _All</CheckBox>
 			<Button Margin="0,0,8,0" Grid.Row="1" Grid.Column="2" HorizontalAlignment="Right" Style="{StaticResource HyperlinkButton}"
 					Command="ApplicationCommands.Stop" Visibility="{Binding RelativeSource={RelativeSource Self}, Path=IsEnabled, Converter={StaticResource mBooleanToVisibilityConverter}}"
 					Content="Stop All"/>

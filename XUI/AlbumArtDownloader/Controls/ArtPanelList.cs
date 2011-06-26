@@ -224,7 +224,7 @@ namespace AlbumArtDownloader.Controls
 					foreach (AlbumArt albumArt in mAlbumArtsWithListendedEvents)
 					{
 						albumArt.ImageSizeChanged -= OnImageSizeChanged;
-						albumArt.CoverTypeChanged -= OnCoverTypeChagned;
+						albumArt.CoverTypeChanged -= OnCoverTypeChanged;
 					}
 					mAlbumArtsWithListendedEvents.Clear();
 					foreach (AlbumArt albumArt in (IEnumerable)sender)
@@ -238,7 +238,7 @@ namespace AlbumArtDownloader.Controls
 		private void RemoveAlbumArtEventHandlers(AlbumArt albumArt)
 		{
 			albumArt.ImageSizeChanged -= OnImageSizeChanged;
-			albumArt.CoverTypeChanged -= OnCoverTypeChagned;
+			albumArt.CoverTypeChanged -= OnCoverTypeChanged;
 			mAlbumArtsWithListendedEvents.Remove(albumArt);
 		}
 
@@ -247,7 +247,7 @@ namespace AlbumArtDownloader.Controls
 			if (mAlbumArtsWithListendedEvents.Add(albumArt))
 			{
 				albumArt.ImageSizeChanged += OnImageSizeChanged;
-				albumArt.CoverTypeChanged += OnCoverTypeChagned;
+				albumArt.CoverTypeChanged += OnCoverTypeChanged;
 			}
 		}
 
@@ -262,7 +262,7 @@ namespace AlbumArtDownloader.Controls
 			}
 		}
 
-		private void OnCoverTypeChagned(object sender, EventArgs e)
+		private void OnCoverTypeChanged(object sender, EventArgs e)
 		{
 			AlbumArt albumArt = (AlbumArt)sender;
 
@@ -334,12 +334,20 @@ namespace AlbumArtDownloader.Controls
 			get { return (AllowedCoverType)GetValue(AllowedCoverTypesProperty); }
 			set { SetValue(AllowedCoverTypesProperty, value); }
 		}
+		public static readonly DependencyProperty DisableFiltersProperty = DependencyProperty.Register("DisableFilters", typeof(bool), typeof(ArtPanelList),
+			new FrameworkPropertyMetadata(false, new PropertyChangedCallback(OnFilterPropertyChanged)));
+		/// <summary>While set true, all filters (image size and allowed cover types) will be ignored.</summary>
+		public bool DisableFilters
+		{
+			get { return (bool)GetValue(DisableFiltersProperty); }
+			set { SetValue(DisableFiltersProperty, value); }
+		}
 
 		private static void OnFilterPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
 		{
 			ArtPanelList artPanelList = (ArtPanelList)sender;
 
-			if (!artPanelList.UseMaximumImageSize && !artPanelList.UseMinimumImageSize && (artPanelList.AllowedCoverTypes == AllowedCoverType.Any))
+			if (artPanelList.DisableFilters || (!artPanelList.UseMaximumImageSize && !artPanelList.UseMinimumImageSize && (artPanelList.AllowedCoverTypes == AllowedCoverType.Any)))
 			{
 				artPanelList.Items.Filter = null; //No filtering required
 			}
@@ -493,6 +501,9 @@ namespace AlbumArtDownloader.Controls
 					break;
 				case Grouping.Size:
 					artPanelList.Items.GroupDescriptions.Add(new SizeGroupDescription());
+					break;
+				case Grouping.InfoUri:
+					artPanelList.Items.GroupDescriptions.Add(new System.Windows.Data.PropertyGroupDescription("InfoUri"));
 					break;
 			}
 		}

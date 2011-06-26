@@ -25,21 +25,30 @@ namespace AlbumArtDownloader
 			}
 		}
 
+		
 		int IList.Add(object album)
 		{
 			Add((Album)album);
 			return Count - 1;
 		}
-		public void Add(Album album)
+		void ICollection<Album>.Add(Album album)
 		{
-			Insert(Count, album);
+			Add(album);
+		}
+		public bool Add(Album album)
+		{
+			return Insert(Count, album);
 		}
 
 		void IList.Insert(int index, object album)
 		{
 			Insert(index, (Album)album);
 		}
-		public void Insert(int index, Album album)
+		void IList<Album>.Insert(int index, Album album)
+		{
+			Insert(index, album);
+		}
+		public bool Insert(int index, Album album)
 		{
 			if (index > Count || index < 0)
 			{
@@ -62,6 +71,7 @@ namespace AlbumArtDownloader
 						mAlbumsByIndex.Insert(index, album);
 						mVersion++;
 						RaiseCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, album));
+						return true;
 					}
 				}
 				else
@@ -73,8 +83,10 @@ namespace AlbumArtDownloader
 					mAlbumsByIndex.Insert(index, album);
 					mVersion++;
 					RaiseCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, album));
+					return true;
 				}
 			}
+			return false;
 		}
 
 		public void RemoveAt(int index)

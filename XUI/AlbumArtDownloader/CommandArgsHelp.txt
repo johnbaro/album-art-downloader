@@ -123,6 +123,8 @@ Options:
                area (may be abbreviated to a)
                source (may be abbreviated to o)
                type (may be abbreviated to t)
+			   page (may be abbreviated to p)
+
  /group (none|local|source|type|size)
               Sets the grouping to use for    (/group source)
               the results.
@@ -135,6 +137,7 @@ Options:
                source (may be abbreviated to o)
                type (may be abbreviated to t)
                size (may be abbreviated to s)
+			   page (may be abbreviated to p)
 
  /minSize     Specifies the minimum size of   (/minSize 300)
               image, in pixels, to filter the 
@@ -158,14 +161,16 @@ Options:
                Back
                Inside
                CD
+			   Booklet
                Unknown
               
               As a shortcut to specifying all (/coverType any)
               types, the special type Any may 
               be used.
               
-              Types may be abbreviated to     (/coverType f,b,u)
-              their first letter.
+              Types may be abbreviated to     (/coverType f,b,i,c,k,u)
+              their first letter, or k for
+			  Booklet
               
               May be abbreviated to /t        (/t c,u)
 

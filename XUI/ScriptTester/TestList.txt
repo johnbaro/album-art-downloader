@@ -38,4 +38,7 @@ Take2	Muse	The Resistance
 VGMdb	Morrigan	Caldes
 VGMdb		Xenoblade Original Soundtrack
 ;Lala	Muse	The Resistance
-ebreggae	Kevin Kinsella	Great Design
+EB Reggae	Kevin Kinsella	Great Design
+eMusic	Muse	The Resistance
+Qobuz	Muse	The Resistance
+GigaCrate	Muse	Starlight

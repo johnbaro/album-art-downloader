@@ -55,6 +55,7 @@ namespace AlbumArtDownloader
 		Back = 0x4,
 		Inside = 0x8,
 		CD = 0x10,
-		Any = Unknown | Front | Back | Inside | CD
+		Booklet = 0x20,
+		Any = Unknown | Front | Back | Inside | CD | Booklet
 	}
 }
