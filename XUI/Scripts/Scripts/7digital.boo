@@ -47,6 +47,7 @@ class sevendigital(AlbumArtDownloader.Scripts.IScript):
 	def CheckResponse(image, size):
 		checkRequest = System.Net.HttpWebRequest.Create(image + "_" + size + ".jpg") as System.Net.HttpWebRequest
 		checkRequest.Method = "HEAD"
+		checkRequest.AllowAutoRedirect = false
 		try:
 			response = checkRequest.GetResponse() as System.Net.HttpWebResponse
 			return response.StatusCode == System.Net.HttpStatusCode.OK
