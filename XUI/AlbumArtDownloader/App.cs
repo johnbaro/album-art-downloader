@@ -9,6 +9,7 @@ using System.Windows;
 using AlbumArtDownloader.Scripts;
 using AlbumArtDownloader.Controls;
 using Microsoft.Win32;
+using System.Threading;
 
 namespace AlbumArtDownloader
 {
@@ -200,13 +201,20 @@ namespace AlbumArtDownloader
 				Shutdown();
 				return;
 			}
+
+			mAppInitialized.Set();
 		}
+
+		/// <summary>Until this event is signaled, the application has not yet finished initializing and can not process any incoming signals from other instances.</summary>
+		private ManualResetEvent mAppInitialized = new ManualResetEvent(false);
 
 		/// <summary>
 		/// Called when a new instance of the application was run, and this instance was already running.
 		/// </summary>
 		public void Signal(string[] args)
 		{
+			mAppInitialized.WaitOne();
+
 			Application.Current.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new System.Threading.ThreadStart(delegate
 			{
 				ProcessCommandArgs(args);

@@ -25,6 +25,7 @@ namespace AlbumArtDownloader
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Copy, new ExecutedRoutedEventHandler(CopyExec)));
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Save, new ExecutedRoutedEventHandler(SaveExec)));
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.SaveAs, new ExecutedRoutedEventHandler(SaveAsExec)));
+			CommandBindings.Add(new CommandBinding(ArtSearchWindow.Commands.SaveAsPreset, new ExecutedRoutedEventHandler(SaveAsPresetExec)));
 			CommandBindings.Add(new CommandBinding(NavigationCommands.IncreaseZoom, new ExecutedRoutedEventHandler(IncreaseZoomExec)));
 			CommandBindings.Add(new CommandBinding(NavigationCommands.DecreaseZoom, new ExecutedRoutedEventHandler(DecreaseZoomExec)));
 
@@ -89,15 +90,29 @@ namespace AlbumArtDownloader
 				albumArt.CopyToClipboard();
 			}
 		}
+		
+
 		private void SaveExec(object sender, ExecutedRoutedEventArgs e)
 		{
-			AlbumArt albumArt = (AlbumArt)AlbumArt;
+			SaveExecInternal(AlbumArt);
+		}
+
+		private void SaveAsPresetExec(object sender, ExecutedRoutedEventArgs e)
+		{
+			var albumArt = AlbumArt;
+			albumArt.FilePath = null; // When saving as a preset, always use the default path pattern
+			albumArt.Preset = e.Parameter as String;
+			SaveExecInternal(albumArt);
+		}
+
+		private void SaveExecInternal(AlbumArt albumArt)
+		{
 			if (albumArt != null)
 			{
-				albumArt.Preset = e.Parameter as String;
-
+				//Always auto-close on save
+				//The save operation is asynchronous, so connect the handler to watch for the save completing
 				albumArt.PropertyChanged += AutoCloseOnSave;
-
+			
 				albumArt.Save(this);
 			}
 		}
@@ -106,7 +121,7 @@ namespace AlbumArtDownloader
 			AlbumArt albumArt = (AlbumArt)AlbumArt;
 			if (albumArt != null)
 			{
-				albumArt.PropertyChanged += AutoCloseOnSave; //No auto-close for SaveAs operation.
+				albumArt.PropertyChanged -= AutoCloseOnSave; //No auto-close for SaveAs operation.
 				albumArt.SaveAs(this);
 			}
 		}

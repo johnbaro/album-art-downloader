@@ -7,15 +7,19 @@ class ArkivMusik(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "ArkivMusik"
 	Version as string:
-		get: return "0.6"
+		get: return "0.7"
 	Author as string:
 		get: return "Alex Vallat, DRata"
 	def Search(artist as string, album as string, results as IScriptResults):
 		artist = StripCharacters("&.'\";:?!", artist)
 		album = StripCharacters("&.'\";:?!", album)
 
+		//Get the searchingPage
+		searchPageHtml as string = GetPage("http://www.arkivmusic.com/classical/Search?all_search=1")
+		searchingPage = Regex("name=\"searchingPage\" value=\"(?<searchingPage>[^\"]+)\"", RegexOptions.Singleline | RegexOptions.IgnoreCase).Match(searchPageHtml).Groups["searchingPage"].Value
+
 		//Retrieve the search results page
-		searchResultsHtml as string = GetPage("http://www.arkivmusic.com/classical/NameList?searching=1&searchingPage=ABC123&role_wanted=0&search_term=" + EncodeUrl(artist + " " + album))
+		searchResultsHtml as string = GetPage("http://www.arkivmusic.com/classical/NameList?searching=1&searchingPage=${searchingPage}&role_wanted=0&search_term=" + EncodeUrl(artist + " " + album))
 		
 		matches = Regex("SRC=\"/graphics/covers/thumb/(?<image>[^\"]+)\".+?CLASS=\"listalbum\"><A HREF=\"(?<info>[^\"]+)\">(?<title>[^<]+)", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResultsHtml)
 		

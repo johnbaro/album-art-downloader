@@ -886,8 +886,6 @@ namespace AlbumArtDownloader
 			SaveExecInternal(mResultsViewer.GetSourceAlbumArt(e));
 		}
 
-		
-
 		private void SaveAsPresetExec(object sender, ExecutedRoutedEventArgs e)
 		{
 			var albumArt = mResultsViewer.GetSourceAlbumArt(e);

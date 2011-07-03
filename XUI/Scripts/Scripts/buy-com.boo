@@ -7,26 +7,25 @@ class BuyDotCom(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "Buy.com"
 	Version as string:
-		get: return "0.6"
+		get: return "0.7"
 	Author as string:
-		get: return "alsaan, DRata"
+		get: return "alsaan, DRata, Alex Vallat"
 
 	def Search(artist as string, album as string, results as IScriptResults):
 		artist = StripCharacters("&.'\";:?!", artist)
 		album = StripCharacters("&.'\";:?!", album)
-	  	  	  
-		searchUrl as string = "http://www.buy.com/retail/usersearchresults.asp?qu={0}&querytype=music&store=6&als=3&loc=109"
-		searchParameter as string = "${artist} ${album}".Trim().Replace(" ","+")
-							
+	  	
+		searchParameter = EncodeUrl(artist + " " + album)
+		  	  
 		//Retrieve the search results page
-		searchResultsHtml as string = GetPage(String.Format(searchUrl, searchParameter))
+		searchResultsHtml as string = GetPage("http://www.buy.com/sr/srajax.aspx?qu=${searchParameter}&from=2&sid=6&page=1&pv=1")
 		
 		//Check whether we actually got any relevant result or not
 		if(searchResultsHtml.IndexOf("did not return an exact match") > -1):
 			return
 
 		//Remove "Results ... in All Categories"
-		allCategories = searchResultsHtml.IndexOf("> in all categories <")
+		allCategories = searchResultsHtml.IndexOf(" in all categories ")
 		if(allCategories > -1):
 			searchResultsHtml = searchResultsHtml.Substring(0, allCategories)
 
@@ -36,7 +35,7 @@ class BuyDotCom(AlbumArtDownloader.Scripts.IScript):
 			searchResultsHtml = searchResultsHtml.Substring(0, similar)
 		
 		//Extract all the thumbnails and the links to product pages
-		itemsRegex = Regex("<tr><td valign=\"top\" class=\"searchList\"[^>]*><a href=\"(?<productPageUrl>[^\"]*/(?<sku>[^\"]*)\\.html)\"[^>]*><img[^>]*src=\"(?<thumbnailUrl>[^\"]*)\"[^>]*title=\"(?<title>[^\"]*)\"[^>]")
+		itemsRegex = Regex("<a href=\"(?<productPageUrl>[^\"]*/(?<sku>[^\"]*)\\.html)\"[^>]*><img[^>]*src=\"(?<thumbnailUrl>[^\"]*)\"[^>]*title=\"(?<title>[^\"]*)\"[^>]")
 		itemsMatches = itemsRegex.Matches(searchResultsHtml)
 		
 		//Set the estimated number of covers available (approx. 1 cover per product page)
