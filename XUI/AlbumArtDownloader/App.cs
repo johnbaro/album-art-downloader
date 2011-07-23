@@ -202,24 +202,48 @@ namespace AlbumArtDownloader
 				return;
 			}
 
-			mAppInitialized.Set();
+			string[] args;
+			do
+			{
+				lock (mQueuedArgsLock)
+				{
+					if (mQueuedArgs.Count == 0)
+					{
+						mQueuedArgs = null;
+						break;
+					}
+
+					args = mQueuedArgs.Dequeue();
+				}
+				ProcessCommandArgs(args);
+			} while (true); // Will break out when mQueuedArgs becomes empty
 		}
 
-		/// <summary>Until this event is signaled, the application has not yet finished initializing and can not process any incoming signals from other instances.</summary>
-		private ManualResetEvent mAppInitialized = new ManualResetEvent(false);
+		/// <summary>If not null, incoming arguments form subsequent instances should add their args to this queue rather than executing them.</summary>
+		private Queue<string[]> mQueuedArgs = new Queue<string[]>();
+		private object mQueuedArgsLock = new object();
 
 		/// <summary>
 		/// Called when a new instance of the application was run, and this instance was already running.
 		/// </summary>
 		public void Signal(string[] args)
 		{
-			mAppInitialized.WaitOne();
-
-			Application.Current.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new System.Threading.ThreadStart(delegate
+			lock (mQueuedArgsLock)
 			{
-				ProcessCommandArgs(args);
-			}));
-			//No need to exit if no window was shown.
+				if (mQueuedArgs != null)
+				{
+					mQueuedArgs.Enqueue(args);
+				}
+				else
+				{
+					//No queue, just execute
+					Application.Current.Dispatcher.BeginInvoke(System.Windows.Threading.DispatcherPriority.Normal, new System.Threading.ThreadStart(delegate
+					{
+						ProcessCommandArgs(args);
+					}));
+				}
+			}
+			//No need to exit as no window was shown.
 		}
 
 		/// <summary>

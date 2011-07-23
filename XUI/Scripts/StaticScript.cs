@@ -15,13 +15,14 @@ namespace AlbumArtDownloader.Scripts
 	/// string SourceVersion
 	/// string SourceCreator
 	/// </summary>
-	public class StaticScript : IScript
+	public class StaticScript : IScript, ICategorised
 	{
 		private MethodInfo mGetThumbsMethod;
 		private MethodInfo mGetResultMethod;
 		private PropertyInfo mNameProperty;
 		private PropertyInfo mVersionProperty;
 		private PropertyInfo mCreatorProperty;
+		private PropertyInfo mCategoryProperty;
 		
 		public StaticScript(Type staticMethodImplementer)
 		{
@@ -31,6 +32,7 @@ namespace AlbumArtDownloader.Scripts
 			mNameProperty = staticMethodImplementer.GetProperty("SourceName", BindingFlags.Static | BindingFlags.Public);
 			mVersionProperty = staticMethodImplementer.GetProperty("SourceVersion", BindingFlags.Static | BindingFlags.Public);
 			mCreatorProperty = staticMethodImplementer.GetProperty("SourceCreator", BindingFlags.Static | BindingFlags.Public);
+			mCategoryProperty = staticMethodImplementer.GetProperty("SourceCategory", BindingFlags.Static | BindingFlags.Public);
 
 			if (mGetThumbsMethod == null || mGetResultMethod == null)
 				throw new InvalidOperationException("Static method implementer must implement both 'void GetThumbs(IScriptResults results, string artist, string album)' and 'object GetResult()'");
@@ -64,6 +66,17 @@ namespace AlbumArtDownloader.Scripts
 			{
 				if(mVersionProperty != null)
 					return mVersionProperty.GetValue(null, null).ToString();
+
+				return null;
+			}
+		}
+
+		public string Category
+		{
+			get
+			{
+				if (mCategoryProperty != null)
+					return mCategoryProperty.GetValue(null, null).ToString();
 
 				return null;
 			}

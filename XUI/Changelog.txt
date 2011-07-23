@@ -1,6 +1,12 @@
+0.41 Improved single-instance code to be even more robust to simultaneous multiple launches (now even less likely
+	  to fall back on separate instances)
+	 Added visible categorisation to scripts in script list and script notification window
+	 Added iTunes/Google, MioMusic and SFR Music script
+
 0.40.1
 	 Fixed bug where preset menu items would be disabled in the Preview window
 	 Fixed crash where multiple copies of AAD were launched simultaneously and scripts needed recompiling
+
 0.40
 	 Added "Booklet" as one of the standard types. Currently, Cover-Paradies is the only source that uses it.
 	 Added ability to sort and group by the URL associated with results (generally the page the result was found on).

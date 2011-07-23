@@ -116,9 +116,10 @@ namespace AlbumArtDownloader
 		}
 
 		#region Abstract members
-		public abstract string Name {get;}
-		public abstract string Author { get;}
-		public abstract string Version { get;}
+		public abstract string Name { get; }
+		public abstract string Author { get; }
+		public abstract string Version { get; }
+		public abstract string Category { get; }
 
 		/// <summary>
 		/// Perform the actual internal searching operation

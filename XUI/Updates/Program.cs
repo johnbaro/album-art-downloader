@@ -171,6 +171,11 @@ namespace AlbumArtDownloader.Updates
 																new XAttribute("URI", Path.GetFileName(scriptFile)),
 																new XAttribute("Version", script.Version));
 
+											if (script is ICategorised)
+											{
+												scriptXml.Add(new XAttribute("Category", ((ICategorised)script).Category));
+											}
+
 											//Hack: Add dependency to known dependent files
 											if (script.Name.StartsWith("Amazon "))
 											{

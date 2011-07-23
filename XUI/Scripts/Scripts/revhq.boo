@@ -12,6 +12,8 @@ class RevHQ:
 		get: return "Alex Vallat"
 	static SourceVersion as string:
 		get: return "0.5"
+	static SourceCategory as string:
+		get: return "Independent"
 	static def GetThumbs(coverart,artist,album):
 		artist = StripCharacters("&.'\";:?!", artist)
 		album = StripCharacters("&.'\";:?!", album)

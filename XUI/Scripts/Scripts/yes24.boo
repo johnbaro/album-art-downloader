@@ -11,6 +11,8 @@ class Yes24:
 		get: return "Alex Vallat"
 	static SourceVersion as string:
 		get: return "0.7"
+	static SourceCategory as string:
+		get: return "Eastern"
 	static def GetThumbs(coverart,artist,album):
 		artist = StripCharacters("&.'\";:?!", artist)
 		album = StripCharacters("&.'\";:?!", album)

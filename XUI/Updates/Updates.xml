@@ -26,35 +26,31 @@
     <Dependency>amazon-common.boo</Dependency>
   </Script>
   <Script Name="Archambault" URI="archambault.boo" Version="0.5" />
-  <Script Name="ArkivMusik" URI="arkivmusic.boo" Version="0.7" />
+  <Script Name="ArkivMusik" URI="arkivmusic.boo" Version="0.7" Category="Classical" />
   <Script Name="Buy.com" URI="buy-com.boo" Version="0.7" />
-  <Script Name="CD Baby" URI="cdbaby.boo" Version="0.2" />
-  <Script Name="CD Universe" URI="cduniverse.boo" Version="0.5" />
+  <Script Name="CD Baby" URI="cdbaby.boo" Version="0.2" Category="Independent" />
   <Script Name="Chartstats" URI="chartstats.boo" Version="0.2" />
-  <Script Name="Cover-Paradies" URI="cover-paradies.boo" Version="0.14" />
-  <Script Name="Coveralia" URI="coveralia.boo" Version="0.11" />
   <Script Name="Darktown" URI="darktown.boo" Version="0.5" />
-  <Script Name="Discogs" URI="discogs.boo" Version="0.9" />
-  <Script Name="EB Reggae" URI="ebreggae.boo" Version="0.1" />
+  <Script Name="EB Reggae" URI="ebreggae.boo" Version="0.1" Category="Reggae" />
   <Script Name="eMusic" URI="emusic.boo" Version="0.2" />
-  <Script Name="GigaCrate" URI="gigacrate.boo" Version="0.1" />
+  <Script Name="GigaCrate" URI="gigacrate.boo" Version="0.1" Category="DJ" />
   <Script Name="GoogleImage" URI="google.boo" Version="0.10" />
   <Script Name="hitparade.ch" URI="hitparade.boo" Version="0.2" />
-  <Script Name="HMV Canada" URI="hmv-canada.boo" Version="0.2" />
+  <Script Name="HMV Canada" URI="hmv-canada.boo" Version="0.2" Category="Canadian" />
   <Script Name="iTunes/Google" URI="itunes-google.boo" Version="0.3" />
-  <Script Name="Juno Records" URI="juno-records.boo" Version="0.7" />
-  <Script Name="Kalahari" URI="kalahari.boo" Version="0.2" />
-  <Script Name="LastFM Artist" URI="lastfm-artist.boo" Version="0.4" />
+  <Script Name="Juno Records" URI="juno-records.boo" Version="0.7" Category="Dance, Trance" />
+  <Script Name="Kalahari" URI="kalahari.boo" Version="0.3" Category="South African" />
+  <Script Name="LastFM Artist" URI="lastfm-artist.boo" Version="0.4" Category="Artist Images" />
   <Script Name="LastFM Cover" URI="lastfm-cover.boo" Version="0.6" />
-  <Script Name="Encyclopaedia Metallum" URI="metal-archives.boo" Version="0.6" />
-  <Script Name="Metal Library" URI="metallibrary.boo" Version="0.3" />
+  <Script Name="Encyclopaedia Metallum" URI="metal-archives.boo" Version="0.6" Category="Punk, Metal, Rock" />
+  <Script Name="Metal Library" URI="metallibrary.boo" Version="0.3" Category="Punk, Metal, Rock" />
   <Script Name="MioMusik" URI="miomusik.boo" Version="0.1" />
-  <Script Name="Psyshop" URI="psyshop.boo" Version="0.4" />
+  <Script Name="Psyshop" URI="psyshop.boo" Version="0.4" Category="Dance, Trance" />
   <Script Name="Qobuz" URI="qobuz.boo" Version="0.1" />
-  <Script Name="RevHQ" URI="revhq.boo" Version="0.5" />
+  <Script Name="RevHQ" URI="revhq.boo" Version="0.5" Category="Independent" />
   <Script Name="SFR Music" URI="sfr-music.boo" Version="0.1" />
-  <Script Name="Take2" URI="take2.boo" Version="0.2" />
-  <Script Name="VGMdb" URI="vgmdb.boo" Version="0.6" />
-  <Script Name="Yes24" URI="yes24.boo" Version="0.7" />
-  <Script Name="YesAsia" URI="yesasia.boo" Version="0.3" />
+  <Script Name="Take2" URI="take2.boo" Version="0.2" Category="South African" />
+  <Script Name="VGMdb" URI="vgmdb.boo" Version="0.6" Category="Video Game Music" />
+  <Script Name="Yes24" URI="yes24.boo" Version="0.7" Category="Eastern" />
+  <Script Name="YesAsia" URI="yesasia.boo" Version="0.3" Category="Eastern" />
 </Updates>

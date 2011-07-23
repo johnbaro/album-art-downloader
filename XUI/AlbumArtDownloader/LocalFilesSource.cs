@@ -31,6 +31,11 @@ namespace AlbumArtDownloader
 			get { return typeof(LocalFilesSource).Assembly.GetName().Version.ToString(); }
 		}
 
+		public override string Category
+		{
+			get { return null; }
+		}
+
 		public string GetSearchPath(string artist, string album)
 		{
 			string pathPattern = SearchPathPattern;

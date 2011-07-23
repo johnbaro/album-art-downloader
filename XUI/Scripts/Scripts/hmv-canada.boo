@@ -2,13 +2,15 @@ import System.Text.RegularExpressions
 import AlbumArtDownloader.Scripts
 import util
 
-class HMVCanada(AlbumArtDownloader.Scripts.IScript):
+class HMVCanada(AlbumArtDownloader.Scripts.IScript, ICategorised):
 	Name as string:
 		get: return "HMV Canada"
 	Version as string:
 		get: return "0.2"
 	Author as string:
 		get: return "Sebastien Leclerc"
+	Category as string:
+		get: return "Canadian"
 
 	def Search(artist as string, album as string, results as IScriptResults):
 		if string.IsNullOrEmpty(album):

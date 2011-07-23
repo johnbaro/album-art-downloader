@@ -1,5 +1,5 @@
 !define PRODUCT_NAME "Album Art Downloader XUI"
-!define PRODUCT_VERSION "0.40.1"
+!define PRODUCT_VERSION "0.41"
 !define PRODUCT_WEB_SITE "http://sourceforge.net/projects/album-art"
 !define PRODUCT_SUPPORT "http://www.hydrogenaudio.org/forums/index.php?showtopic=57392"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\AlbumArt.exe"
@@ -150,6 +150,9 @@ SectionGroup "Image Download Scripts"
 		Section "Google"
 		  File "..\Scripts\Scripts\google.boo"
 		SectionEnd
+		Section "iTunes/Google"
+		  File "..\Scripts\Scripts\itunes-google.boo"
+		SectionEnd
 		Section "7digital"
 		  File "..\Scripts\Scripts\7digital.boo"
 		SectionEnd
@@ -207,13 +210,15 @@ SectionGroup "Image Download Scripts"
 		Section "Qobuz"
 		  File "..\Scripts\Scripts\qobuz.boo"
 		SectionEnd
+		Section "MioMusic"
+		  File "..\Scripts\Scripts\miomusik.boo"
+		SectionEnd
+		Section "SFR Music"
+		  File "..\Scripts\Scripts\sfr-music.boo"
+		SectionEnd
 		Section "Archambault"
 		  File "..\Scripts\Scripts\archambault.boo"
 		SectionEnd
-		#iTunes script currently blocked by apple, so don't include it
-		#Section "iTunes Music Shop"
-		#  File "..\Scripts\Scripts\iTunes.boo"
-		#SectionEnd
 	SectionGroupEnd
 	
 	SectionGroup "Dance, Trance"
@@ -232,9 +237,6 @@ SectionGroup "Image Download Scripts"
 		Section /o "Metal Library"
 		  File "..\Scripts\Scripts\metallibrary.boo"
 		SectionEnd
-		#Section /o "MusicMight"
-		#  File "..\Scripts\Scripts\musicmight.boo"
-		#SectionEnd
 	SectionGroupEnd
 	
 	SectionGroup "Independent"
@@ -270,7 +272,7 @@ SectionGroup "Image Download Scripts"
 		SectionEnd
 	SectionGroupEnd
 
-	SectionGroup "Eastern"
+	SectionGroup "Canadian"
 		Section /o "HMV Canada"
 		  File "..\Scripts\Scripts\hmv-canada.boo"
 		SectionEnd
@@ -283,10 +285,6 @@ SectionGroup "Image Download Scripts"
 		Section /o "YesAsia"
 		  File "..\Scripts\Scripts\yesasia.boo"
 		SectionEnd
-		# Site appears to be down
-		#Section "maniadb"
-		#  File "..\Scripts\Scripts\maniadb.boo"
-		#SectionEnd
 	SectionGroupEnd
 
 	SectionGroup "South African"

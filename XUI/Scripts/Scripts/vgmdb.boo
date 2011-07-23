@@ -4,7 +4,7 @@ import System.Text.RegularExpressions
 import AlbumArtDownloader.Scripts
 import util
 
-class Vgmdb(AlbumArtDownloader.Scripts.IScript):
+class Vgmdb(AlbumArtDownloader.Scripts.IScript, ICategorised):
 
 	//******** For full sized images, put your VGMDB username and password here **************//
 	VGMDB_UserName = ""
@@ -19,7 +19,9 @@ class Vgmdb(AlbumArtDownloader.Scripts.IScript):
 		get: return "Alex Vallat"
 	Version as string:
 		get: return "0.6"
-	
+	Category as string:
+		get: return "Video Game Music"
+
 	def Search(artist as string, album as string, results as IScriptResults):
 		if(artist.Equals("Various Artists", StringComparison.OrdinalIgnoreCase)):
 			artist = ""; //Ignore Various Artists

@@ -25,6 +25,19 @@ namespace AlbumArtDownloader
 		{
 			get { return mScript.Version; }
 		}
+		public override string Category
+		{
+			get
+			{
+				var categorised = mScript as ICategorised;
+				if (categorised != null)
+				{
+					return categorised.Category;
+				}
+
+				return null;
+			}
+		}
 
 		protected override void SearchInternal(string artist, string album, IScriptResults results)
 		{

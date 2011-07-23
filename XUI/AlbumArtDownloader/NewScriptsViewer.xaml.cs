@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Windows;
+using System.Windows.Data;
 
 namespace AlbumArtDownloader
 {
@@ -46,6 +47,8 @@ namespace AlbumArtDownloader
 			else
 			{
 				mScriptUpdatesViewer.ItemsSource = updates.AvailableScripts;
+
+				mScriptUpdatesViewer.Items.GroupDescriptions.Add(new PropertyGroupDescription("Category"));
 			}
 
 			mUpdates = updates;

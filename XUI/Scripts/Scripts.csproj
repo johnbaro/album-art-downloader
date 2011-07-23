@@ -57,6 +57,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CoverType.cs" />
+    <Compile Include="ICategorised.cs" />
     <Compile Include="IScript.cs" />
     <Compile Include="IScriptResults.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

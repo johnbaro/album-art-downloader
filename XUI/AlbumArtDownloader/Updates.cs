@@ -92,6 +92,7 @@ namespace AlbumArtDownloader
 					foreach (XmlElement scriptUpdateXml in updatesXml.SelectNodes("/Updates/Script"))
 					{
 						string name = scriptUpdateXml.GetAttribute("Name");
+						string category = scriptUpdateXml.GetAttribute("Category");
 						string newVersion = scriptUpdateXml.GetAttribute("Version");
 
 						//Check to see if there is an older version of this script to update
@@ -100,13 +101,12 @@ namespace AlbumArtDownloader
 						{
 							if (currentVersion != newVersion)
 							{
-
-								updates.AddScriptUpdate(new ScriptUpdate(name, currentVersion, newVersion, GetDownloadFiles(baseUri, scriptUpdateXml)));
+								updates.AddScriptUpdate(new ScriptUpdate(name, category, currentVersion, newVersion, GetDownloadFiles(baseUri, scriptUpdateXml)));
 							}
 						}
 						else
 						{
-							updates.AddAvailableScript(new ScriptUpdate(name, null, newVersion, GetDownloadFiles(baseUri, scriptUpdateXml)));
+							updates.AddAvailableScript(new ScriptUpdate(name, category, null, newVersion, GetDownloadFiles(baseUri, scriptUpdateXml)));
 						}
 					}
 				}
@@ -274,12 +274,14 @@ namespace AlbumArtDownloader
 		private readonly string mName;
 		private readonly string mOldVersion;
 		private readonly string mNewVersion;
+		private readonly string mCategory;
 		private readonly IEnumerable<Uri> mFiles;
 		private bool mSelected;
 
-		public ScriptUpdate(string name, string oldVersion, string newVersion, IEnumerable<Uri> files)
+		public ScriptUpdate(string name, string category, string oldVersion, string newVersion, IEnumerable<Uri> files)
 		{
 			mName = name;
+			mCategory = category;
 			mOldVersion = oldVersion;
 			mNewVersion = newVersion;
 			mFiles = files;
@@ -288,6 +290,7 @@ namespace AlbumArtDownloader
 		}
 
 		public string Name { get { return mName; } }
+		public string Category { get { return mCategory; } }
 		public string OldVersion { get { return mOldVersion; } }
 		public string NewVersion { get { return mNewVersion; } }
 		

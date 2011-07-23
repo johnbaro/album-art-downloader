@@ -3,13 +3,15 @@ import System.Text.RegularExpressions
 import AlbumArtDownloader.Scripts
 import util
 
-class CDBaby(AlbumArtDownloader.Scripts.IScript):
+class CDBaby(AlbumArtDownloader.Scripts.IScript, ICategorised):
 	Name as string:
 		get: return "CD Baby"
 	Version as string:
 		get: return "0.2"
 	Author as string:
 		get: return "Alex Vallat"
+	Category as string:
+		get: return "Independent"
 	def Search(artist as string, album as string, results as IScriptResults):
 		artist = StripCharacters("&.'\";:?!", artist)
 		album = StripCharacters("&.'\";:?!", album)

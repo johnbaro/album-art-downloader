@@ -3,13 +3,15 @@ import System.Text.RegularExpressions
 import AlbumArtDownloader.Scripts
 import util
 
-class Take2(AlbumArtDownloader.Scripts.IScript):
+class Take2(AlbumArtDownloader.Scripts.IScript, ICategorised):
 	Name as string:
 		get: return "Take2"
 	Version as string:
 		get: return "0.2"
 	Author as string:
 		get: return "Alex Vallat"
+	Category as string:
+		get: return "South African"
 	def Search(artist as string, album as string, results as IScriptResults):
 		artist = StripCharacters("&.'\";:?!", artist)
 		album = StripCharacters("&.'\";:?!", album)
