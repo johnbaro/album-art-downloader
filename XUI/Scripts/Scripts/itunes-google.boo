@@ -5,14 +5,14 @@ class iTunesGoogle(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "iTunes/Google"
 	Version as string:
-		get: return "0.3"
+		get: return "0.5"
 	Author as string:
 		get: return "Alex Vallat"
 	def Search(artist as string, album as string, results as IScriptResults):
 		artist = StripCharacters("&.'\";:?!", artist)
 		album = StripCharacters("&.'\";:?!", album)
 
-		searchResultsHtml as string = GetPage("http://www.google.com/search?filter=0&q=site%3Aitunes.apple.com%2F+" + EncodeUrl("\"" + artist + "\" \"download+" + album + "\""))
+		searchResultsHtml as string = GetPage("http://www.google.com/search?filter=0&q=site%3Aitunes.apple.com%2F+" + EncodeUrl("\"" + artist + "\" \"" + album + "\""))
 		
 		matches = Regex("<a href=\"(?<url>http://itunes\\.apple\\.com/[^/]+/album/[^\"]+)\"", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResultsHtml)
 		
@@ -27,7 +27,21 @@ class iTunesGoogle(AlbumArtDownloader.Scripts.IScript):
 
 			imageUrlBase = albumMatch.Groups["image"].Value
 			
-			results.Add(imageUrlBase + "170x170-75.jpg", albumMatch.Groups["title"].Value, url, -1, -1, imageUrlBase + "jpg", CoverType.Front);
+			results.Add(imageUrlBase + "170x170-75.jpg", albumMatch.Groups["title"].Value, url, -1, -1, imageUrlBase, CoverType.Front);
 
-	def RetrieveFullSizeImage(fullSizeCallbackParameter):
-		return fullSizeCallbackParameter
+	def RetrieveFullSizeImage(imageUrlBase):
+		imageStream = TryGetImageStream(imageUrlBase + "jpg")
+
+		if imageStream != null:
+			return imageStream
+		else:
+			// Couldn't find full size, try 600x600
+			return TryGetImageStream(imageUrlBase + "600x600-75.jpg")
+
+	def TryGetImageStream(url):
+		request as System.Net.HttpWebRequest = System.Net.HttpWebRequest.Create(url)
+		try:
+			response = request.GetResponse()
+			return response.GetResponseStream()
+		except e as System.Net.WebException:
+			return null

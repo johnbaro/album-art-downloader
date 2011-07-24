@@ -28,6 +28,7 @@
 			<controls:PathCompacterConverter x:Key="mPathCompacterConverter"/>
 			<controls:StringFormatterConverter x:Key="mStringFormatterConverter"/>
 			<controls:LogarithmicScaleConverter x:Key="mLogarithmicScaleConverter"/>
+            <controls:DpiIndependentZoomConverter x:Key="mDpiIndependentZoomConverter"/>
 			<BooleanToVisibilityConverter x:Key="mBooleanToVisibilityConverter"/>
 
 			<properties:Settings x:Key="mSettings"/>
@@ -181,7 +182,20 @@
 			
 			<Image Source="{Binding Image, NotifyOnTargetUpdated=True}" Stretch="None" TargetUpdated="ZoomToFit">
 				<Image.LayoutTransform>
-					<ScaleTransform ScaleX="{Binding ElementName=this, Path=Zoom, Mode=OneWay}" ScaleY="{Binding ElementName=this, Path=Zoom, Mode=OneWay}"/>
+                    <ScaleTransform>
+                        <ScaleTransform.ScaleX>
+                            <MultiBinding Converter="{StaticResource mDpiIndependentZoomConverter}" Mode="OneWay">
+                                <Binding ElementName="this" Path="Zoom" Mode="OneWay" />
+                                <Binding Path="Image.DpiX" Mode="OneWay" />
+                            </MultiBinding>
+                        </ScaleTransform.ScaleX>
+                        <ScaleTransform.ScaleY>
+                            <MultiBinding Converter="{StaticResource mDpiIndependentZoomConverter}" Mode="OneWay">
+                                <Binding ElementName="this" Path="Zoom" Mode="OneWay" />
+                                <Binding Path="Image.DpiY" Mode="OneWay" />
+                            </MultiBinding>
+                        </ScaleTransform.ScaleY>
+                    </ScaleTransform>
 				</Image.LayoutTransform>
 			</Image>
 		</ScrollViewer>

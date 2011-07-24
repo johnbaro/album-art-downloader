@@ -231,6 +231,9 @@ SectionGroup "Image Download Scripts"
 	SectionGroupEnd
 	
 	SectionGroup "Punk, Metal, Rock"
+		Section /o "Nuclear Blast"
+		  File "..\Scripts\Scripts\nuclearblast.boo"
+		SectionEnd
 		Section /o "Encyclopaedia Metallum"
 		  File "..\Scripts\Scripts\metal-archives.boo"
 		SectionEnd

@@ -103,6 +103,7 @@
   </ItemGroup>
   <ItemGroup>
     <AppDesigner Include="Properties\" />
+    <Compile Include="Controls\DpiIndependentZoomConverter.cs" />
     <Compile Include="OverwriteExistingWarning.xaml.cs">
       <DependentUpon>OverwriteExistingWarning.xaml</DependentUpon>
     </Compile>

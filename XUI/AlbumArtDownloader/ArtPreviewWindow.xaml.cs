@@ -258,10 +258,10 @@ namespace AlbumArtDownloader
 
 		private void ZoomToFit(object sender, EventArgs e)
 		{
-			if (AlbumArt != null && AlbumArt.Image != null && !Double.IsNaN(AlbumArt.Image.Width) && !Double.IsNaN(AlbumArt.Image.Height))
+			if (AlbumArt != null && AlbumArt.Image != null && !Double.IsNaN(AlbumArt.Image.PixelWidth) && !Double.IsNaN(AlbumArt.Image.PixelHeight))
 			{
-				double fitHorizontal = mImageScroller.ViewportWidth / AlbumArt.Image.Width;
-				double fitVertical = mImageScroller.ViewportHeight / AlbumArt.Image.Height;
+				double fitHorizontal = mImageScroller.ViewportWidth / AlbumArt.Image.PixelWidth;
+				double fitVertical = mImageScroller.ViewportHeight / AlbumArt.Image.PixelHeight;
 				Zoom = Math.Min(fitHorizontal, fitVertical);
 			}
 		}
