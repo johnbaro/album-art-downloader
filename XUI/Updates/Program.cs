@@ -72,9 +72,6 @@ namespace AlbumArtDownloader.Updates
 				scripts.Remove("util.boo");
 				scripts.Remove("amazon-common.boo");
 
-				//HACK: Remove specific files that shouldn't be included
-				scripts.Remove("coverlandia.boo");
-
 				foreach (string scriptFile in scripts.Values)
 				{
 					try
@@ -134,7 +131,11 @@ namespace AlbumArtDownloader.Updates
 							//Report warnings and errors
 							foreach (CompilerWarning warning in compilerContext.Warnings)
 							{
-								ReportCompilerIssue("warning", warning.LexicalInfo, warning.Code, warning.Message);
+								// Ignore warning about duplicated CoverSources namespace
+								if (!(warning.Code == "BCW0008" && warning.Message.Contains("'CoverSources'")))
+								{
+									ReportCompilerIssue("warning", warning.LexicalInfo, warning.Code, warning.Message);
+								}
 							}
 							foreach (CompilerError error in compilerContext.Errors)
 							{
@@ -173,7 +174,11 @@ namespace AlbumArtDownloader.Updates
 
 											if (script is ICategorised)
 											{
-												scriptXml.Add(new XAttribute("Category", ((ICategorised)script).Category));
+												var category = ((ICategorised)script).Category;
+												if (!String.IsNullOrEmpty(category))
+												{
+													scriptXml.Add(new XAttribute("Category", category));
+												}
 											}
 
 											//Hack: Add dependency to known dependent files
@@ -188,7 +193,7 @@ namespace AlbumArtDownloader.Updates
 									catch (Exception e)
 									{
 										//Skip the type. Does this need to display a user error message?
-										Console.WriteLine(String.Format("Could not load script: {0}\n\n{1}", type.Name, e.Message));
+										Console.WriteLine(String.Format("Warning: Could not load script: {0}\n\n{1}", type.Name, e.Message));
 									}
 								}
 							}

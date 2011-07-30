@@ -63,158 +63,67 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StaticScript.cs" />
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
-    <None Include="Scripts\allcdcover.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\7digital.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="Scripts\allcdcover.boo" />
+    <None Include="Scripts\7digital.boo" />
     <None Include="Scripts\Archived\coverisland.boo" />
     <None Include="Scripts\Archived\freecovers-api.boo" />
     <None Include="Scripts\Archived\maniadb.boo" />
-    <None Include="Scripts\chartstats.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\amazon-it.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\nuclearblast.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\itunes-google.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\miomusik.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\sfr-music.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\gigacrate.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\qobuz.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\emusic.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\ebreggae.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\coverlandia.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\darktown.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\amazon-common.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\cduniverse.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\Archived\itunes.boo">
-    </None>
-    <None Include="Scripts\revhq.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\Archived\rateyourmusic.boo">
-    </None>
-    <None Include="Scripts\cover-paradies.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\coveralia.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\discogs.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\juno-records.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\psyshop.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\util.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\yes24.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="Scripts\chartstats.boo" />
+    <None Include="Scripts\amazon-it.boo" />
+    <None Include="Scripts\coverlandia-official.boo" />
+    <None Include="Scripts\nuclearblast.boo" />
+    <None Include="Scripts\itunes-google.boo" />
+    <None Include="Scripts\miomusik.boo" />
+    <None Include="Scripts\sfr-music.boo" />
+    <None Include="Scripts\gigacrate.boo" />
+    <None Include="Scripts\qobuz.boo" />
+    <None Include="Scripts\emusic.boo" />
+    <None Include="Scripts\ebreggae.boo" />
+    <None Include="Scripts\coverlandia.boo" />
+    <None Include="Scripts\darktown.boo" />
+    <None Include="Scripts\amazon-common.boo" />
+    <None Include="Scripts\cduniverse.boo" />
+    <None Include="Scripts\Archived\itunes.boo" />
+    <None Include="Scripts\revhq.boo" />
+    <None Include="Scripts\Archived\rateyourmusic.boo" />
+    <None Include="Scripts\cover-paradies.boo" />
+    <None Include="Scripts\coveralia.boo" />
+    <None Include="Scripts\discogs.boo" />
+    <None Include="Scripts\juno-records.boo" />
+    <None Include="Scripts\psyshop.boo" />
+    <None Include="Scripts\util.boo" />
+    <None Include="Scripts\yes24.boo" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Third Party Assemblies\ICSharpCode.SharpZipLib.dll">
       <Link>Scripts\Archived\ICSharpCode.SharpZipLib.dll</Link>
     </None>
-    <None Include="Scripts\amazon-com.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\amazon-co-uk.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\amazon-ca.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\amazon-fr.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\amazon-jp.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\amazon-de.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\archambault.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\buy-com.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\arkivmusic.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\cdbaby.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="Scripts\amazon-com.boo" />
+    <None Include="Scripts\amazon-co-uk.boo" />
+    <None Include="Scripts\amazon-ca.boo" />
+    <None Include="Scripts\amazon-fr.boo" />
+    <None Include="Scripts\amazon-jp.boo" />
+    <None Include="Scripts\amazon-de.boo" />
+    <None Include="Scripts\archambault.boo" />
+    <None Include="Scripts\buy-com.boo" />
+    <None Include="Scripts\arkivmusic.boo" />
+    <None Include="Scripts\cdbaby.boo" />
     <None Include="Scripts\Archived\lala.boo" />
-    <None Include="Scripts\take2.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\kalahari.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\vgmdb.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\hmv-canada.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="Scripts\take2.boo" />
+    <None Include="Scripts\kalahari.boo" />
+    <None Include="Scripts\vgmdb.boo" />
+    <None Include="Scripts\hmv-canada.boo" />
     <None Include="Scripts\Archived\musicmight.boo" />
-    <None Include="Scripts\yesasia.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\hitparade.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\metallibrary.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\google.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\lastfm-artist.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\lastfm-cover.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Include="Scripts\metal-archives.boo">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <None Include="Scripts\yesasia.boo" />
+    <None Include="Scripts\hitparade.boo" />
+    <None Include="Scripts\metallibrary.boo" />
+    <None Include="Scripts\google.boo" />
+    <None Include="Scripts\lastfm-artist.boo" />
+    <None Include="Scripts\lastfm-cover.boo" />
+    <None Include="Scripts\metal-archives.boo" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Scripts\Archived\Archived Scripts.txt" />
+    <None Include="Scripts\Archived\Archived Scripts.txt" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

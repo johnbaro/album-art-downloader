@@ -3,21 +3,19 @@ import System.Text.RegularExpressions
 import AlbumArtDownloader.Scripts
 import util
 
-class Coverlandia(AlbumArtDownloader.Scripts.IScript, ICategorised):
+class CoverlandiaOfficial(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
-		get: return "Coverlandia"
+		get: return "Coverlandia (Official)"
 	Version as string:
 		get: return "0.2"
 	Author as string:
 		get: return "Alex Vallat"
-	Category as string:
-		get: return "Fan-made covers"
 	def Search(artist as string, album as string, results as IScriptResults):
 		artist = StripCharacters("&.'\";:?!", artist)
 		album = StripCharacters("&.'\";:?!", album)
 
 		//Retrieve the search results page
-		searchResultsHtml as string = GetPage("http://coverlandia.net/?s=FanMade+" + EncodeUrl(artist + " " + album))
+		searchResultsHtml as string = GetPage("http://coverlandia.net/?s=official+" + EncodeUrl(artist + " " + album))
 		
 		matches = Regex("<a href=\\\"(?<url>[^\"]+)\" class=\"title\">(?<title>[^<]+)<.*?<a onclick[^>]+? href=\"(?<full>[^\"]+)[^>]*><img[^>]+? src=\"(?<thumb>[^\"]+)\"", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResultsHtml)
 		

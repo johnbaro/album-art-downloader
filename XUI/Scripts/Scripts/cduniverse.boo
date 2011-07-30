@@ -10,12 +10,12 @@ class CdUniverse:
 	static SourceCreator as string:
 		get: return "Alex Vallat"		
 	static SourceVersion as string:
-		get: return "0.5"
+		get: return "0.6"
 	static def GetThumbs(coverart,artist,album):
 		artist = StripCharacters("&.'\";:?!", artist)
 		album = StripCharacters("&.'\";:?!", album)
 
-		albumResults = GetPage(String.Format("http://www.cduniverse.com/sresult.asp?HT_Search_Info={0}&HT_Search=TITLE", EncodeUrl(album)))
+		albumResults = GetPage(String.Format("http://www.cduniverse.com/sresult.asp?HT_Search_Info={0}&HT_Search=TITLE&style=music&th=1", EncodeUrl(album)))
 
 		//Get results
 		albumRegex = Regex("<a class=\"artitle\"[^>]+>\\s*(?<artist>[^<]+)\\s*</a>[^?]+\\?pid=(?<pid>\\d+)[&\"][^>]*>", RegexOptions.Singleline)
@@ -41,7 +41,7 @@ class CdUniverse:
 			title = titleRegex.Matches(imagePage)[0].Groups["title"].Value //Expecting only one match
 			
 			//Get the image(s?)
-			imageRegex = Regex("<img src=\"(?<url>[^\"]+/Large/[^\"]+)\"", RegexOptions.Multiline | RegexOptions.IgnoreCase)
+			imageRegex = Regex("<img src=\"(?<url>[^\"]+[\\\\/]Large[\\\\/][^\"]+)\"", RegexOptions.Multiline | RegexOptions.IgnoreCase)
 			imageMatches = imageRegex.Matches(imagePage)
 			for imageMatch as Match in imageMatches:
 				url = imageMatch.Groups["url"].Value

@@ -29,8 +29,14 @@
   <Script Name="ArkivMusik" URI="arkivmusic.boo" Version="0.7" Category="Classical" />
   <Script Name="Buy.com" URI="buy-com.boo" Version="0.7" />
   <Script Name="CD Baby" URI="cdbaby.boo" Version="0.2" Category="Independent" />
+  <Script Name="CD Universe" URI="cduniverse.boo" Version="0.6" />
   <Script Name="Chartstats" URI="chartstats.boo" Version="0.2" />
+  <Script Name="Cover-Paradies" URI="cover-paradies.boo" Version="0.14" />
+  <Script Name="Coveralia" URI="coveralia.boo" Version="0.11" />
+  <Script Name="Coverlandia (Official)" URI="coverlandia-official.boo" Version="0.2" />
+  <Script Name="Coverlandia" URI="coverlandia.boo" Version="0.2" Category="Fan-made covers" />
   <Script Name="Darktown" URI="darktown.boo" Version="0.5" />
+  <Script Name="Discogs" URI="discogs.boo" Version="0.9" />
   <Script Name="EB Reggae" URI="ebreggae.boo" Version="0.1" Category="Reggae" />
   <Script Name="eMusic" URI="emusic.boo" Version="0.2" />
   <Script Name="GigaCrate" URI="gigacrate.boo" Version="0.1" Category="DJ" />
