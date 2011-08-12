@@ -8,11 +8,13 @@ abstract class Amazon(AlbumArtDownloader.Scripts.IScript):
 	virtual Name as string:
 		get: return "Amazon (.${Suffix})"
 	Version as string:
-		get: return "0.7s"
+		get: return "0.8s"
 	Author as string:
 		get: return "Alex Vallat"
 	abstract protected Suffix as string:
 		get: pass
+	virtual protected CountryCode as string:
+		get: return "01"
 	virtual protected SearchIndex as string: //Deprectated, ignored.
 		get: return "" 
 	virtual protected def GetUrl(artist as string, album as string) as string:
@@ -27,21 +29,39 @@ abstract class Amazon(AlbumArtDownloader.Scripts.IScript):
 		url = GetUrl(artist, album)
 		resultsPage = GetPage(GetPageStream(url, null, true), PageEncoding)
 		
-		resultsRegex = Regex("<div\\s[^>]*class\\s*=\\s*\"image\"[^>]*>(?>.*?\\ssrc\\s*=\\s*\")(?<image>http://ecx.*?\\._)(?<thumb>(?:[^_]+_))(?<ext>\\.[^\"]+)\".*?<div\\s[^>]*class\\s*=\\s*\"title\"[^>]*>\\s*<a\\s[^>]*href\\s*=\\s*\"(?<url>[^\"]+)[^>]+>\\s*(?<title>.*?)</a>(?:\\s*<span\\s[^>]*class=\"ptBrand\"[^>]*>(?:[^<]*<a\\s[^>]*>)?\\s*(?:by |von |de |di )?(?<artist>[^<]+))?", RegexOptions.Singleline | RegexOptions.IgnoreCase)
+		resultsRegex = Regex("<div\\s[^>]*class\\s*=\\s*\"title\"[^>]*>\\s*<a\\s[^>]*href\\s*=\\s*\"(?<url>[^\"]+?/dp/(?<id>[^/]+)/)[^>]+>\\s*(?<title>.*?)</a>(?:\\s*<span\\s[^>]*class=\"ptBrand\"[^>]*>(?:[^<]*<a\\s[^>]*>)?\\s*(?:by |von |de |di )?(?<artist>[^<]+))?", RegexOptions.Singleline | RegexOptions.IgnoreCase)
 		resultsMatches = resultsRegex.Matches(resultsPage)
 		
 		results.EstimatedCount = resultsMatches.Count
 		
 		for resultsMatch as Match in resultsMatches:
-  			image = resultsMatch.Groups["image"].Value
-  			thumb = resultsMatch.Groups["thumb"].Value
-  			ext = resultsMatch.Groups["ext"].Value
-  			url = resultsMatch.Groups["url"].Value
-  			title = System.Web.HttpUtility.HtmlDecode(resultsMatch.Groups["title"].Value)
-  			artist = System.Web.HttpUtility.HtmlDecode(resultsMatch.Groups["artist"].Value)
-  			
-  			results.Add(image + thumb + ext, "${artist} - ${title}", url, -1, -1, image + "SL500_" + ext, CoverType.Front)
+			id = resultsMatch.Groups["id"].Value
+			url = resultsMatch.Groups["url"].Value
+			title = System.Web.HttpUtility.HtmlDecode(resultsMatch.Groups["title"].Value)
+			artist = System.Web.HttpUtility.HtmlDecode(resultsMatch.Groups["artist"].Value)
+			imageBase = "http://ecx.images-amazon.com/images/P/${id}.${CountryCode}."
 
-	def RetrieveFullSizeImage(fullSizeCallbackParameter):
-		return fullSizeCallbackParameter
+			thumbnail = TryGetImageStream(imageBase + "_THUMB_")
 
+			results.Add(thumbnail, "${artist} - ${title}", url, -1, -1, imageBase, CoverType.Front)
+
+	def RetrieveFullSizeImage(imageBase):
+		imageStream = TryGetImageStream(imageBase + "_SCRM_")
+		if imageStream != null:
+			return imageStream
+
+		//Fall back on Large size
+		return TryGetImageStream(imageBase + "_SCL_")
+
+	def TryGetImageStream(url):
+		request as System.Net.HttpWebRequest = System.Net.HttpWebRequest.Create(url)
+		try:
+			response = request.GetResponse()
+			if response.ContentLength > 43:
+				return response.GetResponseStream()
+			
+			response.Close()
+			return null
+		except e as System.Net.WebException:
+			return null
+	

@@ -5,7 +5,7 @@ class iTunesBing(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "iTunes/Bing"
 	Version as string:
-		get: return "0.5"
+		get: return "0.7"
 	Author as string:
 		get: return "Alex Vallat"
 	def Search(artist as string, album as string, results as IScriptResults):
@@ -23,7 +23,7 @@ class iTunesBing(AlbumArtDownloader.Scripts.IScript):
 			
 			// Now fetch the iTunes page
 			albumResultHtml as string = GetPage(url)
-			albumMatch = Regex("<img [^>]+?alt=\"(?<title>[^\"]+)\" class=\"artwork\" src=\"(?<image>[^\"]+?)170x170-75\\.jpg\"", RegexOptions.Singleline | RegexOptions.IgnoreCase).Match(albumResultHtml)
+			albumMatch = Regex("<img [^>]+?alt=\"(?<title>[^>]+?)\" class=\"artwork\" src=\"(?<image>[^\"]+?)170x170-75\\.jpg\"", RegexOptions.Singleline | RegexOptions.IgnoreCase).Match(albumResultHtml)
 
 			imageUrlBase = albumMatch.Groups["image"].Value
 			
@@ -35,8 +35,14 @@ class iTunesBing(AlbumArtDownloader.Scripts.IScript):
 		if imageStream != null:
 			return imageStream
 		else:
-			// Couldn't find full size, try 600x600
-			return TryGetImageStream(imageUrlBase + "600x600-75.jpg")
+			// Couldn't find full size .jpg, try .tif
+			imageStream = TryGetImageStream(imageUrlBase + "tif")
+
+			if imageStream != null:
+				return imageStream
+			else:
+				// Couldn't find full size .jpg or .tif, fall back on 600x600
+				return TryGetImageStream(imageUrlBase + "600x600-75.jpg")
 
 	def TryGetImageStream(url):
 		request as System.Net.HttpWebRequest = System.Net.HttpWebRequest.Create(url)
