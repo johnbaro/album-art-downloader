@@ -42,6 +42,7 @@ EB Reggae	Kevin Kinsella	Great Design
 eMusic	Muse	The Resistance
 Qobuz	Muse	The Resistance
 GigaCrate	Muse	Starlight
-iTunes/Google	Muse	The Resistance
+iTunes	Muse	The Resistance
 MioMusik	Muse	The Resistance
 SFR Music	Muse	The Resistance
+DJShop	Muse	The Resistance

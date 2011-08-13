@@ -6,13 +6,17 @@ import util
 
 class iTunes(AlbumArtDownloader.Scripts.IScript):
 	virtual Name as string:
-		get: return "iTunes (${CountryName})"
+		get: 
+			name = "iTunes"
+			if not System.String.IsNullOrEmpty(CountryName):
+				name += " (${CountryName})"
+			return name
 	Version as string:
 		get: return "0.2"
 	Author as string:
 		get: return "Alex Vallat"
 	virtual protected CountryName as string:
-		get: return "USA"
+		get: return null
 	virtual protected CountryCode as string:
 		get: return "US"
 	def Search(artist as string, album as string, results as IScriptResults):

@@ -109,7 +109,6 @@ Section -ScriptsPath
   File "..\Scripts\Scripts\util.boo"
   
   #delete obsolete scripts
-  Delete "$INSTDIR\Scripts\iTunes.boo"
   Delete "$INSTDIR\Scripts\rateyourmusic.boo"
   Delete "$INSTDIR\Scripts\amazon-com-mp3.boo"  
   Delete "$INSTDIR\Scripts\cdcoverhideout.boo"
@@ -150,8 +149,8 @@ SectionGroup "Image Download Scripts"
 		Section "Google"
 		  File "..\Scripts\Scripts\google.boo"
 		SectionEnd
-		Section "iTunes/Google"
-		  File "..\Scripts\Scripts\itunes-google.boo"
+		Section "iTunes"
+		  File "..\Scripts\Scripts\itunes.boo"
 		SectionEnd
 		Section "7digital"
 		  File "..\Scripts\Scripts\7digital.boo"

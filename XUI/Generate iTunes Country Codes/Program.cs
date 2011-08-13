@@ -185,7 +185,9 @@ namespace AlbumArtDownloader
 
 		private struct Results
 		{
+#pragma warning disable 0649 // Field is assigned by JavaScriptSerializer
 			public int resultCount;
+#pragma warning restore 0649
 		}
 	}
 }

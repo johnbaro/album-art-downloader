@@ -70,7 +70,6 @@
     <None Include="Scripts\Archived\maniadb.boo" />
     <None Include="Scripts\chartstats.boo" />
     <None Include="Scripts\amazon-it.boo" />
-    <None Include="Scripts\iTunes Country Overrides\itunes-gb.boo" />
     <None Include="Scripts\itunes.boo" />
     <None Include="Scripts\djshop.boo" />
     <None Include="Scripts\itunes-bing.boo" />
@@ -145,6 +144,9 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Scripts\iTunes Country Overrides\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
