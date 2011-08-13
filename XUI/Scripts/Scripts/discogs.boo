@@ -1,48 +1,81 @@
-namespace CoverSources
+# refs: System.Web.Extensions
+
 import System
-import System.Text
+import System.Net
 import System.Text.RegularExpressions
+import System.Web.Script.Serialization
+
 import util
 
-class Discogs:
-	static SourceName as string:
+class Discogs(AlbumArtDownloader.Scripts.IScript):
+	Name as string:
 		get: return "Discogs"
-	static SourceCreator as string:
+	Author as string:
 		get: return "Alex Vallat"
-	static SourceVersion as string:
-		get: return "0.9"
-	static def GetThumbs(coverart,artist,album):
+	Version as string:
+		get: return "0.10"
+	def Search(artist as string, album as string, results as IScriptResults):
 		artist = StripCharacters("&.'\";:?!", artist)
 		album = StripCharacters("&.'\";:?!", album)
 
-		query as string = artist + " " + album
-		
-		obidResults = GetPage(String.Format("http://www.discogs.com/search?type=all&q={0}", EncodeUrl(query)))
+		obidResults = GetDiscogsPage("http://www.discogs.com/advanced_search?artist=${EncodeUrl(artist)}&release_title=${EncodeUrl(album)}")
 			
 		//Get obids
-		obidRegex = Regex("<img src=\"[^\"]+?/image/R-50-(?<obid>\\d+)-[^\"]+\".+?<a href=\"(?<url>[^\"]+)\"><em>(?:</?em>|(?>(?<name>[^<]+)))+</a>", RegexOptions.Singleline | RegexOptions.IgnoreCase)
+		obidRegex = Regex("<div class=\"thumb\"><a href=\"(?<url>/[^/]+/release/(?<obid>\\d+))\">", RegexOptions.Singleline | RegexOptions.IgnoreCase)
 		obidMatches = obidRegex.Matches(obidResults)
-		coverart.EstimatedCount = obidMatches.Count //Probably more than this, as some releases might have multiple images
+		results.EstimatedCount = obidMatches.Count //Probably more than this, as some releases might have multiple images
 
-		for obidMatch as Match in obidMatches:
-			//Construct the release name by joining up all the captures of the "name" group
-			releaseNameBuilder = StringBuilder()
-			for namePart in obidMatch.Groups["name"].Captures:
-				releaseNameBuilder.Append(namePart)
-			
-			releaseName = releaseNameBuilder.ToString()
-			releaseUrl = "http://www.discogs.com" + obidMatch.Groups["url"].Value
-			
-			//Get the image results
-			imageResults = GetPage(String.Format("http://www.discogs.com/viewimages?release={0}", obidMatch.Groups["obid"].Value))
-			
-			imageRegex = Regex("<img src=\"(?<url1>[^\"]+?/image/R-)(?<url2>\\d+-\\d+.(?:jpe?g|gif|png))\" width=\"(?<width>\\d+)\" height=\"(?<height>\\d+)\"", RegexOptions.Singleline | RegexOptions.IgnoreCase)
-			imageMatches = imageRegex.Matches(imageResults)
-			
-			coverart.EstimatedCount += imageMatches.Count - 1 //Adjust count by how many images for this release
-			
-			for imageMatch as Match in imageMatches:
-				coverart.Add(imageMatch.Groups["url1"].Value + "150-" + imageMatch.Groups["url2"].Value, releaseName, releaseUrl, Int32.Parse(imageMatch.Groups["width"].Value), Int32.Parse(imageMatch.Groups["height"].Value), imageMatch.Groups["url1"].Value + imageMatch.Groups["url2"].Value)
+		json = JavaScriptSerializer()
 		
-	static def GetResult(param):
-		return param
+		for obidMatch as Match in obidMatches:
+			// Get the release info from api
+			url = "http://www.discogs.com" + obidMatch.Groups["url"].Value
+			obid = obidMatch.Groups["obid"].Value
+			releaseInfoJson = GetDiscogsPage("http://api.discogs.com/release/" + obid)
+			releaseInfo = json.Deserialize[of ReleaseInfo](releaseInfoJson).resp.release
+			
+			title = releaseInfo.artists[0].name + " - " + releaseInfo.title
+			
+			results.EstimatedCount += releaseInfo.images.Length - 1
+			for image in releaseInfo.images:
+				coverType =  CoverType.Unknown
+				if image.type == "primary":
+					coverType = CoverType.Front
+
+				results.Add(GetDiscogsStream(image.uri150), title, url, image.width, image.height, image.uri, coverType)
+
+	def RetrieveFullSizeImage(fullSizeCallbackParameter):
+		return GetDiscogsStream(fullSizeCallbackParameter);
+
+	def GetDiscogsPage(url):
+		stream = GetDiscogsStream(url)
+		try:
+			return GetPage(stream)
+		ensure:
+			stream.Close()
+
+	def GetDiscogsStream(url):
+		request = WebRequest.Create(url) as HttpWebRequest
+		request.UserAgent = "AAD:Discogs/" + Version
+		request.AutomaticDecompression = DecompressionMethods.GZip
+		return request.GetResponse().GetResponseStream()
+		
+	class ReleaseInfo:
+		public resp as Resp
+		class Resp:
+			public release as Release
+
+			class Release:
+				public artists as (Artist)
+				public images as (Image)
+				public title as String
+
+				class Artist:
+					public name as String
+
+				class Image:
+					public height as int
+					public type as string
+					public uri as string
+					public uri150 as string
+					public width as int
