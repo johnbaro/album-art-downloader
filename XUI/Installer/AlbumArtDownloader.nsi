@@ -218,6 +218,12 @@ SectionGroup "Image Download Scripts"
 		Section "Archambault"
 		  File "..\Scripts\Scripts\archambault.boo"
 		SectionEnd
+		Section "Coverlandia (Official)"
+		  File "..\Scripts\Scripts\coverlandia-official.boo"
+		SectionEnd
+		Section "DJshop"
+		  File "..\Scripts\Scripts\djshop.boo"
+		SectionEnd
 	SectionGroupEnd
 	
 	SectionGroup "Dance, Trance"
@@ -295,6 +301,12 @@ SectionGroup "Image Download Scripts"
 		SectionEnd
 		Section /o "Take2"
 		  File "..\Scripts\Scripts\take2.boo"
+		SectionEnd
+	SectionGroupEnd
+
+	SectionGroup "Netherlands"
+		Section /o "Mega Media"
+		  File "..\Scripts\Scripts\megamedia.boo"
 		SectionEnd
 	SectionGroupEnd
 	

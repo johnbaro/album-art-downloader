@@ -1,3 +1,7 @@
+	 Replaced iTunes/Google with iTunes script using native iTunes search API.
+	 Split Coverlandia into Official and Fan Made scripts
+	 Added DJShop and Mega Media scripts, improved Amazon scripts, and fixed Discogs and CD Universe scripts
+
 0.41 Improved single-instance code to be even more robust to simultaneous multiple launches (now even less likely
 	  to fall back on separate instances)
 	 Added visible categorisation to scripts in script list and script notification window

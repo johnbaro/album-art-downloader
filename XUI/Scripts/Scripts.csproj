@@ -70,12 +70,11 @@
     <None Include="Scripts\Archived\maniadb.boo" />
     <None Include="Scripts\chartstats.boo" />
     <None Include="Scripts\amazon-it.boo" />
+    <None Include="Scripts\megamedia.boo" />
     <None Include="Scripts\itunes.boo" />
     <None Include="Scripts\djshop.boo" />
-    <None Include="Scripts\itunes-bing.boo" />
     <None Include="Scripts\coverlandia-official.boo" />
     <None Include="Scripts\nuclearblast.boo" />
-    <None Include="Scripts\itunes-google.boo" />
     <None Include="Scripts\miomusik.boo" />
     <None Include="Scripts\sfr-music.boo" />
     <None Include="Scripts\gigacrate.boo" />
