@@ -11,7 +11,7 @@ class GigaCrate(AlbumArtDownloader.Scripts.IScript, ICategorised):
 	Author as string:
 		get: return "Alex Vallat"
 	Category as string:
-		get: return "DJ"
+		get: return "Dance, Club, Electronic"
 	def Search(artist as string, album as string, results as IScriptResults):
 		artist = StripCharacters("&.'\";:?!", artist)
 		album = StripCharacters("&.'\";:?!", album)

@@ -70,6 +70,8 @@
     <None Include="Scripts\Archived\maniadb.boo" />
     <None Include="Scripts\chartstats.boo" />
     <None Include="Scripts\amazon-it.boo" />
+    <None Include="Scripts\beatport.boo" />
+    <None Include="Scripts\deezer.boo" />
     <None Include="Scripts\megamedia.boo" />
     <None Include="Scripts\itunes.boo" />
     <None Include="Scripts\djshop.boo" />

@@ -13,7 +13,7 @@ class JunoRecords:
 	static SourceCreator as string:
 		get: return "Marc Landis"
 	static SourceCategory as string:
-		get: return "Dance, Trance"
+		get: return "Dance, Club, Electronic"
 
 	static def GetThumbs(coverart,artist,album):
 		artist = StripCharacters("&.'\";:?!", artist)

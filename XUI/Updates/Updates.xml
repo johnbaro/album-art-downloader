@@ -27,6 +27,7 @@
   </Script>
   <Script Name="Archambault" URI="archambault.boo" Version="0.5" />
   <Script Name="ArkivMusik" URI="arkivmusic.boo" Version="0.7" Category="Classical" />
+  <Script Name="Beatport" URI="beatport.boo" Version="0.1" Category="Dance, Club, Electronic" />
   <Script Name="Buy.com" URI="buy-com.boo" Version="0.7" />
   <Script Name="CD Baby" URI="cdbaby.boo" Version="0.2" Category="Independent" />
   <Script Name="CD Universe" URI="cduniverse.boo" Version="0.6" />
@@ -36,24 +37,26 @@
   <Script Name="Coverlandia (Official)" URI="coverlandia-official.boo" Version="0.2" />
   <Script Name="Coverlandia" URI="coverlandia.boo" Version="0.2" Category="Fan-made covers" />
   <Script Name="Darktown" URI="darktown.boo" Version="0.5" />
-  <Script Name="Discogs" URI="discogs.boo" Version="0.9" />
+  <Script Name="Deezer" URI="deezer.boo" Version="0.2" />
+  <Script Name="Discogs" URI="discogs.boo" Version="0.10" />
   <Script Name="DJshop" URI="djshop.boo" Version="0.1" />
   <Script Name="EB Reggae" URI="ebreggae.boo" Version="0.1" Category="Reggae" />
   <Script Name="eMusic" URI="emusic.boo" Version="0.2" />
-  <Script Name="GigaCrate" URI="gigacrate.boo" Version="0.1" Category="DJ" />
+  <Script Name="GigaCrate" URI="gigacrate.boo" Version="0.1" Category="Dance, Club, Electronic" />
   <Script Name="GoogleImage" URI="google.boo" Version="0.10" />
   <Script Name="hitparade.ch" URI="hitparade.boo" Version="0.2" />
   <Script Name="HMV Canada" URI="hmv-canada.boo" Version="0.2" Category="Canadian" />
   <Script Name="iTunes" URI="itunes.boo" Version="0.2" />
-  <Script Name="Juno Records" URI="juno-records.boo" Version="0.7" Category="Dance, Trance" />
+  <Script Name="Juno Records" URI="juno-records.boo" Version="0.7" Category="Dance, Club, Electronic" />
   <Script Name="Kalahari" URI="kalahari.boo" Version="0.3" Category="South African" />
   <Script Name="LastFM Artist" URI="lastfm-artist.boo" Version="0.4" Category="Artist Images" />
   <Script Name="LastFM Cover" URI="lastfm-cover.boo" Version="0.6" />
+  <Script Name="Mega Media" URI="megamedia.boo" Version="0.2" Category="Netherlands" />
   <Script Name="Encyclopaedia Metallum" URI="metal-archives.boo" Version="0.6" Category="Punk, Metal, Rock" />
   <Script Name="Metal Library" URI="metallibrary.boo" Version="0.3" Category="Punk, Metal, Rock" />
   <Script Name="MioMusik" URI="miomusik.boo" Version="0.1" />
   <Script Name="Nuclear Blast" URI="nuclearblast.boo" Version="0.1" Category="Punk, Metal, Rock" />
-  <Script Name="Psyshop" URI="psyshop.boo" Version="0.4" Category="Dance, Trance" />
+  <Script Name="Psyshop" URI="psyshop.boo" Version="0.4" Category="Dance, Club, Electronic" />
   <Script Name="Qobuz" URI="qobuz.boo" Version="0.1" />
   <Script Name="RevHQ" URI="revhq.boo" Version="0.5" Category="Independent" />
   <Script Name="SFR Music" URI="sfr-music.boo" Version="0.1" />

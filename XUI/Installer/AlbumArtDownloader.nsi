@@ -226,12 +226,18 @@ SectionGroup "Image Download Scripts"
 		SectionEnd
 	SectionGroupEnd
 	
-	SectionGroup "Dance, Trance"
+	SectionGroup "Dance, Club, Electronic"
 		Section /o "Juno Records"
 		  File "..\Scripts\Scripts\juno-records.boo"
 		SectionEnd
 		Section /o "PsyShop"
 		  File "..\Scripts\Scripts\psyshop.boo"
+		SectionEnd
+		Section /o "GigaCrate"
+		  File "..\Scripts\Scripts\gigacrate.boo"
+		SectionEnd
+		Section /o "Beatport"
+		  File "..\Scripts\Scripts\beatport.boo"
 		SectionEnd
 	SectionGroupEnd
 	
@@ -268,12 +274,6 @@ SectionGroup "Image Download Scripts"
 		SectionEnd
 	SectionGroupEnd
 
-	SectionGroup "DJ"
-		Section /o "GigaCrate"
-		  File "..\Scripts\Scripts\gigacrate.boo"
-		SectionEnd
-	SectionGroupEnd
-	
 	SectionGroup "Video Game Music"
 		Section /o "VGMdb"
 		  File "..\Scripts\Scripts\vgmdb.boo"

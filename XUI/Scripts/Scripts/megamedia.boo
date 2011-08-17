@@ -7,7 +7,7 @@ class MegaMedia(AlbumArtDownloader.Scripts.IScript, ICategorised):
 	Name as string:
 		get: return "Mega Media"
 	Version as string:
-		get: return "0.1"
+		get: return "0.2"
 	Author as string:
 		get: return "Alex Vallat"
 	Category as string:
@@ -33,8 +33,22 @@ class MegaMedia(AlbumArtDownloader.Scripts.IScript, ICategorised):
 				uniqueLids.Add(lid, null)
 				title = match.Groups["artist"].Value + " - " + match.Groups["album"].Value
 				imageUrlBase = "http://download.aim4music.com/shopsupport/download_process/bundle$artwork.aspx?bundle_id=" + lid
-			
-				results.Add(imageUrlBase + "&width=120&height=120", title, "http://www.mega-media.nl/info.php?lid=" + lid, -1, -1, imageUrlBase + "&height=2000&width=2000", CoverType.Front);
+				
+				thumbnail = TryGetImageStream(imageUrlBase + "&width=120&height=120")
+				if thumbnail != null:
+					results.Add(thumbnail, title, "http://www.mega-media.nl/info.php?lid=" + lid, -1, -1, imageUrlBase + "&height=2000&width=2000", CoverType.Front);
 
 	def RetrieveFullSizeImage(fullSizeCallbackParameter):
 		return fullSizeCallbackParameter;
+
+	def TryGetImageStream(url):
+		request as System.Net.HttpWebRequest = System.Net.HttpWebRequest.Create(url)
+		try:
+			response = request.GetResponse()
+			if response.ContentLength > 0:
+				return response.GetResponseStream()
+			
+			response.Close()
+			return null
+		except e as System.Net.WebException:
+			return null

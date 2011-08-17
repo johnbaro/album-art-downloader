@@ -13,7 +13,7 @@ class Psyshop:
 	static SourceVersion as string:
 		get: return "0.4"
 	static SourceCategory as string:
-		get: return "Dance, Trance"
+		get: return "Dance, Club, Electronic"
 	static def GetThumbs(coverart,artist,album):
 		artist = StripCharacters("&.'\";:?!", artist)
 		album = StripCharacters("&.'\";:?!", album)
