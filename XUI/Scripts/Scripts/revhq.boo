@@ -11,7 +11,7 @@ class RevHQ:
 	static SourceCreator as string:
 		get: return "Alex Vallat"
 	static SourceVersion as string:
-		get: return "0.5"
+		get: return "0.6"
 	static SourceCategory as string:
 		get: return "Independent"
 	static def GetThumbs(coverart,artist,album):
@@ -69,7 +69,7 @@ class RevHQ:
 	  title = titleRegex.Matches(resultPage)[0].Groups["title"].Value //Expecting only one match
 	  coverType = CoverType.Front #Assume that the image is always the front cover
 	  
-	  coverart.Add(String.Format("http://revhq.com/images/covers/50/{0}.gif", id), artist + " - " + title, size, size, String.Format("http://revhq.com/images/covers/{0}", full, coverType))
+	  coverart.Add(String.Format("http://revhq.com/images/covers/50/{0}.gif", id), artist + " - " + title, "http://revhq.com/store.revhq?Page=search&Id=" + id, size, size, String.Format("http://revhq.com/images/covers/{0}", full), coverType, full.Substring(full.Length - 3))
 
 	static def GetResult(param):
 		return param

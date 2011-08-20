@@ -48,7 +48,12 @@ namespace AlbumArtDownloader
 		}
 		public void Add(object thumbnail, string name, string infoUri, int fullSizeImageWidth, int fullSizeImageHeight, object fullSizeImageCallback, CoverType coverType)
 		{
-			//InfoUri is ignored.
+			Add(thumbnail, name, infoUri, fullSizeImageWidth, fullSizeImageHeight, fullSizeImageCallback, coverType, null);
+		}
+		
+		public void Add(object thumbnail, string name, string infoUri, int fullSizeImageWidth, int fullSizeImageHeight, object fullSizeImageCallback, CoverType coverType, string suggestedFilenameExtension)
+		{
+			//InfoUri and suggestedFilenameExtension are ignored.
 			mResults.Add(new ScriptResult(mScript, thumbnail, name, fullSizeImageWidth, fullSizeImageHeight, fullSizeImageCallback, coverType));
 		}
 		

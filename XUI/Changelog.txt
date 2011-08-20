@@ -1,6 +1,8 @@
+0.41.1
+	 Added capability for scripts to report suggested filename extension for full sized images
 	 Replaced iTunes/Google with iTunes script using native iTunes search API.
 	 Split Coverlandia into Official and Fan Made scripts
-	 Added DJShop, Beatport and Mega Media scripts, improved Amazon scripts, and fixed Discogs and CD Universe scripts
+	 Added DJshop, Beatport and Mega Media scripts, improved Amazon scripts, and fixed Discogs and CD Universe scripts
 
 0.41 Improved single-instance code to be even more robust to simultaneous multiple launches (now even less likely
 	  to fall back on separate instances)
@@ -16,7 +18,7 @@
 	 Added "Booklet" as one of the standard types. Currently, Cover-Paradies is the only source that uses it.
 	 Added ability to sort and group by the URL associated with results (generally the page the result was found on).
 	 Added the file size and dimensions of the existing file to the Overwrite confirmation dialog.
-	 Added "Options" link to the Overwrite confirmation dialog, to allow customisation of the automatically
+	 Added "Options" link to the Overwrite confirmation dialog, to allow cof the automatically
 	  suggested filename.
 	 Added button to easily toggle all filters (size and cover type) on and off
 	 When using a preset to save a result, the default path pattern to save to is now always used (rather than

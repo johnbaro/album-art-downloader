@@ -500,8 +500,12 @@ namespace AlbumArtDownloader
 			{
 				Add(thumbnail, name, String.Empty, -1, -1, fullSizeImageCallback, coverType);
 			}
-			
 			public void Add(object thumbnail, string name, string infoUri, int fullSizeImageWidth, int fullSizeImageHeight, object fullSizeImageCallback, CoverType coverType)
+			{
+				Add(thumbnail, name, infoUri, fullSizeImageWidth, fullSizeImageHeight, fullSizeImageCallback, coverType, null);
+			}
+		
+			public void Add(object thumbnail, string name, string infoUri, int fullSizeImageWidth, int fullSizeImageHeight, object fullSizeImageCallback, CoverType coverType, string suggestedFilenameExtension)
 			{
 				if (!mSource.QueryContinueSearchInternal())
 				{
@@ -552,7 +556,8 @@ namespace AlbumArtDownloader
 								fullSizeImageWidth,
 								fullSizeImageHeight,
 								fullSizeImageCallback,
-								coverType));
+								coverType,
+								suggestedFilenameExtension));
 						}));
 					}
 				}

@@ -80,8 +80,8 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="testHuge.jpg" />
-    <Content Include="testFullsize.png" />
-    <Content Include="testThumbnail.png" />
+    <EmbeddedResource Include="testFullsize.png" />
+    <EmbeddedResource Include="testThumbnail.png" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

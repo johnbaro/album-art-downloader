@@ -159,6 +159,11 @@ namespace ScriptTester
             {
                 FoundResult();
             }
+
+			public void Add(object thumbnail, string name, string infoUri, int fullSizeImageWidth, int fullSizeImageHeight, object fullSizeImageCallback, CoverType coverType, string suggestedFilenameExtension)
+			{
+				FoundResult();
+			}
             #endregion
         }
 

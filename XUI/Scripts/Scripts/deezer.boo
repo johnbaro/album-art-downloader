@@ -12,7 +12,7 @@ class Deezer(AlbumArtDownloader.Scripts.IScript):
 	Author as string:
 		get: return "Alex Vallat"
 	Version as string:
-		get: return "0.2"
+		get: return "0.3"
 	def Search(artist as string, album as string, results as IScriptResults):
 		artist = StripCharacters("&.'\";:?!", artist)
 		album = StripCharacters("&.'\";:?!", album)
@@ -30,7 +30,7 @@ class Deezer(AlbumArtDownloader.Scripts.IScript):
 			for album in searchResults.albums.album:
 				title = album.artist.name + " - " + album.name
 				match = imageIdRegex.Match(album.image)
-				results.Add(album.image, title, album.url, -1, -1, match.Groups["id"].Value, CoverType.Front)
+				results.Add(album.image, title, album.url, -1, -1, match.Groups["id"].Value, CoverType.Front, "png")
 
 	def RetrieveFullSizeImage(id):
 		return "http://cdn-images.deezer.com/images/cover/${id}/0x0-000000-100-0-0.png";

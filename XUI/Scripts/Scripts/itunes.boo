@@ -12,7 +12,7 @@ class iTunes(AlbumArtDownloader.Scripts.IScript):
 				name += " (${CountryName})"
 			return name
 	Version as string:
-		get: return "0.2"
+		get: return "0.3"
 	Author as string:
 		get: return "Alex Vallat"
 	virtual protected CountryName as string:
@@ -37,27 +37,32 @@ class iTunes(AlbumArtDownloader.Scripts.IScript):
 			// Remove size from image to get base
 			imageUrlBase = imageUrlBase.Substring(0, imageUrlBase.Length - "100x100-75.jpg".Length)
 
-			results.Add(imageUrlBase + "170x170-75.jpg", title, url, -1, -1, imageUrlBase, CoverType.Front);
-
-	def RetrieveFullSizeImage(imageUrlBase):
-		imageStream = TryGetImageStream(imageUrlBase + "jpg")
-
-		if imageStream != null:
-			return imageStream
-		else:
-			// Couldn't find full size .jpg, try .tif
-			imageStream = TryGetImageStream(imageUrlBase + "tif")
-
-			if imageStream != null:
-				return imageStream
+			// See if full size jpg is available
+			if CheckResponse(imageUrlBase + "jpg"):
+				fullSizeImageUrl = imageUrlBase + "jpg"
+				extension = "jpg"
+			elif CheckResponse(imageUrlBase + "tif"): // Couldn't find full size .jpg, try .tif
+				fullSizeImageUrl = imageUrlBase + "tif"
+				extension = "tiff"
 			else:
 				// Couldn't find full size .jpg or .tif, fall back on 600x600
-				return TryGetImageStream(imageUrlBase + "600x600-75.jpg")
+				fullSizeImageUrl = imageUrlBase + "600x600-75.jpg"
+				extension = "jpg"
+			
+			results.Add(imageUrlBase + "170x170-75.jpg", title, url, -1, -1, fullSizeImageUrl, CoverType.Front, extension);
 
-	def TryGetImageStream(url):
-		request as System.Net.HttpWebRequest = System.Net.HttpWebRequest.Create(url)
+	def CheckResponse(url):
+		checkRequest as System.Net.HttpWebRequest = System.Net.HttpWebRequest.Create(url)
+		checkRequest.Method = "HEAD"
+		checkRequest.AllowAutoRedirect = false
 		try:
-			response = request.GetResponse()
-			return response.GetResponseStream()
+			response = checkRequest.GetResponse() as System.Net.HttpWebResponse
+			return response.StatusCode == System.Net.HttpStatusCode.OK
 		except e as System.Net.WebException:
-			return null
+			return false;
+		ensure:
+			if response != null:
+				response.Close()
+
+	def RetrieveFullSizeImage(fullSizeCallbackParameter):
+		return fullSizeCallbackParameter

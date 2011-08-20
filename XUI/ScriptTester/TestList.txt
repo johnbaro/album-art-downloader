@@ -45,6 +45,6 @@ GigaCrate	Muse	Starlight
 iTunes	Muse	The Resistance
 MioMusik	Muse	The Resistance
 SFR Music	Muse	The Resistance
-DJShop	Muse	The Resistance
+DJshop	Muse	The Resistance
 Mega Media	Turin Brakes	Ether Song
 Deezer	Muse	The Resistance

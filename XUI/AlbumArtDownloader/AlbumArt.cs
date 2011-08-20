@@ -16,12 +16,13 @@ namespace AlbumArtDownloader
 {
 	public class AlbumArt : DependencyObject, INotifyPropertyChanged
 	{
-		private Source mSource;
-		private object mFullSizeCallbackParameter;
+		private readonly Source mSource;
+		private readonly object mFullSizeCallbackParameter;
+		private readonly string mSuggestedFilenameExtension;
 		
 		public event PropertyChangedEventHandler PropertyChanged;
 
-		public AlbumArt(Source source, byte[] thumbnailData, string name, string infoUri, int width, int height, object fullSizeCallbackParameter, CoverType coverType)
+		public AlbumArt(Source source, byte[] thumbnailData, string name, string infoUri, int width, int height, object fullSizeCallbackParameter, CoverType coverType, string suggestedFilenameExtension)
 		{
 			mSource = source;
 			BitmapData = thumbnailData;
@@ -30,6 +31,7 @@ namespace AlbumArtDownloader
 			SetImageDimensions(width, height);
 			mFullSizeCallbackParameter = fullSizeCallbackParameter;
 			CoverType = coverType;
+			mSuggestedFilenameExtension = suggestedFilenameExtension;
 		}
 		
 		/// <summary>
@@ -166,7 +168,8 @@ namespace AlbumArtDownloader
 					mCachedImageDecoder = null;
 
 					NotifyPropertyChanged("Image");
-					NotifyPropertyChanged("ImageCodecInfo");
+					NotifyPropertyChanged("ImageFileExtensions");
+					NotifyPropertyChanged("ImageFileDefaultExtension");
 				}
 			}
 		}
@@ -232,6 +235,13 @@ namespace AlbumArtDownloader
 				{
 					return new string[0];
 				}
+
+				if (!IsFullSize && !String.IsNullOrEmpty(mSuggestedFilenameExtension))
+				{
+					// If the full size image has not bee donwloaded, and there's a suggested filename extension, then use the suggested extension.
+					return new[] {mSuggestedFilenameExtension};
+				}
+
 				return from s in ImageDecoder.CodecInfo.FileExtensions.Split(',') select s.Substring(1);
 			}
 		}
@@ -607,6 +617,7 @@ namespace AlbumArtDownloader
 
 				NotifyPropertyChanged("IsFullSize");
 				NotifyPropertyChanged("IsDownloading");
+				CoerceValue(FilePathProperty);
 				
 				foreach (var callback in callbacks)
 				{

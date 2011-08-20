@@ -23,6 +23,7 @@ namespace AlbumArtDownloader.Scripts
 		void Add(object thumbnail, string name, object fullSizeImageCallback);
 		void Add(object thumbnail, string name, 				int fullSizeImageWidth, int fullSizeImageHeight, object fullSizeImageCallback);
 		void Add(object thumbnail, string name, string infoUri, int fullSizeImageWidth, int fullSizeImageHeight, object fullSizeImageCallback);
-		void Add(object thumbnail, string name, string infoUri, int fullSizeImageWidth, int fullSizeImageHeight, object fullSizeImageCallback, CoverType coverType);		
+		void Add(object thumbnail, string name, string infoUri, int fullSizeImageWidth, int fullSizeImageHeight, object fullSizeImageCallback, CoverType coverType);
+		void Add(object thumbnail, string name, string infoUri, int fullSizeImageWidth, int fullSizeImageHeight, object fullSizeImageCallback, CoverType coverType, string suggestedFilenameExtension);		
 	}
 }

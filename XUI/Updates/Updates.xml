@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <?xml-stylesheet type="text/xsl" href="Updates.xsl"?>
 <Updates BaseURI="http://album-art.sourceforge.net/scripts/">
-  <Application Version="0.41.0.0" Name="Album Art Downloader XUI v0.41" URI="https://sourceforge.net/project/platformdownload.php?group_id=187008" />
+  <Application Version="0.41.1.0" Name="Album Art Downloader XUI v0.41.1" URI="https://sourceforge.net/project/platformdownload.php?group_id=187008" />
   <Script Name="7digital" URI="7digital.boo" Version="0.2" />
   <Script Name="AllCdCover" URI="allcdcover.boo" Version="0.3" />
   <Script Name="Amazon (.ca)" URI="amazon-ca.boo" Version="0.8s">
@@ -37,7 +37,7 @@
   <Script Name="Coverlandia (Official)" URI="coverlandia-official.boo" Version="0.2" />
   <Script Name="Coverlandia" URI="coverlandia.boo" Version="0.2" Category="Fan-made covers" />
   <Script Name="Darktown" URI="darktown.boo" Version="0.5" />
-  <Script Name="Deezer" URI="deezer.boo" Version="0.2" />
+  <Script Name="Deezer" URI="deezer.boo" Version="0.3" />
   <Script Name="Discogs" URI="discogs.boo" Version="0.10" />
   <Script Name="DJshop" URI="djshop.boo" Version="0.1" />
   <Script Name="EB Reggae" URI="ebreggae.boo" Version="0.1" Category="Reggae" />
@@ -46,7 +46,7 @@
   <Script Name="GoogleImage" URI="google.boo" Version="0.10" />
   <Script Name="hitparade.ch" URI="hitparade.boo" Version="0.2" />
   <Script Name="HMV Canada" URI="hmv-canada.boo" Version="0.2" Category="Canadian" />
-  <Script Name="iTunes" URI="itunes.boo" Version="0.2" />
+  <Script Name="iTunes" URI="itunes.boo" Version="0.3" />
   <Script Name="Juno Records" URI="juno-records.boo" Version="0.7" Category="Dance, Club, Electronic" />
   <Script Name="Kalahari" URI="kalahari.boo" Version="0.3" Category="South African" />
   <Script Name="LastFM Artist" URI="lastfm-artist.boo" Version="0.4" Category="Artist Images" />
@@ -58,7 +58,7 @@
   <Script Name="Nuclear Blast" URI="nuclearblast.boo" Version="0.1" Category="Punk, Metal, Rock" />
   <Script Name="Psyshop" URI="psyshop.boo" Version="0.4" Category="Dance, Club, Electronic" />
   <Script Name="Qobuz" URI="qobuz.boo" Version="0.1" />
-  <Script Name="RevHQ" URI="revhq.boo" Version="0.5" Category="Independent" />
+  <Script Name="RevHQ" URI="revhq.boo" Version="0.6" Category="Independent" />
   <Script Name="SFR Music" URI="sfr-music.boo" Version="0.1" />
   <Script Name="Take2" URI="take2.boo" Version="0.2" Category="South African" />
   <Script Name="VGMdb" URI="vgmdb.boo" Version="0.6" Category="Video Game Music" />
