@@ -71,6 +71,7 @@
     <None Include="Scripts\chartstats.boo" />
     <None Include="Scripts\amazon-it.boo" />
     <None Include="Scripts\beatport.boo" />
+    <None Include="Scripts\eclassical.boo" />
     <None Include="Scripts\deezer.boo" />
     <None Include="Scripts\megamedia.boo" />
     <None Include="Scripts\itunes.boo" />

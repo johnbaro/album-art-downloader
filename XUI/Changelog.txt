@@ -1,3 +1,5 @@
+	 Added eClassical script
+
 0.41.1
 	 Added capability for scripts to report suggested filename extension for full sized images
 	 Replaced iTunes/Google with iTunes script using native iTunes search API.

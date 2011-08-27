@@ -266,6 +266,9 @@ SectionGroup "Image Download Scripts"
 		Section /o "ArkivMusic"
 		  File "..\Scripts\Scripts\arkivmusic.boo"
 		SectionEnd
+		Section /o "ArkivMusic"
+		  File "..\Scripts\Scripts\eclassical.boo"
+		SectionEnd
 	SectionGroupEnd
 
 	SectionGroup "Reggae"

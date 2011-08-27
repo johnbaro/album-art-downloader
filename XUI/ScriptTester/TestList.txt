@@ -48,3 +48,4 @@ SFR Music	Muse	The Resistance
 DJshop	Muse	The Resistance
 Mega Media	Turin Brakes	Ether Song
 Deezer	Muse	The Resistance
+eClassical	Chopin	4 Ballades

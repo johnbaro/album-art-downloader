@@ -41,6 +41,7 @@
   <Script Name="Discogs" URI="discogs.boo" Version="0.10" />
   <Script Name="DJshop" URI="djshop.boo" Version="0.1" />
   <Script Name="EB Reggae" URI="ebreggae.boo" Version="0.1" Category="Reggae" />
+  <Script Name="eClassical" URI="eclassical.boo" Version="0.1" Category="Classical" />
   <Script Name="eMusic" URI="emusic.boo" Version="0.2" />
   <Script Name="GigaCrate" URI="gigacrate.boo" Version="0.1" Category="Dance, Club, Electronic" />
   <Script Name="GoogleImage" URI="google.boo" Version="0.10" />
