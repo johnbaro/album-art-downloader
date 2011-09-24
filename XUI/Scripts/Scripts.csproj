@@ -97,6 +97,7 @@
     <None Include="Scripts\juno-records.boo" />
     <None Include="Scripts\psyshop.boo" />
     <None Include="Scripts\util.boo" />
+    <None Include="Scripts\wantitall.boo" />
     <None Include="Scripts\yes24.boo" />
   </ItemGroup>
   <ItemGroup>

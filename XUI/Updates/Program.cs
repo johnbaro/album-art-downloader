@@ -98,8 +98,9 @@ namespace AlbumArtDownloader.Updates
 							//HACK: Add known common files and references (as each script is being compiled individually
 							compiler.Parameters.Input.Add(new FileInput(Path.Combine(Path.GetDirectoryName(scriptFile), "util.boo")));
 							compiler.Parameters.Input.Add(new FileInput(Path.Combine(Path.GetDirectoryName(scriptFile), "amazon-common.boo")));
-							references.Add("System.Web");
 							references.Add("System.Core");
+							references.Add("System.Web");
+							references.Add("System.Web.Extensions");
 
 							//Console.WriteLine(String.Format("Loading references: [{0}]...", string.Join(", ", references.ToArray())));
 							foreach (string reference in references)

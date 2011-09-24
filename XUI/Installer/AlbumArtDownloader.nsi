@@ -305,6 +305,9 @@ SectionGroup "Image Download Scripts"
 		Section /o "Take2"
 		  File "..\Scripts\Scripts\take2.boo"
 		SectionEnd
+		Section "WantItAll"
+		  File "..\Scripts\Scripts\wantitall.boo"
+		SectionEnd
 	SectionGroupEnd
 
 	SectionGroup "Netherlands"

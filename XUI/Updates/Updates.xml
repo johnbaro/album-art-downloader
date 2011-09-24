@@ -4,31 +4,31 @@
   <Application Version="0.41.1.0" Name="Album Art Downloader XUI v0.41.1" URI="https://sourceforge.net/project/platformdownload.php?group_id=187008" />
   <Script Name="7digital" URI="7digital.boo" Version="0.2" />
   <Script Name="AllCdCover" URI="allcdcover.boo" Version="0.3" />
-  <Script Name="Amazon (.ca)" URI="amazon-ca.boo" Version="0.8s">
+  <Script Name="Amazon (.ca)" URI="amazon-ca.boo" Version="0.9s">
     <Dependency>amazon-common.boo</Dependency>
   </Script>
-  <Script Name="Amazon (.co.uk)" URI="amazon-co-uk.boo" Version="0.8s">
+  <Script Name="Amazon (.co.uk)" URI="amazon-co-uk.boo" Version="0.9s">
     <Dependency>amazon-common.boo</Dependency>
   </Script>
-  <Script Name="Amazon (.com)" URI="amazon-com.boo" Version="0.8s">
+  <Script Name="Amazon (.com)" URI="amazon-com.boo" Version="0.9s">
     <Dependency>amazon-common.boo</Dependency>
   </Script>
-  <Script Name="Amazon (.de)" URI="amazon-de.boo" Version="0.8s">
+  <Script Name="Amazon (.de)" URI="amazon-de.boo" Version="0.9s">
     <Dependency>amazon-common.boo</Dependency>
   </Script>
-  <Script Name="Amazon (.fr)" URI="amazon-fr.boo" Version="0.8s">
+  <Script Name="Amazon (.fr)" URI="amazon-fr.boo" Version="0.9s">
     <Dependency>amazon-common.boo</Dependency>
   </Script>
-  <Script Name="Amazon (.it)" URI="amazon-it.boo" Version="0.8s">
+  <Script Name="Amazon (.it)" URI="amazon-it.boo" Version="0.9s">
     <Dependency>amazon-common.boo</Dependency>
   </Script>
-  <Script Name="Amazon (.jp)" URI="amazon-jp.boo" Version="0.8s">
+  <Script Name="Amazon (.jp)" URI="amazon-jp.boo" Version="0.9s">
     <Dependency>amazon-common.boo</Dependency>
   </Script>
   <Script Name="Archambault" URI="archambault.boo" Version="0.5" />
   <Script Name="ArkivMusik" URI="arkivmusic.boo" Version="0.7" Category="Classical" />
   <Script Name="Beatport" URI="beatport.boo" Version="0.1" Category="Dance, Club, Electronic" />
-  <Script Name="Buy.com" URI="buy-com.boo" Version="0.7" />
+  <Script Name="Buy.com" URI="buy-com.boo" Version="0.8.1" />
   <Script Name="CD Baby" URI="cdbaby.boo" Version="0.2" Category="Independent" />
   <Script Name="CD Universe" URI="cduniverse.boo" Version="0.6" />
   <Script Name="Chartstats" URI="chartstats.boo" Version="0.2" />
@@ -63,6 +63,7 @@
   <Script Name="SFR Music" URI="sfr-music.boo" Version="0.1" />
   <Script Name="Take2" URI="take2.boo" Version="0.2" Category="South African" />
   <Script Name="VGMdb" URI="vgmdb.boo" Version="0.6" Category="Video Game Music" />
+  <Script Name="WantItAll" URI="wantitall.boo" Version="0.1" Category="South African" />
   <Script Name="Yes24" URI="yes24.boo" Version="0.7" Category="Eastern" />
   <Script Name="YesAsia" URI="yesasia.boo" Version="0.3" Category="Eastern" />
 </Updates>
