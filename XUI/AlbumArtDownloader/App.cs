@@ -33,6 +33,20 @@ namespace AlbumArtDownloader
 		{
 			try
 			{
+				#region Config File Problem detection
+				try
+				{
+					string appVersion = AlbumArtDownloader.Properties.Settings.Default.ApplicationVersion;
+					System.Diagnostics.Trace.TraceInformation("Successfully read application version from settings: " + appVersion);
+				}
+				catch (ConfigurationErrorsException ex)
+				{
+					//Show the self-service config file problem solver
+					new ConfigFileProblem(ex).ShowDialog();
+					return;
+				}
+				#endregion
+
 				#region .net framework problem detection
 				bool foundNet35 = false;
 				bool foundNet35SP1 = false;
@@ -83,22 +97,6 @@ namespace AlbumArtDownloader
 					}
 					App.UsePreSP1Compatibility = true;
 
-				}
-				#endregion
-
-				#region Config File Problem detection
-				try
-				{
-					string appVersion = AlbumArtDownloader.Properties.Settings.Default.ApplicationVersion;
-					System.Diagnostics.Trace.TraceInformation("Successfully read application version from settings: " + appVersion);
-				}
-				catch (ConfigurationErrorsException ex)
-				{
-					System.Diagnostics.Trace.TraceError("Could not load settings: " + ex.Message);
-
-					//Show the self-service config file problem solver
-					new ConfigFileProblem(ex).ShowDialog();
-					return;
 				}
 				#endregion
 

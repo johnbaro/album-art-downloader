@@ -151,6 +151,7 @@
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
                             <RowDefinition Height="Auto"/>
 						</Grid.RowDefinitions>
 						<Grid.ColumnDefinitions>
@@ -162,7 +163,7 @@
 						<CheckBox Grid.Row="0" IsChecked="{Binding Source={StaticResource mSettings}, Path=Default.OpenResultsInNewWindow}">Open search results in new _window</CheckBox>
                         <CheckBox Grid.Row="1" IsChecked="{Binding ElementName=this, Path=AutoClose}">Automatically _close after saving</CheckBox>
 
-						<GroupBox Header="Automatically download full-size images" Grid.Row="2"
+						<GroupBox Header="Automatically download full-size images" Grid.Row="2" Grid.RowSpan="2"
 							  RadioButton.Checked="OnAutoDownloadFullSizeImagesChanged">
 							<GroupBox.Resources>
 								<Style TargetType="RadioButton">
@@ -245,6 +246,10 @@
                                 <controls:FlagCheckBoxAllowedCoverType Flag="{x:Static local:AllowedCoverType.Unknown}" Grid.Row="3" Grid.Column="1"/>
 							</Grid>
 						</GroupBox>
+                        
+                        <CheckBox Margin="10,2,2,2" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" 
+                                  IsChecked="{Binding Source={StaticResource mSettings}, Path=Default.NoAutoReSort}"
+                                  ToolTip="If checked, only new results being added will be sorted and filtered. They will not change position or be hidden after being added.">Do not move or filter existing results</CheckBox>
 					</Grid>
 				</ScrollViewer>
 			</DockPanel>
@@ -311,6 +316,7 @@
 								MaximumImageSize="{Binding Default.MaximumImageSize, Mode=OneWay}"
 								AllowedCoverTypes="{Binding Default.AllowedCoverTypes, Mode=OneWay}"
                                 DisableFilters="{Binding Default.DisableFilters, Mode=OneWay}"
+                                NoAutoReSort="{Binding Default.NoAutoReSort, Mode=OneWay}"
 								InformationLocation="{Binding Default.InformationLocation}"
 								PresetsContextMenu="{Binding ElementName=this, Path=PresetsContextMenu, Mode=OneWay}"
 							   />

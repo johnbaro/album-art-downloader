@@ -1,4 +1,10 @@
+0.42
+	 Improved re-sorting behaviour of results list to reduce unnecessary re-sorting. Results should now only move
+	  in the list if they are actually being sorted or grouped on a field whose value changes
+	 Added checkbox in Options to allow the auto re-sorting behaviour to be disabled, so once an result is added
+	  to the list, it won't be filtered or sorted if it changes
 	 Added eClassical script
+	 Updated Amazon scripts to include customer images
 
 0.41.1
 	 Added capability for scripts to report suggested filename extension for full sized images

@@ -253,43 +253,68 @@ namespace AlbumArtDownloader.Controls
 
 		private void OnImageSizeChanged(object sender, EventArgs e)
 		{
-			AlbumArt albumArt = (AlbumArt)sender;
-			
-			if (UseMaximumImageSize || UseMinimumImageSize || Grouping == Grouping.Size || SortDescription.PropertyName.StartsWith("Image")) //Covers ImageWidth and ImageArea (and ImageHeight, although that shouldn't ever be set)
+			if (!NoAutoReSort)
 			{
-				//As this panel's size has changed, it must be removed and re-added, so the list re-filters and re-sorts it
-				ReFilterAndSort(albumArt);
+				AlbumArt albumArt = (AlbumArt)sender;
+
+				if (!DisableFilters && (UseMaximumImageSize || UseMinimumImageSize))
+				{
+					if (ReFilter(albumArt))
+					{
+						//Item was removed and readded, so no need to re-sort
+						return;
+					}
+				}
+
+				if (Grouping == Grouping.Size || SortDescription.PropertyName.StartsWith("Image")) //Covers ImageWidth and ImageArea (and ImageHeight, although that shouldn't ever be set)
+				{
+					//As this panel's size has changed, it must be removed and re-added, so the list re-filters and re-sorts it
+					ReSort(albumArt);
+				}
 			}
 		}
 
 		private void OnCoverTypeChanged(object sender, EventArgs e)
 		{
-			AlbumArt albumArt = (AlbumArt)sender;
-
-			if (AllowedCoverTypes != AllowedCoverType.Any || Grouping == Grouping.Type || SortDescription.PropertyName == "CoverType")
+			if (!NoAutoReSort)
 			{
-				//As this panel's cover type has changed, it must be removed and re-added, so the list re-filters and re-sorts it
-				ReFilterAndSort(albumArt);
+				AlbumArt albumArt = (AlbumArt)sender;
+
+				if (!DisableFilters && AllowedCoverTypes != AllowedCoverType.Any)
+				{
+					if (ReFilter(albumArt))
+					{
+						//Item was removed and readded, so no need to re-sort
+						return;
+					}
+				}
+
+				if (Grouping == Grouping.Type || SortDescription.PropertyName == "CoverType")
+				{
+					//As this panel's cover type has changed, it must be removed and re-added, so the list re-filters and re-sorts it
+					ReSort(albumArt);
+				}
 			}
 		}
 
-		private void ReFilterAndSort(AlbumArt albumArt)
+		/// <returns>True if the item was refiltered, false if it did not need to be.</returns>
+		private bool ReFilter(AlbumArt albumArt)
 		{
-			if (ItemsSource is IList)
+			//Test the panel against the current filters
+			if (Items.Contains(albumArt) != Items.PassesFilter(albumArt))
 			{
-				IList itemsSource = (IList)ItemsSource;
-				itemsSource.Remove(albumArt);
-				itemsSource.Add(albumArt);
+				//It's filtering state has been changed, so needs resorting (to apply the filtering change)
+				ReSort(albumArt);
+				return true;
 			}
-			else if (ItemsSource == null) //If there is no items source, then Items might be directly assigned
-			{
-				Items.Remove(albumArt);
-				Items.Add(albumArt);
-			}
-			else
-			{
-				System.Diagnostics.Debug.Fail("Can't re-add the album art for re-sorting and filtering, as ItemsSource is not an IList");
-			}
+			return false;
+		}
+
+		private void ReSort(AlbumArt albumArt)
+		{
+			var editableCollectionView = (IEditableCollectionView)Items;
+			editableCollectionView.EditItem(albumArt);
+			editableCollectionView.CommitEdit();
 		}
 		#endregion
 
@@ -383,6 +408,25 @@ namespace AlbumArtDownloader.Controls
 			//Valid if there is no limit specified, or the size is within the limit. Both limits must apply if both are present
 			return (!UseMinimumImageSize || size >= MinimumImageSize) &&
 				   (!UseMaximumImageSize || size <= MaximumImageSize);
+		}
+
+		public static readonly DependencyProperty NoAutoReSortProperty = DependencyProperty.Register("NoAutoReSort", typeof(bool), typeof(ArtPanelList), new FrameworkPropertyMetadata(false, new PropertyChangedCallback(OnNoAutoReSortChanged)));
+		/// <summary>If set to True, items which change after being added to the list will not be re-sorted or re-filtered with their changed values, and will stay visible in their existing position</summary>
+		public bool NoAutoReSort
+		{
+			get { return (bool)GetValue(NoAutoReSortProperty); }
+			set { SetValue(NoAutoReSortProperty, value); }
+		}
+
+		private static void OnNoAutoReSortChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+		{
+			if (false.Equals(e.NewValue) && !false.Equals(e.OldValue))
+			{
+				// When turned off, perform a full re-sort and re-filter.
+				ArtPanelList artPanelList = (ArtPanelList)sender;
+				// HACK: Reapply filter to force refresh (as calling Refresh won't actually refresh if it doesn't think one is needed!)
+				artPanelList.Items.Filter = artPanelList.Items.Filter;
+			}
 		}
 
 		public static readonly DependencyProperty ThumbSizeProperty = DependencyProperty.Register("ThumbSize", typeof(double), typeof(ArtPanelList), new FrameworkPropertyMetadata(50D, FrameworkPropertyMetadataOptions.AffectsArrange | FrameworkPropertyMetadataOptions.BindsTwoWayByDefault, null, new CoerceValueCallback(CoerceThumbSize)));
