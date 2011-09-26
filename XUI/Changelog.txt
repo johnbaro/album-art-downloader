@@ -1,3 +1,6 @@
+0.42.1
+	 Fixed bug where, with certain combinations of filters and sorting, a crash would occur when automatically
+	  downloading full sized images
 0.42
 	 Improved re-sorting behaviour of results list to reduce unnecessary re-sorting. Results should now only move
 	  in the list if they are actually being sorted or grouped on a field whose value changes

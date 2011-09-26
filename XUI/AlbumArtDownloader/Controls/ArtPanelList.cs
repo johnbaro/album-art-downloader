@@ -303,8 +303,23 @@ namespace AlbumArtDownloader.Controls
 			//Test the panel against the current filters
 			if (Items.Contains(albumArt) != Items.PassesFilter(albumArt))
 			{
-				//It's filtering state has been changed, so needs resorting (to apply the filtering change)
-				ReSort(albumArt);
+				//It's filtering state has been changed, so needs removing and readding to apply the change.
+				//Note that using EditItem/CommitEdit is no good as (stupidly) CommitEdit will crash with an ArgumentOutOfRangeException if the item is currently filtered out
+				if (ItemsSource is IList)
+				{
+					IList itemsSource = (IList)ItemsSource;
+					itemsSource.Remove(albumArt);
+					itemsSource.Add(albumArt);
+				}
+				else if (ItemsSource == null) //If there is no items source, then Items might be directly assigned
+				{
+					Items.Remove(albumArt);
+					Items.Add(albumArt);
+				}
+				else
+				{
+					System.Diagnostics.Debug.Fail("Can't re-add the album art for re-filtering, as ItemsSource is not an IList");
+				}
 				return true;
 			}
 			return false;
@@ -312,9 +327,12 @@ namespace AlbumArtDownloader.Controls
 
 		private void ReSort(AlbumArt albumArt)
 		{
-			var editableCollectionView = (IEditableCollectionView)Items;
-			editableCollectionView.EditItem(albumArt);
-			editableCollectionView.CommitEdit();
+			if (Items.PassesFilter(albumArt)) // If it isn't filtered-in, then it doesn't need re-sorting
+			{
+				var editableCollectionView = (IEditableCollectionView)Items;
+				editableCollectionView.EditItem(albumArt);
+				editableCollectionView.CommitEdit();
+			}
 		}
 		#endregion
 
