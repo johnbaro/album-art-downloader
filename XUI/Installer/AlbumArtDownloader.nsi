@@ -170,6 +170,9 @@ SectionGroup "Image Download Scripts"
 		Section "Discogs"
 		  File "..\Scripts\Scripts\discogs.boo"
 		SectionEnd
+		Section "Deezer"
+		  File "..\Scripts\Scripts\deezer.boo"
+		SectionEnd
 		#Coverisland currently inoperational due to site apparently not actually showing any cover images any more
 		#Section "CoverIsland"
 		#  File "..\Scripts\Scripts\coverisland.boo"
@@ -224,6 +227,9 @@ SectionGroup "Image Download Scripts"
 		Section "DJshop"
 		  File "..\Scripts\Scripts\djshop.boo"
 		SectionEnd
+		Section "maniadb"
+		  File "..\Scripts\Scripts\maniadb.boo"
+		SectionEnd
 	SectionGroupEnd
 	
 	SectionGroup "Dance, Club, Electronic"
@@ -274,6 +280,15 @@ SectionGroup "Image Download Scripts"
 	SectionGroup "Reggae"
 		Section /o "EB Reggae"
 		  File "..\Scripts\Scripts\ebreggae.boo"
+		SectionEnd
+	SectionGroupEnd
+
+	SectionGroup "LP Vinyl"
+		Section /o "45cat"
+		  File "..\Scripts\Scripts\45cat.boo"
+		SectionEnd
+		Section /o "Audio Preservation Fund"
+		  File "..\Scripts\Scripts\audiopreservationfund.boo"
 		SectionEnd
 	SectionGroupEnd
 

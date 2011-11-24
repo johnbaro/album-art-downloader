@@ -2,6 +2,7 @@
 <?xml-stylesheet type="text/xsl" href="Updates.xsl"?>
 <Updates BaseURI="http://album-art.sourceforge.net/scripts/">
   <Application Version="0.42.1.0" Name="Album Art Downloader XUI v0.42.1" URI="https://sourceforge.net/project/platformdownload.php?group_id=187008" />
+  <Script Name="45cat" URI="45cat.boo" Version="0.1" Category="LP Vinyl" />
   <Script Name="7digital" URI="7digital.boo" Version="0.2" />
   <Script Name="AllCdCover" URI="allcdcover.boo" Version="0.3" />
   <Script Name="Amazon (.ca)" URI="amazon-ca.boo" Version="0.9s">
@@ -27,6 +28,7 @@
   </Script>
   <Script Name="Archambault" URI="archambault.boo" Version="0.5" />
   <Script Name="ArkivMusik" URI="arkivmusic.boo" Version="0.7" Category="Classical" />
+  <Script Name="Audio Preservation Fund" URI="audiopreservationfund.boo" Version="0.1" Category="LP Vinyl" />
   <Script Name="Beatport" URI="beatport.boo" Version="0.1" Category="Dance, Club, Electronic" />
   <Script Name="Buy.com" URI="buy-com.boo" Version="0.8.1" />
   <Script Name="CD Baby" URI="cdbaby.boo" Version="0.2" Category="Independent" />
@@ -52,6 +54,7 @@
   <Script Name="Kalahari" URI="kalahari.boo" Version="0.3" Category="South African" />
   <Script Name="LastFM Artist" URI="lastfm-artist.boo" Version="0.4" Category="Artist Images" />
   <Script Name="LastFM Cover" URI="lastfm-cover.boo" Version="0.6" />
+  <Script Name="maniadb" URI="maniadb.boo" Version="0.3" />
   <Script Name="Mega Media" URI="megamedia.boo" Version="0.2" Category="Netherlands" />
   <Script Name="Encyclopaedia Metallum" URI="metal-archives.boo" Version="0.6" Category="Punk, Metal, Rock" />
   <Script Name="Metal Library" URI="metallibrary.boo" Version="0.3" Category="Punk, Metal, Rock" />

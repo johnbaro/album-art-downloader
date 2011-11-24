@@ -7,7 +7,7 @@ class maniadb(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "maniadb"
 	Version as string:
-		get: return "0.2"
+		get: return "0.3"
 	Author as string:
 		get: return "Alex Vallat"
 	def Search(artist as string, album as string, results as IScriptResults):
@@ -25,8 +25,9 @@ class maniadb(AlbumArtDownloader.Scripts.IScript):
 		results.EstimatedCount = resultNodes.Count
 
 		for node in resultNodes:
-			thumbnail = node.SelectSingleNode("thumnail").InnerText
-			full = node.SelectSingleNode("image").InnerText
+			imagePart = node.SelectSingleNode("thumnail").InnerText.Substring("http://image.maniadb.com/images/album_t/".Length)
+			thumbnail = "http://image.maniadb.com/images/album_t/" + imagePart
+			full = "http://image.maniadb.com/images/album/" + imagePart
 			title = node.SelectSingleNode("title").InnerText
 			page = node.SelectSingleNode("link").InnerText
 			

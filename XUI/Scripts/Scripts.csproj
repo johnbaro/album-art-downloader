@@ -67,12 +67,14 @@
     <None Include="Scripts\7digital.boo" />
     <None Include="Scripts\Archived\coverisland.boo" />
     <None Include="Scripts\Archived\freecovers-api.boo" />
-    <None Include="Scripts\Archived\maniadb.boo" />
     <None Include="Scripts\chartstats.boo" />
     <None Include="Scripts\amazon-it.boo" />
     <None Include="Scripts\beatport.boo" />
+    <None Include="Scripts\audiopreservationfund.boo" />
+    <None Include="Scripts\45cat.boo" />
     <None Include="Scripts\eclassical.boo" />
     <None Include="Scripts\deezer.boo" />
+    <None Include="Scripts\maniadb.boo" />
     <None Include="Scripts\megamedia.boo" />
     <None Include="Scripts\itunes.boo" />
     <None Include="Scripts\djshop.boo" />
