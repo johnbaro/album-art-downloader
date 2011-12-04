@@ -11,6 +11,7 @@ using System.Windows.Threading;
 using System.Linq;
 using AlbumArtDownloader.Controls;
 using AlbumArtDownloader.Scripts;
+using Microsoft.WindowsAPICodePack.Taskbar;
 
 
 namespace AlbumArtDownloader
@@ -367,6 +368,8 @@ namespace AlbumArtDownloader
 			
 			mSearchParameters = new SearchParameters(Artist, Album);
 
+			ProgressTotalSources = 0;
+
 			mDefaultSaveFolder.AddPatternToHistory();
 			//Check for no primary sources (means that every source is primary!)
 			bool noSourceIsPrimary = !mSources.Any(s => s.IsPrimary && s.IsEnabled);
@@ -374,6 +377,8 @@ namespace AlbumArtDownloader
 			{
 				if (source.IsEnabled && (noSourceIsPrimary || source.IsPrimary)) //If the source is primary, or no sources are set to primary, include this source.
 				{
+					ProgressSourcesSearching++;
+					ProgressTotalSources++;
 					source.Search(mSearchParameters.Artist, mSearchParameters.Album);
 					mSearchParameters.AddSource(source);
 				}
@@ -383,11 +388,13 @@ namespace AlbumArtDownloader
 					source.Results.Clear();
 				}
 			}
+
 			if (!CommandBindings.Contains(mStopAllCommandBinding))
 			{
 				CommandBindings.Add(mStopAllCommandBinding);
 			}
 		}
+
 		/// <summary>
 		/// Alters the existing search to include or exclude additional sources
 		/// </summary>
@@ -414,6 +421,9 @@ namespace AlbumArtDownloader
 					{
 						searchPerformed = true;
 
+						ProgressSourcesSearching++;
+						ProgressTotalSources++;
+					
 						source.Search(Artist, Album);
 
 						mSearchParameters.AddSource(source);
@@ -493,6 +503,49 @@ namespace AlbumArtDownloader
 			//If a source has changed (become enabled or disabled, or had its settings changed) then this may indicate that search will now be (or no longer be) extended
 			UpdateExtendSearch();
 		}
+
+		private int mProgressTotalSources = 0;
+		private int ProgressTotalSources
+		{
+			get { return mProgressTotalSources; }
+			set
+			{
+				mProgressTotalSources = value;
+				UpdateOverallSourcesProgress();
+			}
+		}
+
+		private int mProgressSourcesSearching = 0;
+		private int ProgressSourcesSearching
+		{
+			get { return mProgressSourcesSearching; }
+			set
+			{
+				mProgressSourcesSearching = value;
+				UpdateOverallSourcesProgress();
+			}
+		}
+
+		private void UpdateOverallSourcesProgress()
+		{
+			if (TaskbarManager.IsPlatformSupported)
+			{
+				if (ProgressSourcesSearching == 0 && ProgressTotalSources == 0)
+				{
+					// Delay half a second before clearing the progress, so it looks like it's completed.
+					TaskbarHelper.DelayedClearProgress(this);
+				}
+				else
+				{
+					int maximum = ProgressTotalSources;
+					int current = Math.Max(0, Math.Min(maximum, maximum - ProgressSourcesSearching));
+					System.Diagnostics.Debug.WriteLine(String.Format("Sources progress: {0} / {1}", current, maximum));
+
+					TaskbarManager.Instance.SetProgressValue(current, maximum, this);
+				}
+			}
+		}
+
 		#endregion
 
 		#region Results Updated
@@ -830,6 +883,8 @@ namespace AlbumArtDownloader
 		#region Stop All
 		private void OnSourceSearchCompleted(object sender, EventArgs e)
 		{
+			ProgressSourcesSearching--;
+
 			//Check to see if any sources are still searching
 			foreach (Source source in mSources)
 			{
@@ -845,6 +900,8 @@ namespace AlbumArtDownloader
 			}
 			else
 			{
+				ProgressSourcesSearching = 0;
+				ProgressTotalSources = 0;
 
 				CommandBindings.Remove(mStopAllCommandBinding);
 				CommandManager.InvalidateRequerySuggested();

@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Threading;
 using AlbumArtDownloader.Scripts;
 using System.Windows.Data;
+using Microsoft.WindowsAPICodePack.Taskbar;
 
 namespace AlbumArtDownloader
 {
@@ -516,7 +517,7 @@ namespace AlbumArtDownloader
 
 		#region Progress Reporting
 
-		public static readonly DependencyProperty IsSearchingProperty = DependencyProperty.Register("IsSearching", typeof(bool), typeof(AutoDownloader), new FrameworkPropertyMetadata(false));
+		public static readonly DependencyProperty IsSearchingProperty = DependencyProperty.Register("IsSearching", typeof(bool), typeof(AutoDownloader), new FrameworkPropertyMetadata(false, OnProgressChanged));
 		public bool IsSearching
 		{
 			get { return (bool)GetValue(IsSearchingProperty); }
@@ -530,18 +531,34 @@ namespace AlbumArtDownloader
 			private set { SetValue(ProgressTextPropertyKey, value); }
 		}
 
-		public static readonly DependencyPropertyKey ProgressPropertyKey = DependencyProperty.RegisterReadOnly("Progress", typeof(double), typeof(AutoDownloader), new FrameworkPropertyMetadata(0D));
+		public static readonly DependencyPropertyKey ProgressPropertyKey = DependencyProperty.RegisterReadOnly("Progress", typeof(double), typeof(AutoDownloader), new FrameworkPropertyMetadata(0D, OnProgressChanged));
 		public double Progress
 		{
 			get { return (double)GetValue(ProgressPropertyKey.DependencyProperty); }
 			private set { SetValue(ProgressPropertyKey, value); }
 		}
 
-		public static readonly DependencyPropertyKey ProgressMaxPropertyKey = DependencyProperty.RegisterReadOnly("ProgressMax", typeof(double), typeof(AutoDownloader), new FrameworkPropertyMetadata(0D));
+		public static readonly DependencyPropertyKey ProgressMaxPropertyKey = DependencyProperty.RegisterReadOnly("ProgressMax", typeof(double), typeof(AutoDownloader), new FrameworkPropertyMetadata(0D, OnProgressChanged));
 		public double ProgressMax
 		{
 			get { return (double)GetValue(ProgressMaxPropertyKey.DependencyProperty); }
 			private set { SetValue(ProgressMaxPropertyKey, value); }
+		}
+		private static void OnProgressChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+		{
+			if (TaskbarManager.IsPlatformSupported)
+			{
+				var autoDownloader = (AutoDownloader)sender;
+
+				if (autoDownloader.IsSearching)
+				{
+					TaskbarManager.Instance.SetProgressValue((int)autoDownloader.Progress, (int)autoDownloader.ProgressMax, autoDownloader);
+				}
+				else
+				{
+					TaskbarHelper.DelayedClearProgress(autoDownloader);
+				}
+			}
 		}
 		#endregion
 

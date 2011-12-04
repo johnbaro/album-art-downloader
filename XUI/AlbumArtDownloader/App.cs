@@ -716,6 +716,9 @@ namespace AlbumArtDownloader
 				}
 			}
 
+			// Set up jumplist for taskbar button
+			TaskbarHelper.CreateApplicationJumpList();
+
 			if (AlbumArtDownloader.Properties.Settings.Default.AutoUpdateEnabled)
 			{
 				//Check for updates if enough time has elapsed.

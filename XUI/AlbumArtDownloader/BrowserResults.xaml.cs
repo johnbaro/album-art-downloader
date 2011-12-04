@@ -612,8 +612,18 @@ namespace AlbumArtDownloader
                 {
                     if (type.GetConstructor(Type.EmptyTypes) != null)
                     {
-                        BitmapEncoder encoder = (BitmapEncoder)Activator.CreateInstance(type);
-                        yield return encoder.CodecInfo;
+						BitmapCodecInfo info = null;
+						try
+						{
+							BitmapEncoder encoder = (BitmapEncoder)Activator.CreateInstance(type);
+							info = encoder.CodecInfo;
+						}
+						catch (NotSupportedException)
+						{
+							System.Diagnostics.Debug.Fail("Failed to get codec info for image encoder");
+							continue;
+						}
+						yield return info;
                     }
                 }
             }

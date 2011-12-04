@@ -38,5 +38,10 @@ namespace AlbumArtDownloader
 		{
 			return mSources.ContainsKey(source);
 		}
+
+		public int SourceCount
+		{
+			get { return mSources.Count; }
+		}
 	}
 }

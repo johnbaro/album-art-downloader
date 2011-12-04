@@ -2,11 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Input;
+using Microsoft.WindowsAPICodePack.Taskbar;
 
 namespace AlbumArtDownloader
 {
 	public partial class QueueManager : System.Windows.Window
 	{
+		private int mMaxQueueDepthSinceOpened;
+
 		public QueueManager()
 		{
 			InitializeComponent();
@@ -17,6 +20,35 @@ namespace AlbumArtDownloader
 			CommandBindings.Add(new CommandBinding(ApplicationCommands.Stop, new ExecutedRoutedEventHandler(StopExec), new CanExecuteRoutedEventHandler(StopCanExec)));
 
 			mQueueDisplay.MouseDoubleClick += new MouseButtonEventHandler(OnQueueDoubleClick);
+
+			var queue = SearchQueue.Queue;
+			mMaxQueueDepthSinceOpened = queue.Count;
+			queue.CollectionChanged += OnQueueChanged;
+		}
+
+		protected override void OnClosed(EventArgs e)
+		{
+			SearchQueue.Queue.CollectionChanged -= OnQueueChanged;
+
+			base.OnClosed(e);
+		}
+
+		private void OnQueueChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+		{
+			if (TaskbarManager.IsPlatformSupported)
+			{
+				var queueCount = SearchQueue.Queue.Count;
+
+				// Update the progress since the window was opened
+				mMaxQueueDepthSinceOpened = Math.Max(mMaxQueueDepthSinceOpened, queueCount);
+
+				TaskbarManager.Instance.SetProgressValue(mMaxQueueDepthSinceOpened - queueCount, mMaxQueueDepthSinceOpened, this);
+			}
+		}
+
+		private SearchQueue SearchQueue
+		{
+			get { return ((App)Application.Current).SearchQueue; }
 		}
 
 		private void DeleteExec(object sender, ExecutedRoutedEventArgs e)
@@ -46,7 +78,7 @@ namespace AlbumArtDownloader
 
 		private void StopExec(object sender, ExecutedRoutedEventArgs e)
 		{
-			IList<ArtSearchWindow> searchQueue = ((App)Application.Current).SearchQueue.Queue;
+			IList<ArtSearchWindow> searchQueue = SearchQueue.Queue;
 			while (searchQueue.Count > 0)
 			{
 				RemoveFromQueue(searchQueue[0]);
@@ -55,12 +87,12 @@ namespace AlbumArtDownloader
 
 		private void StopCanExec(object sender, CanExecuteRoutedEventArgs e)
 		{
-			e.CanExecute = ((App)Application.Current).SearchQueue.Queue.Count > 0;
+			e.CanExecute = SearchQueue.Queue.Count > 0;
 		}
 
 		private void RemoveFromQueue(ArtSearchWindow searchWindow)
 		{
-			((App)Application.Current).SearchQueue.CancelSearchWindow(searchWindow);
+			SearchQueue.CancelSearchWindow(searchWindow);
 		}
 
 		private void OnQueueDoubleClick(object sender, MouseButtonEventArgs e)
@@ -81,14 +113,14 @@ namespace AlbumArtDownloader
 				ArtSearchWindow searchWindow = mQueueDisplay.ItemContainerGenerator.ItemFromContainer(source) as ArtSearchWindow;
 				if (searchWindow != null)
 				{
-					((App)Application.Current).SearchQueue.ForceSearchWindow(searchWindow);
+					SearchQueue.ForceSearchWindow(searchWindow);
 				}
 			}
 		}
 
 		private void OnAutomaticDownloadClick(object sender, RoutedEventArgs e)
 		{
-			var searchQueue = ((App)Application.Current).SearchQueue.Queue;
+			var searchQueue = SearchQueue.Queue;
 			if (searchQueue.Count > 0)
 			{
 				var autoDownloader = new AutoDownloader();

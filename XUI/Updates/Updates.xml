@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <?xml-stylesheet type="text/xsl" href="Updates.xsl"?>
 <Updates BaseURI="http://album-art.sourceforge.net/scripts/">
-  <Application Version="0.42.1.0" Name="Album Art Downloader XUI v0.42.1" URI="https://sourceforge.net/project/platformdownload.php?group_id=187008" />
+  <Application Version="0.43.0.0" Name="Album Art Downloader XUI v0.43" URI="https://sourceforge.net/project/platformdownload.php?group_id=187008" />
   <Script Name="45cat" URI="45cat.boo" Version="0.1" Category="LP Vinyl" />
   <Script Name="7digital" URI="7digital.boo" Version="0.2" />
   <Script Name="AllCdCover" URI="allcdcover.boo" Version="0.3" />
@@ -40,7 +40,7 @@
   <Script Name="Coverlandia" URI="coverlandia.boo" Version="0.2" Category="Fan-made covers" />
   <Script Name="Darktown" URI="darktown.boo" Version="0.5" />
   <Script Name="Deezer" URI="deezer.boo" Version="0.3" />
-  <Script Name="Discogs" URI="discogs.boo" Version="0.10" />
+  <Script Name="Discogs" URI="discogs.boo" Version="0.11" />
   <Script Name="DJshop" URI="djshop.boo" Version="0.1" />
   <Script Name="EB Reggae" URI="ebreggae.boo" Version="0.1" Category="Reggae" />
   <Script Name="eClassical" URI="eclassical.boo" Version="0.1" Category="Classical" />

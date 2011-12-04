@@ -13,7 +13,7 @@ class Discogs(AlbumArtDownloader.Scripts.IScript):
 	Author as string:
 		get: return "Alex Vallat"
 	Version as string:
-		get: return "0.10"
+		get: return "0.11"
 	def Search(artist as string, album as string, results as IScriptResults):
 		artist = StripCharacters("&.'\";:?!", artist)
 		album = StripCharacters("&.'\";:?!", album)
@@ -21,7 +21,7 @@ class Discogs(AlbumArtDownloader.Scripts.IScript):
 		obidResults = GetDiscogsPage("http://www.discogs.com/advanced_search?artist=${EncodeUrl(artist)}&release_title=${EncodeUrl(album)}")
 			
 		//Get obids
-		obidRegex = Regex("<div class=\"thumb\"><a href=\"(?<url>/[^/]+/release/(?<obid>\\d+))\">", RegexOptions.Singleline | RegexOptions.IgnoreCase)
+		obidRegex = Regex("<div class=\"thumb\">\\s*<a href=\"(?<url>/[^/]+/release/(?<obid>\\d+))\">", RegexOptions.Singleline | RegexOptions.IgnoreCase)
 		obidMatches = obidRegex.Matches(obidResults)
 		results.EstimatedCount = obidMatches.Count //Probably more than this, as some releases might have multiple images
 

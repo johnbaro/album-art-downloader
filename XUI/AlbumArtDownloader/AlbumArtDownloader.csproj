@@ -39,9 +39,10 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>.\bin\Debug\</OutputPath>
-    <DefineConstants>TRACE;DEBUG;_EPHEMERAL_SETTINGS _ERROR_REPORTING</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;_EPHEMERAL_SETTINGS ERROR_REPORTING</DefineConstants>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>false</DebugSymbols>
@@ -70,6 +71,10 @@
       <SpecificVersion>False</SpecificVersion>
       <EmbedInteropTypes>True</EmbedInteropTypes>
       <HintPath>..\Third Party Assemblies\Interop.Foobar2000.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Third Party Assemblies\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework.Classic">
       <RequiredTargetFramework>3.0</RequiredTargetFramework>
@@ -104,6 +109,7 @@
   <ItemGroup>
     <AppDesigner Include="Properties\" />
     <Compile Include="Controls\DpiIndependentZoomConverter.cs" />
+    <Compile Include="TaskbarHelper.cs" />
     <Compile Include="OverwriteExistingWarning.xaml.cs">
       <DependentUpon>OverwriteExistingWarning.xaml</DependentUpon>
     </Compile>
