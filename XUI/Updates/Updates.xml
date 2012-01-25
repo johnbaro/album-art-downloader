@@ -3,7 +3,7 @@
 <Updates BaseURI="http://album-art.sourceforge.net/scripts/">
   <Application Version="0.43.0.0" Name="Album Art Downloader XUI v0.43" URI="https://sourceforge.net/project/platformdownload.php?group_id=187008" />
   <Script Name="45cat" URI="45cat.boo" Version="0.1" Category="LP Vinyl" />
-  <Script Name="7digital" URI="7digital.boo" Version="0.2" />
+  <Script Name="7digital" URI="7digital.boo" Version="0.3" />
   <Script Name="AllCdCover" URI="allcdcover.boo" Version="0.3" />
   <Script Name="Amazon (.ca)" URI="amazon-ca.boo" Version="0.9s">
     <Dependency>amazon-common.boo</Dependency>

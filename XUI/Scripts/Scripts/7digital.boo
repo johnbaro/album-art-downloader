@@ -7,7 +7,7 @@ class sevendigital(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "7digital"
 	Version as string:
-		get: return "0.2"
+		get: return "0.3"
 	Author as string:
 		get: return "Alex Vallat"
 	def Search(artist as string, album as string, results as IScriptResults):
@@ -15,9 +15,9 @@ class sevendigital(AlbumArtDownloader.Scripts.IScript):
 		album = StripCharacters("&.'\";:?!", album)
 
 		//Retrieve the search results page
-		searchResultsHtml as string = GetPage("http://7digital.com/search/products?searchDisplay=albums&page=1&search=" + EncodeUrl(artist + " " + album))
+		searchResultsHtml as string = GetPage("http://www.7digital.com/releasesearchresult/index?pagesize=30&IsPagedRequest=true&search-type=Releases&page=0&search-term=" + EncodeUrl(artist + " " + album))
 		
-		matches = Regex("<a href=\"(?<info>[^\"]+)\"(?:.(?!</a))+<img src=\"(?<image>http://cdn.7static.com/static/img/sleeveart/[^_]+)_50.jpg\" alt=\"(?<title>[^\"]+)\"", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResultsHtml)
+		matches = Regex("<img src=\"(?<image>http://cdn.7static.com/static/img/sleeveart/[^_]+)_50\\.jpg\"(?:.(?!title))+ title=\"(?<title>[^\"]+)\" href=\"(?<info>[^\"]+)\"", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResultsHtml)
 		
 		results.EstimatedCount = matches.Count
 		
