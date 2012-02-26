@@ -5,16 +5,16 @@ class eMusic(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "eMusic"
 	Version as string:
-		get: return "0.2"
+		get: return "0.3"
 	Author as string:
-		get: return "Alex Vallat"
+		get: return "Alex Vallat, DRata"
 	def Search(artist as string, album as string, results as IScriptResults):
 		artist = StripCharacters("&.'\";:?!", artist)
 		album = StripCharacters("&.'\";:?!", album)
 
-		searchResultsHtml as string = GetPage("http://www.google.com/search?q=site%3Aemusic.com%2Falbum%2F+" + EncodeUrl("\"" + artist + "\" \"" + album + "\""))
+		searchResultsHtml as string = GetPage("http://www.google.com/search?q=site%3Aemusic.com+inurl:album" + EncodeUrl(" inurl:\"" + artist + "\" inurl:\"" + album + "\""))
 		
-		matches = Regex("<a href=\"(?<url>http://www.emusic.com/album/(?<title>[^/]+)/(?<id>(?<idPart>\\d{3}){2}\\d+)\\.html)\"", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResultsHtml)
+		matches = Regex("<a href=\"(?<url>http://[^/]*emusic.com/album/(?<title>[^\"]+)/(?<id>(?<idPart>\\d{3}){2}\\d+)[^\"]*)\"", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResultsHtml)
 		
 		results.EstimatedCount = matches.Count
 		
@@ -23,7 +23,7 @@ class eMusic(AlbumArtDownloader.Scripts.IScript):
 			id = match.Groups["id"].Value
 			idParts = match.Groups["idPart"].Captures
 			title = match.Groups["title"].Value
-			title = title.Substring(0, title.Length - 13) // Remove -MP3-Download
+			title = title.Replace('-MP3-Download', '') // Remove -MP3-Download if found in URL
 			title = title.Replace('-', ' ')
 
 			imageUrlBase = "http://images.emusic.com/music/images/album/0/${idParts[0]}/${idParts[1]}/${id}/"

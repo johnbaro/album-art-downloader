@@ -12,43 +12,48 @@ class Deezer(AlbumArtDownloader.Scripts.IScript):
 	Author as string:
 		get: return "Alex Vallat"
 	Version as string:
-		get: return "0.3"
+		get: return "0.4"
 	def Search(artist as string, album as string, results as IScriptResults):
 		artist = StripCharacters("&.'\";:?!", artist)
 		album = StripCharacters("&.'\";:?!", album)
 
-		jsonSearchResults = GetPage("http://api-v3.deezer.com/1.0/search/album/?q=" + EncodeUrl(artist + " " + album))
+		jsonSearchResults = GetPage("http://api.deezer.com/2.0/search/album?q=" + EncodeUrl(artist + " " + album))
 			
 		json = JavaScriptSerializer()
-		searchResults = json.Deserialize[of SearchResults](jsonSearchResults).search
+		searchResults = json.Deserialize[of SearchResults](jsonSearchResults)
 
-		if searchResults.total_results > 0:
-			results.EstimatedCount = searchResults.total_results
+		if searchResults.data.Length > 0:
+			results.EstimatedCount = searchResults.data.Length
 
 			imageIdRegex = Regex("cover/(?<id>[^/]+)/", RegexOptions.Singleline | RegexOptions.IgnoreCase)
 		
-			for album in searchResults.albums.album:
-				title = album.artist.name + " - " + album.name
-				match = imageIdRegex.Match(album.image)
-				results.Add(album.image, title, album.url, -1, -1, match.Groups["id"].Value, CoverType.Front, "png")
+			for album in searchResults.data:
+				title = album.artist.name + " - " + album.title
+
+				// Fetch image, to determine ID
+				checkRequest = System.Net.HttpWebRequest.Create(album.cover) as System.Net.HttpWebRequest
+				checkRequest.Method = "HEAD"
+				checkRequest.AllowAutoRedirect = false
+				response = checkRequest.GetResponse()
+				thumbnail = response.Headers["Location"]
+				response.Close()
+
+				match = imageIdRegex.Match(thumbnail)
+				
+				results.Add(thumbnail, title, album.link or String.Empty, -1, -1, match.Groups["id"].Value, CoverType.Front, "png")
 
 	def RetrieveFullSizeImage(id):
 		return "http://cdn-images.deezer.com/images/cover/${id}/0x0-000000-100-0-0.png";
 
 	class SearchResults:
-		public search as Search
-		class Search:
-			public total_results as int
-			public albums as Albums
-
-			class Albums:
-				public album as (Album)
-
-				class Album:
-					public artist as Artist
-					public image as String
-					public name as String
-					public url as String
-
-					class Artist:
-						public name as String
+		public data as (Album)
+		
+		class Album:
+			public id as String
+			public title as String
+			public link as String
+			public cover as String
+			public artist as Artist
+				
+			class Artist:
+				public name as String

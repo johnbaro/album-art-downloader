@@ -230,6 +230,12 @@ SectionGroup "Image Download Scripts"
 		Section "maniadb"
 		  File "..\Scripts\Scripts\maniadb.boo"
 		SectionEnd
+		Section "medianet"
+		  File "..\Scripts\Scripts\medianet.boo"
+		SectionEnd
+		Section "deejay.de"
+		  File "..\Scripts\Scripts\deejay.boo"
+		SectionEnd
 	SectionGroupEnd
 	
 	SectionGroup "Dance, Club, Electronic"
@@ -328,6 +334,12 @@ SectionGroup "Image Download Scripts"
 	SectionGroup "Netherlands"
 		Section /o "Mega Media"
 		  File "..\Scripts\Scripts\megamedia.boo"
+		SectionEnd
+	SectionGroupEnd
+
+	SectionGroup "Turkish"
+		Section /o "esenshop"
+		  File "..\Scripts\Scripts\esenshop.boo"
 		SectionEnd
 	SectionGroupEnd
 	

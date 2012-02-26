@@ -11,7 +11,7 @@ class BuyDotCom(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "Buy.com"
 	Version as string:
-		get: return "0.8.1"
+		get: return "0.8.2"
 	Author as string:
 		get: return "alsaan, DRata, Alex Vallat"
 		
@@ -34,8 +34,8 @@ class BuyDotCom(AlbumArtDownloader.Scripts.IScript):
 		if(allCategories > -1):
 			searchResultsHtml = searchResultsHtml.Substring(0, allCategories)
 
-		//Remove "Similar Products in General"
-		similar = searchResultsHtml.IndexOf(">Similar Products in <span class=\"searchHeaderTerm\">general<")
+		//Remove "Similar Products in "
+		similar = searchResultsHtml.IndexOf(">Similar Products in ")
 		if(similar > -1):
 			searchResultsHtml = searchResultsHtml.Substring(0, similar)
 		

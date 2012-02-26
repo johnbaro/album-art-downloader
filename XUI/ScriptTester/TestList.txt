@@ -1,4 +1,4 @@
-;Source Name	Artist	Album
+﻿;Source Name	Artist	Album
 ;Album Art Exchange	Muse	The Resistance
 AllCdCover	Muse	The Resistance
 Amazon (.ca)	Muse	The Resistance
@@ -49,3 +49,4 @@ DJshop	Muse	The Resistance
 Mega Media	Turin Brakes	Ether Song
 Deezer	Muse	The Resistance
 eClassical	Chopin	4 Ballades
+esenshop	Bedirhan Gökçe	Güle Yazdım
