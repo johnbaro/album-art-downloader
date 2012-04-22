@@ -392,25 +392,7 @@ namespace AlbumArtDownloader
 					}
 					albumName = fileTags.Tag.Album;
 
-					var embeddedPictures = fileTags.Tag.Pictures;
-					if (embeddedPictures.Length > 0)
-					{
-						//There's an embedded picture
-						//Check to see if there's a picture described as the front cover, to use in preference
-						for (int i = 0; i < embeddedPictures.Length; i++)
-						{
-							if (embeddedPictures[i].Type == TagLib.PictureType.FrontCover)
-							{
-								embeddedArtIndex = i;
-								break;
-							}
-						}
-						if(!embeddedArtIndex.HasValue)
-						{
-							//None of the embedded pictures were tagged as "FrontCover", so just use the first picture
-							embeddedArtIndex = 0;
-						}
-					}
+					embeddedArtIndex = EmbeddedArtHelpers.GetEmbeddedFrontCoverIndex(fileTags);
 				}
 				catch (Exception e)
 				{

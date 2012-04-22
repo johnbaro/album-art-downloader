@@ -6,7 +6,7 @@ class Archambault(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "Archambault"
 	Version as string:
-		get: return "0.5"
+		get: return "0.6"
 	Author as string:
 		get: return "Sebastien Leclerc"
 
@@ -20,7 +20,7 @@ class Archambault(AlbumArtDownloader.Scripts.IScript):
 
 		resultsPage = GetPage("http://www.archambault.ca/qmi/navigation/search/ExtendedSearchResults.jsp?erpId=ACH&searchMode=advanced&searchType=MUSIC&searchArtist=${artist}&searchAlbum=${album}&searchFormat=DC")
 		
-		resultsRegex = Regex("<a href=\\\"(?<url>[^\\\"]+)[^>]*title=\\\"(?<title>[^\\\"]+)\\\"(?:.(?!</a>))*?<img class=\"preview\" [^>]+ src=\"(?<image>http://image\\d?\\.archambault[^\"]+?)\\.\\d+x\\d+\\.jpg\"", RegexOptions.Singleline | RegexOptions.IgnoreCase)
+		resultsRegex = Regex("<a title=\"(?<title>[^\"]+)\"[^>]+href=\"(?<url>[^\"]+)(?:.(?!</a>))*?<img [^>]+?src=\"(?<image>http://image\\d?\\.archambault[^\"]+?)\\.\\d+x\\d+\\.jpg\"", RegexOptions.Singleline | RegexOptions.IgnoreCase)
 		resultsMatches = resultsRegex.Matches(resultsPage)
 	
 		results.EstimatedCount = resultsMatches.Count;

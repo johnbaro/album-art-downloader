@@ -313,28 +313,65 @@ namespace AlbumArtDownloader
 				{
 					string artistName = track.FormatTitle("%album artist%");
 					string albumName = track.FormatTitle("%album%");
-					string path = track.FormatTitle("%path%");
+					string filename = track.FormatTitle("%path%");
+					string path;
 					try
 					{
-						path = System.IO.Path.GetDirectoryName(path);
+						path = System.IO.Path.GetDirectoryName(filename);
 					}
 					catch (Exception e)
 					{
-						System.Diagnostics.Trace.WriteLine("Could not get file path for \""+artistName + "\" / \"" + albumName + "\": " + path);
+						System.Diagnostics.Trace.WriteLine("Could not get file path for \""+artistName + "\" / \"" + albumName + "\": " + filename);
 						System.Diagnostics.Trace.Indent();
 						System.Diagnostics.Trace.WriteLine(e.Message);
 						System.Diagnostics.Trace.Unindent();
 						continue; //skip this one, can't find the path.
 					}
-					
+
+					var album = new Album(path, artistName, albumName);
+					bool addedAlbum = false;
+
 					Dispatcher.Invoke(DispatcherPriority.DataBind, new ThreadStart(delegate
 					{
 						Progress++;
 						if (!(String.IsNullOrEmpty(artistName) && String.IsNullOrEmpty(albumName))) //No point adding it if no artist or album could be found.
 						{
-							mAlbums.Add(new Album(path, artistName, albumName));
+							addedAlbum = mAlbums.Add(album);
 						}
 					}));
+
+					if (addedAlbum)
+					{
+						// Check for embedded art
+						int? embeddedArtIndex = null;
+						TagLib.File fileTags = null;
+						try
+						{
+							fileTags = TagLib.File.Create(filename, TagLib.ReadStyle.None);
+							embeddedArtIndex = EmbeddedArtHelpers.GetEmbeddedFrontCoverIndex(fileTags);
+						}
+						catch (Exception e)
+						{
+							System.Diagnostics.Trace.WriteLine("TagLib# could not get embedded artwork for file: " + filename);
+							System.Diagnostics.Trace.Indent();
+							System.Diagnostics.Trace.WriteLine(e.Message);
+							System.Diagnostics.Trace.Unindent();
+							//If embedded images couldn't be read, ignore that
+						}
+						finally
+						{
+							if (fileTags != null)
+							{
+								fileTags.Mode = TagLib.File.AccessMode.Closed;
+							}
+						}
+
+						if (embeddedArtIndex.HasValue)
+						{
+							//Read the picture from the data
+							album.SetArtFile(EmbeddedArtHelpers.GetEmbeddedFilePath(filename, embeddedArtIndex.Value));
+						}
+					}
 				}
 
 				//Finished with the FindingFiles state, so now set the state to whatever the results state is (either FindingArt, or Done).

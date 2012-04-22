@@ -111,5 +111,29 @@ namespace AlbumArtDownloader
 			System.Diagnostics.Trace.WriteLine(String.Format("Embedded artwork not found at index [{0}] of file: {1}", index, filePath));
 			return null;
 		}
+
+		/// <summary>
+		/// Gets the index of the front cover embedded art image, if there is one.
+		/// </summary>
+		public static int? GetEmbeddedFrontCoverIndex(TagLib.File fileTags)
+		{
+			var embeddedPictures = fileTags.Tag.Pictures;
+			if (embeddedPictures.Length > 0)
+			{
+				//There's an embedded picture
+				//Check to see if there's a picture described as the front cover, to use in preference
+				for (int i = 0; i < embeddedPictures.Length; i++)
+				{
+					if (embeddedPictures[i].Type == TagLib.PictureType.FrontCover)
+					{
+						return i;
+					}
+				}
+				//None of the embedded pictures were tagged as "FrontCover", so just use the first picture
+				return 0;
+			}
+
+			return null;
+		}
 	}
 }

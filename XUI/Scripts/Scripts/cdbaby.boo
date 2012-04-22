@@ -7,7 +7,7 @@ class CDBaby(AlbumArtDownloader.Scripts.IScript, ICategorised):
 	Name as string:
 		get: return "CD Baby"
 	Version as string:
-		get: return "0.2"
+		get: return "0.3"
 	Author as string:
 		get: return "Alex Vallat"
 	Category as string:
@@ -23,7 +23,7 @@ class CDBaby(AlbumArtDownloader.Scripts.IScript, ICategorised):
 			
 		searchResultsHtml as string = GetPage("http://www.cdbaby.com/Search/" + EncodeUrl(Base64(search)) + "/0/cmVzdWx0VHlwZTo6QWxidW0%3d")
 		
-		matches = Regex("title=\"(?<title>(?<artist>[^:]+)[^\"]+)\" class=\"overlay-link\" href=\"/cd/(?<id>[^\"]+)\">", RegexOptions.IgnoreCase | RegexOptions.Singleline).Matches(searchResultsHtml)
+		matches = Regex("title=\"(?<title>(?<artist>[^:]+)[^\"]+)\" class=\"overlay-link\" href=\"[^\"]+/cd/(?<id>[^\"]+)\">", RegexOptions.IgnoreCase | RegexOptions.Singleline).Matches(searchResultsHtml)
 		
 		results.EstimatedCount = matches.Count
 		

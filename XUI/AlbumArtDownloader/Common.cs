@@ -332,11 +332,18 @@ namespace AlbumArtDownloader
 			char[] invalid = Path.GetInvalidFileNameChars();
 			char[] valueChars = value.ToCharArray();
 
+			char replacementCharacter = Properties.Settings.Default.InvalidReplacementCharacter;
+			if(Array.IndexOf(invalid, replacementCharacter) != -1)
+			{
+				// Fallback if they've specified an invalid invalid replacement character
+				replacementCharacter = '_';
+			}
+
 			bool valueChanged = false;
 			int invalidIndex = -1;
 			while ((invalidIndex = value.IndexOfAny(invalid, invalidIndex + 1)) >= 0)
 			{
-				valueChars[invalidIndex] = '_';
+				valueChars[invalidIndex] = replacementCharacter;
 				valueChanged = true;
 			}
 			if (valueChanged)

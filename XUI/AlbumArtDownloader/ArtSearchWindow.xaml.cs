@@ -103,6 +103,9 @@ namespace AlbumArtDownloader
 			mArtist.GotKeyboardFocus += OnAutoSelectTextBoxFocusChange;
 			mAlbum.GotKeyboardFocus += OnAutoSelectTextBoxFocusChange;
 
+			// Always auto-select all for Invalid Replacement Character box
+			mInvalidReplacementCharacter.GotKeyboardFocus += OnAutoSelectWithClickTextBoxFocusChange;
+
 			//If the default file path pattern does not containg %preset%, the presets context menu is coerced into being hidden
 			mDefaultSaveFolder.PathPatternChanged += delegate { CoerceValue(PresetsContextMenuProperty); };
 
@@ -120,6 +123,16 @@ namespace AlbumArtDownloader
 			TextBox textBox = sender as TextBox;
 			//If the textbox gains focus, but not from app gaining focus, and not from mouse press or context menu, then select its contents
 			if (textBox != null && e.OldFocus != null && !BelongsToContextMenu(e.OldFocus as FrameworkElement) && Mouse.LeftButton != MouseButtonState.Pressed)
+			{
+				textBox.SelectAll();
+			}
+		}
+
+		private void OnAutoSelectWithClickTextBoxFocusChange(object sender, KeyboardFocusChangedEventArgs e)
+		{
+			TextBox textBox = sender as TextBox;
+			//If the textbox gains focus, but not from app gaining focus or context menu, then select its contents
+			if (textBox != null && e.OldFocus != null && !BelongsToContextMenu(e.OldFocus as FrameworkElement))
 			{
 				textBox.SelectAll();
 			}
@@ -569,14 +582,28 @@ namespace AlbumArtDownloader
 
 		private void BindAlbumArtProperties(AlbumArt art)
 		{
-			var defaultPathBinding = new Binding
+			var pathPatternBinding = new Binding
 			{
 				Source = mDefaultSaveFolder,
 				Path = new PropertyPath(ArtPathPatternBox.PathPatternProperty),
-				Mode = BindingMode.OneWay,
+				Mode = BindingMode.OneWay
+			};
+
+			var replacementCharacterBinding = new Binding
+			{
+				Source = mInvalidReplacementCharacter,
+				Path = new PropertyPath(TextBox.TextProperty),
+				Mode = BindingMode.OneWay
+			};
+
+			var defaultPathBinding = new MultiBinding()
+			{
 				Converter = new AlbumArtDefaultFilePathPatternSubstitution(),
 				ConverterParameter = new string[] { Artist, Album }
 			};
+			defaultPathBinding.Bindings.Add(pathPatternBinding);
+			defaultPathBinding.Bindings.Add(replacementCharacterBinding);
+
 			BindingOperations.SetBinding(art, AlbumArt.DefaultFilePathPatternProperty, defaultPathBinding);
 
 			var defaultPresetBinding = new Binding
@@ -588,16 +615,16 @@ namespace AlbumArtDownloader
 			BindingOperations.SetBinding(art, AlbumArt.DefaultPresetValueProperty, defaultPresetBinding);
 		}
 
-		private class AlbumArtDefaultFilePathPatternSubstitution : IValueConverter
+		private class AlbumArtDefaultFilePathPatternSubstitution : IMultiValueConverter
 		{
-			public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+			public object Convert(object[] values, Type targetType, object parameter, System.Globalization.CultureInfo culture)
 			{
 				string[] parameters = (string[])parameter;
-				return ((string)value).Replace("%artist%", Common.MakeSafeForPath(parameters[0]))
-									  .Replace("%album%", Common.MakeSafeForPath(parameters[1]));
+				return ((string)values[0]).Replace("%artist%", Common.MakeSafeForPath(parameters[0]))
+										  .Replace("%album%", Common.MakeSafeForPath(parameters[1]));
 			}
 
-			public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+			public object[] ConvertBack(object value, Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture)
 			{
 				return null; //Not used
 			}

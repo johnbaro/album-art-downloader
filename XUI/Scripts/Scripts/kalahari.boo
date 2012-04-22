@@ -7,7 +7,7 @@ class Kalahari(AlbumArtDownloader.Scripts.IScript, ICategorised):
 	Name as string:
 		get: return "Kalahari"
 	Version as string:
-		get: return "0.3"
+		get: return "0.4"
 	Author as string:
 		get: return "Alex Vallat"
 	Category as string:
@@ -17,7 +17,7 @@ class Kalahari(AlbumArtDownloader.Scripts.IScript, ICategorised):
 		album = StripCharacters("&.'\";:?!", album)
 
 		//Retrieve the search results json
-		content = "{'queryString':'" + Base64("0|FreeText_Shop_English|${artist} ${album}||19738|0|1|25|||||||||") + "', 'commandKey':'undefined','commandValue':'undefined','shopperId':'undefined'}";
+		content = "{'queryString':'" + Base64("0|FreeText_Shop_English|${artist} ${album}||19738|0|1|25|||||||||") + "', 'commandKey':'undefined','commandValue':'undefined','shopperId':'undefined','referrer':'/music/default.aspx'}";
 		request = System.Net.HttpWebRequest.Create("http://www.kalahari.com/common/searchservice.asmx/ExecuteSearch");
 		request.Method = "POST";
 		request.ContentType = "application/json; charset=UTF-8";

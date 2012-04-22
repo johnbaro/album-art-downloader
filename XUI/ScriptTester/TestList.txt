@@ -15,7 +15,7 @@ CD Universe	Muse	The Resistance
 Cover-Paradies	Muse	The Resistance
 Coveralia	Muse	The Resistance
 ;CoverIsland	Muse	The Resistance
-Darktown	Blink 182	Enema of The State
+;Darktown	Blink 182	Enema of The State
 Discogs	Muse	The Resistance
 ;Freecovers API	Muse	The Resistance
 GoogleImage	Muse	The Resistance
@@ -43,7 +43,7 @@ eMusic	Muse	The Resistance
 Qobuz	Muse	The Resistance
 GigaCrate	Muse	Starlight
 iTunes	Muse	The Resistance
-MioMusik	Muse	The Resistance
+;MioMusik	Muse	The Resistance
 SFR Music	Muse	The Resistance
 DJshop	Muse	The Resistance
 Mega Media	Turin Brakes	Ether Song

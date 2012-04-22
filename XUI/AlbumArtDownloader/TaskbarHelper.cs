@@ -16,18 +16,25 @@ namespace AlbumArtDownloader
 		{
 			if (TaskbarManager.IsPlatformSupported)
 			{
-				var exePath = Assembly.GetEntryAssembly().Location;
-				var iconReference = new IconReference(exePath, 0);
-
-				var jumpList = JumpList.CreateJumpList();
-				if (jumpList != null)
+				try
 				{
-					jumpList.AddUserTasks(new JumpListLink(exePath, "New Search") { Arguments = "/new", IconReference = iconReference },
-										  new JumpListLink(exePath, "File Browser") { Arguments = "/fileBrowser", IconReference = iconReference },
-										  new JumpListLink(exePath, "Foobar Browser") { Arguments = "/foobarBrowser", IconReference = iconReference });
-				}
+					var exePath = Assembly.GetEntryAssembly().Location;
+					var iconReference = new IconReference(exePath, 0);
 
-				jumpList.Refresh();
+					var jumpList = JumpList.CreateJumpList();
+					if (jumpList != null)
+					{
+						jumpList.AddUserTasks(new JumpListLink(exePath, "New Search") { Arguments = "/new", IconReference = iconReference },
+											  new JumpListLink(exePath, "File Browser") { Arguments = "/fileBrowser", IconReference = iconReference },
+											  new JumpListLink(exePath, "Foobar Browser") { Arguments = "/foobarBrowser", IconReference = iconReference });
+					}
+
+					jumpList.Refresh();
+				}
+				catch (Exception ex)
+				{
+					System.Diagnostics.Trace.TraceError("Could not create jump list: " + ex.Message);
+				}
 			}
 		}		
 

@@ -85,14 +85,14 @@
     <None Include="Scripts\djshop.boo" />
     <None Include="Scripts\coverlandia-official.boo" />
     <None Include="Scripts\nuclearblast.boo" />
-    <None Include="Scripts\miomusik.boo" />
+    <None Include="Scripts\Archived\miomusik.boo" />
     <None Include="Scripts\sfr-music.boo" />
     <None Include="Scripts\gigacrate.boo" />
     <None Include="Scripts\qobuz.boo" />
     <None Include="Scripts\emusic.boo" />
     <None Include="Scripts\ebreggae.boo" />
     <None Include="Scripts\coverlandia.boo" />
-    <None Include="Scripts\darktown.boo" />
+    <None Include="Scripts\Archived\darktown.boo" />
     <None Include="Scripts\amazon-common.boo" />
     <None Include="Scripts\cduniverse.boo" />
     <None Include="Scripts\Archived\itunes.boo" />

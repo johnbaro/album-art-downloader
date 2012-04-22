@@ -156,5 +156,8 @@
     <Setting Name="NoAutoReSort" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="InvalidReplacementCharacter" Type="System.Char" Scope="User">
+      <Value Profile="(Default)">-</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

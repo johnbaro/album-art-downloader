@@ -1,5 +1,5 @@
 !define PRODUCT_NAME "Album Art Downloader XUI"
-!define PRODUCT_VERSION "0.43"
+!define PRODUCT_VERSION "0.44"
 !define PRODUCT_WEB_SITE "http://sourceforge.net/projects/album-art"
 !define PRODUCT_SUPPORT "http://www.hydrogenaudio.org/forums/index.php?showtopic=57392"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\AlbumArt.exe"
@@ -191,9 +191,10 @@ SectionGroup "Image Download Scripts"
 		#Section "Album Art Exchange"
 		#  File "..\Scripts\Scripts\albumartexchange.boo"
 		#SectionEnd
-		Section "DarkTown"
-		  File "..\Scripts\Scripts\darktown.boo"
-		SectionEnd
+		#DarkTown site currently inoperational
+		#Section "DarkTown"
+		#  File "..\Scripts\Scripts\darktown.boo"
+		#SectionEnd
 		Section "AllCdCover"
 		  File "..\Scripts\Scripts\allcdcover.boo"
 		SectionEnd
@@ -212,9 +213,10 @@ SectionGroup "Image Download Scripts"
 		Section "Qobuz"
 		  File "..\Scripts\Scripts\qobuz.boo"
 		SectionEnd
-		Section "MioMusic"
-		  File "..\Scripts\Scripts\miomusik.boo"
-		SectionEnd
+		#MioMusik site currently inoperational
+		#Section "MioMusik"
+		#  File "..\Scripts\Scripts\miomusik.boo"
+		#SectionEnd
 		Section "SFR Music"
 		  File "..\Scripts\Scripts\sfr-music.boo"
 		SectionEnd

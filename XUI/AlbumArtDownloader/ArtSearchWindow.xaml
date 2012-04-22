@@ -105,7 +105,7 @@
 			</Button>
 		</Grid>
 		<Expander Style="{StaticResource HyperlinkExpander}" Padding="0" Margin="0" Grid.Row="2"
-				  Header="Options..." BorderBrush="{x:Static SystemColors.ControlDarkBrush}"
+				  Header="Options..." BorderBrush="{x:Static SystemColors.ControlDarkBrush}" 
 				  x:Name="mOptionsBox">
 			<DockPanel>
 
@@ -153,6 +153,7 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
 						</Grid.RowDefinitions>
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="Auto"/>
@@ -163,7 +164,7 @@
 						<CheckBox Grid.Row="0" IsChecked="{Binding Source={StaticResource mSettings}, Path=Default.OpenResultsInNewWindow}">Open search results in new _window</CheckBox>
                         <CheckBox Grid.Row="1" IsChecked="{Binding ElementName=this, Path=AutoClose}">Automatically _close after saving</CheckBox>
 
-						<GroupBox Header="Automatically download full-size images" Grid.Row="2" Grid.RowSpan="2"
+						<GroupBox Header="A_utomatically download full-size images" Grid.Row="2" Grid.RowSpan="2"
 							  RadioButton.Checked="OnAutoDownloadFullSizeImagesChanged">
 							<GroupBox.Resources>
 								<Style TargetType="RadioButton">
@@ -189,7 +190,7 @@
 							</StackPanel>
 						</GroupBox>
 
-						<GroupBox Header="Filter by image size" Grid.Row="0" Grid.Column="1" Grid.RowSpan="3" Margin="4,0,0,0">
+						<GroupBox Header="Filter by image si_ze" Grid.Row="0" Grid.Column="1" Grid.RowSpan="3" Margin="4,0,0,0">
 							<GroupBox.Resources>
 								<Style TargetType="RadioButton">
 									<Setter Property="Margin" Value="2"/>
@@ -217,7 +218,7 @@
 							</Grid>
 						</GroupBox>
 
-						<GroupBox Header="Filter by cover types" Grid.Row="0"  Grid.Column="2" Grid.RowSpan="3" Margin="4,0,0,0">
+						<GroupBox Header="Filter by cover _types" Grid.Row="0"  Grid.Column="2" Grid.RowSpan="3" Margin="4,0,0,0">
 							<Grid>
 								<Grid.Resources>
 									<Style TargetType="controls:FlagCheckBoxAllowedCoverType">
@@ -249,7 +250,12 @@
                         
                         <CheckBox Margin="10,2,2,2" Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" 
                                   IsChecked="{Binding Source={StaticResource mSettings}, Path=Default.NoAutoReSort}"
-                                  ToolTip="If checked, only new results being added will be sorted and filtered. They will not change position or be hidden after being added.">Do not move or filter existing results</CheckBox>
+                                  ToolTip="If checked, only new results being added will be sorted and filtered. They will not change position or be hidden after being added.">Do not move or filter _existing results</CheckBox>
+
+                        <StackPanel Grid.Row="4" Grid.ColumnSpan="3" Orientation="Horizontal">
+                            <Label Target="{Binding ElementName=mInvalidReplacementCharacter}">Replace _invalid characters for filenames with:</Label>
+                            <TextBox x:Name="mInvalidReplacementCharacter" MinWidth="20" MaxLength="1" Text="{Binding Source={StaticResource mSettings}, Path=Default.InvalidReplacementCharacter, UpdateSourceTrigger=PropertyChanged}"/>
+                        </StackPanel>
 					</Grid>
 				</ScrollViewer>
 			</DockPanel>

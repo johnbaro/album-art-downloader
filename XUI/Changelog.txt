@@ -1,3 +1,9 @@
+0.44 Added support for setting the replacement character for invalid filename characters. The default is changed
+	  from _ to - for compatibility with foobar2000 album art display component.
+	 Foobar browser now also checks for embedded images within files (but only for the first file in each album)
+	 Several scripts updated: Archambault, CDBaby, DJShop, eMusic, Kalahari, Last FM Artist, Take2
+	 Darktown and MioMusic scripts removed, as no longer operational
+	 
 0.43 Added support for Windows 7 taskbar features: jumplists and progress indicators
 	 Added 45cat and Audio Preservation Fund scripts, restored ManiaDB script.
 	 Fixed Discogs script

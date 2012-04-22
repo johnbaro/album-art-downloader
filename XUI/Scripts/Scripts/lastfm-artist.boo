@@ -6,7 +6,7 @@ class LastFmArtist(AlbumArtDownloader.Scripts.IScript, ICategorised):
 	Name as string:
 		get: return "LastFM Artist"
 	Version as string:
-		get: return "0.4"
+		get: return "0.5"
 	Author as string:
 		get: return "Alex Vallat"
 	Category as string:
@@ -17,7 +17,7 @@ class LastFmArtist(AlbumArtDownloader.Scripts.IScript, ICategorised):
 		encodedArtist = EncodeUrl(artist)
 		imagesHtml = GetPage("http://www.last.fm/music/${encodedArtist}/+images")
 
-		imageIdMatches = Regex("<a href=\"/music/[^/]+/\\+images/(?<id>\\d+)\" class=\"pic\"").Matches(imagesHtml)
+		imageIdMatches = Regex("<a\\s+href=\"/music/[^/]+/\\+images/(?<id>\\d+)\"\\s+class=\"pic\"").Matches(imagesHtml)
 		
 		results.EstimatedCount = imageIdMatches.Count
 		

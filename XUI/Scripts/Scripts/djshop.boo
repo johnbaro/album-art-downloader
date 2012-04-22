@@ -7,7 +7,7 @@ class DJshop(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "DJshop"
 	Version as string:
-		get: return "0.1"
+		get: return "0.2"
 	Author as string:
 		get: return "Alex Vallat"
 	def Search(artist as string, album as string, results as IScriptResults):
@@ -26,7 +26,7 @@ class DJshop(AlbumArtDownloader.Scripts.IScript):
 			title = match.Groups["title"].Value
 			imageUrlBase = match.Groups["imageUrlBase"].Value
 			
-			results.Add(imageUrlBase + "80.jpg", title, "http://www.djshop.de" + match.Groups["url"].Value, -1, -1, imageUrlBase + "_2000.jpg", CoverType.Front)
+			results.Add(imageUrlBase + "80.jpg", title, "http://www.djshop.de" + match.Groups["url"].Value, -1, -1, imageUrlBase + "1000.jpg", CoverType.Front)
 
 	def RetrieveFullSizeImage(fullSizeCallbackParameter):
 		return fullSizeCallbackParameter
