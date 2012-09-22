@@ -7,7 +7,7 @@ class Kalahari(AlbumArtDownloader.Scripts.IScript, ICategorised):
 	Name as string:
 		get: return "Kalahari"
 	Version as string:
-		get: return "0.4"
+		get: return "0.5"
 	Author as string:
 		get: return "Alex Vallat"
 	Category as string:
@@ -17,16 +17,18 @@ class Kalahari(AlbumArtDownloader.Scripts.IScript, ICategorised):
 		album = StripCharacters("&.'\";:?!", album)
 
 		//Retrieve the search results json
-		content = "{'queryString':'" + Base64("0|FreeText_Shop_English|${artist} ${album}||19738|0|1|25|||||||||") + "', 'commandKey':'undefined','commandValue':'undefined','shopperId':'undefined','referrer':'/music/default.aspx'}";
+		content = "{'queryString':'" + Base64("0|FreeText_Music_English|${artist} ${album} ||19738|0|1|25|||||||||||") + "', 'commandKey':'undefined','commandValue':'undefined','shopperId':'undefined','referrer':'/','sessionId':'undefined'}";
 		request = System.Net.HttpWebRequest.Create("http://www.kalahari.com/common/searchservice.asmx/ExecuteSearch");
 		request.Method = "POST";
 		request.ContentType = "application/json; charset=UTF-8";
+		request.Headers.Add("Accept-Encoding","")
 		bytes = System.Text.Encoding.UTF8.GetBytes(content);
 		request.ContentLength = bytes.Length;
 		stream = request.GetRequestStream();
 		stream.Write(bytes, 0, bytes.Length);
 		stream.Close();
-		streamresponse = request.GetResponse().GetResponseStream();
+		response = request.GetResponse()
+		streamresponse = response.GetResponseStream();
 		searchResults = System.IO.StreamReader(streamresponse).ReadToEnd();
 
 		//Very basic de-jsoning
@@ -34,7 +36,7 @@ class Kalahari(AlbumArtDownloader.Scripts.IScript, ICategorised):
 		searchResults = searchResults.Replace("\\u003e", ">").Replace("\\u003c", "<").Replace("\\\"", "\"");
 
 		//Find album info
-		matches = Regex("<a\\s[^>]*?href=\"(?<info>[^\"]+)\"[^>]+?title=\"(?<title>[^\"]+)\"[^>]*>\\s*<img\\s[^>]*?src=\"http://images.kalahari.com/ann/all/th/(?<image>[^\"]+)\"", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResults)
+		matches = Regex("<a\\s[^>]*?href=\"(?<info>[^\"]+)\"[^>]+?title=\"(?<title>[^\"]+)\"[^>]*>\\s*<img\\s[^>]*?src=\"[^\"]+.kalahari.com/ann/all/th/(?<image>[^\"]+)\"", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResults)
 		
 		results.EstimatedCount = matches.Count
 		

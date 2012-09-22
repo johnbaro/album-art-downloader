@@ -66,6 +66,13 @@ namespace AlbumArtDownloader.Controls
 			}
 		}
 
+		protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
+		{
+			base.OnMouseLeftButtonUp(e);
+
+			Source.RaiseHighlightResults();
+		}
+
 		#region Elements
 		private FrameworkElement mCachedOptions;
 		protected FrameworkElement Options

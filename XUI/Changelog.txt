@@ -1,8 +1,10 @@
 0.45 Source categories now listed in alphabetical order in the sources list
 	 File size of images is now shown next to the pixel size in the Image Size field. This is only available once
 	  the full sized image has been downloaded.
-	 Updated scripts: 45cat, Cover-Paradies, eMusic, Google Images
-	 Added scripts: Amazone Audiobooks, Amazon MP3, Ioda, SoundStation
+	 Clicking on a source in the source list will now	briefly highlight the results that came from that source
+	 Updated scripts: 45cat, Cover-Paradies, eMusic, Google Images, CD Baby, Psyshop, EB Reggae, eClassical
+	 Added scripts: Amazon Audiobooks, Amazon MP3, The Orchard (was IODA), SoundStation
+	 Removed scripts: CD Universe, GigaCrate, Yes24 (sorry, can't understand Korean(?) to fix it)
 
 0.44 Added support for setting the replacement character for invalid filename characters. The default is changed
 	  from _ to - for compatibility with foobar2000 album art display component.

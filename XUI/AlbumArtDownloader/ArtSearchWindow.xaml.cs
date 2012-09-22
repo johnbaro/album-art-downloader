@@ -12,6 +12,7 @@ using System.Linq;
 using AlbumArtDownloader.Controls;
 using AlbumArtDownloader.Scripts;
 using Microsoft.WindowsAPICodePack.Taskbar;
+using System.Windows.Documents;
 
 
 namespace AlbumArtDownloader
@@ -73,14 +74,15 @@ namespace AlbumArtDownloader
 			mSourcesViewer.ItemsSource = mSources;
 			mResultsViewer.ItemsSource = mSources.CombinedResults;
 
-      mSourcesViewer.Items.GroupDescriptions.Add(new PropertyGroupDescription("Category"));
-      mSourcesViewer.Items.SortDescriptions.Add(new SortDescription("Category", ListSortDirection.Ascending));
-      mSourcesViewer.Items.SortDescriptions.Add(new SortDescription("Name", ListSortDirection.Ascending));
-      
-      foreach (IScript script in ((App)Application.Current).Scripts)
+			mSourcesViewer.Items.GroupDescriptions.Add(new PropertyGroupDescription("Category"));
+			mSourcesViewer.Items.SortDescriptions.Add(new SortDescription("Category", ListSortDirection.Ascending));
+			mSourcesViewer.Items.SortDescriptions.Add(new SortDescription("Name", ListSortDirection.Ascending));
+
+			foreach (IScript script in ((App)Application.Current).Scripts)
 			{
 				ScriptSource scriptSource = new ScriptSource(script);
 				mSources.Add(scriptSource);
+				scriptSource.HighlightResults += OnSourceHighlightResults;
 				//Hook the complete event to know when to hide the Stop All button
 				scriptSource.SearchCompleted += OnSourceSearchCompleted;
 				//Hook the Property Changed event to know when to recalculate whether the search will be extended
@@ -748,6 +750,42 @@ namespace AlbumArtDownloader
 			if (localFilesSource != null)
 			{
 				localFilesSource.SearchPathPattern = path;
+			}
+		}
+
+		public void OnSourceHighlightResults(object sender, EventArgs e)
+		{
+			var source = (Source)sender;
+			if (source.Results.Any())
+			{
+				var highlighters = new List<Adorner>();
+				var adornerLayer = AdornerLayer.GetAdornerLayer(mResultsViewer);
+
+				bool first = true;
+				foreach (var result in source.Results)
+				{
+					var container = mResultsViewer.ItemContainerGenerator.ContainerFromItem(result) as FrameworkElement;
+
+					if (first)
+					{
+						first = false;
+						container.BringIntoView();
+					}
+
+					var highlighter = new HighlightResultAdorner(container);
+					highlighters.Add(highlighter);
+					adornerLayer.Add(highlighter);
+				}
+				DispatcherTimer timer = new DispatcherTimer(DispatcherPriority.DataBind) { Interval = TimeSpan.FromSeconds(2) };
+				timer.Tick += new EventHandler(delegate
+				{
+					timer.Stop();
+					foreach (var highlighter in highlighters)
+					{
+						adornerLayer.Remove(highlighter);
+					}
+				});
+				timer.Start();
 			}
 		}
 		#endregion

@@ -8,10 +8,11 @@ Amazon (.de)	Muse	The Resistance
 Amazon (.fr)	Muse	The Resistance
 Amazon (.jp)	Muse	Absolution
 Amazon (.it)	Muse	Absolution
+Amazon MP3 (.com)	Muse	Absolution
 ArkivMusik	Chopin	Four Ballades
 Buy.com	Muse	The Resistance
 CD Baby	Girlyman	Everything's Easy
-CD Universe	Muse	The Resistance
+;CD Universe	Muse	The Resistance
 Cover-Paradies	Muse	The Resistance
 Coveralia	Muse	The Resistance
 ;CoverIsland	Muse	The Resistance
@@ -39,7 +40,7 @@ VGMdb	Morrigan	Caldes
 VGMdb		Xenoblade Original Soundtrack
 ;Lala	Muse	The Resistance
 EB Reggae	Kevin Kinsella	Great Design
-eMusic	Muse	The Resistance
+eMusic	Muse	Absolution
 Qobuz	Muse	The Resistance
 GigaCrate	Muse	Starlight
 iTunes	Muse	The Resistance
@@ -53,3 +54,5 @@ esenshop	Bedirhan Gökçe	Güle Yazdım
 45cat	Doris Day	Paper Planes
 ;Chartstats?
 Sound Station	Unicorn	Uphill All The Way
+The Orchard	Menomena	Moms
+Amazon Audiobooks (.com)	Iain Banks	Stonemouth

@@ -145,6 +145,9 @@ SectionGroup "Image Download Scripts"
 			  File "..\Scripts\Scripts\amazon-common.boo"
 			  File "..\Scripts\Scripts\amazon-it.boo"
 			SectionEnd
+			Section /o "Amazon MP3 (US)"
+			  File "..\Scripts\Scripts\amazon-mp3-com.boo"
+			SectionEnd
 		SectionGroupEnd
 		Section "Google"
 		  File "..\Scripts\Scripts\google.boo"
@@ -163,9 +166,6 @@ SectionGroup "Image Download Scripts"
 		SectionEnd
 		Section "eMusic"
 		  File "..\Scripts\Scripts\emusic.boo"
-		SectionEnd
-		Section "CD Universe"
-		  File "..\Scripts\Scripts\cduniverse.boo"
 		SectionEnd
 		Section "Discogs"
 		  File "..\Scripts\Scripts\discogs.boo"
@@ -247,9 +247,6 @@ SectionGroup "Image Download Scripts"
 		Section /o "PsyShop"
 		  File "..\Scripts\Scripts\psyshop.boo"
 		SectionEnd
-		Section /o "GigaCrate"
-		  File "..\Scripts\Scripts\gigacrate.boo"
-		SectionEnd
 		Section /o "Beatport"
 		  File "..\Scripts\Scripts\beatport.boo"
 		SectionEnd
@@ -273,6 +270,9 @@ SectionGroup "Image Download Scripts"
 		SectionEnd
 		Section /o "RevHQ"
 		  File "..\Scripts\Scripts\revhq.boo"
+		SectionEnd
+		Section /o "The Orchard"
+		  File "..\Scripts\Scripts\theorchard.boo"
 		SectionEnd
 	SectionGroupEnd
 
@@ -298,6 +298,9 @@ SectionGroup "Image Download Scripts"
 		Section /o "Audio Preservation Fund"
 		  File "..\Scripts\Scripts\audiopreservationfund.boo"
 		SectionEnd
+		Section /o "Sound Station"
+		  File "..\Scripts\Scripts\soundstation.boo"
+		SectionEnd
 	SectionGroupEnd
 
 	SectionGroup "Video Game Music"
@@ -313,9 +316,6 @@ SectionGroup "Image Download Scripts"
 	SectionGroupEnd
 
 	SectionGroup "Eastern"
-		Section /o "Yes24"
-		  File "..\Scripts\Scripts\yes24.boo"
-		SectionEnd
 		Section /o "YesAsia"
 		  File "..\Scripts\Scripts\yesasia.boo"
 		SectionEnd
@@ -348,6 +348,12 @@ SectionGroup "Image Download Scripts"
 	SectionGroup "Artist Images"
 		Section /o "LastFM Artist"
 			File "..\Scripts\Scripts\lastfm-artist.boo"
+		SectionEnd
+	SectionGroupEnd
+
+	SectionGroup "Audiobooks"
+		Section /o "Amazon Audiobooks (.com)"
+			File "..\Scripts\Scripts\amazon-audiobooks-com.boo"
 		SectionEnd
 	SectionGroupEnd
 

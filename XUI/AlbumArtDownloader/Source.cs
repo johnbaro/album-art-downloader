@@ -14,6 +14,7 @@ namespace AlbumArtDownloader
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
 		public event EventHandler SearchCompleted;
+		public event EventHandler HighlightResults;
 
 		private ObservableCollection<AlbumArt> mResults;
 		private SourceSettings mSettings;
@@ -441,6 +442,14 @@ namespace AlbumArtDownloader
 
 		#endregion
 
+		public void RaiseHighlightResults()
+		{
+			EventHandler temp = HighlightResults;
+			if (temp != null)
+			{
+				temp(this, EventArgs.Empty);
+			}
+		}
 
 		private class ScriptResults : IScriptResults
 		{

@@ -9,11 +9,11 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Threading;
 using AlbumArtDownloader.Scripts;
 using System.Windows.Data;
 using Microsoft.WindowsAPICodePack.Taskbar;
+using AlbumArtDownloader.Controls;
 
 namespace AlbumArtDownloader
 {
@@ -490,19 +490,6 @@ namespace AlbumArtDownloader
 					adornerLayer.Remove(highlighter);
 				});
 				timer.Start();
-			}
-		}
-
-		private class HighlightResultAdorner : Adorner
-		{
-			public HighlightResultAdorner(UIElement adornedElement)
-				: base(adornedElement)
-			{}
-
-			protected override void OnRender(DrawingContext drawingContext)
-			{
-				drawingContext.DrawRoundedRectangle(null, new Pen(SystemColors.HighlightBrush, 3),
-					new Rect(2, 2, ActualWidth - 7, ActualHeight - 4), 3, 3);
 			}
 		}
 		#endregion

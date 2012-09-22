@@ -109,6 +109,7 @@
   <ItemGroup>
     <AppDesigner Include="Properties\" />
     <Compile Include="Controls\DpiIndependentZoomConverter.cs" />
+    <Compile Include="Controls\HighlightResultAdorner.cs" />
     <Compile Include="TaskbarHelper.cs" />
     <Compile Include="OverwriteExistingWarning.xaml.cs">
       <DependentUpon>OverwriteExistingWarning.xaml</DependentUpon>

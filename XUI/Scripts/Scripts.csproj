@@ -77,7 +77,7 @@
     <None Include="Scripts\45cat.boo" />
     <None Include="Scripts\amazon-mp3-com.boo" />
     <None Include="Scripts\amazon-audiobooks-com.boo" />
-    <None Include="Scripts\ioda.boo" />
+    <None Include="Scripts\theorchard.boo" />
     <None Include="Scripts\soundstation.boo" />
     <None Include="Scripts\deejay.boo" />
     <None Include="Scripts\medianet.boo" />
@@ -92,13 +92,13 @@
     <None Include="Scripts\nuclearblast.boo" />
     <None Include="Scripts\Archived\miomusik.boo" />
     <None Include="Scripts\sfr-music.boo" />
-    <None Include="Scripts\gigacrate.boo" />
+    <None Include="Scripts\Archived\gigacrate.boo" />
     <None Include="Scripts\qobuz.boo" />
     <None Include="Scripts\emusic.boo" />
     <None Include="Scripts\ebreggae.boo" />
     <None Include="Scripts\coverlandia.boo" />
     <None Include="Scripts\Archived\darktown.boo" />
-    <None Include="Scripts\cduniverse.boo" />
+    <None Include="Scripts\Archived\cduniverse.boo" />
     <None Include="Scripts\Archived\itunes.boo" />
     <None Include="Scripts\revhq.boo" />
     <None Include="Scripts\Archived\rateyourmusic.boo" />
@@ -109,7 +109,7 @@
     <None Include="Scripts\psyshop.boo" />
     <None Include="Scripts\util.boo" />
     <None Include="Scripts\wantitall.boo" />
-    <None Include="Scripts\yes24.boo" />
+    <None Include="Scripts\Archived\yes24.boo" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Third Party Assemblies\ICSharpCode.SharpZipLib.dll">

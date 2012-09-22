@@ -5,7 +5,7 @@ import util
 
 class Ioda(AlbumArtDownloader.Scripts.IScript, ICategorised):
 	Name as string:
-		get: return "IODA"
+		get: return "The Orchard"
 	Version as string:
 		get: return "0.1"
 	Author as string:
@@ -17,9 +17,9 @@ class Ioda(AlbumArtDownloader.Scripts.IScript, ICategorised):
 		album = StripCharacters("&.'\";:?!", album)
 
 		//Retrieve the search results
-		searchResultsHtml as string = GetPage("http://www.iodalliance.com/catalog?type=release&query=" + EncodeUrl("\"${artist}\" \"${album}\""))
+		searchResultsHtml as string = GetPage("http://www.theorchard.com/search_catalog/list?artist=" + EncodeUrl(artist) + "&release=" + EncodeUrl(album) + "&type=music&redirected=1")
 		
-		matches = Regex("\"artist-name\">(?<artist>[^<]+)</span>\\s*<br\\s*/>\\s*<a href=\"(?<url>/album/[^/]+/(?<id>\\d+))\">(?<album>[^<]+)", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResultsHtml)
+		matches = Regex("<a href=\"(?<url>http://www\\.theorchard\\.com/release/(?<id>\\d+)[^\"]+)\">.+?class=\"name\">(?<artist>[^<]+)<.+?class=\"name\">(?<album>[^<]+)<", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResultsHtml)
 		
 		results.EstimatedCount = matches.Count
 		
@@ -27,7 +27,7 @@ class Ioda(AlbumArtDownloader.Scripts.IScript, ICategorised):
 			id = match.Groups["id"].Value;
 			title = match.Groups["artist"].Value + " - " + match.Groups["album"].Value
 
-			results.Add("http://image.iodalliance.com/release/thumbs_150/${id}-72.jpg", title, "http://www.iodalliance.com" + match.Groups["url"].Value, -1, -1, "http://image.iodalliance.com/release/300dpi/${id}-300.jpg", CoverType.Front);
+			results.Add("http://www.theorchard.com/images/coverart/c_${id}.jpg", title, match.Groups["url"].Value, -1, -1, "http://www.theorchard.com/images/lg_coverart/${id}.jpg", CoverType.Front)
 
 	def RetrieveFullSizeImage(fullSizeCallbackParameter):
 		return fullSizeCallbackParameter;
