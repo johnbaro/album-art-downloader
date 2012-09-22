@@ -1,3 +1,9 @@
+0.45 Source categories now listed in alphabetical order in the sources list
+	 File size of images is now shown next to the pixel size in the Image Size field. This is only available once
+	  the full sized image has been downloaded.
+	 Updated scripts: 45cat, Cover-Paradies, eMusic, Google Images
+	 Added scripts: Amazone Audiobooks, Amazon MP3, Ioda, SoundStation
+
 0.44 Added support for setting the replacement character for invalid filename characters. The default is changed
 	  from _ to - for compatibility with foobar2000 album art display component.
 	 Foobar browser now also checks for embedded images within files (but only for the first file in each album)

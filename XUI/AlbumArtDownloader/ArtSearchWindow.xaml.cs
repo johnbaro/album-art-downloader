@@ -73,9 +73,11 @@ namespace AlbumArtDownloader
 			mSourcesViewer.ItemsSource = mSources;
 			mResultsViewer.ItemsSource = mSources.CombinedResults;
 
-			mSourcesViewer.Items.GroupDescriptions.Add(new PropertyGroupDescription("Category"));
-
-			foreach (IScript script in ((App)Application.Current).Scripts)
+      mSourcesViewer.Items.GroupDescriptions.Add(new PropertyGroupDescription("Category"));
+      mSourcesViewer.Items.SortDescriptions.Add(new SortDescription("Category", ListSortDirection.Ascending));
+      mSourcesViewer.Items.SortDescriptions.Add(new SortDescription("Name", ListSortDirection.Ascending));
+      
+      foreach (IScript script in ((App)Application.Current).Scripts)
 			{
 				ScriptSource scriptSource = new ScriptSource(script);
 				mSources.Add(scriptSource);

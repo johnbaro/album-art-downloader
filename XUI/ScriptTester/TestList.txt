@@ -50,3 +50,6 @@ Mega Media	Turin Brakes	Ether Song
 Deezer	Muse	The Resistance
 eClassical	Chopin	4 Ballades
 esenshop	Bedirhan Gökçe	Güle Yazdım
+45cat	Doris Day	Paper Planes
+;Chartstats?
+Sound Station	Unicorn	Uphill All The Way

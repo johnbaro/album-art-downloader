@@ -1,5 +1,5 @@
 !define PRODUCT_NAME "Album Art Downloader XUI"
-!define PRODUCT_VERSION "0.44"
+!define PRODUCT_VERSION "0.45"
 !define PRODUCT_WEB_SITE "http://sourceforge.net/projects/album-art"
 !define PRODUCT_SUPPORT "http://www.hydrogenaudio.org/forums/index.php?showtopic=57392"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\AlbumArt.exe"

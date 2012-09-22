@@ -5,7 +5,7 @@ class GoogleImage(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "GoogleImage"
 	Version as string:
-		get: return "0.10"
+		get: return "0.13"
 	Author as string:
 		get: return "Alex Vallat"
 	def Search(artist as string, album as string, results as IScriptResults):
@@ -14,7 +14,7 @@ class GoogleImage(AlbumArtDownloader.Scripts.IScript):
 
 		imagesHtml = GetPageIsoLatin1("http://images.google.com/images?gbv=1&q=" + EncodeUrl(artist + " " + album))
 
-		imageMatches = @/(?i)\/imgres\?imgurl=(?<fullSize>[^&]+)&amp;imgrefurl=(?<infoUri>[^&]+)[^>]+?&amp;h=(?<height>\d+)&amp;w=(?<width>\d+)[^>]+?&amp;tbnid=(?<tbnid>[^&]+).+?<\/a><br>(?<title>.+?)<br>/.Matches(imagesHtml)
+		imageMatches = Regex("/imgres\\?imgurl=(?<fullSize>[^&]+)&amp;imgrefurl=(?<infoUri>[^&]+)[^>]+?&amp;h=(?<height>\\d+)&amp;w=(?<width>\\d+)[^>]+?&amp;tbnid=(?<tbnid>[^&]+).+?<\\/cite><br\\s*\\/?>(?<title>.+?)<br", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(imagesHtml)
 		
 		results.EstimatedCount = imageMatches.Count
 		

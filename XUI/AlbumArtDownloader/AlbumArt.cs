@@ -45,6 +45,7 @@ namespace AlbumArtDownloader
 			CoverType = coverType;
 
 			BitmapData = fullSizeImageData;
+			FileSize = fullSizeImageData.LongLength;
 
 			if (width == -1 && height == -1 && Image != null)
 			{
@@ -354,6 +355,21 @@ namespace AlbumArtDownloader
 			}
 		}
 
+		private long mFileSize = -1;
+		public long FileSize
+		{
+			get { return mFileSize; }
+			internal set
+			{
+				if (mFileSize != value)
+				{
+					mFileSize = value;
+					NotifyPropertyChanged("FileSize");
+				}
+			}
+		}
+
+
 		private string mResultName;
 		public string ResultName
 		{
@@ -492,8 +508,7 @@ namespace AlbumArtDownloader
 					}
 				}
 			}
-		}
-		
+		}		
 		#endregion
 
 		private void NotifyPropertyChanged(string propertyName)
@@ -609,6 +624,7 @@ namespace AlbumArtDownloader
 				if (Image != null) //Image should *never* be null, but this might be what's causing reported crashes at this location.
 				{
 					SetImageDimensions(Image.PixelWidth, Image.PixelHeight);
+					FileSize = BitmapData.LongLength;
 				}
 				else
 				{

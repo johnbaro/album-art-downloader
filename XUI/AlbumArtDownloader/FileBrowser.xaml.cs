@@ -326,7 +326,7 @@ namespace AlbumArtDownloader
 							}
 							catch (Exception e)
 							{
-								SetErrorState("Error occurred while searching: " + e.Message);
+								SetErrorState(String.Format("Error occurred while searching in \"{0}\": {1}:", root.Name, e.Message));
 								continue;
 							}
 						}

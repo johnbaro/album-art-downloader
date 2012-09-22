@@ -13,7 +13,7 @@ class CoverParadies:
 	static SourceCreator as string:
 		get: return "Alex Vallat"
 	static SourceVersion as string:
-		get: return "0.14"
+		get: return "0.15"
 	static def GetThumbs(coverart,artist,album):
 		artist = StripCharacters("&.'\";:?!", artist)
 		album = StripCharacters("&.'\";:?!", album)
@@ -28,11 +28,11 @@ class CoverParadies:
 		
 		for resultMatch as Match in resultMatches:
 			//Get the album page
-			albumPageUri = String.Format("http://www.cover-paradies.to/?Module=ViewEntry&ID={0}", resultMatch.Groups["ID"].Value)
+			albumPageUri = String.Format("http://ecover.to/?Module=ViewEntry&ID={0}", resultMatch.Groups["ID"].Value)
 			albumPage = GetPage(albumPageUri)
 			
 			//Get the title for that album
-			titleRegex = Regex("<title>Cover-Paradies - (?<title>[^<]+)<", RegexOptions.Singleline)
+			titleRegex = Regex("<title>eCover.to - (?<title>[^<]+)<", RegexOptions.Singleline)
 			title = titleRegex.Matches(albumPage)[0].Groups["title"].Value //Expecting only one match
 			
 			//Get all the images for the album
@@ -48,10 +48,10 @@ class CoverParadies:
 				
 				de = System.Globalization.CultureInfo.GetCultureInfo("de-DE") //Numbers are in DE culture (. for thousands separater, not for decimal point)
 				thousands = System.Globalization.NumberStyles.AllowThousands //Numbers have thousands separators.
-				coverart.Add(GetPageStream(imageMatch.Groups["thumb"].Value, "http://www.cover-paradies.to"), imageTitle, albumPageUri, Int32.Parse(imageMatch.Groups["width"].Value, thousands, de), Int32.Parse(imageMatch.Groups["height"].Value, thousands, de), imageMatch.Groups["fullSizeID"].Value, string2coverType(coverTypeString))		
+				coverart.Add(GetPageStream(imageMatch.Groups["thumb"].Value, "http://ecover.to"), imageTitle, albumPageUri, Int32.Parse(imageMatch.Groups["width"].Value, thousands, de), Int32.Parse(imageMatch.Groups["height"].Value, thousands, de), imageMatch.Groups["fullSizeID"].Value, string2coverType(coverTypeString))		
 
 	static def Search(query):
-		searchResults = GetPage(String.Format("http://www.cover-paradies.to/?Module=ExtendedSearch&StartSearch=true&PagePos=0&SearchString={0}&StringMode=Wild&DisplayStyle=Text&HideDetails=Yes&PageLimit=1000&SektionID-2=Yes", EncodeUrl(query)))
+		searchResults = GetPage(String.Format("http://ecover.to/?Module=ExtendedSearch&StartSearch=true&PagePos=0&SearchString={0}&StringMode=Wild&DisplayStyle=Text&HideDetails=Yes&PageLimit=1000&SektionID-2=Yes", EncodeUrl(query)))
 		
 		//Get results
 		resultsRegex = Regex(";ID=(?<ID>\\d+)\">(?!\\s*<img)", RegexOptions.Singleline)
@@ -79,7 +79,7 @@ class CoverParadies:
 
 			
 	static def GetResult(param):
-		return String.Format("http://www.cover-paradies.to/res/exe/GetElement.php?ID={0}", param)
+		return String.Format("http://ecover.to/res/exe/GetElement.php?ID={0}", param)
 		
 	static def string2coverType(typeString as string):
 		if(string.Compare(typeString,"back",true)==0):

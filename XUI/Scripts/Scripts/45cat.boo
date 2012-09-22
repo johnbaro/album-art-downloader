@@ -7,27 +7,27 @@ class FourtyFiveCat(AlbumArtDownloader.Scripts.IScript, ICategorised):
 	Name as string:
 		get: return "45cat"
 	Version as string:
-		get: return "0.1"
+		get: return "0.4"
 	Author as string:
 		get: return "Alex Vallat"
 	Category as string:
 		get: return "LP Vinyl"
 	def Search(artist as string, album as string, results as IScriptResults):
-		artist = StripCharacters("&.'\";:?!", artist)
-		album = StripCharacters("&.'\";:?!", album)
+		artist = StripCharacters("\"", artist)
+		album = StripCharacters("\"", album)
 		query = EncodeUrl("\"" + artist + "\" \"" + album + "\"")
 
 		//Retrieve the search results page
-		searchResultsHtml as string = GetPage("http://www.45cat.com/45_search.php?searchadvanced=yes&searchid=${query}&searchmode=All")
+		searchResultsHtml as string = GetPage("http://www.45cat.com/45_search.php?sq=${query}&sm=se")
 		
-		matches = Regex("href=\"/record/(?<record>[^\"]+)\">[^>]+</a></td></tr>", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResultsHtml)
+		matches = Regex("href=\"/record/(?<record>[^\"]+)\">", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResultsHtml)
 		
 		for match as Match in matches:
 			//Retrieve the details page
 			detailsUrl = "http://www.45cat.com/record/" + match.Groups["record"].Value;
 			detailsHtml as string = GetPage(detailsUrl)
 			
-			titleMatch = Regex("Artist:</td><td><a[^>]+>(?<artist>[^<]+)<.*?Title:</td><td>(?<title>[^<]+)<", RegexOptions.Singleline | RegexOptions.IgnoreCase).Match(detailsHtml)
+			titleMatch = Regex("<b>A</b></td><td>(?<artist>[^<]+)</td>\\s*<td>(?<title>[^<]+)</td>", RegexOptions.Singleline | RegexOptions.IgnoreCase).Match(detailsHtml)
 			title = titleMatch.Groups["artist"].Value + " - " + titleMatch.Groups["title"].Value
 
 			imageMatches = Regex("<img onmouseover=\"Tip\\('<b>Description:</b> (?<covertype>[^<]+)<.+?src=\"http://images\\.45cat\\.com/(?<image>.+?)-s.jpg", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(detailsHtml)

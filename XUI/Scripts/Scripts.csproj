@@ -65,6 +65,7 @@
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
     <None Include="Scripts\allcdcover.boo" />
     <None Include="Scripts\7digital.boo" />
+    <None Include="Scripts\amazon-common.boo" />
     <None Include="Scripts\Archived\coverisland.boo" />
     <None Include="Scripts\Archived\freecovers-api.boo" />
     <None Include="Scripts\Archived\itunes-bing.boo" />
@@ -74,6 +75,10 @@
     <None Include="Scripts\beatport.boo" />
     <None Include="Scripts\audiopreservationfund.boo" />
     <None Include="Scripts\45cat.boo" />
+    <None Include="Scripts\amazon-mp3-com.boo" />
+    <None Include="Scripts\amazon-audiobooks-com.boo" />
+    <None Include="Scripts\ioda.boo" />
+    <None Include="Scripts\soundstation.boo" />
     <None Include="Scripts\deejay.boo" />
     <None Include="Scripts\medianet.boo" />
     <None Include="Scripts\esenshop.boo" />
@@ -93,7 +98,6 @@
     <None Include="Scripts\ebreggae.boo" />
     <None Include="Scripts\coverlandia.boo" />
     <None Include="Scripts\Archived\darktown.boo" />
-    <None Include="Scripts\amazon-common.boo" />
     <None Include="Scripts\cduniverse.boo" />
     <None Include="Scripts\Archived\itunes.boo" />
     <None Include="Scripts\revhq.boo" />

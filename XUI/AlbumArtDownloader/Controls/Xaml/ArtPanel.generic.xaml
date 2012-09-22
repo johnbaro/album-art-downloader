@@ -18,6 +18,7 @@
 	<controls:MultiEqualityConverter x:Key="mMultiEqualityConverter"/>
 	<controls:TooltipEnabledOnOverflowConverter x:Key="mTooltipEnabledOnOverflowConverter"/>
 	<controls:EnumIndexConverter x:Key="mEnumIndexConverter"/>
+	<controls:FileSizeConverter x:Key="mFileSizeConverter"/>
 	<BooleanToVisibilityConverter x:Key="mBooleanToVisibilityConverter"/>
 
 	<Style x:Key="DefaultText" TargetType="TextBlock">
@@ -162,29 +163,43 @@
 										<TextBlock Grid.Row="3" Style="{StaticResource LabelStyle}">Source:</TextBlock>
 
 										<TextBlock Grid.Row="0" Style="{StaticResource DefaultText}" Grid.Column="0" Grid.ColumnSpan="2" FontWeight="Bold" Text="{Binding Path=AlbumArt.ResultName, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"/>
-										<TextBlock Grid.Row="1"  Grid.Column="1">
-											<TextBlock.Style>
-												<Style TargetType="TextBlock" BasedOn="{StaticResource DefaultText}">
-													<Setter Property="Text">
-														<Setter.Value>
-															<MultiBinding Converter="{StaticResource mStringFormatterConverter}" ConverterParameter="{}{0} x {1}" Mode="OneWay">
-																<Binding Path="AlbumArt.ImageWidth" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
-																<Binding Path="AlbumArt.ImageHeight" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
-															</MultiBinding>
-														</Setter.Value>
-													</Setter>
-													<Style.Triggers>
-														<MultiDataTrigger>
-															<MultiDataTrigger.Conditions>
-																<Condition Binding="{Binding Path=AlbumArt.ImageWidth, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Value="-1" />
-																<Condition Binding="{Binding Path=AlbumArt.ImageHeight, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Value="-1" />
-															</MultiDataTrigger.Conditions>
-															<Setter Property="Text" Value="Unknown"/>
-														</MultiDataTrigger>
-													</Style.Triggers>
-												</Style>
-											</TextBlock.Style>
-										</TextBlock>
+										<StackPanel  Grid.Row="1"  Grid.Column="1" Orientation="Horizontal">
+											<TextBlock>
+												<TextBlock.Style>
+													<Style TargetType="TextBlock" BasedOn="{StaticResource DefaultText}">
+														<Setter Property="Text">
+															<Setter.Value>
+																<MultiBinding Converter="{StaticResource mStringFormatterConverter}" ConverterParameter="{}{0} x {1}" Mode="OneWay">
+																	<Binding Path="AlbumArt.ImageWidth" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
+																	<Binding Path="AlbumArt.ImageHeight" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
+																</MultiBinding>
+															</Setter.Value>
+														</Setter>
+														<Style.Triggers>
+															<MultiDataTrigger>
+																<MultiDataTrigger.Conditions>
+																	<Condition Binding="{Binding Path=AlbumArt.ImageWidth, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Value="-1" />
+																	<Condition Binding="{Binding Path=AlbumArt.ImageHeight, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Value="-1" />
+																</MultiDataTrigger.Conditions>
+																<Setter Property="Text" Value="Unknown"/>
+															</MultiDataTrigger>
+														</Style.Triggers>
+													</Style>
+												</TextBlock.Style>
+											</TextBlock>
+											<TextBlock>
+												<TextBlock.Style>
+													<Style TargetType="TextBlock" BasedOn="{StaticResource DefaultText}">
+														<Setter Property="Text" Value="{Binding Path=AlbumArt.FileSize, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay, Converter={StaticResource mFileSizeConverter}, StringFormat='{} ({0})'}"/>
+														<Style.Triggers>
+															<DataTrigger Binding="{Binding Path=AlbumArt.FileSize, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Value="-1">
+																<Setter Property="Visibility" Value="Collapsed" />
+															</DataTrigger>
+														</Style.Triggers>
+													</Style>
+												</TextBlock.Style>
+											</TextBlock>
+										</StackPanel>
 										<TextBlock Grid.Row="2" Style="{StaticResource DefaultText}" Grid.Column="1" Text="{Binding Path=AlbumArt.CoverType, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"/>
 										<TextBlock Grid.Row="3" Style="{StaticResource DefaultText}" Grid.Column="1" Text="{Binding Path=AlbumArt.SourceName, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"/>
 									</Grid>
@@ -346,36 +361,52 @@
 										
 								<TextBlock Tag="ResultName" Grid.Row="0" Style="{StaticResource ValueStyle}" Grid.ColumnSpan="1" Text="{Binding Path=AlbumArt.ResultName, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}"/>
 							</DockPanel>
-							<TextBlock Tag="ImageWidth" Grid.Row="1">
-								<TextBlock.Style>
-									<Style TargetType="TextBlock" BasedOn="{StaticResource ValueStyle}">
-										<Setter Property="Text">
-											<Setter.Value>
-												<MultiBinding Converter="{StaticResource mStringFormatterConverter}" ConverterParameter="{}{0} x {1}" Mode="OneWay">
-													<Binding Path="AlbumArt.ImageWidth" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
-													<Binding Path="AlbumArt.ImageHeight" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
-												</MultiBinding>
-											</Setter.Value>
-										</Setter>
-										<Style.Triggers>
-											<MultiDataTrigger>
-												<MultiDataTrigger.Conditions>
-													<Condition Binding="{Binding Path=AlbumArt.ImageWidth, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Value="-1" />
-													<Condition Binding="{Binding Path=AlbumArt.ImageHeight, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Value="-1" />
-												</MultiDataTrigger.Conditions>
-												<Setter Property="Text" Value="Unknown"/>
-											</MultiDataTrigger>
-											<DataTrigger Binding="{Binding Path=AlbumArt.IsFullSize, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Value="False" >
-												<Setter Property="Foreground" Value="{x:Static SystemColors.ControlDarkBrush}"/>
-											</DataTrigger>
-											<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:ArtPanelList}}, Path=SortDescription.PropertyName, Mode=OneWay}"
-														Value="ImageArea">
-												<Setter Property="FontWeight" Value="Bold"/>
-											</DataTrigger>
-										</Style.Triggers>
-									</Style>
-								</TextBlock.Style>
-							</TextBlock>
+							<DockPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2">
+								<TextBlock Tag="ImageWidth" Grid.Row="1">
+									<TextBlock.Style>
+										<Style TargetType="TextBlock" BasedOn="{StaticResource ValueStyle}">
+											<Setter Property="Text">
+												<Setter.Value>
+													<MultiBinding Converter="{StaticResource mStringFormatterConverter}" ConverterParameter="{}{0} x {1}" Mode="OneWay">
+														<Binding Path="AlbumArt.ImageWidth" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
+														<Binding Path="AlbumArt.ImageHeight" RelativeSource="{RelativeSource TemplatedParent}" Mode="OneWay"/>
+													</MultiBinding>
+												</Setter.Value>
+											</Setter>
+											<Style.Triggers>
+												<MultiDataTrigger>
+													<MultiDataTrigger.Conditions>
+														<Condition Binding="{Binding Path=AlbumArt.ImageWidth, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Value="-1" />
+														<Condition Binding="{Binding Path=AlbumArt.ImageHeight, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Value="-1" />
+													</MultiDataTrigger.Conditions>
+													<Setter Property="Text" Value="Unknown"/>
+												</MultiDataTrigger>
+												<DataTrigger Binding="{Binding Path=AlbumArt.IsFullSize, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Value="False" >
+													<Setter Property="Foreground" Value="{x:Static SystemColors.ControlDarkBrush}"/>
+												</DataTrigger>
+												<DataTrigger Binding="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type controls:ArtPanelList}}, Path=SortDescription.PropertyName, Mode=OneWay}"
+															Value="ImageArea">
+													<Setter Property="FontWeight" Value="Bold"/>
+												</DataTrigger>
+											</Style.Triggers>
+										</Style>
+									</TextBlock.Style>
+								</TextBlock>
+								<TextBlock>
+									<TextBlock.Style>
+										<Style TargetType="TextBlock" BasedOn="{StaticResource DefaultText}">
+											<Setter Property="Foreground" Value="Gray"/>
+		
+											<Setter Property="Text" Value="{Binding Path=AlbumArt.FileSize, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay, Converter={StaticResource mFileSizeConverter}, StringFormat='{} ({0})'}"/>
+											<Style.Triggers>
+												<DataTrigger Binding="{Binding Path=AlbumArt.FileSize, RelativeSource={RelativeSource TemplatedParent}, Mode=OneWay}" Value="-1">
+													<Setter Property="Visibility" Value="Collapsed" />
+												</DataTrigger>
+											</Style.Triggers>
+										</Style>
+									</TextBlock.Style>
+								</TextBlock>
+							</DockPanel>
 							<ComboBox Tag="CoverType" Grid.Row="2" Style="{StaticResource HyperlinkComboValueStyle}" IsEditable="False" SelectedIndex="{Binding Path=AlbumArt.CoverType, RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay, Converter={StaticResource mEnumIndexConverter}}">
 								<!-- Must match AlbumArtDownloader.Scripts.CoverType enum -->
 								<ComboBoxItem>Unknown</ComboBoxItem>

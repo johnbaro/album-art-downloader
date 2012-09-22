@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Net;
 using System.IO;
 using System.Net.Cache;
+using System.Threading;
 
 namespace TestScript
 {
@@ -85,19 +86,51 @@ namespace TestScript
 
 		public void Search(string artist, string album, IScriptResults results)
 		{
+      var bitmap = new Bitmap(400, 600);
+      var g = Graphics.FromImage(bitmap);
+      g.Clear(SystemColors.Window);
+      g.DrawString("hello\nthere", SystemFonts.DialogFont, SystemBrushes.WindowText, PointF.Empty);
+      g.Dispose();
+
+      results.Add(ConvertImageToStream(bitmap), "test", null);
+      bitmap.Dispose();
+
+      return;
+
 			int numberOfResults = 50;
 			results.EstimatedCount = numberOfResults;
 			Random rnd = new Random();
 
             var assembly = GetType().Assembly;
-                
-			for (int i = 0; i < numberOfResults; i++)
-			{
+
+            try
+            {
+              for (int i = 0; i < numberOfResults; i++)
+              {
                 //results.Add(thumbnail, i.ToString(), "notauri", 1000 + rnd.Next(6) * 100, rnd.Next(1, 1600), fullSize, (CoverType)rnd.Next((int)CoverType.Unknown, (int)CoverType.CD + 1));
                 results.Add(assembly.GetManifestResourceStream("TestScript.testThumbnail.jpg"), i.ToString(), "notauri", -1, -1, assembly.GetManifestResourceStream("TestScript.testFullsize.png"), (CoverType)rnd.Next((int)CoverType.Unknown, (int)CoverType.Booklet + 1), "gif");
-				//System.Threading.Thread.Sleep(1000);
-			}
+                System.Threading.Thread.Sleep(1000);
+              }
+            }
+            catch (ThreadAbortException ex)
+            {
+              System.Diagnostics.Debug.WriteLine("Exception");
+            }
+            finally
+            {
+              System.Diagnostics.Debug.WriteLine("finished");
+            }
 		}
+
+    	private static Stream ConvertImageToStream(Image image)
+      {
+	
+		var stream = new System.IO.MemoryStream();
+		image.Save(stream, System.Drawing.Imaging.ImageFormat.Png);
+		
+		stream.Seek(0, SeekOrigin.Begin)		;
+    return stream;
+      }
 
 		public static string Post(string url, string content)
 		{
@@ -107,8 +140,8 @@ namespace TestScript
 
 			bool prevValue = servicePoint.Expect100Continue;
 			servicePoint.Expect100Continue = false;
-
-			try
+      
+      try
 			{
 				request.Method = "POST";
 				request.ContentType = "application/x-www-form-urlencoded";

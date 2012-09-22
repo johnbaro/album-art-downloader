@@ -5,7 +5,7 @@ class eMusic(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "eMusic"
 	Version as string:
-		get: return "0.4"
+		get: return "0.5"
 	Author as string:
 		get: return "Alex Vallat, DRata"
 	def Search(artist as string, album as string, results as IScriptResults):
@@ -14,7 +14,7 @@ class eMusic(AlbumArtDownloader.Scripts.IScript):
 
 		searchResultsHtml as string = GetPage("http://www.google.com/search?q=site%3Aemusic.com+inurl:album" + EncodeUrl(" inurl:\"" + artist + "\" inurl:\"" + album + "\""))
 		
-		matches = Regex("(?:href=\"|url\\?q=)(?<url>http://[^/]*emusic.com/album/(?<title>[^\"]+)/(?<id>(?<idPart>\\d{3}){2}\\d+)[^\"]*)\"", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResultsHtml)
+		matches = Regex("(?:href=\"|url\\?q=)(?<url>http://[^/]*emusic.com/album/(?<title>[^\"]+)/(?<id>(?<idPart>\\d{3}){2}\\d+)[^\"&]*)[&\"]", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResultsHtml)
 		
 		results.EstimatedCount = matches.Count
 		
