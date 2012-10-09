@@ -13,28 +13,22 @@ class Discogs(AlbumArtDownloader.Scripts.IScript):
 	Author as string:
 		get: return "Alex Vallat"
 	Version as string:
-		get: return "0.11"
+		get: return "0.12"
 	def Search(artist as string, album as string, results as IScriptResults):
-		artist = StripCharacters("&.'\";:?!", artist)
-		album = StripCharacters("&.'\";:?!", album)
-
-		obidResults = GetDiscogsPage("http://www.discogs.com/advanced_search?artist=${EncodeUrl(artist)}&release_title=${EncodeUrl(album)}")
-			
-		//Get obids
-		obidRegex = Regex("<div class=\"thumb\">\\s*<a href=\"(?<url>/[^/]+/release/(?<obid>\\d+))\">", RegexOptions.Singleline | RegexOptions.IgnoreCase)
-		obidMatches = obidRegex.Matches(obidResults)
-		results.EstimatedCount = obidMatches.Count //Probably more than this, as some releases might have multiple images
+		//artist = StripCharacters("&.'\";:?!", artist)
+		//album = StripCharacters("&.'\";:?!", album)
 
 		json = JavaScriptSerializer()
+
+		resultsInfoJson = GetDiscogsPage("http://api.discogs.com/database/search?type=release&artist=${EncodeUrl(artist)}&release_title=${EncodeUrl(album)}")
+		resultsInfo = json.Deserialize[of ResultsInfo](resultsInfoJson).results
 		
-		for obidMatch as Match in obidMatches:
+		results.EstimatedCount = resultsInfo.Length;
+		
+		for result in resultsInfo:
 			// Get the release info from api
-			url = "http://www.discogs.com" + obidMatch.Groups["url"].Value
-			obid = obidMatch.Groups["obid"].Value
-			releaseInfoJson = GetDiscogsPage("http://api.discogs.com/release/" + obid)
+			releaseInfoJson = GetDiscogsPage("http://api.discogs.com/release/" + result.id)
 			releaseInfo = json.Deserialize[of ReleaseInfo](releaseInfoJson).resp.release
-			
-			title = releaseInfo.artists[0].name + " - " + releaseInfo.title
 			
 			results.EstimatedCount += releaseInfo.images.Length - 1
 			for image in releaseInfo.images:
@@ -42,7 +36,7 @@ class Discogs(AlbumArtDownloader.Scripts.IScript):
 				if image.type == "primary":
 					coverType = CoverType.Front
 
-				results.Add(GetDiscogsStream(image.uri150), title, url, image.width, image.height, image.uri, coverType)
+				results.Add(GetDiscogsStream(image.uri150), result.title, releaseInfo.uri, image.width, image.height, image.uri, coverType)
 
 	def RetrieveFullSizeImage(fullSizeCallbackParameter):
 		return GetDiscogsStream(fullSizeCallbackParameter);
@@ -68,7 +62,7 @@ class Discogs(AlbumArtDownloader.Scripts.IScript):
 			class Release:
 				public artists as (Artist)
 				public images as (Image)
-				public title as String
+				public uri as String
 
 				class Artist:
 					public name as String
@@ -79,3 +73,9 @@ class Discogs(AlbumArtDownloader.Scripts.IScript):
 					public uri as string
 					public uri150 as string
 					public width as int
+
+	class ResultsInfo:
+		public results as (Result)
+		class Result:
+			public title as String
+			public id as string
