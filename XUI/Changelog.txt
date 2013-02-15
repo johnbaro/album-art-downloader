@@ -1,3 +1,6 @@
+	 Added scripts: The Classical Shop, Hyperion Records, MusicBrainz
+	 Updated scripts: AllCDCover, hitparade.ch, deejay.de
+
 0.45 Source categories now listed in alphabetical order in the sources list
 	 File size of images is now shown next to the pixel size in the Image Size field. This is only available once
 	  the full sized image has been downloaded.

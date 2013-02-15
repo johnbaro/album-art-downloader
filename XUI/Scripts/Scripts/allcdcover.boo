@@ -10,9 +10,9 @@ class AllCdCovers(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "AllCdCover"
 	Version as string:
-		get: return "0.3"
+		get: return "0.4"
 	Author as string:
-		get: return "daju"
+		get: return "daju, Alex Vallat"
 	
 	def Search(artist as string, album as string, results as IScriptResults):
 		artist = StripCharacters("&.'\";:?!", artist)
@@ -20,16 +20,18 @@ class AllCdCovers(AlbumArtDownloader.Scripts.IScript):
 
 		searchFor = EncodeUrl("${artist} ${album}".Trim())
 		baseUrl = "http://www.allcdcovers.com/search/music/all/"
-		allResultsPage = GetPage(GetPageStream("${baseUrl}${searchFor}", null, true))
+		allResultsPage = GetPage(GetPageStream("${baseUrl}${searchFor}?ModPagespeed=noscript", null, true))
 		
-		resultRegex = Regex("<a href=\"/show/(?<singleResultPage>[^\"]+)\"><img[^>]+><br />(?<typeName>[^<]+)</a>")
+		rootUri = Uri("http://www.allcdcovers.com");
+
+		resultRegex = Regex("<a href=\"/show/(?<singleResultPage>[^\"]+)\">\\s*<img[^>]+>\\s*<br\\s*/>(?<typeName>[^<]+)</a>")
 		resultMatches = resultRegex.Matches(allResultsPage)
 		results.EstimatedCount = resultMatches.Count
 		for resultMatch as Match in resultMatches:
 			singleResultPageUrl = resultMatch.Groups["singleResultPage"].Value
 			typeName = resultMatch.Groups["typeName"].Value
 			
-			singleResultPageUrl = "http://www.allcdcovers.com/show/${singleResultPageUrl}"
+			singleResultPageUrl = "http://www.allcdcovers.com/show/${singleResultPageUrl}?ModPagespeed=noscript"
 			singleResultPage = GetPage(GetPageStream(singleResultPageUrl, null, true))
 			infoRegex =Regex("<dl class=\"tableLike\">\\s*<dt>Title:</dt>\\s*<dd>(?<name>[^<]+)</dd>\\s*<dt>Part:</dt>\\s*<dd>(?<typeNameTwo>[^<]+)</dd>\\s*<dt>Dimensions:</dt>\\s*<dd>(?<sizeX>[0-9]+) x (?<sizeY>[0-9]+) px</dd>\\s*<dt>Size:</dt>\\s*<dd>(?<sizeKB>[^<]+)</dd>")
 			infoMatch = infoRegex.Match(singleResultPage)
@@ -41,7 +43,7 @@ class AllCdCovers(AlbumArtDownloader.Scripts.IScript):
 			thumRegex = Regex("<div class=\"selectedCoverThumb\">\\s*<img alt=\"(?<typeNameThree>[^\"]+)\" class=\"coverThumb\" src=\"(?<thumbUrl>[^\"]+)\"\\s*[/]?>\\s*<br\\s*[/]?>");//\\s*<a href=\"(?<fullUrl>[^\"]+)\">
 			thumMatch = thumRegex.Match(singleResultPage)
 			thumbUrlPart = thumMatch.Groups["thumbUrl"].Value
-			thumbUrl = "http://www.allcdcovers.com${thumbUrlPart}"
+			thumbUrl = Uri(rootUri, thumbUrlPart).AbsoluteUri
 			
 			fullRegex = Regex("<a\\s*href=\"/download/(?<fullUrl>[^\"]+)\"\\s*>")
 			fullUrlMatch = fullRegex.Match(singleResultPage)
@@ -71,7 +73,7 @@ class AllCdCovers(AlbumArtDownloader.Scripts.IScript):
 				
 			if((not String.IsNullOrEmpty(thumbUrlPart))and (not String.IsNullOrEmpty(fullUrlPart))or useSmallVersion):
 				results.Add(
-					GetPageStream(thumbUrl, null, true),
+					GetPageStreamOrData(thumbUrl, null, true),
 					coverName,
 					singleResultPageUrl,
 					sizeX,
@@ -80,7 +82,12 @@ class AllCdCovers(AlbumArtDownloader.Scripts.IScript):
 					coverType
 					)
 				
-				
+
+	def GetPageStreamOrData(url as string, referer as string, useFirefoxHeaders as bool):
+		if(url.StartsWith("data:")):
+			return System.IO.MemoryStream(Convert.FromBase64String(url.Substring(url.IndexOf(",") + 1)));
+		else:
+			return GetPageStream(url, referer, useFirefoxHeaders);
 		
 	def RetrieveFullSizeImage(fullSizeCallbackParameter):
 		return GetPageStream(fullSizeCallbackParameter, null, true);

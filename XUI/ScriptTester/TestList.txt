@@ -56,3 +56,7 @@ esenshop	Bedirhan Gökçe	Güle Yazdım
 Sound Station	Unicorn	Uphill All The Way
 The Orchard	Menomena	Moms
 Amazon Audiobooks (.com)	Iain Banks	Stonemouth
+The Classical Shop	Brahms	Toccatas and Roses
+Hyperion Records	Gabrieli	Sacred Symphonies
+Musicbrainz	Muse	Absolution
+deejay.de	Isolee	Allowance

@@ -238,6 +238,9 @@ SectionGroup "Image Download Scripts"
 		Section "deejay.de"
 		  File "..\Scripts\Scripts\deejay.boo"
 		SectionEnd
+		Section "MusicBrainz"
+		  File "..\Scripts\Scripts\musicbrainz.boo"
+		SectionEnd
 	SectionGroupEnd
 	
 	SectionGroup "Dance, Club, Electronic"
@@ -282,6 +285,12 @@ SectionGroup "Image Download Scripts"
 		SectionEnd
 		Section /o "ArkivMusic"
 		  File "..\Scripts\Scripts\eclassical.boo"
+		SectionEnd
+		Section /o "The Classical Shop"
+		  File "..\Scripts\Scripts\theclassicalshop.boo.boo"
+		SectionEnd
+		Section /o "Hyperion Records"
+		  File "..\Scripts\Scripts\hyperionrecords.boo.boo"
 		SectionEnd
 	SectionGroupEnd
 
