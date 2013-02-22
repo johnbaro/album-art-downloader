@@ -4,7 +4,7 @@
   <Application Version="0.45.0.0" Name="Album Art Downloader XUI v0.45" URI="https://sourceforge.net/project/platformdownload.php?group_id=187008" />
   <Script Name="45cat" URI="45cat.boo" Version="0.4" Category="LP Vinyl" />
   <Script Name="7digital" URI="7digital.boo" Version="0.3" />
-  <Script Name="AllCdCover" URI="allcdcover.boo" Version="0.3" />
+  <Script Name="AllCdCover" URI="allcdcover.boo" Version="0.4" />
   <Script Name="Amazon Audiobooks (.com)" URI="amazon-audiobooks-com.boo" Version="0.1" Category="Audiobooks">
     <Dependency>amazon-common.boo</Dependency>
   </Script>
@@ -43,7 +43,7 @@
   <Script Name="Coveralia" URI="coveralia.boo" Version="0.11" />
   <Script Name="Coverlandia (Official)" URI="coverlandia-official.boo" Version="0.2" />
   <Script Name="Coverlandia" URI="coverlandia.boo" Version="0.2" Category="Fan-made covers" />
-  <Script Name="deejay.de" URI="deejay.boo" Version="0.1" />
+  <Script Name="deejay.de" URI="deejay.boo" Version="0.3" />
   <Script Name="Deezer" URI="deezer.boo" Version="0.4" />
   <Script Name="Discogs" URI="discogs.boo" Version="0.12" />
   <Script Name="DJshop" URI="djshop.boo" Version="0.2" />
@@ -52,7 +52,7 @@
   <Script Name="eMusic" URI="emusic.boo" Version="0.5" />
   <Script Name="esenshop" URI="esenshop.boo" Version="0.1" Category="Turkish" />
   <Script Name="GoogleImage" URI="google.boo" Version="0.13" />
-  <Script Name="hitparade.ch" URI="hitparade.boo" Version="0.2" />
+  <Script Name="hitparade.ch" URI="hitparade.boo" Version="0.3" />
   <Script Name="HMV Canada" URI="hmv-canada.boo" Version="0.2" Category="Canadian" />
   <Script Name="Hyperion Records" URI="hyperionrecords.boo" Version="0.1" Category="Classical" />
   <Script Name="iTunes" URI="itunes.boo" Version="0.3" />
