@@ -1,5 +1,10 @@
+0.46 Fixed crash when specific sorts of corrupted image file are encountered
+	 Added option to Local Files Source to automatically set the minimum image size filter equal to the 
+	  largest image found by this source (so if you only want to find images bigger than those you already have,
+	  enable this option in the Local Files Source settings)
 	 Added scripts: The Classical Shop, Hyperion Records, MusicBrainz
-	 Updated scripts: AllCDCover, hitparade.ch, deejay.de
+	 Updated scripts: AllCDCover, hitparade.ch, deejay.de, Amazon (common), Amazon Audiobooks (now uses common),
+	                  ArkivMusic, Kalahari, 45cat
 
 0.45 Source categories now listed in alphabetical order in the sources list
 	 File size of images is now shown next to the pixel size in the Image Size field. This is only available once

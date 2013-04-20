@@ -69,6 +69,8 @@ namespace AlbumArtDownloader
 				((LocalFilesSourceSettings)CustomSettingsUI).mSearchPathPatternBox.AddPatternToHistory();
 			}));
 
+			int lastMinImageSizeSet = 0;
+
 			//Avoid duplicates
 			StringDictionary addedFiles = new StringDictionary();
 
@@ -148,6 +150,20 @@ namespace AlbumArtDownloader
                                     int height = frame.PixelHeight;
 
 									results.Add(File.OpenRead(filename), Path.GetFileName(filename), filename, width, height, null);
+
+									if (SetMinimumSizeFilter)
+									{
+										var minImageSize = Math.Min(width, height);
+										if (lastMinImageSizeSet == 0)
+										{
+											Properties.Settings.Default.UseMinimumImageSize = true;
+											Properties.Settings.Default.MinimumImageSize = lastMinImageSizeSet = minImageSize;
+										}
+										else if (Properties.Settings.Default.UseMinimumImageSize && Properties.Settings.Default.MinimumImageSize == lastMinImageSizeSet) // Don't override during a search if the user has made manual changes
+										{
+											Properties.Settings.Default.MinimumImageSize = Math.Max(lastMinImageSizeSet, minImageSize); // If this image is bigger, use it as the minimum size
+										}
+									}
 								}
 							}
 							catch (Exception e)
@@ -212,6 +228,28 @@ namespace AlbumArtDownloader
 			}
 		}
 
+		private bool mSetMinimumSizeFilter;
+		/// <summary>
+		/// If true, after the search completes, the minimum size filter will be set to the largest image found
+		/// </summary>
+		public bool SetMinimumSizeFilter
+		{
+			get
+			{
+				return mSetMinimumSizeFilter;
+			}
+			set
+			{
+				if (mSetMinimumSizeFilter != value)
+				{
+					mSetMinimumSizeFilter = value;
+
+					SettingsChanged = true;
+					NotifyPropertyChanged("SetMinimumSizeFilter");
+				}
+			}
+		}
+
 		#region Settings
 		protected override SourceSettings GetSettings()
 		{
@@ -224,6 +262,7 @@ namespace AlbumArtDownloader
 
 			Settings localFilesSourceSettings = (Settings)settings;
 			SearchPathPattern = localFilesSourceSettings.SearchPathPattern;
+			SetMinimumSizeFilter = localFilesSourceSettings.SetMinimumSizeFilter;
 			
 			LoadPathPatternHistory(localFilesSourceSettings);
 		}
@@ -232,6 +271,7 @@ namespace AlbumArtDownloader
 		{
 			Settings localFilesSourceSettings = (Settings)settings;
 			localFilesSourceSettings.SearchPathPattern = mSearchPathPattern;
+			localFilesSourceSettings.SetMinimumSizeFilter = SetMinimumSizeFilter;
 
 			SavePathPatternHistory(localFilesSourceSettings);
 
@@ -320,6 +360,20 @@ namespace AlbumArtDownloader
 				set
 				{
 					this["SearchPathPatternHistory"] = value;
+				}
+			}
+
+			[DefaultSettingValueAttribute("False")]
+			[UserScopedSetting]
+			public bool SetMinimumSizeFilter
+			{
+				get
+				{
+					return ((bool)(this["SetMinimumSizeFilter"]));
+				}
+				set
+				{
+					this["SetMinimumSizeFilter"] = value;
 				}
 			}
 		}

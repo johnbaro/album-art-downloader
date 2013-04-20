@@ -207,7 +207,16 @@ namespace AlbumArtDownloader
 		{
 			try
 			{
-				 return BitmapDecoder.Create(bitmapDataStream, BitmapCreateOptions.None, BitmapCacheOption.None); // Don't cache, as the data is already coming straight from memory.
+				var decoder = BitmapDecoder.Create(bitmapDataStream, BitmapCreateOptions.None, BitmapCacheOption.None); // Don't cache, as the data is already coming straight from memory.
+				var frame = decoder.Frames.FirstOrDefault();
+				if (frame != null)
+				{
+					// Ensure the pixels can be read from the frame
+					int stride = frame.PixelWidth * (frame.Format.BitsPerPixel / 8);
+					byte[] data = new byte[stride * frame.PixelHeight];
+					frame.CopyPixels(data, stride, 0);
+				}
+				return decoder;
 			}
 			catch (Exception)
 			{

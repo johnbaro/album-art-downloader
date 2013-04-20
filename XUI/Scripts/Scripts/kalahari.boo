@@ -7,7 +7,7 @@ class Kalahari(AlbumArtDownloader.Scripts.IScript, ICategorised):
 	Name as string:
 		get: return "Kalahari"
 	Version as string:
-		get: return "0.5"
+		get: return "0.6"
 	Author as string:
 		get: return "Alex Vallat"
 	Category as string:
@@ -36,14 +36,14 @@ class Kalahari(AlbumArtDownloader.Scripts.IScript, ICategorised):
 		searchResults = searchResults.Replace("\\u003e", ">").Replace("\\u003c", "<").Replace("\\\"", "\"");
 
 		//Find album info
-		matches = Regex("<a\\s[^>]*?href=\"(?<info>[^\"]+)\"[^>]+?title=\"(?<title>[^\"]+)\"[^>]*>\\s*<img\\s[^>]*?src=\"[^\"]+.kalahari.com/ann/all/th/(?<image>[^\"]+)\"", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResults)
+		matches = Regex("<a\\s[^>]*?href=\"(?<info>[^\"]+)\"[^>]+?title=\"(?<title>[^\"]+)\"[^>]*>\\s*<img\\s[^>]*?src=\"(?<image>[^\"]+?)0\\.jpg\"", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResults)
 		
 		results.EstimatedCount = matches.Count
 		
 		for match as Match in matches:
 			image = match.Groups["image"].Value;
 
-			results.Add("http://images.kalahari.com/ann/all/th/" + image, System.Web.HttpUtility.HtmlDecode(match.Groups["title"].Value), "http://www.kalahari.com" + match.Groups["info"].Value, -1, -1, "http://images.kalahari.com/ann/all/lg/" + image, CoverType.Front);
+			results.Add(image + "1.jpg", System.Web.HttpUtility.HtmlDecode(match.Groups["title"].Value), "http://www.kalahari.com" + match.Groups["info"].Value, -1, -1, image + "2.jpg", CoverType.Front);
 
 	def RetrieveFullSizeImage(fullSizeCallbackParameter):
 		return fullSizeCallbackParameter;

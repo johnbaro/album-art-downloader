@@ -8,9 +8,13 @@
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
-		<Label Grid.Row="0" Target="{Binding ElementName=mSearchPathPatternBox}" Margin="0" Padding="0">_Path to find images:</Label>
-		<controls:ArtPathPatternBox x:Name="mSearchPathPatternBox" Margin="0,4,0,0" Grid.Row="1"
+		<CheckBox Grid.Row="0" MaxWidth="{Binding ElementName=mGrid,Path=ActualWidth}" IsChecked="{Binding SetMinimumSizeFilter}">
+			<TextBlock TextWrapping="Wrap">Set default minimum size filter from largest result found</TextBlock>
+		</CheckBox>
+		<Label Grid.Row="1" Target="{Binding ElementName=mSearchPathPatternBox}" Margin="0,4,0,0" Padding="0">_Path to find images:</Label>
+		<controls:ArtPathPatternBox x:Name="mSearchPathPatternBox" Margin="0,4,0,0" Grid.Row="2"
 									MaxWidth="{Binding ElementName=mGrid, Path=ActualWidth}" 
 									PathPattern="{Binding SearchPathPattern}" ToolTip="[please wait...]">
 			<controls:ArtPathPatternBox.AdditionalPlaceholders>
@@ -23,5 +27,5 @@
 				<Win32:OpenFileDialog Title="Path to find images" ValidateNames="False" CheckFileExists="False" CheckPathExists="False" Filter="All Files (*.*)|*.*"/>
 			</controls:ArtPathPatternBox.BrowseDialog>
 		</controls:ArtPathPatternBox>
-    </Grid>
+	</Grid>
 </UserControl>

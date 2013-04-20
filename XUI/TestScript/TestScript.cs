@@ -86,6 +86,7 @@ namespace TestScript
 
 		public void Search(string artist, string album, IScriptResults results)
 		{
+			/*
       var bitmap = new Bitmap(400, 600);
       var g = Graphics.FromImage(bitmap);
       g.Clear(SystemColors.Window);
@@ -96,8 +97,8 @@ namespace TestScript
       bitmap.Dispose();
 
       return;
-
-			int numberOfResults = 50;
+			 * */
+			int numberOfResults = 1;
 			results.EstimatedCount = numberOfResults;
 			Random rnd = new Random();
 
@@ -108,11 +109,11 @@ namespace TestScript
               for (int i = 0; i < numberOfResults; i++)
               {
                 //results.Add(thumbnail, i.ToString(), "notauri", 1000 + rnd.Next(6) * 100, rnd.Next(1, 1600), fullSize, (CoverType)rnd.Next((int)CoverType.Unknown, (int)CoverType.CD + 1));
-                results.Add(assembly.GetManifestResourceStream("TestScript.testThumbnail.jpg"), i.ToString(), "notauri", -1, -1, assembly.GetManifestResourceStream("TestScript.testFullsize.png"), (CoverType)rnd.Next((int)CoverType.Unknown, (int)CoverType.Booklet + 1), "gif");
+                results.Add(assembly.GetManifestResourceStream("TestScript.testThumbnail.jpg"), i.ToString(), "notauri", -1, -1, assembly.GetManifestResourceStream("TestScript.testBadImage.jpg"), (CoverType)rnd.Next((int)CoverType.Unknown, (int)CoverType.Booklet + 1), "gif");
                 System.Threading.Thread.Sleep(1000);
               }
             }
-            catch (ThreadAbortException ex)
+            catch (ThreadAbortException)
             {
               System.Diagnostics.Debug.WriteLine("Exception");
             }

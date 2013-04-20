@@ -7,7 +7,7 @@ class ArkivMusik(AlbumArtDownloader.Scripts.IScript, ICategorised):
 	Name as string:
 		get: return "ArkivMusik"
 	Version as string:
-		get: return "0.7"
+		get: return "0.8"
 	Author as string:
 		get: return "Alex Vallat, DRata"
 	Category as string:
@@ -23,14 +23,14 @@ class ArkivMusik(AlbumArtDownloader.Scripts.IScript, ICategorised):
 		//Retrieve the search results page
 		searchResultsHtml as string = GetPage("http://www.arkivmusic.com/classical/NameList?searching=1&searchingPage=${searchingPage}&role_wanted=0&search_term=" + EncodeUrl(artist + " " + album))
 		
-		matches = Regex("SRC=\"/graphics/covers/thumb/(?<image>[^\"]+)\".+?CLASS=\"listalbum\"><A HREF=\"(?<info>[^\"]+)\">(?<title>[^<]+)", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResultsHtml)
+		matches = Regex("<img\\s+class=\"albumchunk-listingimage\"\\s+alt=\"(?<title>[^\"]+)\"\\s+src=\"(?<image>[^\"]+)\".+?album_id=(?<id>\\d+)\"", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResultsHtml)
 		
 		results.EstimatedCount = matches.Count
 		
 		for match as Match in matches:
 			image = match.Groups["image"].Value;
-
-			results.Add("http://www.arkivmusic.com/graphics/covers/thumb/" + image, match.Groups["title"].Value, "http://www.arkivmusic.com/classical/" + match.Groups["info"].Value, -1, -1, "http://www.arkivmusic.com/graphics/covers/full/" + image, CoverType.Front);
+			id = match.Groups["id"].Value;
+			results.Add(image, match.Groups["title"].Value, "http://www.arkivmusic.com/classical/album.jsp?album_id=" + id, -1, -1, null, CoverType.Front);
 
 	def RetrieveFullSizeImage(fullSizeCallbackParameter):
 		return fullSizeCallbackParameter;

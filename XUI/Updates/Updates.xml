@@ -1,39 +1,39 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <?xml-stylesheet type="text/xsl" href="Updates.xsl"?>
 <Updates BaseURI="http://album-art.sourceforge.net/scripts/">
-  <Application Version="0.45.0.0" Name="Album Art Downloader XUI v0.45" URI="https://sourceforge.net/project/platformdownload.php?group_id=187008" />
-  <Script Name="45cat" URI="45cat.boo" Version="0.4" Category="LP Vinyl" />
+  <Application Version="0.46.0.0" Name="Album Art Downloader XUI v0.46" URI="https://sourceforge.net/project/platformdownload.php?group_id=187008" />
+  <Script Name="45cat" URI="45cat.boo" Version="0.5" Category="LP Vinyl" />
   <Script Name="7digital" URI="7digital.boo" Version="0.3" />
   <Script Name="AllCdCover" URI="allcdcover.boo" Version="0.4" />
-  <Script Name="Amazon Audiobooks (.com)" URI="amazon-audiobooks-com.boo" Version="0.1" Category="Audiobooks">
+  <Script Name="Amazon Audiobooks (.com)" URI="amazon-audiobooks-com.boo" Version="0.11s" Category="Audiobooks">
     <Dependency>amazon-common.boo</Dependency>
   </Script>
-  <Script Name="Amazon (.ca)" URI="amazon-ca.boo" Version="0.10s">
+  <Script Name="Amazon (.ca)" URI="amazon-ca.boo" Version="0.11s">
     <Dependency>amazon-common.boo</Dependency>
   </Script>
-  <Script Name="Amazon (.co.uk)" URI="amazon-co-uk.boo" Version="0.10s">
+  <Script Name="Amazon (.co.uk)" URI="amazon-co-uk.boo" Version="0.11s">
     <Dependency>amazon-common.boo</Dependency>
   </Script>
-  <Script Name="Amazon (.com)" URI="amazon-com.boo" Version="0.10s">
+  <Script Name="Amazon (.com)" URI="amazon-com.boo" Version="0.11s">
     <Dependency>amazon-common.boo</Dependency>
   </Script>
-  <Script Name="Amazon (.de)" URI="amazon-de.boo" Version="0.10s">
+  <Script Name="Amazon (.de)" URI="amazon-de.boo" Version="0.11s">
     <Dependency>amazon-common.boo</Dependency>
   </Script>
-  <Script Name="Amazon (.fr)" URI="amazon-fr.boo" Version="0.10s">
+  <Script Name="Amazon (.fr)" URI="amazon-fr.boo" Version="0.11s">
     <Dependency>amazon-common.boo</Dependency>
   </Script>
-  <Script Name="Amazon (.it)" URI="amazon-it.boo" Version="0.10s">
+  <Script Name="Amazon (.it)" URI="amazon-it.boo" Version="0.11s">
     <Dependency>amazon-common.boo</Dependency>
   </Script>
-  <Script Name="Amazon (.jp)" URI="amazon-jp.boo" Version="0.10s">
+  <Script Name="Amazon (.jp)" URI="amazon-jp.boo" Version="0.11s">
     <Dependency>amazon-common.boo</Dependency>
   </Script>
   <Script Name="Amazon MP3 (.com)" URI="amazon-mp3-com.boo" Version="0.1">
     <Dependency>amazon-common.boo</Dependency>
   </Script>
   <Script Name="Archambault" URI="archambault.boo" Version="0.6" />
-  <Script Name="ArkivMusik" URI="arkivmusic.boo" Version="0.7" Category="Classical" />
+  <Script Name="ArkivMusik" URI="arkivmusic.boo" Version="0.8" Category="Classical" />
   <Script Name="Audio Preservation Fund" URI="audiopreservationfund.boo" Version="0.1" Category="LP Vinyl" />
   <Script Name="Beatport" URI="beatport.boo" Version="0.1" Category="Dance, Club, Electronic" />
   <Script Name="Buy.com" URI="buy-com.boo" Version="0.8.2" />
@@ -43,7 +43,7 @@
   <Script Name="Coveralia" URI="coveralia.boo" Version="0.11" />
   <Script Name="Coverlandia (Official)" URI="coverlandia-official.boo" Version="0.2" />
   <Script Name="Coverlandia" URI="coverlandia.boo" Version="0.2" Category="Fan-made covers" />
-  <Script Name="deejay.de" URI="deejay.boo" Version="0.3" />
+  <Script Name="deejay.de" URI="deejay.boo" Version="0.4" />
   <Script Name="Deezer" URI="deezer.boo" Version="0.4" />
   <Script Name="Discogs" URI="discogs.boo" Version="0.12" />
   <Script Name="DJshop" URI="djshop.boo" Version="0.2" />
@@ -57,7 +57,7 @@
   <Script Name="Hyperion Records" URI="hyperionrecords.boo" Version="0.1" Category="Classical" />
   <Script Name="iTunes" URI="itunes.boo" Version="0.3" />
   <Script Name="Juno Records" URI="juno-records.boo" Version="0.7" Category="Dance, Club, Electronic" />
-  <Script Name="Kalahari" URI="kalahari.boo" Version="0.5" Category="South African" />
+  <Script Name="Kalahari" URI="kalahari.boo" Version="0.6" Category="South African" />
   <Script Name="LastFM Artist" URI="lastfm-artist.boo" Version="0.5" Category="Artist Images" />
   <Script Name="LastFM Cover" URI="lastfm-cover.boo" Version="0.6" />
   <Script Name="maniadb" URI="maniadb.boo" Version="0.3" />
@@ -72,10 +72,10 @@
   <Script Name="RevHQ" URI="revhq.boo" Version="0.6" Category="Independent" />
   <Script Name="SFR Music" URI="sfr-music.boo" Version="0.1" />
   <Script Name="Sound Station" URI="soundstation.boo" Version="0.1" Category="LP Vinyl" />
-  <Script Name="Take2" URI="take2.boo" Version="0.3" Category="South African" />
+  <Script Name="Take2" URI="take2.boo" Version="0.4" Category="South African" />
   <Script Name="The Classical Shop" URI="theclassicalshop.boo" Version="0.1" Category="Classical" />
   <Script Name="The Orchard" URI="theorchard.boo" Version="0.1" Category="Independent" />
   <Script Name="VGMdb" URI="vgmdb.boo" Version="0.6" Category="Video Game Music" />
   <Script Name="WantItAll" URI="wantitall.boo" Version="0.1" Category="South African" />
-  <Script Name="YesAsia" URI="yesasia.boo" Version="0.3" Category="Eastern" />
+  <Script Name="YesAsia" URI="yesasia.boo" Version="0.4" Category="Eastern" />
 </Updates>

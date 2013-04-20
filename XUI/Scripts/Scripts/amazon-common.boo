@@ -15,7 +15,7 @@ abstract class Amazon(AlbumArtDownloader.Scripts.IScript):
 	virtual Name as string:
 		get: return "Amazon (.${Suffix})"
 	Version as string:
-		get: return "0.10s"
+		get: return "0.11s"
 	Author as string:
 		get: return "Alex Vallat, ZOOT"
 	abstract protected Suffix as string:
@@ -36,7 +36,7 @@ abstract class Amazon(AlbumArtDownloader.Scripts.IScript):
 		url = GetUrl(artist, album)
 		resultsPage = GetPage(GetPageStream(url, null, true), PageEncoding)
 		
-		resultsRegex = Regex("<a\\s+class\\s*=\\s*\"title\"\\s[^>]*href\\s*=\\s*\"(?<url>[^\"]+?/dp/(?<id>[^/]+)/)[^>]+>\\s*(?<title>.*?)</a>(?:\\s*<span\\s[^>]*class=\"ptBrand\"[^>]*>(?:[^<]*<a\\s[^>]*>)?\\s*(?:by |von |de |di )?(?<artist>[^<]+))?", RegexOptions.Singleline | RegexOptions.IgnoreCase)
+		resultsRegex = Regex("<a[^>]*href\\s*=\\s*\"(?<url>[^\"]+?/dp/(?<id>[^/]+)/)[^>]+>\\s*(?:<span\\s[^>]*>\\s*)?(?<title>[^<]+)(?:</span>)?</a>(?:\\s*<span\\s[^>]*>(?:[^<]*<a\\s[^>]*>)?\\s*(?:by |von |de |di )?(?<artist>[^<]+))", RegexOptions.Singleline | RegexOptions.IgnoreCase)
 		resultsMatches = resultsRegex.Matches(resultsPage)
 		
 		results.EstimatedCount = resultsMatches.Count

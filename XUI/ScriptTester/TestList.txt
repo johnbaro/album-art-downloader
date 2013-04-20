@@ -42,7 +42,7 @@ VGMdb		Xenoblade Original Soundtrack
 EB Reggae	Kevin Kinsella	Great Design
 eMusic	Muse	Absolution
 Qobuz	Muse	The Resistance
-GigaCrate	Muse	Starlight
+;GigaCrate	Muse	Starlight
 iTunes	Muse	The Resistance
 ;MioMusik	Muse	The Resistance
 SFR Music	Muse	The Resistance

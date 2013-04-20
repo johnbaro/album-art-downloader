@@ -7,7 +7,7 @@ class Take2(AlbumArtDownloader.Scripts.IScript, ICategorised):
 	Name as string:
 		get: return "Take2"
 	Version as string:
-		get: return "0.3"
+		get: return "0.4"
 	Author as string:
 		get: return "Alex Vallat"
 	Category as string:
@@ -19,7 +19,7 @@ class Take2(AlbumArtDownloader.Scripts.IScript, ICategorised):
 		//Retrieve the search results page
 		searchResultsHtml as string = GetPage("http://www.takealot.com/search?type=5&qsearch=" + EncodeUrl(artist + " " + album))
 		
-		matches = Regex("<a href=\"(?<info>[^\"]+)\">\\s*<img src=\"(?<thumbnail>http://media(?<server>\\d?)\\.takealot\\.com/covers/(?<albumId>[^/]+)/cover-serp\\.jpg\\?(?<coverId>[^\"]+))\" alt=\"(?<title>[^\"]+)\"", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResultsHtml)
+		matches = Regex("<a href=\"(?<info>[^\"]+)\">\\s*<noscript>\\s*<img src=\"(?<thumbnail>http://media(?<server>\\d?)\\.takealot\\.com/covers/(?<albumId>[^/]+)/cover-serp\\.jpg\\?(?<coverId>[^\"]+))\" alt=\"(?<title>[^\"]+)\"", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResultsHtml)
 		
 		results.EstimatedCount = matches.Count
 		
