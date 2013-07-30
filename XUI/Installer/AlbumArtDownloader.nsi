@@ -241,6 +241,9 @@ SectionGroup "Image Download Scripts"
 		Section "MusicBrainz"
 		  File "..\Scripts\Scripts\musicbrainz.boo"
 		SectionEnd
+		Section "fanart.tv"
+		  File "..\Scripts\Scripts\fanarttv.boo"
+		SectionEnd
 	SectionGroupEnd
 	
 	SectionGroup "Dance, Club, Electronic"
