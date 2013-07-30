@@ -3,7 +3,9 @@
 <Updates BaseURI="http://album-art.sourceforge.net/scripts/">
   <Application Version="0.46.0.0" Name="Album Art Downloader XUI v0.46" URI="https://sourceforge.net/project/platformdownload.php?group_id=187008" />
   <Script Name="45cat" URI="45cat.boo" Version="0.5" Category="LP Vinyl" />
-  <Script Name="7digital" URI="7digital.boo" Version="0.3" />
+  <Script Name="45world CD Singles" URI="45worlds-cdsingles.boo" Version="0.1" Category="Singles" />
+  <Script Name="7digital" URI="7digital.boo" Version="0.4" />
+  <Script Name="absolutepunk.net" URI="absolutepunk.boo" Version="0.1" Category="Punk, Metal, Rock" />
   <Script Name="AllCdCover" URI="allcdcover.boo" Version="0.4" />
   <Script Name="Amazon Audiobooks (.com)" URI="amazon-audiobooks-com.boo" Version="0.11s" Category="Audiobooks">
     <Dependency>amazon-common.boo</Dependency>
@@ -35,6 +37,7 @@
   <Script Name="Archambault" URI="archambault.boo" Version="0.6" />
   <Script Name="ArkivMusik" URI="arkivmusic.boo" Version="0.8" Category="Classical" />
   <Script Name="Audio Preservation Fund" URI="audiopreservationfund.boo" Version="0.1" Category="LP Vinyl" />
+  <Script Name="bandcamp" URI="bandcamp.boo" Version="0.2" Category="Independent" />
   <Script Name="Beatport" URI="beatport.boo" Version="0.1" Category="Dance, Club, Electronic" />
   <Script Name="Buy.com" URI="buy-com.boo" Version="0.8.2" />
   <Script Name="CD Baby" URI="cdbaby.boo" Version="0.4" Category="Independent" />
@@ -51,11 +54,12 @@
   <Script Name="eClassical" URI="eclassical.boo" Version="0.2" Category="Classical" />
   <Script Name="eMusic" URI="emusic.boo" Version="0.5" />
   <Script Name="esenshop" URI="esenshop.boo" Version="0.1" Category="Turkish" />
+  <Script Name="fanart.tv" URI="fanarttv.boo" Version="0.3" />
   <Script Name="GoogleImage" URI="google.boo" Version="0.13" />
   <Script Name="hitparade.ch" URI="hitparade.boo" Version="0.3" />
   <Script Name="HMV Canada" URI="hmv-canada.boo" Version="0.2" Category="Canadian" />
   <Script Name="Hyperion Records" URI="hyperionrecords.boo" Version="0.1" Category="Classical" />
-  <Script Name="iTunes" URI="itunes.boo" Version="0.3" />
+  <Script Name="iTunes" URI="itunes.boo" Version="0.4" />
   <Script Name="Juno Records" URI="juno-records.boo" Version="0.7" Category="Dance, Club, Electronic" />
   <Script Name="Kalahari" URI="kalahari.boo" Version="0.6" Category="South African" />
   <Script Name="LastFM Artist" URI="lastfm-artist.boo" Version="0.5" Category="Artist Images" />
@@ -65,7 +69,7 @@
   <Script Name="Mega Media" URI="megamedia.boo" Version="0.2" Category="Netherlands" />
   <Script Name="Encyclopaedia Metallum" URI="metal-archives.boo" Version="0.6" Category="Punk, Metal, Rock" />
   <Script Name="Metal Library" URI="metallibrary.boo" Version="0.3" Category="Punk, Metal, Rock" />
-  <Script Name="Musicbrainz" URI="musicbrainz.boo" Version="0.3" />
+  <Script Name="MusicBrainz" URI="musicbrainz.boo" Version="0.6" />
   <Script Name="Nuclear Blast" URI="nuclearblast.boo" Version="0.1" Category="Punk, Metal, Rock" />
   <Script Name="Psyshop" URI="psyshop.boo" Version="0.5" Category="Dance, Club, Electronic" />
   <Script Name="Qobuz" URI="qobuz.boo" Version="0.1" />

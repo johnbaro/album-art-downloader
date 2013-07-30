@@ -9,6 +9,7 @@ using System.Net;
 using System.IO;
 using System.Net.Cache;
 using System.Threading;
+using System.Configuration;
 
 namespace TestScript
 {
@@ -81,8 +82,16 @@ namespace TestScript
 			return new System.IO.StreamReader(streamresponse).ReadToEnd();
 		}
 
+		/*
+		private class TestWin : System.Windows.Window
+		{
+			public TestWin()
+			{
+				var a = new System.Windows.Media.Animation.ThicknessAnimation();
+ 				
 
-
+			}
+		}*/
 
 		public void Search(string artist, string album, IScriptResults results)
 		{
@@ -98,6 +107,7 @@ namespace TestScript
 
       return;
 			 * */
+			
 			int numberOfResults = 1;
 			results.EstimatedCount = numberOfResults;
 			Random rnd = new Random();

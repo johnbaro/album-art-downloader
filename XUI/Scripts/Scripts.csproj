@@ -77,6 +77,12 @@
     <None Include="Scripts\45cat.boo" />
     <None Include="Scripts\amazon-mp3-com.boo" />
     <None Include="Scripts\amazon-audiobooks-com.boo" />
+    <None Include="Scripts\Archived\album-art-exchange-browser-launcher.boo" />
+    <None Include="Scripts\absolutepunk.boo" />
+    <None Include="Scripts\bandcamp.boo" />
+    <None Include="Scripts\Archived\file-drop-target.boo" />
+    <None Include="Scripts\45worlds-cdsingles.boo" />
+    <None Include="Scripts\fanarttv.boo" />
     <None Include="Scripts\musicbrainz.boo" />
     <None Include="Scripts\hyperionrecords.boo" />
     <None Include="Scripts\theclassicalshop.boo" />

@@ -6,25 +6,21 @@ import util
 
 class Musicbrainz(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
-		get: return "Musicbrainz"
+		get: return "MusicBrainz"
 	Author as string:
 		get: return "Sebastian Hauser"
 	Version as string:
-		get: return "0.3"
+		get: return "0.6"
+	
 	
 	def Search(artist as string, album as string, results as IScriptResults):
-		artist = StripCharacters("&.'\";:?!", artist)
-		album = StripCharacters("&.'\";:?!", album)
-		
 		if(artist!= null and album!=null):			
-			mbidBaseUrl = "http://search.musicbrainz.org/ws/2/release/"
+			//striping isn't really necessary here, because musicbrainz handles those characters quite well
+			//artist = StripCharacters("&.'\";:?!", artist)
+			//album = StripCharacters("&.'\";:?!", album)
 			
-			#mbidUrl = "${mbidBaseUrl}?fmt=json&query=release:" + EncodeUrl("\"" + dummy + "\" AND artist:\"" + portishead + "\"")
-			mbidUrl = "${mbidBaseUrl}?fmt=json&query=release:" + EncodeUrl("\"" + album + "\" AND artist:\"" + artist + "\"")
-						
-			picBaseUrl = "http://coverartarchive.org/release"
-			
-			scoreThreshold = 70
+			//mbidUrl = GetMbidUrl("Portishead", "Dummy") //Test for album Portishead - Dummy
+			mbidUrl = GetMbidUrl(artist, album)
 			
 			json = JavaScriptSerializer()
 			
@@ -34,6 +30,9 @@ class Musicbrainz(AlbumArtDownloader.Scripts.IScript):
 
 				results.EstimatedCount = mbidResult["release-list"]["count"]
 				
+				//results are sorted by score. get first score and discard all results where the score is less then 60% of that score.
+				scoreThreshold = System.Convert.ToInt32(mbidResult["release-list"]["release"][0]["score"]) * 0.6
+				
 				for release as Dictionary[of string, object] in mbidResult["release-list"]["release"]:
 					mbid = release["id"]
 					mbidArtist = release["artist-credit"]["name-credit"][0]["artist"]["name"]
@@ -41,10 +40,11 @@ class Musicbrainz(AlbumArtDownloader.Scripts.IScript):
 					mbidScore = System.Convert.ToInt32(release["score"])
 					
 					if mbidScore > scoreThreshold:
+
 						try:
-							#picUrl = "${picBaseUrl}/76df3287-6cda-33eb-8e9a-044b5e15ffdd"
-							picUrl = "${picBaseUrl}/${mbid}"
-														
+							#picUrl = GetCaaUrl(76df3287-6cda-33eb-8e9a-044b5e15ffdd) //Test for album Portishead - Dummy
+							picUrl = GetCaaUrl(mbid)
+							
 							picDoc = GetPage(picUrl)
 							picResult = json.DeserializeObject(picDoc) as Dictionary[of string, object]
 							
@@ -64,13 +64,33 @@ class Musicbrainz(AlbumArtDownloader.Scripts.IScript):
 						
 						except e as System.Net.WebException:
 							results.EstimatedCount--
-					
+					else:
+						results.EstimatedCount--
 			except e:
 				return
 		else:
 			#both Parameter album and artist are necessary
 			results.EstimatedCount = 0;
-		
+	
+	
+	def GetCaaUrl(mbid as string):
+		caaBaseUrl = "http://coverartarchive.org/release/"
+		return caaBaseUrl + mbid
+	
+	
+	def GetMbidUrl(artist as string, album as string):
+		encodedArtist = EncodeUrl(artist)
+		encodedAlbum = EncodeUrl(album)
+		mbidBaseUrl = "http://search.musicbrainz.org/ws/2/release/"
+		if artist == "" and album == "":
+			return "${mbidBaseUrl}?fmt=json&query="
+		elif artist == "":
+			return "${mbidBaseUrl}?fmt=json&query=release:${encodedAlbum}"
+		elif album == "":
+			return "${mbidBaseUrl}?fmt=json&query=artist:${encodedArtist}"
+		else:
+			return "${mbidBaseUrl}?fmt=json&query=release:${encodedAlbum} AND artist:${encodedArtist}"
+	
 	
 	def RetrieveFullSizeImage(fullSizeCallbackParameter):
 		return fullSizeCallbackParameter;

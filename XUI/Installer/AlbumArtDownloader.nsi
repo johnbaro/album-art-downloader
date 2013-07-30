@@ -256,6 +256,9 @@ SectionGroup "Image Download Scripts"
 	SectionGroupEnd
 	
 	SectionGroup "Punk, Metal, Rock"
+		Section /o "absolutepunk.net"
+		  File "..\Scripts\Scripts\absolutepunk.boo"
+		SectionEnd
 		Section /o "Nuclear Blast"
 		  File "..\Scripts\Scripts\nuclearblast.boo"
 		SectionEnd
@@ -287,10 +290,10 @@ SectionGroup "Image Download Scripts"
 		  File "..\Scripts\Scripts\eclassical.boo"
 		SectionEnd
 		Section /o "The Classical Shop"
-		  File "..\Scripts\Scripts\theclassicalshop.boo.boo"
+		  File "..\Scripts\Scripts\theclassicalshop.boo"
 		SectionEnd
 		Section /o "Hyperion Records"
-		  File "..\Scripts\Scripts\hyperionrecords.boo.boo"
+		  File "..\Scripts\Scripts\hyperionrecords.boo"
 		SectionEnd
 	SectionGroupEnd
 
@@ -309,6 +312,12 @@ SectionGroup "Image Download Scripts"
 		SectionEnd
 		Section /o "Sound Station"
 		  File "..\Scripts\Scripts\soundstation.boo"
+		SectionEnd
+	SectionGroupEnd
+
+	SectionGroup "Singles"
+		Section /o "45world CD Singles"
+		  File "..\Scripts\Scripts\45worlds-cdsingles.boo"
 		SectionEnd
 	SectionGroupEnd
 

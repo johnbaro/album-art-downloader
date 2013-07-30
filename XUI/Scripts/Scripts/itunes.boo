@@ -12,7 +12,7 @@ class iTunes(AlbumArtDownloader.Scripts.IScript):
 				name += " (${CountryName})"
 			return name
 	Version as string:
-		get: return "0.3"
+		get: return "0.4"
 	Author as string:
 		get: return "Alex Vallat"
 	virtual protected CountryName as string:
@@ -44,8 +44,11 @@ class iTunes(AlbumArtDownloader.Scripts.IScript):
 			elif CheckResponse(imageUrlBase + "tif"): // Couldn't find full size .jpg, try .tif
 				fullSizeImageUrl = imageUrlBase + "tif"
 				extension = "tiff"
+			elif CheckResponse(imageUrlBase + "1200x1200-75.jpg"): // Couldn't find full size .jpg or .tif, fall back on 1200x1200
+				fullSizeImageUrl = imageUrlBase + "1200x1200-75.jpg"
+				extension = "jpg"
 			else:
-				// Couldn't find full size .jpg or .tif, fall back on 600x600
+				// Final fall back on 600x600
 				fullSizeImageUrl = imageUrlBase + "600x600-75.jpg"
 				extension = "jpg"
 			

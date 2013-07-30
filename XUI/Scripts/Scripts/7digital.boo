@@ -7,7 +7,7 @@ class sevendigital(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "7digital"
 	Version as string:
-		get: return "0.3"
+		get: return "0.4"
 	Author as string:
 		get: return "Alex Vallat"
 	def Search(artist as string, album as string, results as IScriptResults):
@@ -17,12 +17,21 @@ class sevendigital(AlbumArtDownloader.Scripts.IScript):
 		//Retrieve the search results page
 		searchResultsHtml as string = GetPage("http://www.7digital.com/releasesearchresult/index?pagesize=30&IsPagedRequest=true&search-type=Releases&page=0&search-term=" + EncodeUrl(artist + " " + album))
 		
-		matches = Regex("<img src=\"(?<image>http://cdn.7static.com/static/img/sleeveart/[^_]+)_50\\.jpg\"(?:.(?!title))+ title=\"(?<title>[^\"]+)\" href=\"(?<info>[^\"]+)\"", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResultsHtml)
+		matches = Regex("<img src=\"(?<image>http://cdn.7static.com/static/img/sleeveart/[^_]+)_50\\.jpg\"(?:.(?!title))+ title=\"(?<title>[^\"]+)\" href=\"(?<info>[^\"]+)\".+?\"popularity-value\"[^>]+>\\s*(?<score>[\\d\\.]+)", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResultsHtml)
 		
 		results.EstimatedCount = matches.Count
 		
+		cutOffScore as Single;
+
 		for match as Match in matches:
 			image = match.Groups["image"].Value;
+			score = Single.Parse(match.Groups["score"].Value, System.Globalization.CultureInfo.InvariantCulture);
+			if cutOffScore == 0:
+				cutOffScore = score / 3 * 2;
+
+			if score < cutOffScore:
+				return; // Don't bother with items who score less than 2/3 of the best score. Results are sorted by score
+
 			fullSize as string;
 			size as int;
 
@@ -39,7 +48,7 @@ class sevendigital(AlbumArtDownloader.Scripts.IScript):
 				fullSize = image + "_350.jpg"
 				size = 350;
 
-			results.Add(image + "_50.jpg", System.Web.HttpUtility.HtmlDecode(match.Groups["title"].Value), "http://7digital.com" + match.Groups["info"].Value, size, size, fullSize, CoverType.Front);
+			results.Add(image + "_50.jpg", System.Web.HttpUtility.HtmlDecode(match.Groups["title"].Value) + ": " + score.ToString(), "http://7digital.com" + match.Groups["info"].Value, size, size, fullSize, CoverType.Front);
 
 	def RetrieveFullSizeImage(fullSizeCallbackParameter):
 		return fullSizeCallbackParameter;
