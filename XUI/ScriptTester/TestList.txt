@@ -13,7 +13,7 @@ ArkivMusik	Chopin	Four Ballades
 Buy.com	Muse	The Resistance
 CD Baby	Girlyman	Everything's Easy
 ;CD Universe	Muse	The Resistance
-Cover-Paradies	Muse	The Resistance
+eCover.To (Cover-Paradies)	Muse	The Resistance
 Coveralia	Muse	The Resistance
 ;CoverIsland	Muse	The Resistance
 ;Darktown	Blink 182	Enema of The State
@@ -30,7 +30,7 @@ Metal Library	Onslaught	Power From Hell
 ;MusicMight	Onslaught	Power From Hell
 Psyshop	Aquafur	Fuzzy Emotions
 RevHQ	Ultra Violence	Brick Rain
-Yes24	Muse	The Resistance
+;Yes24	Muse	The Resistance
 YesAsia	Muse	The Resistance
 Archambault	Lady Gaga	The Fame Monster
 HMV Canada	<ignored>	Crazy Love
@@ -45,7 +45,7 @@ Qobuz	Muse	The Resistance
 ;GigaCrate	Muse	Starlight
 iTunes	Muse	The Resistance
 ;MioMusik	Muse	The Resistance
-SFR Music	Muse	The Resistance
+;SFR Music	Muse	The Resistance
 DJshop	Muse	The Resistance
 Mega Media	Turin Brakes	Ether Song
 Deezer	Muse	The Resistance
@@ -58,8 +58,8 @@ The Orchard	Menomena	Moms
 Amazon Audiobooks (.com)	Iain Banks	Stonemouth
 The Classical Shop	Brahms	Toccatas and Roses
 Hyperion Records	Gabrieli	Sacred Symphonies
-Musicbrainz	Muse	Absolution
+MusicBrainz	Muse	Absolution
 deejay.de	Isolee	Allowance
 absolutepunk.net	Muse	Absolution
-Bandcamp	Lake	No Wonder I
+bandcamp	Lake	No Wonder I
 45world CD Singles	Muse	Time is running out

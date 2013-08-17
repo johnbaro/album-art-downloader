@@ -1,3 +1,8 @@
+1.00 Added a new "group by" option: Category. This groups results by the category of the source they are from.
+	 Fixed scripts: AllCDCovers, buy.com, eCover.to (formerly Cover-Paradies), DJShop, Hyperion Records, Psyshop,
+					Take2, The Classical Shop
+	 Removed scripts: SFR Music	
+
 0.46 Fixed crash when specific sorts of corrupted image file are encountered
 	 Added option to Local Files Source to automatically set the minimum image size filter equal to the 
 	  largest image found by this source (so if you only want to find images bigger than those you already have,

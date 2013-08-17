@@ -558,6 +558,9 @@ namespace AlbumArtDownloader.Controls
 					//Group by source name
 					artPanelList.Items.GroupDescriptions.Add(new System.Windows.Data.PropertyGroupDescription("SourceName"));
 					break;
+				case Grouping.SourceCategory:
+					artPanelList.Items.GroupDescriptions.Add(new System.Windows.Data.PropertyGroupDescription("SourceCategory"));
+					break;
 				case Grouping.Type:
 					artPanelList.Items.GroupDescriptions.Add(new System.Windows.Data.PropertyGroupDescription("CoverType"));
 					break;

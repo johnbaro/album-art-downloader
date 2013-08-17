@@ -5,18 +5,19 @@ import System.Text.RegularExpressions
 import AlbumArtDownloader.Scripts
 import util
 
-class CoverParadies:
-	static DescriptiveImageTitles = true //Set this to False to prevent the type of image (Front, Back, CD, etc.) from being appended to the image titles
-	
-	static SourceName as string:
-		get: return "Cover-Paradies"
-	static SourceCreator as string:
+class eCoverTo(AlbumArtDownloader.Scripts.IScript):
+	Name as string:
+		get: return "eCover.to (Cover-Paradies)"
+	Author as string:
 		get: return "Alex Vallat"
-	static SourceVersion as string:
-		get: return "0.15"
-	static def GetThumbs(coverart,artist,album):
+	Version as string:
+		get: return "0.16"
+	def Search(artist as string, album as string, results as IScriptResults):
 		artist = StripCharacters("&.'\";:?!", artist)
 		album = StripCharacters("&.'\";:?!", album)
+
+		de = System.Globalization.CultureInfo.GetCultureInfo("de-DE") //Numbers are in DE culture (. for thousands separater, not for decimal point)
+		thousands = System.Globalization.NumberStyles.AllowThousands //Numbers have thousands separators.
 
 		resultMatches = Search("\"" + artist + " - " + album + "\"")
 
@@ -24,31 +25,26 @@ class CoverParadies:
 			// Try looser search terms
 			resultMatches = Search(artist + " " + album)
 
-		coverart.SetCountEstimate(resultMatches.Count * 3) //Estimate 3 covers per result. Results may vary.
+		results.EstimatedCount = resultMatches.Count * 3; //Estimate 3 covers per result. Results may vary.
 		
 		for resultMatch as Match in resultMatches:
 			//Get the album page
 			albumPageUri = String.Format("http://ecover.to/?Module=ViewEntry&ID={0}", resultMatch.Groups["ID"].Value)
 			albumPage = GetPage(albumPageUri)
 			
-			//Get the title for that album
-			titleRegex = Regex("<title>eCover.to - (?<title>[^<]+)<", RegexOptions.Singleline)
-			title = titleRegex.Matches(albumPage)[0].Groups["title"].Value //Expecting only one match
-			
 			//Get all the images for the album
-			imagesRegex = Regex("ID=(?<fullSizeID>\\d+)\"><img[^>]+?src=\"(?<thumb>[^\"]+)\" alt=\"(?<imageName>[^\"]+)\".+? (?<width>[\\d.]+) x (?<height>[\\d.]+)px", RegexOptions.Singleline)
+			imagesRegex = Regex("<img src=\"(?<thumbnail>[^\"]+?(?<id>\\d+)\\.jpg)\" alt=\"(?<title>[^\"]+?) - (?<type>[^-\"]+)\".+?<div class=\"Info\"[^>]+>[^@]+@ (?<width>[\\.\\d]+)x(?<height>[\\.\\d]+)px", RegexOptions.Singleline | RegexOptions.IgnoreCase)
 			imageMatches = imagesRegex.Matches(albumPage)
 			
 			for imageMatch as Match in imageMatches:
-				coverTypeString = imageMatch.Groups["imageName"].Value
-				if(DescriptiveImageTitles and imageMatches.Count > 1):
-					imageTitle = String.Format("{0} - {1}", title, coverTypeString)
-				else:
-					imageTitle = title
-				
-				de = System.Globalization.CultureInfo.GetCultureInfo("de-DE") //Numbers are in DE culture (. for thousands separater, not for decimal point)
-				thousands = System.Globalization.NumberStyles.AllowThousands //Numbers have thousands separators.
-				coverart.Add(GetPageStream(imageMatch.Groups["thumb"].Value, "http://ecover.to"), imageTitle, albumPageUri, Int32.Parse(imageMatch.Groups["width"].Value, thousands, de), Int32.Parse(imageMatch.Groups["height"].Value, thousands, de), imageMatch.Groups["fullSizeID"].Value, string2coverType(coverTypeString))		
+				thumbnail = imageMatch.Groups["thumbnail"].Value;
+				id = imageMatch.Groups["id"].Value;
+				title = imageMatch.Groups["title"].Value;
+				type = GetCoverType(imageMatch.Groups["type"].Value);
+				width = Int32.Parse(imageMatch.Groups["width"].Value, thousands, de);
+				height = Int32.Parse(imageMatch.Groups["height"].Value, thousands, de);
+			
+				results.Add(thumbnail, title, albumPageUri, width, height, id, type)
 
 	static def Search(query):
 		searchResults = GetPage(String.Format("http://ecover.to/?Module=ExtendedSearch&StartSearch=true&PagePos=0&SearchString={0}&StringMode=Wild&DisplayStyle=Text&HideDetails=Yes&PageLimit=1000&SektionID-2=Yes", EncodeUrl(query)))
@@ -77,22 +73,20 @@ class CoverParadies:
 		ensure:
 			servicePoint.Expect100Continue = prevValue;
 
-			
-	static def GetResult(param):
-		return String.Format("http://ecover.to/res/exe/GetElement.php?ID={0}", param)
+	def RetrieveFullSizeImage(id):
+		return "http://ecover.to/res/exe/GetElement.php?ID=" + id
 		
-	static def string2coverType(typeString as string):
-		if(string.Compare(typeString,"back",true)==0):
-			return CoverType.Back;
-		if(string.Compare(typeString,"cd",true)==0):
-			return CoverType.CD;
-		if(string.Compare(typeString,"front",true)==0):
+	static def GetCoverType(typeString):
+		typeString = typeString.ToLower()
+		if(typeString.Equals("front")):
 			return CoverType.Front;
-		if(string.Compare(typeString,"inlay",true)==0):
-			return CoverType.Inlay;
-		if(string.Compare(typeString,"inside",true)==0):
+		if(typeString.Equals("back")):
+			return CoverType.Back;
+		if(typeString.StartsWith("cd")):
+			return CoverType.CD;
+		if(typeString.StartsWith("inside")):
 			return CoverType.Inside;
-		if(string.Compare(typeString,"booklet",true)==0):
+		if(typeString.StartsWith("booklet")):
 			return CoverType.Booklet;
-		else:
-			return CoverType.Unknown;	
+		
+		return CoverType.Unknown;

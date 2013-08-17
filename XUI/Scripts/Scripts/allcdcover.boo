@@ -10,7 +10,7 @@ class AllCdCovers(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "AllCdCover"
 	Version as string:
-		get: return "0.4"
+		get: return "0.5"
 	Author as string:
 		get: return "daju, Alex Vallat"
 	
@@ -40,7 +40,7 @@ class AllCdCovers(AlbumArtDownloader.Scripts.IScript):
 			sizeY = int.Parse(infoMatch.Groups["sizeY"].Value)
 			sizeKB = infoMatch.Groups["sizeKB"].Value
 
-			thumRegex = Regex("<div class=\"selectedCoverThumb\">\\s*<img alt=\"(?<typeNameThree>[^\"]+)\" class=\"coverThumb\" src=\"(?<thumbUrl>[^\"]+)\"\\s*[/]?>\\s*<br\\s*[/]?>");//\\s*<a href=\"(?<fullUrl>[^\"]+)\">
+			thumRegex = Regex("<div class=\"selectedCoverThumb\">\\s*<img alt=\"(?<typeNameThree>[^\"]+)\" class=\"coverThumb\" src=\"(?<thumbUrl>[^\"]+)\"");
 			thumMatch = thumRegex.Match(singleResultPage)
 			thumbUrlPart = thumMatch.Groups["thumbUrl"].Value
 			thumbUrl = Uri(rootUri, thumbUrlPart).AbsoluteUri

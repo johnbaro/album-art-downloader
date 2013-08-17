@@ -122,6 +122,7 @@ Options:
                size (may be abbreviated to s)
                area (may be abbreviated to a)
                source (may be abbreviated to o)
+			   category (may be abbreviated to c)
                type (may be abbreviated to t)
 			   page (may be abbreviated to p)
 

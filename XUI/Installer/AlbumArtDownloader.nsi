@@ -1,5 +1,5 @@
 !define PRODUCT_NAME "Album Art Downloader XUI"
-!define PRODUCT_VERSION "0.46"
+!define PRODUCT_VERSION "1.00"
 !define PRODUCT_WEB_SITE "http://sourceforge.net/projects/album-art"
 !define PRODUCT_SUPPORT "http://www.hydrogenaudio.org/forums/index.php?showtopic=57392"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\AlbumArt.exe"
@@ -161,7 +161,7 @@ SectionGroup "Image Download Scripts"
 		Section "Coveralia"
 		  File "..\Scripts\Scripts\coveralia.boo"
 		SectionEnd
-		Section "Cover-Paradies"
+		Section "eCover.to (formerly Cover-Paradies)"
 		  File "..\Scripts\Scripts\cover-paradies.boo"
 		SectionEnd
 		Section "eMusic"
@@ -217,9 +217,10 @@ SectionGroup "Image Download Scripts"
 		#Section "MioMusik"
 		#  File "..\Scripts\Scripts\miomusik.boo"
 		#SectionEnd
-		Section "SFR Music"
-		  File "..\Scripts\Scripts\sfr-music.boo"
-		SectionEnd
+		#SFR Music downloads shut down
+		#Section "SFR Music"
+		#  File "..\Scripts\Scripts\sfr-music.boo"
+		#SectionEnd
 		Section "Archambault"
 		  File "..\Scripts\Scripts\archambault.boo"
 		SectionEnd

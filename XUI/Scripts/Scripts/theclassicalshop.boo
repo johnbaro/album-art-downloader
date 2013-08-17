@@ -7,7 +7,7 @@ class TheClassicalShop(AlbumArtDownloader.Scripts.IScript, ICategorised):
 	Name as string:
 		get: return "The Classical Shop"
 	Version as string:
-		get: return "0.1"
+		get: return "0.2"
 	Author as string:
 		get: return "Alex Vallat"
 	Category as string:
@@ -15,9 +15,10 @@ class TheClassicalShop(AlbumArtDownloader.Scripts.IScript, ICategorised):
 	def Search(artist as string, album as string, results as IScriptResults):
 		artist = StripCharacters("&.'\";:?!", artist)
 		album = StripCharacters("&.'\";:?!", album)
+		query = artist + " " + album;
 
 		//Retrieve the search results
-		searchResultsHtml as string = GetPage("http://www.theclassicalshop.net/SearchResults2.aspx?zoom_query=\"${EncodeUrl(artist)}\" \"${EncodeUrl(album)}\"&zoom_per_page=24")
+		searchResultsHtml as string = GetPage("http://www.theclassicalshop.net/SearchResults2.aspx?zoom_query=${EncodeUrl(query)}&zoom_per_page=24")
 		
 		matches = Regex("src=\"(?<thumb>[^\"]+?mages/(?<id>[^\"]+?).jpeg)\"\\s[^>]+?class=\"result_image\".+?class=\"result_title\".+?\\shref=\"(?<url>[^\"]+)\"[^>]+>(?<title>[^<]+)", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResultsHtml)
 		

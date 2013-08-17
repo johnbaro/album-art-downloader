@@ -7,7 +7,7 @@ class Take2(AlbumArtDownloader.Scripts.IScript, ICategorised):
 	Name as string:
 		get: return "Take2"
 	Version as string:
-		get: return "0.4"
+		get: return "0.5"
 	Author as string:
 		get: return "Alex Vallat"
 	Category as string:
@@ -16,15 +16,23 @@ class Take2(AlbumArtDownloader.Scripts.IScript, ICategorised):
 		artist = StripCharacters("&.'\";:?!", artist)
 		album = StripCharacters("&.'\";:?!", album)
 
+		query = ""
+
+		if (artist.Length!=0):
+			query += EncodeUrl("\"${artist}\" ")
+		if (album.Length!=0):
+			query += EncodeUrl("\"${album}\"")
+
 		//Retrieve the search results page
-		searchResultsHtml as string = GetPage("http://www.takealot.com/search?type=5&qsearch=" + EncodeUrl(artist + " " + album))
+		searchResultsHtml as string = GetPage("http://www.takealot.com/music/all?qsearch=" + query);
 		
-		matches = Regex("<a href=\"(?<info>[^\"]+)\">\\s*<noscript>\\s*<img src=\"(?<thumbnail>http://media(?<server>\\d?)\\.takealot\\.com/covers/(?<albumId>[^/]+)/cover-serp\\.jpg\\?(?<coverId>[^\"]+))\" alt=\"(?<title>[^\"]+)\"", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResultsHtml)
+		matches = Regex("<a href=\"(?<info>[^\"]+)\"[^>]*>\\s*<noscript>\\s*<img [^>]+?src=\"(?<image>http://media\\d?\\.takealot\\.com/covers/[^\"-]+)-fixedserp\\.jpg\" alt=\"(?<title>[^\"]+)\"", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResultsHtml)
 		
 		results.EstimatedCount = matches.Count
 		
 		for match as Match in matches:
-			results.Add(match.Groups["thumbnail"].Value, System.Web.HttpUtility.HtmlDecode(match.Groups["title"].Value), "http://www.takealot.com" + match.Groups["info"].Value, -1, -1, "http://media" + match.Groups["server"].Value + ".takealot.com/covers/" + match.Groups["albumId"].Value + "/cover-full.jpg?" + match.Groups["coverId"].Value, CoverType.Front);
+			image = match.Groups["image"].Value
+			results.Add(image + "-preview.jpg", System.Web.HttpUtility.HtmlDecode(match.Groups["title"].Value), "http://www.takealot.com" + match.Groups["info"].Value, -1, -1, image + "-full.jpg", CoverType.Front);
 
 	def RetrieveFullSizeImage(fullSizeCallbackParameter):
 		return fullSizeCallbackParameter;

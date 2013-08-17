@@ -100,7 +100,7 @@
     <None Include="Scripts\coverlandia-official.boo" />
     <None Include="Scripts\nuclearblast.boo" />
     <None Include="Scripts\Archived\miomusik.boo" />
-    <None Include="Scripts\sfr-music.boo" />
+    <None Include="Scripts\Archived\sfr-music.boo" />
     <None Include="Scripts\Archived\gigacrate.boo" />
     <None Include="Scripts\qobuz.boo" />
     <None Include="Scripts\emusic.boo" />

@@ -298,6 +298,7 @@
 				<ComboBoxItem>None</ComboBoxItem>
 				<ComboBoxItem>Local</ComboBoxItem>
 				<ComboBoxItem>Source</ComboBoxItem>
+				<ComboBoxItem>Category</ComboBoxItem>
 				<ComboBoxItem>Type</ComboBoxItem>
                 <ComboBoxItem>Size</ComboBoxItem>
                 <ComboBoxItem>Page</ComboBoxItem>

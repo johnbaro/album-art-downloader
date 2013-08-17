@@ -439,6 +439,10 @@ namespace AlbumArtDownloader
 								case "o":
 									grouping = Grouping.Source;
 									break;
+								case "category":
+								case "c":
+									grouping = Grouping.SourceCategory;
+									break;
 								case "type":
 								case "t":
 									grouping = Grouping.Type;

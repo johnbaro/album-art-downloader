@@ -442,6 +442,11 @@ namespace AlbumArtDownloader
 			get { return mSource.Name; }
 		}
 
+		public string SourceCategory
+		{
+			get { return mSource.Category; }
+		}
+
 		private bool mIsCustomFilePath;
 		public bool IsCustomFilePath
 		{
