@@ -82,6 +82,7 @@
     <None Include="Scripts\bandcamp.boo" />
     <None Include="Scripts\Archived\file-drop-target.boo" />
     <None Include="Scripts\45worlds-cdsingles.boo" />
+    <None Include="Scripts\google-play.boo" />
     <None Include="Scripts\fanarttv.boo" />
     <None Include="Scripts\musicbrainz.boo" />
     <None Include="Scripts\hyperionrecords.boo" />

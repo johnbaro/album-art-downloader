@@ -1,3 +1,5 @@
+import System.IO
+import System.Net
 import AlbumArtDownloader.Scripts
 import util
 
@@ -5,26 +7,40 @@ class GoogleImage(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "GoogleImage"
 	Version as string:
-		get: return "0.13"
+		get: return "0.15"
 	Author as string:
 		get: return "Alex Vallat"
 	def Search(artist as string, album as string, results as IScriptResults):
 		artist = StripCharacters("&.'\";:?!", artist)
 		album = StripCharacters("&.'\";:?!", album)
 
-		imagesHtml = GetPageIsoLatin1("http://images.google.com/images?gbv=1&q=" + EncodeUrl(artist + " " + album))
+		url = "https://www.google.com/images?q=" + EncodeUrl(artist + " " + album) + "&gbv=2"
 
-		imageMatches = Regex("/imgres\\?imgurl=(?<fullSize>[^&]+)&amp;imgrefurl=(?<infoUri>[^&]+)[^>]+?&amp;h=(?<height>\\d+)&amp;w=(?<width>\\d+)[^>]+?&amp;tbnid=(?<tbnid>[^&]+).+?<\\/cite><br\\s*\\/?>(?<title>.+?)<br", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(imagesHtml)
+		request = System.Net.HttpWebRequest.Create(url) as System.Net.HttpWebRequest
+		request.Accept = "text/html, application/xhtml+xml, */*"
+		request.AutomaticDecompression = DecompressionMethods.GZip
+		request.Headers.Add("Accept-Language","en-GB")
+		request.UserAgent = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; WOW64; Trident/6.0)"
+
+		imagesHtml = StreamReader(request.GetResponse().GetResponseStream()).ReadToEnd()
+
+		imageMatches = Regex("href=\"http://www\\.google\\.com/imgres\\?(?<params>[^\"]+).+?\"s\":\"(?<title>[^\"]+)\"", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(imagesHtml)
 		
 		results.EstimatedCount = imageMatches.Count
 		
+		paramsMatcher = Regex("(?<name>[^=]+)=(?<value>.+?)(&amp;|$)")
 		for imageMatch as Match in imageMatches:
-			title = System.Web.HttpUtility.HtmlDecode(/<\/?b>/.Replace(imageMatch.Groups["title"].Value, ""))
-			fullSize = imageMatch.Groups["fullSize"].Value
-			infoUri = imageMatch.Groups["infoUri"].Value
-			height = System.Int32.Parse(imageMatch.Groups["height"].Value)
-			width = System.Int32.Parse(imageMatch.Groups["width"].Value)
-			tbnid = imageMatch.Groups["tbnid"].Value
+			paramsMatches = paramsMatcher.Matches(imageMatch.Groups["params"].Value);
+			params = {}
+			for paramsMatch as Match in paramsMatches:
+				params[paramsMatch.Groups["name"].Value] = paramsMatch.Groups["value"].Value
+
+			title = System.Web.HttpUtility.HtmlDecode(imageMatch.Groups["title"].Value.Replace("\u0026","&"))
+			fullSize = params["imgurl"]
+			infoUri = params["imgrefurl"]
+			height = System.Int32.Parse(params["h"])
+			width = System.Int32.Parse(params["w"])
+			tbnid = params["tbnid"]
 			
 			results.Add("http://tbn0.google.com/images?q=tbn:${tbnid}", title, infoUri, width, height, fullSize);
 

@@ -55,7 +55,8 @@
   <Script Name="eMusic" URI="emusic.boo" Version="0.5" />
   <Script Name="esenshop" URI="esenshop.boo" Version="0.1" Category="Turkish" />
   <Script Name="fanart.tv" URI="fanarttv.boo" Version="0.3" />
-  <Script Name="GoogleImage" URI="google.boo" Version="0.13" />
+  <Script Name="Google Play Music" URI="google-play.boo" Version="0.1" />
+  <Script Name="GoogleImage" URI="google.boo" Version="0.15" />
   <Script Name="hitparade.ch" URI="hitparade.boo" Version="0.3" />
   <Script Name="HMV Canada" URI="hmv-canada.boo" Version="0.2" Category="Canadian" />
   <Script Name="Hyperion Records" URI="hyperionrecords.boo" Version="0.2" Category="Classical" />
@@ -69,7 +70,7 @@
   <Script Name="Mega Media" URI="megamedia.boo" Version="0.2" Category="Netherlands" />
   <Script Name="Encyclopaedia Metallum" URI="metal-archives.boo" Version="0.6" Category="Punk, Metal, Rock" />
   <Script Name="Metal Library" URI="metallibrary.boo" Version="0.3" Category="Punk, Metal, Rock" />
-  <Script Name="MusicBrainz" URI="musicbrainz.boo" Version="0.6" />
+  <Script Name="MusicBrainz" URI="musicbrainz.boo" Version="0.7" />
   <Script Name="Nuclear Blast" URI="nuclearblast.boo" Version="0.1" Category="Punk, Metal, Rock" />
   <Script Name="Psyshop" URI="psyshop.boo" Version="0.6" Category="Dance, Club, Electronic" />
   <Script Name="Qobuz" URI="qobuz.boo" Version="0.1" />

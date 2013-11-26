@@ -48,7 +48,7 @@ class sevendigital(AlbumArtDownloader.Scripts.IScript):
 				fullSize = image + "_350.jpg"
 				size = 350;
 
-			results.Add(image + "_50.jpg", System.Web.HttpUtility.HtmlDecode(match.Groups["title"].Value) + ": " + score.ToString(), "http://7digital.com" + match.Groups["info"].Value, size, size, fullSize, CoverType.Front);
+			results.Add(image + "_50.jpg", System.Web.HttpUtility.HtmlDecode(match.Groups["title"].Value), "http://7digital.com" + match.Groups["info"].Value, size, size, fullSize, CoverType.Front);
 
 	def RetrieveFullSizeImage(fullSizeCallbackParameter):
 		return fullSizeCallbackParameter;
