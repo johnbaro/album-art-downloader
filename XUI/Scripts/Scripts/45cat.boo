@@ -7,7 +7,7 @@ class FourtyFiveCat(AlbumArtDownloader.Scripts.IScript, ICategorised):
 	Name as string:
 		get: return "45cat"
 	Version as string:
-		get: return "0.5"
+		get: return "0.6"
 	Author as string:
 		get: return "Alex Vallat"
 	Category as string:
@@ -30,7 +30,7 @@ class FourtyFiveCat(AlbumArtDownloader.Scripts.IScript, ICategorised):
 			titleMatch = Regex("<b>A</b></td><td>(?<artist>[^<]+)</td>\\s*<td>(?<title>[^<]+)</td>", RegexOptions.Singleline | RegexOptions.IgnoreCase).Match(detailsHtml)
 			title = titleMatch.Groups["artist"].Value + " - " + titleMatch.Groups["title"].Value
 
-			imageMatches = Regex("<img onmouseover=\"Tip\\(\\s*'<b>Description:</b> (?<covertype>[^<]+)<.+?src=\"http://images\\.45cat\\.com/(?<image>.+?)-s\\.jpg\"", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(detailsHtml)
+			imageMatches = Regex("<img\\s[^>]*?onmouseover=\"Tip\\(\\s*'<b>Description:</b> (?<covertype>[^<]+)<.+?src=\"http://images\\.45cat\\.com/(?<image>.+?)-s\\.jpg\"", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(detailsHtml)
 			for imageMatch as Match in imageMatches:
 				image = imageMatch.Groups["image"].Value
 				results.Add("http://images.45cat.com/${image}-s.jpg", title, detailsUrl, -1, -1, "http://images.45cat.com/${image}.jpg", GetCoverType(imageMatch.Groups["covertype"].Value))

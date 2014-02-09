@@ -11,7 +11,7 @@ class Psyshop:
 	static SourceCreator as string:
 		get: return "Alex Vallat"
 	static SourceVersion as string:
-		get: return "0.6"
+		get: return "0.7"
 	static SourceCategory as string:
 		get: return "Dance, Club, Electronic"
 	static def GetThumbs(coverart,artist,album):
@@ -23,7 +23,7 @@ class Psyshop:
 		resultsPage = Post("http://www.psyshop.com/psyfctn/psysrch", String.Format("boolean=AND&case=INSENSITIVE&cd=TRUE&dw=TRUE&other=TRUE&terms={0}", EncodeUrl(query)))
 		
 		//Get results
-		resultsRegex = Regex("<A HREF=\"(?<url>/shop/CDs/[^/]+/(?<id>[^\\.]+).html)\"><DIV CLASS=\"n\">(?<title>[^<]+)<", RegexOptions.Multiline | RegexOptions.IgnoreCase)
+		resultsRegex = Regex("<DIV CLASS=\"n\"><A HREF=\"(?<url>/shop/CDs/[^/]+/(?<id>[^\\.]+).html)\">(?<title>[^<]+)<", RegexOptions.Multiline | RegexOptions.IgnoreCase)
 		resultMatches = resultsRegex.Matches(resultsPage)
 		coverart.SetCountEstimate(resultMatches.Count)
 		

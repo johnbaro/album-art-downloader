@@ -7,7 +7,7 @@ class Kalahari(AlbumArtDownloader.Scripts.IScript, ICategorised):
 	Name as string:
 		get: return "Kalahari"
 	Version as string:
-		get: return "0.6"
+		get: return "0.7"
 	Author as string:
 		get: return "Alex Vallat"
 	Category as string:
@@ -16,37 +16,19 @@ class Kalahari(AlbumArtDownloader.Scripts.IScript, ICategorised):
 		artist = StripCharacters("&.'\";:?!", artist)
 		album = StripCharacters("&.'\";:?!", album)
 
-		//Retrieve the search results json
-		content = "{'queryString':'" + Base64("0|FreeText_Music_English|${artist} ${album} ||19738|0|1|25|||||||||||") + "', 'commandKey':'undefined','commandValue':'undefined','shopperId':'undefined','referrer':'/','sessionId':'undefined'}";
-		request = System.Net.HttpWebRequest.Create("http://www.kalahari.com/common/searchservice.asmx/ExecuteSearch");
-		request.Method = "POST";
-		request.ContentType = "application/json; charset=UTF-8";
-		request.Headers.Add("Accept-Encoding","")
-		bytes = System.Text.Encoding.UTF8.GetBytes(content);
-		request.ContentLength = bytes.Length;
-		stream = request.GetRequestStream();
-		stream.Write(bytes, 0, bytes.Length);
-		stream.Close();
-		response = request.GetResponse()
-		streamresponse = response.GetResponseStream();
-		searchResults = System.IO.StreamReader(streamresponse).ReadToEnd();
+		query = EncodeUrl(album + " " + artist)
 
-		//Very basic de-jsoning
-		searchResults = Regex.Match(searchResults, "\"ProductHtml\":\"(.*?(?<!\\\\))\"").Groups[1].Value;
-		searchResults = searchResults.Replace("\\u003e", ">").Replace("\\u003c", "<").Replace("\\\"", "\"");
+		searchResults = GetPage("http://www.kalahari.com/s;?Ntt=${query}&N=4294966903")
 
 		//Find album info
-		matches = Regex("<a\\s[^>]*?href=\"(?<info>[^\"]+)\"[^>]+?title=\"(?<title>[^\"]+)\"[^>]*>\\s*<img\\s[^>]*?src=\"(?<image>[^\"]+?)0\\.jpg\"", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResults)
+		matches = Regex("<a\\s+href=\"(?<info>[^\"]+)\"[^>]*>\\s*<img\\salt=\"(?<title>[^\"]+)\"\\s+src=\"(?<image>[^\"]+?)0\\.jpg", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResults)
 		
 		results.EstimatedCount = matches.Count
 		
 		for match as Match in matches:
 			image = match.Groups["image"].Value;
 
-			results.Add(image + "1.jpg", System.Web.HttpUtility.HtmlDecode(match.Groups["title"].Value), "http://www.kalahari.com" + match.Groups["info"].Value, -1, -1, image + "2.jpg", CoverType.Front);
+			results.Add(image + "1.jpg", match.Groups["title"].Value, "http://www.kalahari.com" + match.Groups["info"].Value, -1, -1, image + "2.jpg", CoverType.Front);
 
 	def RetrieveFullSizeImage(fullSizeCallbackParameter):
 		return fullSizeCallbackParameter;
-		
-	def Base64(value):
-		return System.Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(value))

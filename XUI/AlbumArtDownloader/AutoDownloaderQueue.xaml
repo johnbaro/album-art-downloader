@@ -3,7 +3,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:local="clr-namespace:AlbumArtDownloader"
     xmlns:controls="clr-namespace:AlbumArtDownloader.Controls"
-
+	xmlns:gl="clr-namespace:System.Globalization;assembly=mscorlib"
+	
     x:Class="AlbumArtDownloader.AutoDownloaderQueue"
     
     DataContext="{Binding RelativeSource={RelativeSource Self}}"
@@ -147,6 +148,14 @@
 				<controls:SortableGridViewColumn.CellTemplate>
 					<DataTemplate>
 						<TextBlock Text="{Binding Path=ArtFileSize, Converter={StaticResource mFileSizeConverter}}"
+								   Style="{StaticResource OnlyWithArtPresent}"/>
+					</DataTemplate>
+				</controls:SortableGridViewColumn.CellTemplate>
+			</controls:SortableGridViewColumn>
+			<controls:SortableGridViewColumn Header="Modified" SortPropertyName="ArtFileDate" Width="110" IsVisible="False">
+				<controls:SortableGridViewColumn.CellTemplate>
+					<DataTemplate>
+						<TextBlock Text="{Binding ArtFileDate, StringFormat=g, ConverterCulture={x:Static gl:CultureInfo.CurrentCulture}}"
 								   Style="{StaticResource OnlyWithArtPresent}"/>
 					</DataTemplate>
 				</controls:SortableGridViewColumn.CellTemplate>

@@ -1,5 +1,5 @@
 !define PRODUCT_NAME "Album Art Downloader XUI"
-!define PRODUCT_VERSION "1.00"
+!define PRODUCT_VERSION "1.01"
 !define PRODUCT_WEB_SITE "http://sourceforge.net/projects/album-art"
 !define PRODUCT_SUPPORT "http://www.hydrogenaudio.org/forums/index.php?showtopic=57392"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\AlbumArt.exe"
@@ -296,9 +296,9 @@ SectionGroup "Image Download Scripts"
 		Section /o "The Classical Shop"
 		  File "..\Scripts\Scripts\theclassicalshop.boo"
 		SectionEnd
-		Section /o "Hyperion Records"
-		  File "..\Scripts\Scripts\hyperionrecords.boo"
-		SectionEnd
+#		Section /o "Hyperion Records"
+#		  File "..\Scripts\Scripts\hyperionrecords.boo"
+#		SectionEnd
 	SectionGroupEnd
 
 	SectionGroup "Reggae"
@@ -355,11 +355,11 @@ SectionGroup "Image Download Scripts"
 		SectionEnd
 	SectionGroupEnd
 
-	SectionGroup "Netherlands"
-		Section /o "Mega Media"
-		  File "..\Scripts\Scripts\megamedia.boo"
-		SectionEnd
-	SectionGroupEnd
+#	SectionGroup "Netherlands"
+#		Section /o "Mega Media"
+#		  File "..\Scripts\Scripts\megamedia.boo"
+#		SectionEnd
+#	SectionGroupEnd
 
 	SectionGroup "Turkish"
 		Section /o "esenshop"

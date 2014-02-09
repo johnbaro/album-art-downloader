@@ -125,6 +125,23 @@ namespace AlbumArtDownloader
 			}
 		}
 
+		/// <summary>
+		/// The art file last modified date in bytes, or null if none has been found
+		/// </summary>
+		private DateTime? mArtFileDate;
+		public DateTime? ArtFileDate
+		{
+			get { return mArtFileDate; }
+			set
+			{
+				if (value != mArtFileDate)
+				{
+					mArtFileDate = value;
+					NotifyPropertyChanged("ArtFileDate");
+				}
+			}
+		}
+
 		private ArtFileStatus mArtFileStatus;
 		public ArtFileStatus ArtFileStatus
 		{
@@ -160,6 +177,11 @@ namespace AlbumArtDownloader
 					var embeddedArt = EmbeddedArtHelpers.GetEmbeddedArt(filePath);
 					if (embeddedArt != null)
 					{
+						int ignored;
+						string unembeddedFilePath;
+						EmbeddedArtHelpers.SplitToFilenameAndIndex(filePath, out unembeddedFilePath, out ignored);
+
+						ArtFileDate = File.GetLastWriteTime(unembeddedFilePath);
 						ArtFileSize = embeddedArt.Data.Count;
 
 						using (var dataStream = new MemoryStream(embeddedArt.Data.Data, false))
@@ -175,6 +197,7 @@ namespace AlbumArtDownloader
 					//Ignore exceptions when reading the embedded artwork; it's not important at this stage
 					ArtFileSize = 0;
 					ArtFileWidth = ArtFileHeight = 0;
+					ArtFileDate = null;
 				}
 			}
 			else
@@ -182,12 +205,15 @@ namespace AlbumArtDownloader
 				//Not an embedded image, but an image file itself
 				try
 				{
-					ArtFileSize = new FileInfo(filePath).Length;
+					var fileInfo = new FileInfo(filePath);
+					ArtFileSize = fileInfo.Length;
+					ArtFileDate = fileInfo.LastWriteTime;
 				}
 				catch (Exception)
 				{
-					//Ignore exceptions when reading the filesize it's not important
+					//Ignore exceptions when reading the filesize and date it's not important
 					ArtFileSize = 0;
+					ArtFileDate = null;
 				}
 
 				//Attempt to get the image dimesions

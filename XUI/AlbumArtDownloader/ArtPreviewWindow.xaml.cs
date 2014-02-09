@@ -256,7 +256,7 @@ namespace AlbumArtDownloader
 		}
 		#endregion
 
-		private void ZoomToFit(object sender, EventArgs e)
+		private void ZoomToFit(object sender, System.Windows.Data.DataTransferEventArgs e)
 		{
 			if (AlbumArt != null && AlbumArt.Image != null && !Double.IsNaN(AlbumArt.Image.PixelWidth) && !Double.IsNaN(AlbumArt.Image.PixelHeight))
 			{

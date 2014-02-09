@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <?xml-stylesheet type="text/xsl" href="Updates.xsl"?>
 <Updates BaseURI="http://album-art.sourceforge.net/scripts/">
-  <Application Version="1.0.0.0" Name="Album Art Downloader XUI v1.0" URI="https://sourceforge.net/project/platformdownload.php?group_id=187008" />
+  <Application Version="1.0.1.0" Name="Album Art Downloader XUI v1.0.1" URI="https://sourceforge.net/project/platformdownload.php?group_id=187008" />
   <Script Name="45cat" URI="45cat.boo" Version="0.5" Category="LP Vinyl" />
   <Script Name="45world CD Singles" URI="45worlds-cdsingles.boo" Version="0.1" Category="Singles" />
   <Script Name="7digital" URI="7digital.boo" Version="0.4" />
@@ -47,7 +47,7 @@
   <Script Name="Coverlandia (Official)" URI="coverlandia-official.boo" Version="0.2" />
   <Script Name="Coverlandia" URI="coverlandia.boo" Version="0.2" Category="Fan-made covers" />
   <Script Name="deejay.de" URI="deejay.boo" Version="0.4" />
-  <Script Name="Deezer" URI="deezer.boo" Version="0.4" />
+  <Script Name="Deezer" URI="deezer.boo" Version="0.6" />
   <Script Name="Discogs" URI="discogs.boo" Version="0.12" />
   <Script Name="DJshop" URI="djshop.boo" Version="0.3" />
   <Script Name="EB Reggae" URI="ebreggae.boo" Version="0.2" Category="Reggae" />
@@ -70,7 +70,7 @@
   <Script Name="Mega Media" URI="megamedia.boo" Version="0.2" Category="Netherlands" />
   <Script Name="Encyclopaedia Metallum" URI="metal-archives.boo" Version="0.6" Category="Punk, Metal, Rock" />
   <Script Name="Metal Library" URI="metallibrary.boo" Version="0.3" Category="Punk, Metal, Rock" />
-  <Script Name="MusicBrainz" URI="musicbrainz.boo" Version="0.7" />
+  <Script Name="MusicBrainz" URI="musicbrainz.boo" Version="0.9" />
   <Script Name="Nuclear Blast" URI="nuclearblast.boo" Version="0.1" Category="Punk, Metal, Rock" />
   <Script Name="Psyshop" URI="psyshop.boo" Version="0.6" Category="Dance, Club, Electronic" />
   <Script Name="Qobuz" URI="qobuz.boo" Version="0.1" />

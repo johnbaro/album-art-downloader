@@ -12,7 +12,7 @@ class Deezer(AlbumArtDownloader.Scripts.IScript):
 	Author as string:
 		get: return "Alex Vallat"
 	Version as string:
-		get: return "0.4"
+		get: return "0.6"
 	def Search(artist as string, album as string, results as IScriptResults):
 		artist = StripCharacters("&.'\";:?!", artist)
 		album = StripCharacters("&.'\";:?!", album)
@@ -40,10 +40,22 @@ class Deezer(AlbumArtDownloader.Scripts.IScript):
 
 				match = imageIdRegex.Match(thumbnail)
 				
-				results.Add(thumbnail, title, album.link or String.Empty, -1, -1, match.Groups["id"].Value, CoverType.Front, "png")
+				results.Add(thumbnail, title, album.link or String.Empty, 1400, 1400, match.Groups["id"].Value, CoverType.Front, "png")
 
 	def RetrieveFullSizeImage(id):
-		return "http://cdn-images.deezer.com/images/cover/${id}/0x0-000000-100-0-0.png";
+		for size in range(1400, 200, -200):
+			imageStream = TryGetImageStream("http://cdn-images.deezer.com/images/cover/${id}/${size}x${size}-000000-0-0-0.png")
+			if imageStream != null:
+				return imageStream
+		
+		return null
+
+	def TryGetImageStream(url):
+		request as System.Net.HttpWebRequest = System.Net.HttpWebRequest.Create(url)
+		try:
+			return request.GetResponse().GetResponseStream()
+		except e as System.Net.WebException:
+			return null
 
 	class SearchResults:
 		public data as (Album)

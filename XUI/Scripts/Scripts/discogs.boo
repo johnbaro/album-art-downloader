@@ -13,7 +13,7 @@ class Discogs(AlbumArtDownloader.Scripts.IScript):
 	Author as string:
 		get: return "Alex Vallat"
 	Version as string:
-		get: return "0.12"
+		get: return "0.13"
 	def Search(artist as string, album as string, results as IScriptResults):
 		//artist = StripCharacters("&.'\";:?!", artist)
 		//album = StripCharacters("&.'\";:?!", album)
@@ -36,10 +36,10 @@ class Discogs(AlbumArtDownloader.Scripts.IScript):
 				if image.type == "primary":
 					coverType = CoverType.Front
 
-				results.Add(GetDiscogsStream(image.uri150), result.title, releaseInfo.uri, image.width, image.height, image.uri, coverType)
+				results.Add(GetDiscogsImage(image.uri150), result.title, releaseInfo.uri, image.width, image.height, image.uri, coverType)
 
 	def RetrieveFullSizeImage(fullSizeCallbackParameter):
-		return GetDiscogsStream(fullSizeCallbackParameter);
+		return GetDiscogsImage(fullSizeCallbackParameter);
 
 	def GetDiscogsPage(url):
 		stream = GetDiscogsStream(url)
@@ -54,6 +54,16 @@ class Discogs(AlbumArtDownloader.Scripts.IScript):
 		request.AutomaticDecompression = DecompressionMethods.GZip
 		return request.GetResponse().GetResponseStream()
 		
+	// Images can no longer be requested directly through the API: http://www.discogs.com/forum/thread/52950c194c5e2e7adca760a0
+	// So have to get them through web public URL instead.
+	
+	def GetDiscogsImage(url):
+		url = Regex.Replace(url, "api\\.disc(?=ogs\\.com)", "s.pix");
+		try:
+			return GetPageStream(url, null, true);
+		except e as System.Net.WebException:
+			return null;
+
 	class ReleaseInfo:
 		public resp as Resp
 		class Resp:

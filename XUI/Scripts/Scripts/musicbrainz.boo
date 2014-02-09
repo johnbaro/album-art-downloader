@@ -1,7 +1,10 @@
+import System
+import System.Net
 import System.Collections.Generic
 import System.Web.Script.Serialization
 import AlbumArtDownloader.Scripts
 import util
+import System.Text.RegularExpressions
 
 class Musicbrainz(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
@@ -9,7 +12,7 @@ class Musicbrainz(AlbumArtDownloader.Scripts.IScript):
 	Author as string:
 		get: return "Sebastian Hauser"
 	Version as string:
-		get: return "0.7"
+		get: return "0.9"
 	
 	
 	def Search(artist as string, album as string, results as IScriptResults):
@@ -24,7 +27,7 @@ class Musicbrainz(AlbumArtDownloader.Scripts.IScript):
 			json = JavaScriptSerializer()
 			
 			try:
-				mbidDoc = GetPage(mbidUrl)
+				mbidDoc = GetMusicBrainzPage(mbidUrl)
 				mbidResult = json.DeserializeObject(mbidDoc) as Dictionary[of string, object]
 
 				results.EstimatedCount = mbidResult["count"]
@@ -50,7 +53,7 @@ class Musicbrainz(AlbumArtDownloader.Scripts.IScript):
 						try:
 							picUrl = GetCaaUrl(mbid)
 							
-							picDoc = GetPage(picUrl)
+							picDoc = GetMusicBrainzPage(picUrl)
 							picResult = json.DeserializeObject(picDoc) as Dictionary[of string, object]
 							
 							infoUrl = picResult["release"]
@@ -65,7 +68,7 @@ class Musicbrainz(AlbumArtDownloader.Scripts.IScript):
 									coverType = CoverType.Back
 								else:
 									coverType = CoverType.Unknown
-								results.Add(thumbnailUrl, name, infoUrl, -1, -1, pictureUrl, coverType)
+								results.Add(GetMusicBrainzStream(thumbnailUrl), name, infoUrl, -1, -1, pictureUrl, coverType)
 						
 						except e as System.Net.WebException:
 							results.EstimatedCount--
@@ -84,18 +87,46 @@ class Musicbrainz(AlbumArtDownloader.Scripts.IScript):
 	
 	
 	def GetMbidUrl(artist as string, album as string):
-		encodedArtist = EncodeUrl(artist)
-		encodedAlbum = EncodeUrl(album)
+		//escape lucene search term
+		regexpArtist = /[+!(){}\[\]^"~*?:\\\/-]|&&|\|\|/g.Replace(artist) do (m as Match): return "\\${m}"
+		regexpAlbum = /[+!(){}\[\]^"~*?:\\\/-]|&&|\|\|/g.Replace(album) do (m as Match): return "\\${m}"
+		
+		encodedArtist = EncodeUrl(regexpArtist)
+		encodedAlbum = EncodeUrl(regexpAlbum)
+		
 		mbidBaseUrl = "http://musicbrainz.org/ws/2/release/"
 		if artist == "" and album == "":
 			return "${mbidBaseUrl}?fmt=json&query="
 		elif artist == "":
-			return "${mbidBaseUrl}?fmt=json&query=release:${encodedAlbum}"
+			//return "${mbidBaseUrl}?fmt=json&query=release:${encodedAlbum}"
+			//temporary more fuzzy, because lucene is so strict
+			return "${mbidBaseUrl}?fmt=json&query=release:(${encodedAlbum})"
 		elif album == "":
-			return "${mbidBaseUrl}?fmt=json&query=artist:${encodedArtist}"
+			//return "${mbidBaseUrl}?fmt=json&query=artist:${encodedArtist}"
+			//temporary more fuzzy, because lucene is so strict
+			return "${mbidBaseUrl}?fmt=json&query=artist:(${encodedArtist})"
 		else:
-			return "${mbidBaseUrl}?fmt=json&query=release:${encodedAlbum} AND artist:${encodedArtist}"
+			//return "${mbidBaseUrl}?fmt=json&query=release:${encodedAlbum} AND artist:${encodedArtist}"
+			//temporary more fuzzy, because lucene is so strict
+			return "${mbidBaseUrl}?fmt=json&query=release:(${encodedAlbum}) AND artist:(${encodedArtist})"
 	
 	
 	def RetrieveFullSizeImage(fullSizeCallbackParameter):
-		return fullSizeCallbackParameter;
+		return GetMusicBrainzStream(fullSizeCallbackParameter);
+
+	
+	def GetMusicBrainzPage(url as String):
+		stream = GetMusicBrainzStream(url)
+		try:
+			return GetPage(stream)
+		ensure:
+			stream.Close()
+	
+	
+	def GetMusicBrainzStream(url as String):
+		request = WebRequest.Create(url) as HttpWebRequest
+		request.UserAgent = "AAD:" + Name + "/" + Version + " ( https://github.com/yeeeargh/aad-scripts )"
+				
+		return request.GetResponse().GetResponseStream()
+	
+	

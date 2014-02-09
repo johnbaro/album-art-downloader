@@ -274,18 +274,23 @@ namespace AlbumArtDownloader
 
 		private void SearchWorker()
 		{
-			Album album = null;
-
-			Dispatcher.Invoke(DispatcherPriority.Send, new ThreadStart(delegate
+			do
 			{
-				album = mQueueList.GetNextAlbum();
-				IsSearching = true;
-			}));
+				Album album = null;
+				Dispatcher.Invoke(DispatcherPriority.Send, new ThreadStart(delegate
+				{
+					album = mQueueList.GetNextAlbum();
+					IsSearching = true;
+				}));
 
-			while(album != null)
-			{
+				if (album == null)
+				{
+					// No more albums
+					break;
+				}
+
 				album.ArtFileStatus = ArtFileStatus.Searching;
-				
+
 				Dispatcher.BeginInvoke(DispatcherPriority.DataBind, new ThreadStart(delegate
 				{
 					if (mQueueList.ShouldAutoscroll)
@@ -297,7 +302,7 @@ namespace AlbumArtDownloader
 				try
 				{
 					List<Source> currentSourcesToSearch;
-					lock(mSourcesToSearch)
+					lock (mSourcesToSearch)
 					{
 						//Take a copy of the source list so that it doesn't get affected by changes)
 						currentSourcesToSearch = new List<Source>(mSourcesToSearch);
@@ -312,14 +317,15 @@ namespace AlbumArtDownloader
 						source.Results.CollectionChanged += OnSourceFoundResult;
 						source.QueryContinueSearch += OnSourceQueryContinue;
 						source.SearchCompleted += OnSourceSearchComplete;
-						
+
 						mWaitForSourceCompleted.Reset();
+						System.Diagnostics.Debug.Assert(mSearchResult == null);
 						Dispatcher.BeginInvoke(DispatcherPriority.Normal, new ThreadStart(delegate
 						{
 							//source.Search must be done in the main dispatcher thread, as that's the thread which the observable collection will be updated on.
 							source.Search(album.Artist, album.Name);
 						}));
-						
+
 						//Wait for the source to have finished searching
 						mWaitForSourceCompleted.WaitOne();
 
@@ -383,19 +389,12 @@ namespace AlbumArtDownloader
 						album.ArtFileStatus = ArtFileStatus.Missing;
 					}
 				}
-				catch(ThreadAbortException)
+				catch (ThreadAbortException)
 				{
 					album.ArtFileStatus = ArtFileStatus.Queued;
 					return;
 				}
-
-
-				//Get the next album
-				Dispatcher.Invoke(DispatcherPriority.Send, new ThreadStart(delegate
-				{
-					album = mQueueList.GetNextAlbum();
-				}));
-			}
+			} while (true);
 
 			Dispatcher.BeginInvoke(DispatcherPriority.DataBind, new ThreadStart(delegate
 			{
@@ -411,6 +410,12 @@ namespace AlbumArtDownloader
 
 		private void OnSourceFoundResult(object sender, NotifyCollectionChangedEventArgs e)
 		{
+			if (mSearchResult != null)
+			{
+				System.Diagnostics.Debug.Fail("Search result already obtained");
+				return;
+			}
+
 			System.Diagnostics.Debug.Assert(e.Action == NotifyCollectionChangedAction.Add ||
 											e.Action == NotifyCollectionChangedAction.Reset, //The collection will be initialised once, with Reset called.
 											"Only expecting results to be added to the found results collection");
@@ -452,6 +457,7 @@ namespace AlbumArtDownloader
 			if (CheckImageSize(size))
 			{
 				//Found a valid result!
+				System.Diagnostics.Debug.Assert(mSearchResult == null);
 				mSearchResult = result;
 			}
 

@@ -9,9 +9,9 @@ class JunoRecords:
 	static SourceName as string:
 		get: return "Juno Records"
 	static SourceVersion as string:
-		get: return "0.7"
+		get: return "0.8"
 	static SourceCreator as string:
-		get: return "Marc Landis"
+		get: return "Marc Landis, Alex Vallat"
 	static SourceCategory as string:
 		get: return "Dance, Club, Electronic"
 
@@ -22,58 +22,34 @@ class JunoRecords:
 		query as string = artist + " " + album
 		query = EncodeUrl(query)
 		
-		searchResults = GetPage("http://www.juno.co.uk/search/?as=1&q=${query}&s_search_precision=any&s_search_type=all&s_search_music=1&s_show_out_of_stock=1&s_music_product_type=all&s_media_type=all-media&s_genre_id=0000&s_released=&s_start_date=&s_end_date=")
+		searchResults = GetPage("http://www.juno.co.uk/search/?q[all][0]=${query}&submit-search=SEARCH&show_out_of_stock=1")
 		
-		//Get obids
-		resultsRegex = Regex("<a class=\"productimage\" href=\"/products/(?<ID>[^?]+/)\\?", RegexOptions.Singleline)
+		//Get pages
+		resultsRegex = Regex("<div class=\"pl-img\"><a href=\"(?<url>[^\"]+)\"", RegexOptions.Singleline)
 		resultMatches = resultsRegex.Matches(searchResults)
 		coverart.SetCountEstimate(resultMatches.Count * 2) //Estimate 2 covers per result. Results may vary.
 
 		for resultMatch as Match in resultMatches:
 			//Get the album page
-			albumPageUrl = String.Format("http://www.juno.co.uk/products/{0}", resultMatch.Groups["ID"].Value)
+			albumPageUrl = "http://www.juno.co.uk" + resultMatch.Groups["url"].Value
 			albumPage = GetPage(albumPageUrl)
 
-			//Get the title for that album
-			titleRegex = Regex("<h1>(?<title>.*?)</h1>", RegexOptions.Singleline)
-			title = titleRegex.Matches(albumPage)[0].Groups["title"].Value //Expecting only one match
-
 			//Get all the images for the album
-			imagesRegex = Regex("150/CS(?<fullSizeID>.*?)\\.jpg.*?alt=\"(?<imageName>.*?)\"", RegexOptions.Singleline)
+			imagesRegex = Regex("<img alt=\"(?<imageName>.*?)\" src=\"http://images\\.junostatic\\.com/300/(?<ID>.*?)-MED\\.jpg\"", RegexOptions.Singleline)
 			imageMatches = imagesRegex.Matches(albumPage)
 			
 			for imageMatch as Match in imageMatches:
-				if(imageMatches.Count > 1):
-					altText = imageMatch.Groups["imageName"].Value
-					coverType = string2coverType(altText);
-					imageTitle = "${title} - ${altText}"
-				else:
-					imageTitle = title
-				fullSizeID = imageMatch.Groups["fullSizeID"].Value
+				id = imageMatch.Groups["ID"].Value
 				coverart.Add(
-					"http://cdn.images.juno.co.uk/150/CS${fullSizeID}.jpg", #thumbnail
-					imageTitle, #name
+					"http://images.junostatic.com/75/${id}-TN.jpg", #thumbnail
+					imageMatch.Groups["imageName"].Value, #name
 					albumPageUrl, #infoUri
 					-1, #fullSizeImageWidth
 					-1, #fullSizeImageHeight
-					"http://cdn.images.juno.co.uk/full/CS${fullSizeID}-BIG.jpg", #fullSizeImageCallback
-					coverType #coverType
+					"http://images.junostatic.com/full/${id}-BIG.jpg", #fullSizeImageCallback
+					CoverType.Unknown
 					)
 				
 	static def GetResult(param):
 		return param
-		
-	static def string2coverType(typeString as string):
-		if(typeString.ToLower().Contains("front")):
-			return CoverType.Front;
-		elif(typeString.ToLower().Contains("back")):
-			return CoverType.Back;
-		elif(typeString.ToLower().Contains("inlay")):
-			return CoverType.Inlay;
-		elif(typeString.ToLower().Contains("cd")):
-			return CoverType.CD;
-		elif(typeString.ToLower().Contains("inside")):
-			return CoverType.Inlay;
-		else:
-			return CoverType.Unknown;
 

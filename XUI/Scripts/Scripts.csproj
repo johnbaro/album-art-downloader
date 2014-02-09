@@ -85,7 +85,6 @@
     <None Include="Scripts\google-play.boo" />
     <None Include="Scripts\fanarttv.boo" />
     <None Include="Scripts\musicbrainz.boo" />
-    <None Include="Scripts\hyperionrecords.boo" />
     <None Include="Scripts\theclassicalshop.boo" />
     <None Include="Scripts\theorchard.boo" />
     <None Include="Scripts\soundstation.boo" />
@@ -95,7 +94,7 @@
     <None Include="Scripts\eclassical.boo" />
     <None Include="Scripts\deezer.boo" />
     <None Include="Scripts\maniadb.boo" />
-    <None Include="Scripts\megamedia.boo" />
+    <None Include="Scripts\Archived\megamedia.boo" />
     <None Include="Scripts\itunes.boo" />
     <None Include="Scripts\djshop.boo" />
     <None Include="Scripts\coverlandia-official.boo" />

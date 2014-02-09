@@ -11,7 +11,7 @@ class BuyDotCom(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "Buy.com"
 	Version as string:
-		get: return "0.8.3"
+		get: return "0.8.4"
 	Author as string:
 		get: return "alsaan, DRata, Alex Vallat"
 		
@@ -23,7 +23,7 @@ class BuyDotCom(AlbumArtDownloader.Scripts.IScript):
 		searchParameter = EncodeUrl(artist + " " + album)
 		  	  
 		//Retrieve the search results page
-		searchResultsHtml as string = GetPage("http://www.rakuten.com/sr/srajax.aspx?qu=${searchParameter}&from=2&sid=6&page=1&pv=1")
+		searchResultsHtml as string = GetPage("http://www.rakuten.com/sr/srajax.aspx?qu=${searchParameter}&from=6&sid=6&page=1&pv=1")
 		
 		//Check whether we actually got any relevant result or not
 		if(searchResultsHtml.IndexOf("did not return an exact match") > -1):

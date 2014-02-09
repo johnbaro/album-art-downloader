@@ -13,7 +13,7 @@ ArkivMusik	Chopin	Four Ballades
 Buy.com	Muse	The Resistance
 CD Baby	Girlyman	Everything's Easy
 ;CD Universe	Muse	The Resistance
-eCover.To (Cover-Paradies)	Muse	The Resistance
+;eCover.To (Cover-Paradies)	Muse	The Resistance
 Coveralia	Muse	The Resistance
 ;CoverIsland	Muse	The Resistance
 ;Darktown	Blink 182	Enema of The State
@@ -21,7 +21,7 @@ Discogs	Muse	The Resistance
 ;Freecovers API	Muse	The Resistance
 GoogleImage	Muse	The Resistance
 hitparade.ch	Muse	The Resistance
-Juno Records	Muse	The Resistance
+Juno Records	Broken Bells	After The Disco
 LastFM Artist	Muse	The Resistance
 LastFM Cover	Muse	The Resistance
 ;maniadb	Muse	The Resistance
@@ -47,7 +47,7 @@ iTunes	Muse	The Resistance
 ;MioMusik	Muse	The Resistance
 ;SFR Music	Muse	The Resistance
 DJshop	Muse	The Resistance
-Mega Media	Turin Brakes	Ether Song
+;Mega Media	Turin Brakes	Ether Song
 Deezer	Muse	The Resistance
 eClassical	Chopin	4 Ballades
 esenshop	Bedirhan Gökçe	Güle Yazdım
