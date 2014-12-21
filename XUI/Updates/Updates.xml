@@ -42,22 +42,22 @@
   <Script Name="Buy.com" URI="buy-com.boo" Version="0.8.4" />
   <Script Name="CD Baby" URI="cdbaby.boo" Version="0.4" Category="Independent" />
   <Script Name="Chartstats" URI="chartstats.boo" Version="0.2" />
-  <Script Name="eCover.to (Cover-Paradies)" URI="cover-paradies.boo" Version="0.16" />
+  <Script Name="eCover.to (Cover-Paradies)" URI="cover-paradies.boo" Version="0.17" />
   <Script Name="Coveralia" URI="coveralia.boo" Version="0.11" />
   <Script Name="Coverlandia (Official)" URI="coverlandia-official.boo" Version="0.2" />
   <Script Name="Coverlandia" URI="coverlandia.boo" Version="0.2" Category="Fan-made covers" />
   <Script Name="deejay.de" URI="deejay.boo" Version="0.4" />
   <Script Name="Deezer" URI="deezer.boo" Version="0.6" />
-  <Script Name="Discogs" URI="discogs.boo" Version="0.13" />
+  <Script Name="Discogs" URI="discogs.boo" Version="0.15" />
   <Script Name="DJshop" URI="djshop.boo" Version="0.3" />
   <Script Name="EB Reggae" URI="ebreggae.boo" Version="0.2" Category="Reggae" />
   <Script Name="eClassical" URI="eclassical.boo" Version="0.2" Category="Classical" />
   <Script Name="eMusic" URI="emusic.boo" Version="0.5" />
   <Script Name="esenshop" URI="esenshop.boo" Version="0.1" Category="Turkish" />
   <Script Name="fanart.tv" URI="fanarttv.boo" Version="0.3" />
-  <Script Name="Google Play Music" URI="google-play.boo" Version="0.1" />
+  <Script Name="Google Play Music" URI="google-play.boo" Version="0.2" />
   <Script Name="GoogleImage" URI="google.boo" Version="0.15" />
-  <Script Name="hitparade.ch" URI="hitparade.boo" Version="0.4" />
+  <Script Name="hitparade.ch" URI="hitparade.boo" Version="0.5" />
   <Script Name="HMV Canada" URI="hmv-canada.boo" Version="0.2" Category="Canadian" />
   <Script Name="iTunes" URI="itunes.boo" Version="0.4" />
   <Script Name="Juno Records" URI="juno-records.boo" Version="0.8" Category="Dance, Club, Electronic" />

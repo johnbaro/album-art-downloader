@@ -13,7 +13,7 @@ ArkivMusik	Chopin	Four Ballades
 Buy.com	Muse	The Resistance
 CD Baby	Girlyman	Everything's Easy
 ;CD Universe	Muse	The Resistance
-;eCover.To (Cover-Paradies)	Muse	The Resistance
+eCover.To (Cover-Paradies)	Muse	The Resistance
 Coveralia	Muse	The Resistance
 ;CoverIsland	Muse	The Resistance
 ;Darktown	Blink 182	Enema of The State
@@ -63,3 +63,4 @@ deejay.de	Isolee	Allowance
 absolutepunk.net	Muse	Absolution
 bandcamp	Lake	No Wonder I
 45world CD Singles	Muse	Time is running out
+Google Play Music	Muse	The Resistance

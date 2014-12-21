@@ -1,7 +1,6 @@
 # refs: System.Web.Extensions
 
 import System
-import System.Net
 import System.Text.RegularExpressions
 import System.Web.Script.Serialization
 
@@ -13,79 +12,51 @@ class Discogs(AlbumArtDownloader.Scripts.IScript):
 	Author as string:
 		get: return "Alex Vallat"
 	Version as string:
-		get: return "0.13"
+		get: return "0.15"
 	def Search(artist as string, album as string, results as IScriptResults):
 		//artist = StripCharacters("&.'\";:?!", artist)
 		//album = StripCharacters("&.'\";:?!", album)
 
 		json = JavaScriptSerializer()
 
-		resultsInfoJson = GetDiscogsPage("http://api.discogs.com/database/search?type=release&artist=${EncodeUrl(artist)}&release_title=${EncodeUrl(album)}")
-		resultsInfo = json.Deserialize[of ResultsInfo](resultsInfoJson).results
+		resultsInfoJson = GetDiscogsPage("http://www.discogs.com/search/ac?searchType=release&q=" + EncodeUrl("\"${artist}\" \"${album}\""))
+		resultsInfo = json.Deserialize[of (Result)](resultsInfoJson)
 		
 		results.EstimatedCount = resultsInfo.Length;
 		
 		for result in resultsInfo:
 			// Get the release info from api
-			releaseInfoJson = GetDiscogsPage("http://api.discogs.com/release/" + result.id)
-			releaseInfo = json.Deserialize[of ReleaseInfo](releaseInfoJson).resp.release
-			
-			results.EstimatedCount += releaseInfo.images.Length - 1
-			for image in releaseInfo.images:
-				coverType =  CoverType.Unknown
-				if image.type == "primary":
-					coverType = CoverType.Front
+			title = result.artist[0] + " - " + result.title[0];
+			url = result.uri[0]
+			//id = url.Substring(url.LastIndexOf('/'));
 
-				results.Add(GetDiscogsImage(image.uri150), result.title, releaseInfo.uri, image.width, image.height, image.uri, coverType)
+			releasePage = GetDiscogsPage("http://www.discogs.com" + url)
+			releasePageImagesMatch = Regex("data-images='(?<json>[^']+)'", RegexOptions.IgnoreCase | RegexOptions.Singleline).Match(releasePage)
+			if releasePageImagesMatch.Success:
+				imagesJson = releasePageImagesMatch.Groups["json"].Value
+				images = json.Deserialize[of (Image)](imagesJson)
+			
+				results.EstimatedCount += images.Length - 1
+				for image in images:
+					results.Add(image.thumb, title, "http://www.discogs.com" + url, image.width, image.height, image.full, CoverType.Unknown)
 
 	def RetrieveFullSizeImage(fullSizeCallbackParameter):
-		return GetDiscogsImage(fullSizeCallbackParameter);
+		return fullSizeCallbackParameter;
 
 	def GetDiscogsPage(url):
-		stream = GetDiscogsStream(url)
+		stream = GetPageStream(url, null, true)
 		try:
 			return GetPage(stream)
 		ensure:
 			stream.Close()
-
-	def GetDiscogsStream(url):
-		request = WebRequest.Create(url) as HttpWebRequest
-		request.UserAgent = "AAD:Discogs/" + Version
-		request.AutomaticDecompression = DecompressionMethods.GZip
-		return request.GetResponse().GetResponseStream()
-		
-	// Images can no longer be requested directly through the API: http://www.discogs.com/forum/thread/52950c194c5e2e7adca760a0
-	// So have to get them through web public URL instead.
 	
-	def GetDiscogsImage(url):
-		url = Regex.Replace(url, "api\\.disc(?=ogs\\.com)", "s.pix");
-		try:
-			return GetPageStream(url, null, true);
-		except e as System.Net.WebException:
-			return null;
+	class Result:
+		public artist as (String)
+		public title as (String)
+		public uri as (String)
 
-	class ReleaseInfo:
-		public resp as Resp
-		class Resp:
-			public release as Release
-
-			class Release:
-				public artists as (Artist)
-				public images as (Image)
-				public uri as String
-
-				class Artist:
-					public name as String
-
-				class Image:
-					public height as int
-					public type as string
-					public uri as string
-					public uri150 as string
-					public width as int
-
-	class ResultsInfo:
-		public results as (Result)
-		class Result:
-			public title as String
-			public id as string
+	class Image:
+		public thumb as String
+		public full as string
+		public width as int
+		public height as int

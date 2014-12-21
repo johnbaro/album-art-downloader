@@ -41,7 +41,7 @@
     <OutputPath>.\bin\Debug\</OutputPath>
     <DefineConstants>TRACE;DEBUG;_EPHEMERAL_SETTINGS ERROR_REPORTING</DefineConstants>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">

@@ -11,7 +11,7 @@ class eCoverTo(AlbumArtDownloader.Scripts.IScript):
 	Author as string:
 		get: return "Alex Vallat"
 	Version as string:
-		get: return "0.16"
+		get: return "0.17"
 	def Search(artist as string, album as string, results as IScriptResults):
 		artist = StripCharacters("&.'\";:?!", artist)
 		album = StripCharacters("&.'\";:?!", album)
@@ -33,24 +33,24 @@ class eCoverTo(AlbumArtDownloader.Scripts.IScript):
 			albumPage = GetPage(albumPageUri)
 			
 			//Get all the images for the album
-			imagesRegex = Regex("<img src=\"(?<thumbnail>[^\"]+?(?<id>\\d+)\\.jpg)\" alt=\"(?<title>[^\"]+?) - (?<type>[^-\"]+)\".+?<div class=\"Info\"[^>]+>[^@]+@ (?<width>[\\.\\d]+)x(?<height>[\\.\\d]+)px", RegexOptions.Singleline | RegexOptions.IgnoreCase)
+			imagesRegex = Regex("<a href=\"(?<full>[^\"]+)\"><img src=\"(?<thumbnail>[^\"]+)\" alt=\"(?<title>[^\"]+?) - (?<type>[^-\"]+)\".+?<div class=\"Info\"[^>]+>[^@]+@ (?<width>[\\.\\d]+)x(?<height>[\\.\\d]+)px", RegexOptions.Singleline | RegexOptions.IgnoreCase)
 			imageMatches = imagesRegex.Matches(albumPage)
 			
 			for imageMatch as Match in imageMatches:
 				thumbnail = imageMatch.Groups["thumbnail"].Value;
-				id = imageMatch.Groups["id"].Value;
+				full = imageMatch.Groups["full"].Value;
 				title = imageMatch.Groups["title"].Value;
 				type = GetCoverType(imageMatch.Groups["type"].Value);
 				width = Int32.Parse(imageMatch.Groups["width"].Value, thousands, de);
 				height = Int32.Parse(imageMatch.Groups["height"].Value, thousands, de);
 			
-				results.Add(thumbnail, title, albumPageUri, width, height, id, type)
+				results.Add("http://ecover.to" + thumbnail, title, albumPageUri, width, height, full, type)
 
 	static def Search(query):
 		searchResults = GetPage(String.Format("http://ecover.to/?Module=ExtendedSearch&StartSearch=true&PagePos=0&SearchString={0}&StringMode=Wild&DisplayStyle=Text&HideDetails=Yes&PageLimit=1000&SektionID-2=Yes", EncodeUrl(query)))
 		
 		//Get results
-		resultsRegex = Regex(";ID=(?<ID>\\d+)\">(?!\\s*<img)", RegexOptions.Singleline)
+		resultsRegex = Regex(";ID=(?<ID>\\d+)';\">(?!\\s*<img)", RegexOptions.Singleline)
 		return resultsRegex.Matches(searchResults)
 
 	static def Post(url as String, content as String):
@@ -73,8 +73,8 @@ class eCoverTo(AlbumArtDownloader.Scripts.IScript):
 		ensure:
 			servicePoint.Expect100Continue = prevValue;
 
-	def RetrieveFullSizeImage(id):
-		return "http://ecover.to/res/exe/GetElement.php?ID=" + id
+	def RetrieveFullSizeImage(url):
+		return "http://ecover.to" + url;
 		
 	static def GetCoverType(typeString):
 		typeString = typeString.ToLower()

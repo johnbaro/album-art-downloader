@@ -188,6 +188,8 @@ namespace AlbumArtDownloader
 
 		private void StartSearch()
 		{
+			// TODO: Take copy of all filtering settings to use for the search - don't allow them to be changed mid-search!
+
 			mStartSearch.IsEnabled = false;
 
 			if (mQueueList.GetNextAlbum() == null)
