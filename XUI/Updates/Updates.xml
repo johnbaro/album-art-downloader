@@ -71,12 +71,13 @@
   <Script Name="MusicBrainz" URI="musicbrainz.boo" Version="0.9" />
   <Script Name="Nuclear Blast" URI="nuclearblast.boo" Version="0.1" Category="Punk, Metal, Rock" />
   <Script Name="Psyshop" URI="psyshop.boo" Version="0.7" Category="Dance, Club, Electronic" />
-  <Script Name="Qobuz" URI="qobuz.boo" Version="0.1" />
+  <Script Name="Qobuz" URI="qobuz.boo" Version="0.2" />
   <Script Name="RevHQ" URI="revhq.boo" Version="0.6" Category="Independent" />
   <Script Name="Sound Station" URI="soundstation.boo" Version="0.1" Category="LP Vinyl" />
   <Script Name="Take2" URI="take2.boo" Version="0.5" Category="South African" />
   <Script Name="The Classical Shop" URI="theclassicalshop.boo" Version="0.2" Category="Classical" />
   <Script Name="The Orchard" URI="theorchard.boo" Version="0.2" Category="Independent" />
+  <Script Name="trackitdown" URI="trackitdown.boo" Version="0.1" Category="Dance, Club, Electronic" />
   <Script Name="VGMdb" URI="vgmdb.boo" Version="0.6" Category="Video Game Music" />
   <Script Name="WantItAll" URI="wantitall.boo" Version="0.1" Category="South African" />
   <Script Name="YesAsia" URI="yesasia.boo" Version="0.5" Category="Eastern" />

@@ -257,6 +257,9 @@ SectionGroup "Image Download Scripts"
 		Section /o "Beatport"
 		  File "..\Scripts\Scripts\beatport.boo"
 		SectionEnd
+		Section /o "TrackItDown"
+		  File "..\Scripts\Scripts\trackitdown.boo"
+		SectionEnd
 	SectionGroupEnd
 	
 	SectionGroup "Punk, Metal, Rock"

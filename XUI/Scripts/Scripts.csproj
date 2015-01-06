@@ -85,6 +85,7 @@
     <None Include="Scripts\google-play.boo" />
     <None Include="Scripts\fanarttv.boo" />
     <None Include="Scripts\musicbrainz.boo" />
+    <None Include="Scripts\trackitdown.boo" />
     <None Include="Scripts\theclassicalshop.boo" />
     <None Include="Scripts\theorchard.boo" />
     <None Include="Scripts\soundstation.boo" />
