@@ -159,14 +159,40 @@ namespace NetMatters
 								{
 									if (includeFiles)
 									{
-										yield return new FileInfo(dirPath + findData.cFileName);
+										FileInfo fileInfo;
+										try
+										{
+											 fileInfo = new FileInfo(dirPath + findData.cFileName);
+										}
+										catch (Exception e)
+										{
+											System.Diagnostics.Trace.WriteLine("Can't search: " + dirPath + findData.cFileName);
+											System.Diagnostics.Trace.Indent();
+											System.Diagnostics.Trace.WriteLine(e.Message);
+											System.Diagnostics.Trace.Unindent();
+											continue;
+										}
+										yield return fileInfo;
 									}
 								}
 								else
 								{
 									if (includeDirectories && findData.cFileName != "." && findData.cFileName != "..")
 									{
-										yield return new DirectoryInfo(dirPath + findData.cFileName);
+										DirectoryInfo directoryInfo;
+										try
+										{
+											directoryInfo = new DirectoryInfo(dirPath + findData.cFileName);
+										}
+										catch (Exception e)
+										{
+											System.Diagnostics.Trace.WriteLine("Can't search: " + dirPath + findData.cFileName);
+											System.Diagnostics.Trace.Indent();
+											System.Diagnostics.Trace.WriteLine(e.Message);
+											System.Diagnostics.Trace.Unindent();
+											continue;
+										}
+										yield return directoryInfo;
 									}
 								}
 							}

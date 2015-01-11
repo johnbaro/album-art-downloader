@@ -13,7 +13,7 @@ ArkivMusik	Chopin	Four Ballades
 Buy.com	Muse	The Resistance
 CD Baby	Girlyman	Everything's Easy
 ;CD Universe	Muse	The Resistance
-eCover.To (Cover-Paradies)	Muse	The Resistance
+eCover.to (Cover-Paradies)	Muse	The Resistance
 Coveralia	Muse	The Resistance
 ;CoverIsland	Muse	The Resistance
 ;Darktown	Blink 182	Enema of The State
@@ -29,18 +29,18 @@ Encyclopaedia Metallum	Onslaught	Power From Hell
 Metal Library	Onslaught	Power From Hell
 ;MusicMight	Onslaught	Power From Hell
 Psyshop	Aquafur	Fuzzy Emotions
-RevHQ	Ultra Violence	Brick Rain
+RevHQ	Turnstile	Nonstop Feeling
 ;Yes24	Muse	The Resistance
 YesAsia	Muse	The Resistance
 Archambault	Lady Gaga	The Fame Monster
-HMV Canada	<ignored>	Crazy Love
+HMV Canada	Michael Buble	Crazy Love
 Kalahari	Muse	The Resistance
 Take2	Muse	The Resistance
 VGMdb	Morrigan	Caldes
 VGMdb		Xenoblade Original Soundtrack
 ;Lala	Muse	The Resistance
-EB Reggae	Kevin Kinsella	Great Design
-eMusic	Muse	Absolution
+EB Reggae	Digable Planets	Blowout Comb
+eMusic	Muse	The Resistance
 Qobuz	Muse	The Resistance
 ;GigaCrate	Muse	Starlight
 iTunes	Muse	The Resistance
@@ -57,7 +57,7 @@ Sound Station	Unicorn	Uphill All The Way
 The Orchard	Menomena	Moms
 Amazon Audiobooks (.com)	Iain Banks	Stonemouth
 The Classical Shop	Brahms	Toccatas and Roses
-Hyperion Records	Gabrieli	Sacred Symphonies
+;Hyperion Records	Gabrieli	Sacred Symphonies
 MusicBrainz	Muse	Absolution
 deejay.de	Isolee	Allowance
 absolutepunk.net	Muse	Absolution

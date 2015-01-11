@@ -7,7 +7,7 @@ class FourtyFiveCat(AlbumArtDownloader.Scripts.IScript, ICategorised):
 	Name as string:
 		get: return "45cat"
 	Version as string:
-		get: return "0.6"
+		get: return "0.7"
 	Author as string:
 		get: return "Alex Vallat"
 	Category as string:
@@ -15,7 +15,7 @@ class FourtyFiveCat(AlbumArtDownloader.Scripts.IScript, ICategorised):
 	def Search(artist as string, album as string, results as IScriptResults):
 		artist = StripCharacters("\"", artist)
 		album = StripCharacters("\"", album)
-		query = EncodeUrl("\"" + artist + "\" \"" + album + "\"")
+		query = EncodeUrl(artist + " " + album)
 
 		//Retrieve the search results page
 		searchResultsHtml as string = GetPage("http://www.45cat.com/45_search.php?sq=${query}&sm=se")

@@ -11,7 +11,7 @@ class eCoverTo(AlbumArtDownloader.Scripts.IScript):
 	Author as string:
 		get: return "Alex Vallat"
 	Version as string:
-		get: return "0.17"
+		get: return "0.18"
 	def Search(artist as string, album as string, results as IScriptResults):
 		artist = StripCharacters("&.'\";:?!", artist)
 		album = StripCharacters("&.'\";:?!", album)
@@ -29,7 +29,7 @@ class eCoverTo(AlbumArtDownloader.Scripts.IScript):
 		
 		for resultMatch as Match in resultMatches:
 			//Get the album page
-			albumPageUri = String.Format("http://ecover.to/?Module=ViewEntry&ID={0}", resultMatch.Groups["ID"].Value)
+			albumPageUri = "http://ecover.to" + resultMatch.Groups["url"].Value
 			albumPage = GetPage(albumPageUri)
 			
 			//Get all the images for the album
@@ -50,7 +50,7 @@ class eCoverTo(AlbumArtDownloader.Scripts.IScript):
 		searchResults = GetPage(String.Format("http://ecover.to/?Module=ExtendedSearch&StartSearch=true&PagePos=0&SearchString={0}&StringMode=Wild&DisplayStyle=Text&HideDetails=Yes&PageLimit=1000&SektionID-2=Yes", EncodeUrl(query)))
 		
 		//Get results
-		resultsRegex = Regex(";ID=(?<ID>\\d+)';\">(?!\\s*<img)", RegexOptions.Singleline)
+		resultsRegex = Regex("\\d+';\">\\s*<b><a href=\"(?<url>[^\"]+)\"", RegexOptions.Singleline)
 		return resultsRegex.Matches(searchResults)
 
 	static def Post(url as String, content as String):

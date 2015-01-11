@@ -6,33 +6,40 @@ class HMVCanada(AlbumArtDownloader.Scripts.IScript, ICategorised):
 	Name as string:
 		get: return "HMV Canada"
 	Version as string:
-		get: return "0.2"
+		get: return "0.3"
 	Author as string:
-		get: return "Sebastien Leclerc"
+		get: return "Alex Vallat"
 	Category as string:
 		get: return "Canadian"
 
 	def Search(artist as string, album as string, results as IScriptResults):
-		if string.IsNullOrEmpty(album):
-			return //Only searching on album is supported
+		query = EncodeUrl("${artist} ${album}");
+		resultsInfoJson = GetPage("https://hmv.ca/Search/LoadMore?filter=CD&query=${query}&sort=Bestselling&page=1&limit=20&isFrenchLocale=False&type=1");
 
-		album = StripCharacters("&.'\";:?!", album)
-
-		resultsPage = GetPage("http://www.hmv.ca/Search.aspx?keyword=${EncodeUrl(album)}&filter=music")
+		json = JavaScriptSerializer();
 		
-		resultsRegex = Regex("div\\s*[^>]*class='chartItemImage'[^>]*>.*?\\ssrc\\s*=\\s*'(?<path>(/(?!sm)\\w+)+/)small/(?<filename>[^']*)(?:[^>]*>){1,5}[^\\s]*\\s*href\\s*='[^']*?(?<url>/Products/Detail/[^']*)[^>]+>(?<title>[^<]*)[^?]+[^>]+>(?<artist>[^<]*)", RegexOptions.Singleline | RegexOptions.IgnoreCase)
-		resultsMatches = resultsRegex.Matches(resultsPage)
-	
-		results.EstimatedCount = resultsMatches.Count;
-
-		for resultsMatch as Match in resultsMatches:
-  			loc= "http://www.hmv.ca"+resultsMatch.Groups["path"].Value;
-  			filename = resultsMatch.Groups["filename"].Value;
-  			title = resultsMatch.Groups["title"].Value;
-  			url = "http://www.hmv.ca"+resultsMatch.Groups["url"].Value;
-  			artistname = resultsMatch.Groups["artist"].Value;
-  			
-  			results.Add("${loc}large/${filename}", "${artistname} - ${title}", url, -1, -1, "${loc}large/${filename}" , CoverType.Front);
+		resultsInfo = json.Deserialize[of Result](resultsInfoJson);
+		
+		results.EstimatedCount = resultsInfo.Count;
+		
+		for product in resultsInfo.Products:
+			if not product.SmallImageUrl.EndsWith("cd_noimage_small.jpg"):
+				url = "http://hmv.ca/en/Search/Details?sku=" + product.Sku;
+				thumbnail = "http://hmv.ca" + product.SmallImageUrl;
+				image = "http://hmv.ca" + product.LargeImageUrl;
+				title = product.Artist + " - " + product.Name;
+				results.Add(thumbnail, title, url, -1, -1, image, CoverType.Front);
 
 	def RetrieveFullSizeImage(fullSizeCallbackParameter):
 		return fullSizeCallbackParameter
+
+	class Result:
+		public Count as int;
+		public Products as (Product);
+
+	class Product:
+		public Artist as string;
+		public Name as string;
+		public LargeImageUrl as string;
+		public SmallImageUrl as string;
+		public Sku as string;

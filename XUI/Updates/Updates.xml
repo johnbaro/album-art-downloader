@@ -1,34 +1,34 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <?xml-stylesheet type="text/xsl" href="Updates.xsl"?>
 <Updates BaseURI="http://album-art.sourceforge.net/scripts/">
-  <Application Version="1.0.1.0" Name="Album Art Downloader XUI v1.0.1" URI="https://sourceforge.net/project/platformdownload.php?group_id=187008" />
+  <Application Version="1.0.2.0" Name="Album Art Downloader XUI v1.0.2" URI="https://sourceforge.net/project/platformdownload.php?group_id=187008" />
   <Script Name="45cat" URI="45cat.boo" Version="0.6" Category="LP Vinyl" />
   <Script Name="45world CD Singles" URI="45worlds-cdsingles.boo" Version="0.1" Category="Singles" />
   <Script Name="7digital" URI="7digital.boo" Version="0.4" />
   <Script Name="absolutepunk.net" URI="absolutepunk.boo" Version="0.1" Category="Punk, Metal, Rock" />
   <Script Name="AllCdCover" URI="allcdcover.boo" Version="0.5" />
-  <Script Name="Amazon Audiobooks (.com)" URI="amazon-audiobooks-com.boo" Version="0.11s" Category="Audiobooks">
+  <Script Name="Amazon Audiobooks (.com)" URI="amazon-audiobooks-com.boo" Version="0.12s" Category="Audiobooks">
     <Dependency>amazon-common.boo</Dependency>
   </Script>
-  <Script Name="Amazon (.ca)" URI="amazon-ca.boo" Version="0.11s">
+  <Script Name="Amazon (.ca)" URI="amazon-ca.boo" Version="0.12s">
     <Dependency>amazon-common.boo</Dependency>
   </Script>
-  <Script Name="Amazon (.co.uk)" URI="amazon-co-uk.boo" Version="0.11s">
+  <Script Name="Amazon (.co.uk)" URI="amazon-co-uk.boo" Version="0.12s">
     <Dependency>amazon-common.boo</Dependency>
   </Script>
-  <Script Name="Amazon (.com)" URI="amazon-com.boo" Version="0.11s">
+  <Script Name="Amazon (.com)" URI="amazon-com.boo" Version="0.12s">
     <Dependency>amazon-common.boo</Dependency>
   </Script>
-  <Script Name="Amazon (.de)" URI="amazon-de.boo" Version="0.11s">
+  <Script Name="Amazon (.de)" URI="amazon-de.boo" Version="0.12s">
     <Dependency>amazon-common.boo</Dependency>
   </Script>
-  <Script Name="Amazon (.fr)" URI="amazon-fr.boo" Version="0.11s">
+  <Script Name="Amazon (.fr)" URI="amazon-fr.boo" Version="0.12s">
     <Dependency>amazon-common.boo</Dependency>
   </Script>
-  <Script Name="Amazon (.it)" URI="amazon-it.boo" Version="0.11s">
+  <Script Name="Amazon (.it)" URI="amazon-it.boo" Version="0.12s">
     <Dependency>amazon-common.boo</Dependency>
   </Script>
-  <Script Name="Amazon (.jp)" URI="amazon-jp.boo" Version="0.11s">
+  <Script Name="Amazon (.jp)" URI="amazon-jp.boo" Version="0.12s">
     <Dependency>amazon-common.boo</Dependency>
   </Script>
   <Script Name="Amazon MP3 (.com)" URI="amazon-mp3-com.boo" Version="0.2">
@@ -39,7 +39,7 @@
   <Script Name="Audio Preservation Fund" URI="audiopreservationfund.boo" Version="0.1" Category="LP Vinyl" />
   <Script Name="bandcamp" URI="bandcamp.boo" Version="0.2" Category="Independent" />
   <Script Name="Beatport" URI="beatport.boo" Version="0.1" Category="Dance, Club, Electronic" />
-  <Script Name="Buy.com" URI="buy-com.boo" Version="0.8.4" />
+  <Script Name="Buy.com" URI="buy-com.boo" Version="0.8.5" />
   <Script Name="CD Baby" URI="cdbaby.boo" Version="0.4" Category="Independent" />
   <Script Name="Chartstats" URI="chartstats.boo" Version="0.2" />
   <Script Name="eCover.to (Cover-Paradies)" URI="cover-paradies.boo" Version="0.17" />

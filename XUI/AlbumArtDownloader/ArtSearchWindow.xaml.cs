@@ -765,16 +765,18 @@ namespace AlbumArtDownloader
 				foreach (var result in source.Results)
 				{
 					var container = mResultsViewer.ItemContainerGenerator.ContainerFromItem(result) as FrameworkElement;
-
-					if (first)
+					if (container != null)
 					{
-						first = false;
-						container.BringIntoView();
-					}
+						if (first)
+						{
+							first = false;
+							container.BringIntoView();
+						}
 
-					var highlighter = new HighlightResultAdorner(container);
-					highlighters.Add(highlighter);
-					adornerLayer.Add(highlighter);
+						var highlighter = new HighlightResultAdorner(container);
+						highlighters.Add(highlighter);
+						adornerLayer.Add(highlighter);
+					}
 				}
 				DispatcherTimer timer = new DispatcherTimer(DispatcherPriority.DataBind) { Interval = TimeSpan.FromSeconds(2) };
 				timer.Tick += new EventHandler(delegate

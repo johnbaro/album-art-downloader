@@ -1,3 +1,9 @@
+1.02 Fixed bug where clicking on a source to highlight results might crash, if the sources results are
+	  filtered out.
+	 Fixed bug in the file browser where a path-too-long error might prevent further folders from being searched.
+	 Fixed scripts: 45cat, absolutepunk, Amazon (common), Archambault, buy.com, eCovers.to, deejay.de, HMV Canada,
+	  Qobuz, Take2
+
 1.01 Fixed bug where the Automatic Downloader might, in rare circumstances, associate the save a result to the
 	  location of a wrong album.
 	 Added new column to file and foobar browsers: "Modified", to show the last modified date of the image file

@@ -25,7 +25,7 @@ class Qobuz(AlbumArtDownloader.Scripts.IScript):
 			infoUrl = match.Groups["url"].Value
 			title = match.Groups["title"].Value
 			id = match.Groups["id"].Value
-			idPrefix = match.Groups["idPrefix"].Value
+			//idPrefix = match.Groups["idPrefix"].Value
 			idPrefix1 = match.Groups["idPrefix1"].Value
 			idPrefix2 = match.Groups["idPrefix2"].Value
 			urlBase = "http://static.qobuz.com/images/covers/${idPrefix1}/${idPrefix2}/${id}"

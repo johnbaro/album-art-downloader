@@ -7,7 +7,7 @@ class Deejay(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "deejay.de"
 	Version as string:
-		get: return "0.4"
+		get: return "0.5"
 	Author as string:
 		get: return "Alex Vallat"
 	def Search(artist as string, album as string, results as IScriptResults):
@@ -18,17 +18,21 @@ class Deejay(AlbumArtDownloader.Scripts.IScript):
 		//Retrieve the search results page
 		searchResultsHtml as string = GetPage("http://www.deejay.de/content.php?param=" + query)
 		
-		matches = Regex("href=\"(?<info>[^\"]+)\"[^>]+>\\s*<img alt=\"Cover\" class=\"cover\" src=\"[^\"]+?/m/(?<img>[^.]+).jpg\".+?<h2[^>]*>(?<artist>.+?)</h2>.+?<h3[^>]*>(?<album>.+?)</h3>", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResultsHtml)
+		matches = Regex("href=\"(?<url>[^\"]+)\"><img src=\"[^\"]+?pics/[^/]+/(?<img>[^.]+.jpg)\" alt=\"(?<title>[^\"]+)\"", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResultsHtml)
 		
 		results.EstimatedCount = matches.Count * 2
 
 		for match as Match in matches:
-			info = "http://www.deejay.de/" + match.Groups["info"].Value
+			info = "http://www.deejay.de/" + match.Groups["url"].Value
 			img = match.Groups["img"].Value
-			title = DeHtml(match.Groups["artist"].Value) + " - " + DeHtml(match.Groups["album"].Value)
+			title = match.Groups["title"].Value.Replace("&nbsp;", " ");
 			
-			results.Add("http://www.deejay.de/images/s/" + img + ".jpg", title, info, -1, -1, "http://www.deejay.de/images/xl/" + img + ".jpg", CoverType.Front)
-			results.Add("http://www.deejay.de/images/s/" + img + "b.jpg", title, info, -1, -1, "http://www.deejay.de/images/xl/" + img + "b.jpg", CoverType.Back)
+			if img.EndsWith("b.jpg"):
+				coverType = CoverType.Back
+			else:
+				coverType = CoverType.Front
+
+			results.Add("http://www.deejay.de/images/s/" + img, title, info, -1, -1, "http://www.deejay.de/images/xl/" + img, coverType)
 
 	def RetrieveFullSizeImage(fullSizeCallbackParameter):
 		return fullSizeCallbackParameter

@@ -24,7 +24,7 @@ class Take2(AlbumArtDownloader.Scripts.IScript, ICategorised):
 			query += EncodeUrl("\"${album}\"")
 
 		//Retrieve the search results page
-		searchResultsHtml as string = GetPage("http://www.takealot.com/music/all?qsearch=" + query);
+		searchResultsHtml as string = GetPage(GetPageStream("http://www.takealot.com/music/all?qsearch=" + query, null, true));
 		
 		matches = Regex("<a href=\"(?<info>[^\"]+)\"[^>]*>\\s*<noscript>\\s*<img [^>]+?src=\"(?<image>http://media\\d?\\.takealot\\.com/covers/[^\"-]+)-fixedserp\\.jpg\" alt=\"(?<title>[^\"]+)\"", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResultsHtml)
 		

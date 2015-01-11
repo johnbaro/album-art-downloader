@@ -8,7 +8,7 @@ class AbsolutePunk(AlbumArtDownloader.Scripts.IScript, ICategorised):
 	Name as string:
 		get: return "absolutepunk.net"
 	Version as string:
-		get: return "0.1"
+		get: return "0.2"
 	Author as string:
 		get: return "Alex Vallat"
 	Category as string:
@@ -22,7 +22,7 @@ class AbsolutePunk(AlbumArtDownloader.Scripts.IScript, ICategorised):
 
 		searchResultsHtml as string = Post("http://www.absolutepunk.net/gallery/search.php", "s=&do=searchresults&string=${query}&dosearch=Search&fields%5B%5D3=title&catids%5B%5D=7");
 
-		matches = Regex("i=(?<id>\\d+)&[^\"]+\"><img [^>]*?src=\"(?<thumb>[^\"]+)\"", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResultsHtml)
+		matches = Regex("i=(?<id>\\d+)&[^>]+>\\s*<img [^>]*?src=\"(?<thumb>[^\"]+)\"", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResultsHtml)
 		
 		results.EstimatedCount = matches.Count
 		
