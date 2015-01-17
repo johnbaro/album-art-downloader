@@ -1,5 +1,5 @@
 !define PRODUCT_NAME "Album Art Downloader XUI"
-!define PRODUCT_VERSION "1.01"
+!define PRODUCT_VERSION "1.02"
 !define PRODUCT_WEB_SITE "http://sourceforge.net/projects/album-art"
 !define PRODUCT_SUPPORT "http://www.hydrogenaudio.org/forums/index.php?showtopic=57392"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\AlbumArt.exe"
@@ -149,7 +149,10 @@ SectionGroup "Image Download Scripts"
 			  File "..\Scripts\Scripts\amazon-mp3-com.boo"
 			SectionEnd
 		SectionGroupEnd
-		Section "Google"
+		Section "Google Play Music"
+		  File "..\Scripts\Scripts\google-play.boo"
+		SectionEnd
+		Section "Google Images"
 		  File "..\Scripts\Scripts\google.boo"
 		SectionEnd
 		Section "iTunes"

@@ -2,10 +2,10 @@
 <?xml-stylesheet type="text/xsl" href="Updates.xsl"?>
 <Updates BaseURI="http://album-art.sourceforge.net/scripts/">
   <Application Version="1.0.2.0" Name="Album Art Downloader XUI v1.0.2" URI="https://sourceforge.net/project/platformdownload.php?group_id=187008" />
-  <Script Name="45cat" URI="45cat.boo" Version="0.6" Category="LP Vinyl" />
+  <Script Name="45cat" URI="45cat.boo" Version="0.7" Category="LP Vinyl" />
   <Script Name="45world CD Singles" URI="45worlds-cdsingles.boo" Version="0.1" Category="Singles" />
   <Script Name="7digital" URI="7digital.boo" Version="0.4" />
-  <Script Name="absolutepunk.net" URI="absolutepunk.boo" Version="0.1" Category="Punk, Metal, Rock" />
+  <Script Name="absolutepunk.net" URI="absolutepunk.boo" Version="0.2" Category="Punk, Metal, Rock" />
   <Script Name="AllCdCover" URI="allcdcover.boo" Version="0.5" />
   <Script Name="Amazon Audiobooks (.com)" URI="amazon-audiobooks-com.boo" Version="0.12s" Category="Audiobooks">
     <Dependency>amazon-common.boo</Dependency>
@@ -42,14 +42,14 @@
   <Script Name="Buy.com" URI="buy-com.boo" Version="0.8.5" />
   <Script Name="CD Baby" URI="cdbaby.boo" Version="0.4" Category="Independent" />
   <Script Name="Chartstats" URI="chartstats.boo" Version="0.2" />
-  <Script Name="eCover.to (Cover-Paradies)" URI="cover-paradies.boo" Version="0.17" />
+  <Script Name="eCover.to (Cover-Paradies)" URI="cover-paradies.boo" Version="0.18" />
   <Script Name="Coveralia" URI="coveralia.boo" Version="0.11" />
   <Script Name="Coverlandia (Official)" URI="coverlandia-official.boo" Version="0.2" />
   <Script Name="Coverlandia" URI="coverlandia.boo" Version="0.2" Category="Fan-made covers" />
-  <Script Name="deejay.de" URI="deejay.boo" Version="0.4" />
+  <Script Name="deejay.de" URI="deejay.boo" Version="0.5" />
   <Script Name="Deezer" URI="deezer.boo" Version="0.6" />
   <Script Name="Discogs" URI="discogs.boo" Version="0.15" />
-  <Script Name="DJshop" URI="djshop.boo" Version="0.3" />
+  <Script Name="DJshop" URI="djshop.boo" Version="0.4" />
   <Script Name="EB Reggae" URI="ebreggae.boo" Version="0.2" Category="Reggae" />
   <Script Name="eClassical" URI="eclassical.boo" Version="0.2" Category="Classical" />
   <Script Name="eMusic" URI="emusic.boo" Version="0.5" />
@@ -58,7 +58,7 @@
   <Script Name="Google Play Music" URI="google-play.boo" Version="0.2" />
   <Script Name="GoogleImage" URI="google.boo" Version="0.15" />
   <Script Name="hitparade.ch" URI="hitparade.boo" Version="0.5" />
-  <Script Name="HMV Canada" URI="hmv-canada.boo" Version="0.2" Category="Canadian" />
+  <Script Name="HMV Canada" URI="hmv-canada.boo" Version="0.3" Category="Canadian" />
   <Script Name="iTunes" URI="itunes.boo" Version="0.4" />
   <Script Name="Juno Records" URI="juno-records.boo" Version="0.8" Category="Dance, Club, Electronic" />
   <Script Name="Kalahari" URI="kalahari.boo" Version="0.7" Category="South African" />
