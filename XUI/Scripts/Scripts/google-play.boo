@@ -7,7 +7,7 @@ class GooglePlay(AlbumArtDownloader.Scripts.IScript):
 	Name as string:
 		get: return "Google Play Music"
 	Version as string:
-		get: return "0.2"
+		get: return "0.3"
 	Author as string:
 		get: return "Alex Vallat"
 	def Search(artist as string, album as string, results as IScriptResults):
@@ -17,7 +17,7 @@ class GooglePlay(AlbumArtDownloader.Scripts.IScript):
 		//Retrieve the search results page
 		searchResultsHtml as string = GetPage("https://play.google.com/store/search?q=" + EncodeUrl("\"" + artist + "\" \"" + album + "\"") + "&c=music")
 		
-		matches = Regex("<img class=\"cover-image\"[^>]+? src=\"(?<img>[^=]+)[^\"]+\".*?<a class=\"title\" href=\"(?<url>/store/music/album/[^\"]+)\" title=\"(?<album>[^\"]+)\".*?<a class=\"subtitle\"[^>]+?title=\"(?<artist>[^\"]+)\"", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResultsHtml)
+		matches = Regex("<img [^>]+?class=\"cover-image\"[^>]+? src=\"(?<img>[^=]+)[^\"]+\"(?:.(?!/store/music/artist/))+?<a class=\"title\" href=\"(?<url>/store/music/album/[^\"]+)\" title=\"(?<album>[^\"]+)\".*?<a class=\"subtitle\"[^>]+?title=\"(?<artist>[^\"]+)\"", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResultsHtml)
 		
 		results.EstimatedCount = matches.Count
 		

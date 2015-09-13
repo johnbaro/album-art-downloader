@@ -12,7 +12,7 @@ class Discogs(AlbumArtDownloader.Scripts.IScript):
 	Author as string:
 		get: return "Alex Vallat"
 	Version as string:
-		get: return "0.15"
+		get: return "0.16"
 	def Search(artist as string, album as string, results as IScriptResults):
 		//artist = StripCharacters("&.'\";:?!", artist)
 		//album = StripCharacters("&.'\";:?!", album)
@@ -38,10 +38,10 @@ class Discogs(AlbumArtDownloader.Scripts.IScript):
 			
 				results.EstimatedCount += images.Length - 1
 				for image in images:
-					results.Add(image.thumb, title, "http://www.discogs.com" + url, image.width, image.height, image.full, CoverType.Unknown)
+					results.Add(GetPageStream(image.thumb, null, true), title, "http://www.discogs.com" + url, image.width, image.height, image.full, CoverType.Unknown)
 
 	def RetrieveFullSizeImage(fullSizeCallbackParameter):
-		return fullSizeCallbackParameter;
+		return GetPageStream(fullSizeCallbackParameter, null, true);
 
 	def GetDiscogsPage(url):
 		stream = GetPageStream(url, null, true)

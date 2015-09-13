@@ -84,6 +84,8 @@
     <None Include="Scripts\45worlds-cdsingles.boo" />
     <None Include="Scripts\google-play.boo" />
     <None Include="Scripts\fanarttv.boo" />
+    <None Include="Scripts\bing.boo" />
+    <None Include="Scripts\juno-download.boo" />
     <None Include="Scripts\musicbrainz.boo" />
     <None Include="Scripts\trackitdown.boo" />
     <None Include="Scripts\theclassicalshop.boo" />

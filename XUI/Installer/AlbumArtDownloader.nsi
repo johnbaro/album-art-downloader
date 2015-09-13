@@ -155,6 +155,9 @@ SectionGroup "Image Download Scripts"
 		Section "Google Images"
 		  File "..\Scripts\Scripts\google.boo"
 		SectionEnd
+		Section "Bing Images"
+		  File "..\Scripts\Scripts\bing.boo"
+		SectionEnd
 		Section "iTunes"
 		  File "..\Scripts\Scripts\itunes.boo"
 		SectionEnd
@@ -253,6 +256,9 @@ SectionGroup "Image Download Scripts"
 	SectionGroup "Dance, Club, Electronic"
 		Section /o "Juno Records"
 		  File "..\Scripts\Scripts\juno-records.boo"
+		SectionEnd
+		Section /o "Juno Download"
+		  File "..\Scripts\Scripts\juno-download.boo"
 		SectionEnd
 		Section /o "PsyShop"
 		  File "..\Scripts\Scripts\psyshop.boo"

@@ -15,7 +15,7 @@ abstract class Amazon(AlbumArtDownloader.Scripts.IScript):
 	virtual Name as string:
 		get: return "Amazon (.${Suffix})"
 	Version as string:
-		get: return "0.12s"
+		get: return "0.13s"
 	Author as string:
 		get: return "Alex Vallat, ZOOT"
 	abstract protected Suffix as string:
@@ -25,18 +25,16 @@ abstract class Amazon(AlbumArtDownloader.Scripts.IScript):
 	virtual protected SearchIndex as string: //Deprectated, ignored.
 		get: return "" 
 	virtual protected def GetUrl(artist as string, album as string) as string:
-		return "http://www.amazon.${Suffix}/gp/search?search-alias=popular&field-artist=${EncodeUrl(artist, PageEncoding)}&field-title=${EncodeUrl(album, PageEncoding)}&sort=relevancerank"
-	virtual protected PageEncoding as Encoding:
-		get: return Encoding.GetEncoding("iso-8859-1")
+		return "http://www.amazon.${Suffix}/gp/search?search-alias=popular&field-artist=${EncodeUrl(artist)}&field-title=${EncodeUrl(album)}&sort=relevancerank"
 	
 	def Search(artist as string, album as string, results as IScriptResults):
 		artist = StripCharacters("&.'\";:?!", artist)
 		album = StripCharacters("&.'\";:?!", album)
 		
 		url = GetUrl(artist, album)
-		resultsPage = GetPage(GetPageStream(url, null, true), PageEncoding)
-		
-		resultsRegex = Regex("<a[^>]*title\\s*=\\s*\"(?<title>[^\"]+)\"[^>]*href\\s*=\\s*\"(?<url>[^\"]+?/dp/(?<id>[^/]+)/)[^>]+><h2.*?>(?:by |von |de |di )(?:<[^>]+>)+(?<artist>[^<]+)", RegexOptions.Singleline | RegexOptions.IgnoreCase)
+		resultsPage = GetPage(GetPageStream(url, null, true))
+
+		resultsRegex = Regex("<a[^>]*title\\s*=\\s*\"(?<title>[^\"]+)\"[^>]*href\\s*=\\s*\"(?<url>[^\"]+?/dp/(?<id>[^/]+)/)[^>]+><h2.*?>(?<artist>[^<]+)(?:</a>)?</span></div></div>", RegexOptions.Singleline | RegexOptions.IgnoreCase)
 		resultsMatches = resultsRegex.Matches(resultsPage)
 		
 		results.EstimatedCount = resultsMatches.Count
@@ -73,7 +71,7 @@ abstract class Amazon(AlbumArtDownloader.Scripts.IScript):
 				imageBase = "http://ecx.images-amazon.com/images/P/${id}.${CountryCode}."
  
 				images_url = "http://www.amazon.${Suffix}/gp/customer-media/product-gallery/${id}"
-				imagesPage = GetPage(GetPageStream(images_url, null, true), PageEncoding)
+				imagesPage = GetPage(GetPageStream(images_url, null, true))
 				jsonRegex = Regex('var state = (?<json>{[^;]*});', RegexOptions.Multiline)
 				for jsonDataMatch as Match in jsonRegex.Matches(imagesPage):
 						jsonData = jsonDataMatch.Groups["json"].Value
