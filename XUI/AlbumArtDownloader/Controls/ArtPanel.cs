@@ -33,6 +33,8 @@ namespace AlbumArtDownloader.Controls
 		//If the system minimum drag distance is set larger than this, the system distance will be used anyway
 		private static readonly double sMinimumDragDistance = 32;
 
+		private static readonly Size DefaultImagePopupSize = new Size(500, 500);
+
 		static ArtPanel()
 		{
 			//This OverrideMetadata call tells the system that this element wants to provide a style that is different than its base class.
@@ -456,6 +458,9 @@ namespace AlbumArtDownloader.Controls
 		}
 		private static object CoerceImagePopupWidth(DependencyObject sender, object value)
 		{
+			if ((double)value <= 0)
+				return DefaultImagePopupSize.Width;
+
 			double maxWidth = ((ArtPanel)sender).CalculateMaxImagePopupSize().Width;
 			if ((double)value > maxWidth)
 				value = maxWidth;
@@ -477,6 +482,9 @@ namespace AlbumArtDownloader.Controls
 		}
 		private static object CoerceImagePopupHeight(DependencyObject sender, object value)
 		{
+			if ((double)value <= 0)
+				return DefaultImagePopupSize.Width;
+
 			double maxHeight = ((ArtPanel)sender).CalculateMaxImagePopupSize().Height;
 			if ((double)value > maxHeight)
 				value = maxHeight;

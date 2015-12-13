@@ -6,9 +6,9 @@ class LastFmArtist(AlbumArtDownloader.Scripts.IScript, ICategorised):
 	Name as string:
 		get: return "LastFM Artist"
 	Version as string:
-		get: return "0.5"
+		get: return "0.6"
 	Author as string:
-		get: return "Alex Vallat"
+		get: return "Alex Vallat, pochaboo"
 	Category as string:
 		get: return "Artist Images"
 	def Search(artist as string, album as string, results as IScriptResults):
@@ -17,13 +17,15 @@ class LastFmArtist(AlbumArtDownloader.Scripts.IScript, ICategorised):
 		encodedArtist = EncodeUrl(artist)
 		imagesHtml = GetPage("http://www.last.fm/music/${encodedArtist}/+images")
 
-		imageIdMatches = Regex("<a\\s+href=\"/music/[^/]+/\\+images/(?<id>\\d+)\"\\s+class=\"pic\"").Matches(imagesHtml)
+		imageIdMatches = Regex("<a\\s+href=\"/music/[^/]+/\\+images/(?<id>[^\"]+)\"[^<]+<img src=\"(?<imageUrlBase>[^\"]+?)(?<thumbnail>\\d+x\\d+)/").Matches(imagesHtml)
 		
 		results.EstimatedCount = imageIdMatches.Count
 		
 		for imageIdMatch as Match in imageIdMatches:
 			id = imageIdMatch.Groups["id"].Value
-			results.Add("http://userserve-ak.last.fm/serve/126b/${id}.jpg", artist, "http://www.last.fm/music/${encodedArtist}/+images/${id}", -1, -1, "http://userserve-ak.last.fm/serve/_/${id}.jpg");
+			imageUrlBase = imageIdMatch.Groups["imageUrlBase"].Value
+			thumbnail = imageIdMatch.Groups["thumbnail"].Value
+			results.Add(imageUrlBase + thumbnail + "/" + id, artist, "http://www.last.fm/music/${encodedArtist}/+images/${id}", -1, -1, imageUrlBase + "ar0/" + id);
 
 	def RetrieveFullSizeImage(fullSizeCallbackParameter):
 		return fullSizeCallbackParameter;

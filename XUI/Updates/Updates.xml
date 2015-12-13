@@ -38,7 +38,7 @@
   <Script Name="ArkivMusik" URI="arkivmusic.boo" Version="0.8" Category="Classical" />
   <Script Name="Audio Preservation Fund" URI="audiopreservationfund.boo" Version="0.1" Category="LP Vinyl" />
   <Script Name="bandcamp" URI="bandcamp.boo" Version="0.2" Category="Independent" />
-  <Script Name="Beatport" URI="beatport.boo" Version="0.1" Category="Dance, Club, Electronic" />
+  <Script Name="Beatport" URI="beatport.boo" Version="0.2" Category="Dance, Club, Electronic" />
   <Script Name="Bing Images" URI="bing.boo" Version="0.1" />
   <Script Name="Buy.com" URI="buy-com.boo" Version="0.8.5" />
   <Script Name="CD Baby" URI="cdbaby.boo" Version="0.4" Category="Independent" />
@@ -60,11 +60,11 @@
   <Script Name="GoogleImage" URI="google.boo" Version="0.18" />
   <Script Name="hitparade.ch" URI="hitparade.boo" Version="0.5" />
   <Script Name="HMV Canada" URI="hmv-canada.boo" Version="0.3" Category="Canadian" />
-  <Script Name="iTunes" URI="itunes.boo" Version="0.4" />
+  <Script Name="iTunes" URI="itunes.boo" Version="0.5" />
   <Script Name="Juno Download" URI="juno-download.boo" Version="0.1" Category="Dance, Club, Electronic" />
   <Script Name="Juno Records" URI="juno-records.boo" Version="0.8" Category="Dance, Club, Electronic" />
   <Script Name="Kalahari" URI="kalahari.boo" Version="0.7" Category="South African" />
-  <Script Name="LastFM Artist" URI="lastfm-artist.boo" Version="0.5" Category="Artist Images" />
+  <Script Name="LastFM Artist" URI="lastfm-artist.boo" Version="0.6" Category="Artist Images" />
   <Script Name="LastFM Cover" URI="lastfm-cover.boo" Version="0.6" />
   <Script Name="maniadb" URI="maniadb.boo" Version="0.3" />
   <Script Name="medianet" URI="medianet.boo" Version="0.1" />

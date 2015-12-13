@@ -12,7 +12,7 @@ class iTunes(AlbumArtDownloader.Scripts.IScript):
 				name += " (${CountryName})"
 			return name
 	Version as string:
-		get: return "0.4"
+		get: return "0.5"
 	Author as string:
 		get: return "Alex Vallat"
 	virtual protected CountryName as string:
@@ -35,11 +35,18 @@ class iTunes(AlbumArtDownloader.Scripts.IScript):
 			url = result["collectionViewUrl"]
 			imageUrlBase = result["artworkUrl100"]
 			// Remove size from image to get base
-			imageUrlBase = imageUrlBase.Substring(0, imageUrlBase.Length - "100x100-75.jpg".Length)
-
+			sizeMatch = Regex("^(?<imageUrlBase>.+)100x100.+\\.jpg$", RegexOptions.IgnoreCase).Match(imageUrlBase) //example: "100x100-75.jpg" or "100x100bb.jpg"
+			imageUrlBase = sizeMatch.Groups["imageUrlBase"].Value
+				
 			// See if full size jpg is available
 			if CheckResponse(imageUrlBase + "jpg"):
 				fullSizeImageUrl = imageUrlBase + "jpg"
+				extension = "jpg"
+			elif CheckResponse(imageUrlBase + "5000x5000-100.jpg"):	//we can often get full size image!
+				fullSizeImageUrl = imageUrlBase + "5000x5000-100.jpg"
+				extension = "jpg"
+			elif CheckResponse(imageUrlBase + "5000x5000-75.jpg"):
+				fullSizeImageUrl = imageUrlBase + "5000x5000-75.jpg"
 				extension = "jpg"
 			elif CheckResponse(imageUrlBase + "tif"): // Couldn't find full size .jpg, try .tif
 				fullSizeImageUrl = imageUrlBase + "tif"

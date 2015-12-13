@@ -7,7 +7,7 @@ class Beatport(AlbumArtDownloader.Scripts.IScript, ICategorised):
 	Name as string:
 		get: return "Beatport"
 	Version as string:
-		get: return "0.1"
+		get: return "0.2"
 	Author as string:
 		get: return "Alex Vallat"
 	Category as string:
@@ -16,37 +16,42 @@ class Beatport(AlbumArtDownloader.Scripts.IScript, ICategorised):
 		artist = StripCharacters("&.'\";:?!", artist)
 		album = StripCharacters("&.'\";:?!", album)
 
-		x = XmlDocument()
-		x.Load("http://api.beatport.com/catalog/search?v=2.0&format=xml&highlight=false&perPage=40&facets=fieldType:release,performerName:${EncodeUrl(artist)}&query=${EncodeUrl(album)}")
+		if String.IsNullOrEmpty(artist) or String.IsNullOrEmpty(album):
+			query = artist + album
+		else:
+			query = "\"" + artist + "\" \"" + album + "\""
+
+		searchResults = GetPage("https://pro.beatport.com/search/releases?q="+ EncodeUrl(query) + "&_pjax=%23pjax-inner-wrapper")
+
+		matches = Regex("<img class=\"release-artwork[^>]+?data-src=\"(?<thumbnail>[^\"]+?(?<id>\\d+)\\.jpg)\".*?<p class=\"release-title\"><a href=\"(?<url>[^\"]+)\">(?<title>[^<]+)<.*?<a href=\"/artist[^>]+>(?<artist>[^<]+)<", RegexOptions.Singleline | RegexOptions.IgnoreCase).Matches(searchResults)
+		results.EstimatedCount = matches.Count
 		
-		resultNodes = x.SelectNodes("response/result/document/release")
-		results.EstimatedCount = resultNodes.Count
+		for match as Match in matches:
+			url = match.Groups["url"].Value
+			id = match.Groups["id"].Value
+			title = System.Web.HttpUtility.HtmlDecode(match.Groups["title"].Value)
+			artist = System.Web.HttpUtility.HtmlDecode(match.Groups["artist"].Value)
+			thumbnail = match.Groups["thumbnail"].Value
 
-		for node as XmlNode in resultNodes:
-			thumbnail = node.SelectSingleNode("image[@width=60 and @ref='release']")
-			image = node.SelectSingleNode("image[@width=500 and @ref='release']")
-			if thumbnail != null and image != null:
-				url = "http://www.beatport.com/release/" + node.SelectSingleNode("urlName").InnerText + "/" + node.Attributes.GetNamedItem("id").InnerText
-			
-				title = StringBuilder()
-
-				performers = node.SelectNodes("performer/name")
-				if performers.Count > 8:
-					title.Append("Various Artists, ")
-				else:
-					for performerNode in performers:
-						title.Append(performerNode.InnerText + ", ")
-
-				// Remove the last ", "
-				title.Remove(title.Length - 2, 2)
-
-				title.Append(" - " + node.SelectSingleNode("name").InnerText)
-
-				results.Add(GetImageUrl(thumbnail), title.ToString(), url, 500, 500, GetImageUrl(image), CoverType.Front);
-	
-	def GetImageUrl(imageNode as XmlNode):
-		return imageNode.Attributes.GetNamedItem("url").InnerText
+			results.Add(thumbnail, title, url, -1, -1, id, CoverType.Front);
 
 	def RetrieveFullSizeImage(fullSizeCallbackParameter):
-		return fullSizeCallbackParameter;
-		
+		fullId = int.Parse(fullSizeCallbackParameter) + 1 // Add one to the ID to get a larger image (ref https://www.youtube.com/watch?v=MYvzxS1v3Ws)
+		url = "https://geo-media.beatport.com/image/" + fullId.ToString() + ".jpg"
+		if CheckResponse(url):
+			return url;
+		else:
+			return "https://geo-media.beatport.com/image/" + fullSizeCallbackParameter + ".jpg"
+
+	def CheckResponse(url):
+		checkRequest as System.Net.HttpWebRequest = System.Net.HttpWebRequest.Create(url)
+		checkRequest.Method = "HEAD"
+		checkRequest.AllowAutoRedirect = false
+		try:
+			response = checkRequest.GetResponse() as System.Net.HttpWebResponse
+			return response.StatusCode == System.Net.HttpStatusCode.OK
+		except e as System.Net.WebException:
+			return false;
+		ensure:
+			if response != null:
+				response.Close()
